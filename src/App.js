@@ -3,6 +3,7 @@ import logo from './logo.svg';
 import './App.css';
 import { connect } from 'react-redux'
 import {Container, Row, Col} from 'react-grid-system'
+import {fetchMonster} from './actions';
 import {keyPressHandler} from './action-creators'
 
 class App extends Component {

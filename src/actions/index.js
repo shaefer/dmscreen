@@ -1,6 +1,12 @@
-export const SOME_ACTION = 'SOME_ACTION'
+export const SHOW_MONSTER = 'SHOW_MONSTER'
 
-export const someAction = (incomingData) => ({
-    type: SOME_ACTION,
-    data: incomingData
-  });
+const fetchMonster = (monsterName) => (dispatch, getState) => {
+    return fetch(`https://www.cleverorc.com/${monsterName}`)
+        .then(resp => resp.json())
+        .then(json => dispatch(showMonster(json)))
+}
+
+const showMonster = (monsterJson) => ({
+    type: 'SHOW_MONSTER',
+    monster: monsterJson
+});

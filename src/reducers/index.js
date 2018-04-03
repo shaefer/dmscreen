@@ -11,6 +11,8 @@ const config = (state = { initialState: "basicConfig"}, action) => {
 
 const layout = (state = { initialLayout: "basicLayout"}, action) => {
   switch (action.type) {
+    case Actions.SHOW_MONSTER: 
+      return action.monster;
     default:
       return state
   }

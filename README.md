@@ -6,6 +6,7 @@ Using Redux we created basic usage of
 - Combined Reducers
 - react-grid-system layout example
 
+### `npm i //first time only`
 ### `npm start`
 
 Runs the app in the development mode.<br>

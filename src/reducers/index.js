@@ -9,19 +9,23 @@ const config = (state = { initialState: "basicConfig"}, action) => {
   }
 }
 
-const layout = (state = { initialLayout: "basicLayout"}, action) => {
+const monster = (state = { statBlock: {}}, action) => {
+  console.log("LAYOUT REDUCER");
   switch (action.type) {
     case Actions.SHOW_MONSTER: 
-      return action.monster;
+      console.log("SHOW MONSTER");
+      console.log(action.monster);
+      return {
+        ...state,
+        statBlock: action.monster
+      };
     default:
       return state
   }
 }
 
-
-
 const rootReducer = combineReducers({
-  config, layout
+  config, monster
 })
 
 export default rootReducer

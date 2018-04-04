@@ -25,9 +25,9 @@ class App extends Component {
   }
 
   render() {
-    const { config, layout } = this.props;
+    const { config, monster } = this.props;
     console.log(config.initialState);
-    console.log(layout.initialLayout);
+    console.log(monster.statBlock);
     return (
       <Container fluid={true}>
         <Row>

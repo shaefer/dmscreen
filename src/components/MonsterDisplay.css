@@ -1,0 +1,25 @@
+.monsterDisplay {
+    border: 1px solid black;
+    text-align: left;
+    padding: 1em;
+}
+
+.monsterFieldLabel, .bLabel {
+    font-weight: bold;
+}
+
+.simpleHr {
+    border-top: 1px solid black;
+    margin: 0.5em 1em;
+}
+
+.sbSectionHeader {
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+    margin: 0.1em 0;
+    text-transform: uppercase;
+}
+
+.sbLine {
+    padding: 0.1em 0;
+}

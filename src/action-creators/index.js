@@ -13,6 +13,11 @@ const fetchMonster = (monsterName, dispatch) => {
         .catch(err => console.log(err));
 }
 
+export const monsterSelectChangeHandler = (e) => (dispatch, getState) => {
+    console.warn('SELECT CHANGE');
+    fetchMonster(e.target.value, dispatch);
+}
+
 export const keyPressHandler = (e) => {
     return (dispatch, getState) => {
         const currentState = getState();

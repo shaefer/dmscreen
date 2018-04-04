@@ -1,19 +1,23 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
 import { connect } from 'react-redux'
 import {Container, Row, Col} from 'react-grid-system'
-import {fetchMonster} from './actions';
-import {keyPressHandler} from './action-creators'
+import {keyPressHandler, monsterSelectChangeHandler} from './action-creators'
+import MonsterDisplay from './components/MonsterDisplay'
 
 class App extends Component {
   constructor() {
     super();
     this.handleKeyPress = this.handleKeyPress.bind(this);
+    this.handleMonsterSelectChange = this.handleMonsterSelectChange.bind(this);
   }
 
   handleKeyPress(e) {
     this.props.keyPressHandler(e);
+  }
+
+  handleMonsterSelectChange(e) {
+    this.props.monsterSelectChangeHandler(e);
   }
 
   componentDidMount() {
@@ -35,14 +39,12 @@ class App extends Component {
             Left Col
           </Col>
           <Col sm={8}>
-            <div className="App">
-              <header className="App-header">
-                <img src={logo} className="App-logo" alt="logo" />
-                <h1 className="App-title">Welcome to React</h1>
-              </header>
-              <p className="App-intro">
-                To get started, edit <code>src/App.js</code> and save to reload.
-              </p>
+            <div>
+              <select onChange={this.handleMonsterSelectChange}>
+                <option>behir</option>
+                <option>aasimar</option>
+              </select>
+              <MonsterDisplay monster={monster}/>
             </div>
           </Col>
           <Col sm={2}>
@@ -56,4 +58,4 @@ class App extends Component {
 
 const mapStateToProps = state => state;
 
-export default connect(mapStateToProps, {keyPressHandler})(App)
+export default connect(mapStateToProps, {keyPressHandler, monsterSelectChangeHandler})(App)

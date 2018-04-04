@@ -2,6 +2,8 @@ import { combineReducers } from 'redux'
 
 import * as Actions from '../actions'
 
+import Behir from '../models/Behir'
+
 const config = (state = { initialState: "basicConfig"}, action) => {
   switch (action.type) {
     default:
@@ -9,7 +11,7 @@ const config = (state = { initialState: "basicConfig"}, action) => {
   }
 }
 
-const monster = (state = { statBlock: {}}, action) => {
+const monster = (state = { statBlock: Behir}, action) => {
   console.log("LAYOUT REDUCER");
   switch (action.type) {
     case Actions.SHOW_MONSTER: 

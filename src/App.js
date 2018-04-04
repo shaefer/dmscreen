@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import {Container, Row, Col} from 'react-grid-system'
 import {keyPressHandler, monsterSelectChangeHandler} from './action-creators'
 import MonsterDisplay from './components/MonsterDisplay'
+import MonsterOptions from './components/MonsterOptions'
 
 class App extends Component {
   constructor() {
@@ -41,8 +42,7 @@ class App extends Component {
           <Col sm={8}>
             <div>
               <select onChange={this.handleMonsterSelectChange}>
-                <option>behir</option>
-                <option>aasimar</option>
+                <MonsterOptions/>
               </select>
               <MonsterDisplay monster={monster}/>
             </div>

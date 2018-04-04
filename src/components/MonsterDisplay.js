@@ -17,7 +17,6 @@ const MonsterDisplay = ({monster}) => {
     console.log("Monster Display Component Render")
     console.log(monster.statBlock)
     const m = monster.statBlock;
-    const b = "bLabel"
 
     if (!m.name)
         return <div>No Monster Currently Selected</div>;

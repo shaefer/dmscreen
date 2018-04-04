@@ -7,7 +7,9 @@ export const fetchMonsterAction = (monsterName) => (dispatch, getState) => {
 
 const fetchMonster = (monsterName, dispatch) => {
     console.log("ABOUT TO FETCH: " + monsterName);
-    return fetch(`https://api.cleverorc.com/monsters/${monsterName}`)
+    let monster = monsterName.toLowerCase();
+    monster = monster.replace(", ", "_");
+    return fetch(`https://api.cleverorc.com/monsters/${monster}`)
         .then(resp => resp.json())
         .then(data =>  dispatch(showMonster(data)))
         .catch(err => console.log(err));
@@ -20,7 +22,6 @@ export const monsterSelectChangeHandler = (e) => (dispatch, getState) => {
 
 export const keyPressHandler = (e) => {
     return (dispatch, getState) => {
-        const currentState = getState();
         switch(e.which) {
             case Keys.LEFT:
             console.log("LEFT KEY PRESSED");

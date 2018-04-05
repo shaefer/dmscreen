@@ -2,7 +2,7 @@ import React from 'react'
 import './MonsterDisplay.css';
 
 const StatBlockLine = (props) => {
-    return <div className="sbLine">{props.children}</div>;
+    return ((props.data && props.required) || !props.required) ? <div className="sbLine">{props.children}</div> : "";
 }
 
 const StatSectionHeader = (props) => {
@@ -13,6 +13,69 @@ const B = (props) => {
     return <span className="bLabel">{props.children}</span>;
 }
 
+const specialDefenses = (m) => {
+    const defenses = [];
+    if (m.defensive_abilities) defenses.push(<span><B>Defensive Abilities</B> {m.defensive_abilities}</span>);
+    if (m.dr) defenses.push(<span><B>DR</B> {m.dr}</span>);
+    if (m.immune) defenses.push(<span><B>Immune</B> {m.immune}</span>);
+    if (m.resist) defenses.push(<span><B>Resist</B> {m.resist}</span>);
+    if (m.sr) defenses.push(<span><B>SR</B> {m.sr}</span>);
+    return defenses.map((sd, index) => {
+        let sep = "";
+        if (defenses.length > 1 && index != defenses.length - 1)
+            sep = "; ";
+        return (<span>{sd}{sep}</span>)
+    });
+};
+
+const spaceAndReach = (m) => {
+    return (m.space && m.reach) ? <StatBlockLine><B>Space</B> {m.space}; <B>Reach</B> {m.reach}</StatBlockLine> : "";
+}
+
+const specialAbilities = (m) => {
+    const s1 = m.sections;
+    if (!s1) return "";
+    return s1.map(section => {
+        if (section.subtype == 'special_abilities') {
+            const sas = section.sections;
+            return (
+                sas.map(sa => {
+                    const abilityTypes = sa.ability_types;
+                    if (!abilityTypes) {
+                        console.log("HARD TIME PARSING SPECIAL ABILITIES")
+                        console.log(s1);
+                        return "";
+                    }
+                    return <StatBlockLine><B>{sa.name} ({sa.ability_types.ability_type})</B> {sa.body}</StatBlockLine>;
+                })
+            );
+        }
+        if (!section.subtype) {
+            return <span className="sbLine" dangerouslySetInnerHTML={{__html: section.body}} ></span>;
+        }
+        console.log(s1);
+        return "Parsing Error";
+    }); 
+}
+
+const creatureSubType = (m) => {
+    return (m.creature_subtype) ? <span>({m.creature_subtype})</span> : "";
+}
+
+const spells = (m) => {
+    if (!m.spells) return "";
+    return m.spells.map(sec => {
+        if (sec["spell-like abilities"]) {
+            return <StatBlockLine><B>Spell-Like Abilities</B> <span className="sbLine sbSpells" dangerouslySetInnerHTML={{__html: sec["spell-like abilities"]}} ></span></StatBlockLine>
+        }
+        if (sec["spells prepared"]) {
+            return <StatBlockLine><B>Spells Prepared</B> <span className="sbLine sbSpells" dangerouslySetInnerHTML={{__html: sec["spells prepared"]}} ></span></StatBlockLine>
+        }
+        console.warn("Mapped something weird for m.spells")
+        return "";
+    });
+}
+
 const MonsterDisplay = ({monster}) => {
     console.log("Monster Display Component Render")
     console.log(monster.statBlock)
@@ -21,6 +84,8 @@ const MonsterDisplay = ({monster}) => {
     if (!m.name)
         return <div>No Monster Currently Selected</div>;
 
+
+        //TODO: Spells (and spell like are after space and reach section) spells."spell-like abilities" and spells."spells prepared"
     return (
         <div className="monsterDisplay">
             <StatBlockLine>
@@ -28,16 +93,47 @@ const MonsterDisplay = ({monster}) => {
                 <B>CR</B><span> {m.cr}</span>
             </StatBlockLine>
             <StatBlockLine><B>XP</B> {m.xp}</StatBlockLine>
-            <StatBlockLine>{m.alignment} {m.size} {m.creature_type}</StatBlockLine>
+            <StatBlockLine>{m.alignment} {m.size} <span style={{textTransform: "lowercase"}}>{m.creature_type}</span> {creatureSubType(m)}</StatBlockLine>
             <StatBlockLine><B>Init</B> {m.init}; <B>Senses</B> {m.senses}</StatBlockLine>
-            <StatSectionHeader>Defense</StatSectionHeader>
+            <StatBlockLine data={m.aura} required><B>Aura</B> {m.aura}</StatBlockLine>
+
+            <StatSectionHeader>defense</StatSectionHeader>
             <StatBlockLine><B>AC</B> {m.ac}</StatBlockLine>
             <StatBlockLine><B>hp</B> {m.hp}</StatBlockLine>
             <StatBlockLine><B>Fort</B> {m.fortitude}, <B>Ref</B> {m.reflex}, <B>Will</B> {m.will}</StatBlockLine>
-            <StatBlockLine><B>Immune</B> {m.immune}</StatBlockLine>
+            <StatBlockLine>{specialDefenses(m)}</StatBlockLine>
+
+            <StatSectionHeader>offense</StatSectionHeader>
+            <StatBlockLine><B>Speed</B> {m.speed}</StatBlockLine>
+            <StatBlockLine data={m.melee} required><B>Melee</B> {m.melee}</StatBlockLine>
+            <StatBlockLine data={m.ranged} required><B>Ranged</B> {m.ranged}</StatBlockLine>
+            {spaceAndReach(m)}
+            <StatBlockLine data={m.special_attacks} required><B>Special Attacks</B> {m.special_attacks}</StatBlockLine>
+            {spells(m)}
+
+            <StatSectionHeader>statistics</StatSectionHeader>
+            <StatBlockLine><B>Str</B> {m.strength}, <B>Dex</B> {m.dexterity}, <B>Con</B> {m.constitution}, <B>Int</B> {m.intelligence}, <B>Wis</B> {m.wisdom}, <B>Cha</B> {m.charisma}</StatBlockLine>
+            <StatBlockLine><B>Base Atk</B> {m.base_attack}; <B>CMB</B> {m.cmb}; <B>CMD</B> {m.cmd}</StatBlockLine>
+            <StatBlockLine><B>Feats</B> {m.feats}</StatBlockLine>
+            <StatBlockLine><B>Skills</B> {m.skills}</StatBlockLine>
+            <StatBlockLine><B>Languages</B> {m.languages}</StatBlockLine>
+            <StatBlockLine data={m.special_qualities} required><B>SQ</B> {m.special_qualities}</StatBlockLine>
+
+            <StatSectionHeader>ecology</StatSectionHeader>
+            <StatBlockLine><B>Environment</B> {m.environment}</StatBlockLine>
+            <StatBlockLine><B>Organization</B> {m.organization}</StatBlockLine>
+            <StatBlockLine><B>Treasure</B> {m.treasure}</StatBlockLine>
+
+            <StatSectionHeader>special abilities</StatSectionHeader>
+            {specialAbilities(m)}
         </div>
     );
 }
+// Str 24, Dex 14, Con 18, Int 7, Wis 15, Cha 11
+// Base Atk +12; CMB +21; CMD 34 (38 vs. trip)
+// Feats Dodge, Flyby Attack, Improved Initiative, Iron Will, Lightning Reflexes, Skill Focus (Perception)
+// Skills Fly +7, Perception +18; Racial Modifiers +4 Perception
+// Languages Draconic
 
 export default MonsterDisplay
 

@@ -23,3 +23,7 @@
 .sbLine {
     padding: 0.1em 0;
 }
+
+.sbSpells p {
+    margin-left: 1em;
+}

@@ -37,13 +37,12 @@ class App extends Component {
       <Container fluid={true}>
         <Row>
           <Col sm={2}>
-            Left Col
+            <select onChange={this.handleMonsterSelectChange}>
+              <MonsterOptions/>
+            </select>
           </Col>
           <Col sm={8}>
             <div>
-              <select onChange={this.handleMonsterSelectChange}>
-                <MonsterOptions/>
-              </select>
               <MonsterDisplay monster={monster}/>
             </div>
           </Col>

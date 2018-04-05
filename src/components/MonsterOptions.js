@@ -87,7 +87,7 @@ const MonsterOptions = () => {
             <option>Ancient Vortex Dragon</option>
             <option>Ancient White Dragon</option>
             <option>Androsphinx</option>
-            <option>Angel, Astral Deva</option>
+            <option value="angel_astral_deva">Angel, Astral Deva</option>
             <option>Angel, Cassisian</option>
             <option>Angel, Monadic Deva</option>
             <option>Angel, Movanic Deva</option>

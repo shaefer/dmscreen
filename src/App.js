@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
 import { connect } from 'react-redux'
-import {Container, Row, Col} from 'react-grid-system'
 import {keyPressHandler, monsterSelectChangeHandler} from './action-creators'
 import MonsterDisplay from './components/MonsterDisplay'
 import MonsterOptions from './components/MonsterOptions'
@@ -36,23 +35,17 @@ class App extends Component {
     console.log("MONSTER OPTIONS")
     console.log(MonsterOptions)
     return (
-      <Container fluid={true}>
-        <Row>
-          <Col sm={2}>
-            <select onChange={this.handleMonsterSelectChange}>
-              {MonsterOptions.map(op => op)}
-            </select>
-          </Col>
-          <Col sm={8}>
-            <div>
-              <MonsterDisplay monster={monster}/>
-            </div>
-          </Col>
-          <Col sm={2}>
-            Right Col
-          </Col>
-        </Row>
-      </Container>
+      <div class="flex-container">
+        <div class="flex-item">
+          <MonsterDisplay monster={monster}/>
+        </div>
+        <div class="flex-item">
+          <select class="flex-item" onChange={this.handleMonsterSelectChange}>
+            {MonsterOptions.map(op => op)}
+          </select>
+        </div>
+    </div>
+
     );
   }
 }

@@ -1,5 +1,5 @@
 import Keys from '../models/Keys'
-import { showMonster } from '../actions'
+import { showMonster, selectMonsterOption } from '../actions'
 
 export const fetchMonsterAction = (monsterName) => (dispatch, getState) => {
     fetchMonster(monsterName, dispatch);
@@ -16,7 +16,12 @@ const fetchMonster = (monsterName, dispatch) => {
 
 export const monsterSelectChangeHandler = (e) => (dispatch, getState) => {
     console.warn('SELECT CHANGE');
-    fetchMonster(e.target.value, dispatch);
+    console.log(this)
+    if (!e) return "";
+    
+    const monsterName = (e && e.value) ? e.value : e.label;
+    dispatch(selectMonsterOption(monsterName));
+    fetchMonster(monsterName, dispatch);
 }
 
 export const keyPressHandler = (e) => {
@@ -44,6 +49,6 @@ export const keyPressHandler = (e) => {
 
             default: return; // exit this handler for other keys
         }
-        e.preventDefault(); // prevent the default action (scroll / move caret)
+        //e.preventDefault(); // prevent the default action (scroll / move caret)
     }
 };

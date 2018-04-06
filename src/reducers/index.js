@@ -11,6 +11,18 @@ const config = (state = { initialState: "basicConfig"}, action) => {
   }
 }
 
+const select = (state = { selectedMonsterName: Aasimar.name}, action) => {
+  switch (action.type) {
+    case Actions.SELECT_MONSTER:
+      return {
+        ...state,
+        selectedMonsterName: action.name
+      }
+    default:
+      return state;
+  }
+}
+
 const monster = (state = { statBlock: Aasimar}, action) => {
   console.log("LAYOUT REDUCER");
   switch (action.type) {
@@ -27,7 +39,7 @@ const monster = (state = { statBlock: Aasimar}, action) => {
 }
 
 const rootReducer = combineReducers({
-  config, monster
+  config, select, monster
 })
 
 export default rootReducer

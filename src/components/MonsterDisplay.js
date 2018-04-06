@@ -2,6 +2,7 @@ import React from 'react'
 import './MonsterDisplay.css';
 
 const StatBlockLine = (props) => {
+    if (props.inline) return ((props.data && props.required) || !props.required) ? <span className="sbLine">{props.children}</span> : "";
     return ((props.data && props.required) || !props.required) ? <div className="sbLine">{props.children}</div> : "";
 }
 
@@ -22,9 +23,9 @@ const specialDefenses = (m) => {
     if (m.sr) defenses.push(<span><B>SR</B> {m.sr}</span>);
     return defenses.map((sd, index) => {
         let sep = "";
-        if (defenses.length > 1 && index != defenses.length - 1)
+        if (defenses.length > 1 && index !== defenses.length - 1)
             sep = "; ";
-        return (<span>{sd}{sep}</span>)
+        return (<span key={"def" + index}>{sd}{sep}</span>)
     });
 };
 
@@ -32,26 +33,61 @@ const spaceAndReach = (m) => {
     return (m.space && m.reach) ? <StatBlockLine><B>Space</B> {m.space}; <B>Reach</B> {m.reach}</StatBlockLine> : "";
 }
 
+const characterClassSection = (section) => {
+    const raceSections = section.sections;
+    return (
+        <span key={"ccSection"}>
+        <StatBlockLine><B>{section.name} Characters</B> <div><span className="sbRaceSection sbDescription" dangerouslySetInnerHTML={{__html: section.body}} ></span></div></StatBlockLine>
+        {raceSections.map((sec, index) => {
+            if (sec.name === 'See Also') return "";
+            return <StatBlockLine key={"cc" + index}><B>{sec.name}</B> <span className="sbRaceSection sbDescription" dangerouslySetInnerHTML={{__html: sec.body}} ></span></StatBlockLine>
+        })}
+        </span>
+    );
+}
+
+const animalCompanionSection = (section) => {
+    const advancements = (section.sections) ? section.sections : [];
+    return (
+    <span>
+        <StatBlockLine><B>{section.name} Companions</B></StatBlockLine>
+        <StatBlockLine><B>Starting Statistics: </B> 
+            <StatBlockLine inline required data={section.size}><B>Size</B> {section.size}; </StatBlockLine>
+            <StatBlockLine inline required data={section.speed}><B>Speed</B> {section.speed}; </StatBlockLine>
+            <StatBlockLine inline required data={section.ac}><B>AC</B> {section.ac}; </StatBlockLine>
+            <StatBlockLine inline required data={section.attack}><B>Attack</B> {section.attack}; </StatBlockLine>
+            <StatBlockLine inline required data={section.ability_scores}><B>Ability Scores</B> {section.ability_scores}; </StatBlockLine>
+            <StatBlockLine inline required data={section.special_qualities}><B>Special Qualities</B> {section.special_qualities}</StatBlockLine>
+        </StatBlockLine>
+        {advancements.map((ad, index) => {
+            return <StatBlockLine key={"ad"+index}><B>{ad.name}: </B> 
+                <StatBlockLine inline required data={ad.size}><B>Size</B> {ad.size}; </StatBlockLine>
+                <StatBlockLine inline required data={ad.ac}><B>AC</B> {ad.ac}; </StatBlockLine>
+                <StatBlockLine inline required data={ad.attack}><B>Attack</B> {ad.attack}; </StatBlockLine>
+                <StatBlockLine inline required data={ad.ability_scores}><B>Ability Scores</B> {ad.ability_scores}; </StatBlockLine>
+                <StatBlockLine inline required data={ad.special_qualities}><B>Special Qualities</B> {ad.special_qualities}</StatBlockLine>
+            </StatBlockLine>
+        })}
+    </span>
+    );
+}
+
 const specialAbilitiesAndDescription = (m) => {
     const s1 = m.sections;
     if (!s1) return "";
-    return s1.map(section => {
-        if (section.subtype == 'special_abilities') {
-            const sas = section.sections;
+    return s1.map((section, index) => {
+        if (section.subtype === 'special_abilities') {
             return (
-                sas.map(sa => {
-                    const abilityTypes = sa.ability_types;
-                    if (!abilityTypes) {
-                        console.log("HARD TIME PARSING SPECIAL ABILITIES")
-                        console.log(s1);
-                        return "";
-                    }
-                    return <StatBlockLine><B>{sa.name} ({sa.ability_types.ability_type})</B> {sa.body}</StatBlockLine>;
+                section.sections.map((sa, saIndex) => {
+                    if (!sa.ability_types) return "";
+                    return <StatBlockLine key={"sa" + saIndex}><B>{sa.name} <span style={{textTransform: "capitalize"}}>({sa.ability_types.ability_type.substring(0, 2)})</span></B> {sa.body}</StatBlockLine>;
                 })
             );
         }
+        if (section.subtype === 'monster_race') return characterClassSection(section);
+        if (section.type === 'animal_companion') return animalCompanionSection(section);
         if (!section.subtype) {
-            return <span className="sbLine sbDescription" dangerouslySetInnerHTML={{__html: section.body}} ></span>;
+            return <span key={"descSec" + index} className="sbLine sbDescription" dangerouslySetInnerHTML={{__html: section.body}} ></span>;
         }
         console.log(s1);
         return "Parsing Error";
@@ -64,12 +100,12 @@ const creatureSubType = (m) => {
 
 const spells = (m) => {
     if (!m.spells) return "";
-    return m.spells.map(sec => {
+    return m.spells.map((sec, index) => {
         if (sec["spell-like abilities"]) {
-            return <StatBlockLine><B>Spell-Like Abilities</B> <span className="sbLine sbSpells" dangerouslySetInnerHTML={{__html: sec["spell-like abilities"]}} ></span></StatBlockLine>
+            return <StatBlockLine key={"sla" + index}><B>Spell-Like Abilities</B> <span className="sbLine sbSpells" dangerouslySetInnerHTML={{__html: sec["spell-like abilities"]}} ></span></StatBlockLine>
         }
         if (sec["spells prepared"]) {
-            return <StatBlockLine><B>Spells Prepared</B> <span className="sbLine sbSpells" dangerouslySetInnerHTML={{__html: sec["spells prepared"]}} ></span></StatBlockLine>
+            return <StatBlockLine key={"sp" + index}><B>Spells Prepared</B> <span className="sbLine sbSpells" dangerouslySetInnerHTML={{__html: sec["spells prepared"]}} ></span></StatBlockLine>
         }
         console.warn("Mapped something weird for m.spells")
         return "";

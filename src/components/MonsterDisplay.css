@@ -37,3 +37,7 @@ div.sbName {
 .sbDescription {
     font: normal 14px 'PT Serif', serif;
 }
+
+.sbRaceSection p {
+    display: inline;
+}

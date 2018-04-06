@@ -30,17 +30,13 @@ class App extends Component {
 
   render() {
     const { config, monster } = this.props;
-    console.log(config.initialState);
-    console.log(monster.statBlock);
-    console.log("MONSTER OPTIONS")
-    console.log(MonsterOptions)
     return (
-      <div class="flex-container">
-        <div class="flex-item">
+      <div className="flex-container">
+        <div className="flex-item">
           <MonsterDisplay monster={monster}/>
         </div>
-        <div class="flex-item">
-          <select class="flex-item" onChange={this.handleMonsterSelectChange}>
+        <div className="flex-item">
+          <select className="flex-item" onChange={this.handleMonsterSelectChange}>
             {MonsterOptions.map(op => op)}
           </select>
         </div>

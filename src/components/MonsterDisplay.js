@@ -32,7 +32,7 @@ const spaceAndReach = (m) => {
     return (m.space && m.reach) ? <StatBlockLine><B>Space</B> {m.space}; <B>Reach</B> {m.reach}</StatBlockLine> : "";
 }
 
-const specialAbilities = (m) => {
+const specialAbilitiesAndDescription = (m) => {
     const s1 = m.sections;
     if (!s1) return "";
     return s1.map(section => {
@@ -51,7 +51,7 @@ const specialAbilities = (m) => {
             );
         }
         if (!section.subtype) {
-            return <span className="sbLine" dangerouslySetInnerHTML={{__html: section.body}} ></span>;
+            return <span className="sbLine sbDescription" dangerouslySetInnerHTML={{__html: section.body}} ></span>;
         }
         console.log(s1);
         return "Parsing Error";
@@ -77,21 +77,17 @@ const spells = (m) => {
 }
 
 const MonsterDisplay = ({monster}) => {
-    console.log("Monster Display Component Render")
-    console.log(monster.statBlock)
     const m = monster.statBlock;
 
     if (!m.name)
         return <div>No Monster Currently Selected</div>;
 
-
-        //TODO: Spells (and spell like are after space and reach section) spells."spell-like abilities" and spells."spells prepared"
     return (
         <div className="monsterDisplay">
-            <StatBlockLine>
-                <B>{m.name} </B>
-                <B>CR</B><span> {m.cr}</span>
-            </StatBlockLine>
+            <div className="sbLine sbName">
+                <B><span style={{textTransform: "uppercase"}}>{m.name}</span> </B>
+                <span style={{float: "right"}}><B>CR</B><B> {m.cr}</B></span>
+            </div>
             <StatBlockLine><B>XP</B> {m.xp}</StatBlockLine>
             <StatBlockLine>{m.alignment} {m.size} <span style={{textTransform: "lowercase"}}>{m.creature_type}</span> {creatureSubType(m)}</StatBlockLine>
             <StatBlockLine><B>Init</B> {m.init}; <B>Senses</B> {m.senses}</StatBlockLine>
@@ -125,15 +121,10 @@ const MonsterDisplay = ({monster}) => {
             <StatBlockLine><B>Treasure</B> {m.treasure}</StatBlockLine>
 
             <StatSectionHeader>special abilities</StatSectionHeader>
-            {specialAbilities(m)}
+            {specialAbilitiesAndDescription(m)}
         </div>
     );
 }
-// Str 24, Dex 14, Con 18, Int 7, Wis 15, Cha 11
-// Base Atk +12; CMB +21; CMD 34 (38 vs. trip)
-// Feats Dodge, Flyby Attack, Improved Initiative, Iron Will, Lightning Reflexes, Skill Focus (Perception)
-// Skills Fly +7, Perception +18; Racial Modifiers +4 Perception
-// Languages Draconic
 
 export default MonsterDisplay
 

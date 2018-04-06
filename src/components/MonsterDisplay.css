@@ -1,16 +1,21 @@
+@import url('https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|PT+Serif:400,700,400italic,700italic');
+@import url('https://fonts.googleapis.com/css?family=PT+Serif');
+
 .monsterDisplay {
     border: 1px solid black;
     text-align: left;
     padding: 1em;
+    font: normal 13px 'Lato', sans-serif;
 }
 
 .monsterFieldLabel, .bLabel {
     font-weight: bold;
 }
 
-.simpleHr {
-    border-top: 1px solid black;
-    margin: 0.5em 1em;
+div.sbName {
+    color: white;
+    background-color: black;
+    padding: 0.3em;
 }
 
 .sbSectionHeader {
@@ -18,6 +23,7 @@
     border-bottom: 1px solid black;
     margin: 0.1em 0;
     text-transform: uppercase;
+    font-size: 16px;
 }
 
 .sbLine {
@@ -25,5 +31,9 @@
 }
 
 .sbSpells p {
-    margin-left: 1em;
+    margin: 0.1em 0em 0.1em 1em;
+}
+
+.sbDescription {
+    font: normal 14px 'PT Serif', serif;
 }

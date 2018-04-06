@@ -33,12 +33,14 @@ class App extends Component {
     const { config, monster } = this.props;
     console.log(config.initialState);
     console.log(monster.statBlock);
+    console.log("MONSTER OPTIONS")
+    console.log(MonsterOptions)
     return (
       <Container fluid={true}>
         <Row>
           <Col sm={2}>
             <select onChange={this.handleMonsterSelectChange}>
-              <MonsterOptions/>
+              {MonsterOptions.map(op => op)}
             </select>
           </Col>
           <Col sm={8}>

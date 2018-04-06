@@ -2,7 +2,7 @@ import { combineReducers } from 'redux'
 
 import * as Actions from '../actions'
 
-import Behir from '../models/Behir'
+import Aasimar from '../models/Aasimar'
 
 const config = (state = { initialState: "basicConfig"}, action) => {
   switch (action.type) {
@@ -11,7 +11,7 @@ const config = (state = { initialState: "basicConfig"}, action) => {
   }
 }
 
-const monster = (state = { statBlock: Behir}, action) => {
+const monster = (state = { statBlock: Aasimar}, action) => {
   console.log("LAYOUT REDUCER");
   switch (action.type) {
     case Actions.SHOW_MONSTER: 

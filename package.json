@@ -17,9 +17,12 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "aws": "cd src/script & npm run aws",
+    "setup": "cd src/script & npm i"
   },
   "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
     "redux-logger": "^3.0.6"
   }
 }

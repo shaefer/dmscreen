@@ -7,7 +7,9 @@ export const fetchMonsterAction = (monsterName) => (dispatch, getState) => {
 
 const fetchMonster = (monsterName, dispatch) => {
     console.log("ABOUT TO FETCH: " + monsterName);
-    let monster = monsterName.toLowerCase().replace(", ", "_").replace(" ", "_").replace("(", "").replace(")", "");
+    let monster = monsterName.toLowerCase()
+        .replace(new RegExp("[\,\(\)\']", 'g'), "")
+        .replace(new RegExp(" ", 'g'), "_");
     return fetch(`https://api.cleverorc.com/monsters/${monster}`)
         .then(resp => resp.json())
         .then(data =>  dispatch(showMonster(data)))

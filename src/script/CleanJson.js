@@ -23,16 +23,19 @@ const writeS3DataToFile = (err, data, fileName) => {
         const bodyAsStr = data.Body.toString();
         const cleanStr = bodyAsStr.replace(/\n|\r/g, ""); //remove all line breaks;
         const pathAndFileName = "tmp/" + fileName;
+        const nameNoSuffix = fileName.substring(0, fileName.length - 5);
+        const result =  JSON.parse(bodyAsStr);
+        let monsterName = result.name.toLowerCase()
+            .replace(new RegExp("[\,\(\)\']", 'g'), "")
+            .replace(new RegExp(" ", 'g'), "_");
         // fs.writeFile(pathAndFileName, cleanStr, {encoding: 'utf8', flags:'w'}, function (err) {
         //     if (err) { return console.log(err); }
         //     console.log("The file was saved!!! " + pathAndFileName);
         // }); 
-        // fs.appendFile("tmp/allCreatures.json", cleanStr + "\n", {encoding: 'utf8', flags:'a'}, function (err) {
-        //     if (err) { return console.log(err); }
-        //     console.log("The all file was saved!!! ");
-        // }); 
-        const nameNoSuffix = fileName.substring(0, fileName.length - 5);
-        const result =  JSON.parse(bodyAsStr);
+        fs.appendFile("tmp/allCreaturesByName.json", "\"" + monsterName + "\":" + cleanStr + ",\n", {encoding: 'utf8', flags:'a'}, function (err) {
+            if (err) { return console.log(err); }
+            console.log("The all file was saved!!! ");
+        }); 
         // let monsterName = result.name.toLowerCase()
         //     .replace(new RegExp("[\,\(\)\']", 'g'), "")
         //     .replace(new RegExp(" ", 'g'), "_");
@@ -50,11 +53,11 @@ const writeS3DataToFile = (err, data, fileName) => {
         //     if (err) { return console.log(err); }
         //     console.log("The allCreatureNames file was saved!!! ");
         // }); 
-        const sourceName = result.source.toLowerCase().replace(" ", "_");
-        fs.appendFile("tmp/allCreature_"+sourceName+".json", result.name + "\n", {encoding: 'utf8', flags:'a'}, function (err) {
-            if (err) { return console.log(err); }
-            console.log("The "+sourceName+" file was saved!!! ");
-        });
+        // const sourceName = result.source.toLowerCase().replace(" ", "_");
+        // fs.appendFile("tmp/allCreature_"+sourceName+".json", result.name + "\n", {encoding: 'utf8', flags:'a'}, function (err) {
+        //     if (err) { return console.log(err); }
+        //     console.log("The "+sourceName+" file was saved!!! ");
+        // });
     }
 }
 

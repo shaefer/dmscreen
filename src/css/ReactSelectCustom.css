@@ -1,4 +1,24 @@
 
+@media screen and (min-height:320px) {
+    .Select-menu-outer {
+        max-height: 280px;
+    }
+        
+    .Select-menu {
+        max-height: 278px;
+    }
+}
+
+@media screen and (min-height:480px) {
+    .Select-menu-outer {
+        max-height: 440px;
+    }
+        
+    .Select-menu {
+        max-height: 438px;
+    }
+}
+
 @media screen and (min-height:640px) {
     .Select-menu-outer {
         max-height: 600px;

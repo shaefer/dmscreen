@@ -1,8 +1,10 @@
 
-.Select-menu-outer {
-    max-height: 600px;
-}
-    
-.Select-menu {
-    max-height: 598px;
+@media screen and (min-height:640px) {
+    .Select-menu-outer {
+        max-height: 600px;
+    }
+        
+    .Select-menu {
+        max-height: 598px;
+    }
 }

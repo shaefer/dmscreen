@@ -1,5 +1,5 @@
 import Keys from '../models/Keys'
-import Monsters from '../models/AllMonsters'
+//import Monsters from '../models/AllMonsters'
 import { showMonster, selectMonsterOption } from '../actions'
 
 export const fetchMonsterAction = (monsterName) => (dispatch, getState) => {
@@ -30,22 +30,22 @@ const fetchMonster = (monsterName, dispatch) => {
         .replace(new RegExp("[\,\(\)\']", 'g'), "")
         .replace(new RegExp(" ", 'g'), "_");
 
-    const baseKey = monsterKey.substring(0, nthIndexOf(monsterKey, "_", 3));
-    const baseMonster = (monsterKey.startsWith("dragon_")) ? Monsters[baseKey] : undefined;
-    const monster = Monsters[monsterKey];
+    // const baseKey = monsterKey.substring(0, nthIndexOf(monsterKey, "_", 3));
+    // const baseMonster = (monsterKey.startsWith("dragon_")) ? Monsters[baseKey] : undefined;
+    // const monster = Monsters[monsterKey];
 
-    if (baseMonster) {
-        const mergedMonster = {
-            ...baseMonster,
-            ...monster
-        }
-        return dispatch(showMonster(mergedMonster));
-    }
-    return dispatch(showMonster(monster));
-    // return fetch(`https://api.cleverorc.com/monsters/${monsterKey}`)
-    //     .then(resp => resp.json())
-    //     .then(data =>  dispatch(showMonster(data)))
-    //     .catch(err => console.log(err));
+    // if (baseMonster) {
+    //     const mergedMonster = {
+    //         ...baseMonster,
+    //         ...monster
+    //     }
+    //     return dispatch(showMonster(mergedMonster));
+    // }
+    // return dispatch(showMonster(monster));
+    return fetch(`https://api.cleverorc.com/monsters/${monsterKey}`)
+        .then(resp => resp.json())
+        .then(data =>  dispatch(showMonster(data)))
+        .catch(err => console.log(err));
 }
 
 export const monsterSelectChangeHandler = (e) => (dispatch, getState) => {

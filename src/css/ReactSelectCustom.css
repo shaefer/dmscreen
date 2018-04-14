@@ -1,3 +1,7 @@
+.highlightMatch {
+    font-weight: bold;
+}
+
 
 @media screen and (min-height:320px) {
     .Select-menu-outer {

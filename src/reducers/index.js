@@ -24,11 +24,11 @@ const select = (state = { selectedMonsterName: Aasimar.name}, action) => {
 }
 
 const monster = (state = { statBlock: Aasimar}, action) => {
-  console.log("LAYOUT REDUCER");
+  //console.log("LAYOUT REDUCER");
   switch (action.type) {
     case Actions.SHOW_MONSTER: 
-      console.log("SHOW MONSTER");
-      console.log(action.monster);
+      //console.log("SHOW MONSTER");
+      //console.log(action.monster);
       return {
         ...state,
         statBlock: action.monster

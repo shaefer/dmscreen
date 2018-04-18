@@ -7,7 +7,7 @@ import Aasimar from '../models/Aasimar'
 const config = (state = { initialState: "basicConfig"}, action) => {
   switch (action.type) {
     default:
-      return state
+      return state;
   }
 }
 
@@ -34,7 +34,7 @@ const monster = (state = { statBlock: Aasimar}, action) => {
         statBlock: action.monster
       };
     default:
-      return state
+      return state;
   }
 }
 

@@ -71,16 +71,6 @@ class App extends Component {
   }
 }
 
-{/* <Select
-        name="form-field-name"
-        value={value}
-        onChange={this.handleChange}
-        options={[
-          { value: 'one', label: 'One' },
-          { value: 'two', label: 'Two' },
-        ]}
-      /> */}
-
 const mapStateToProps = state => state;
 
 export default connect(mapStateToProps, {keyPressHandler, monsterSelectChangeHandler})(App)

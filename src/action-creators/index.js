@@ -6,28 +6,10 @@ export const fetchMonsterAction = (monsterName) => (dispatch, getState) => {
     fetchMonster(monsterName, dispatch);
 }
 
-String.prototype.nthIndexOf = (pattern, n) => {
-    var i = -1;
-    while (n-- && i++ < this.length) {
-        i = this.indexOf(pattern, i);
-        if (i < 0) break;
-    }
-    return i;
-}
-
-const nthIndexOf = (str, pat, n) => {
-    var L= str.length, i= -1;
-    while(n-- && i++<L){
-        i= str.indexOf(pat, i);
-        if (i < 0) break;
-    }
-    return i;
-}
-
 const fetchMonster = (monsterName, dispatch) => {
     console.log("ABOUT TO GET: " + monsterName);
     let monsterKey = monsterName.toLowerCase()
-        .replace(new RegExp("[\,\(\)\']", 'g'), "")
+        .replace(new RegExp("[,()']", 'g'), "")
         .replace(new RegExp(" ", 'g'), "_");
 
     // const baseKey = monsterKey.substring(0, nthIndexOf(monsterKey, "_", 3));

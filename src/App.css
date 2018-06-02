@@ -15,7 +15,7 @@
 }
 
 @media screen and (max-width:640px) {
-  .flex-container { flex-wrap: wrap;  }
+  .flex-container { flex-wrap: wrap; }
   .flex-item:first-child { flex-basis: 100%; }
-  .flex-item:nth-child(2) { text-align:left }
+  .flex-item:nth-child(2) { text-align:left; }
 }

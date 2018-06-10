@@ -15,3 +15,23 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 The page will reload if you make edits.<br>
 You will also see any lint errors in the console.
 
+# Getting Started/Setup
+
+## Configure AWS Credentials to make S3 Calls
+
+Create a credentials file at ~/.aws/credentials on Mac/Linux or C:\Users\USERNAME\\.aws\credentials on Windows
+
+```
+[default]
+aws_access_key_id = your_access_key
+aws_secret_access_key = your_secret_key
+```
+
+## Start the app
+run `npm start` in terminal
+
+
+
+
+
+

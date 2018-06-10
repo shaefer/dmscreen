@@ -38,8 +38,22 @@ const monster = (state = { statBlock: Aasimar}, action) => {
   }
 }
 
+const s3Select = (state = { monsterList:[]}, action) => {
+  switch (action.type) {
+    case Actions.S3_SELECT_SHOW: 
+      //console.log("SHOW MONSTER");
+      //console.log(action.monster);
+      return {
+        ...state,
+        monsterList: action.monsterList
+      };
+    default:
+      return state;
+  }
+}
+
 const rootReducer = combineReducers({
-  config, select, monster
+  config, select, monster, s3Select
 })
 
 export default rootReducer

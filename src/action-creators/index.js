@@ -110,8 +110,8 @@ const signAndFetchWithAWS4 = () => {
         },
         body: s3SelectBody
     }
-    const awsAccessKey = 'AKIAJW6XQBQNTYTP5ZAQ';
-    const awsSecret = '3QEEB0JXTW9dcDWb76HViaNi1P5O0X/hTmOfhiTJ'
+    const awsAccessKey = 'fakeAccessKey';
+    const awsSecret = 'fakeSecret'
     aws4.sign(opts, {accessKeyId: awsAccessKey, secretAccessKey: awsSecret});
     console.log(opts);
     return fetch('https://s3-us-west-2.amazonaws.com/cleverorc/pathfinder/allCreatures.json?select&select-type=2', opts)
@@ -127,6 +127,7 @@ const signAndFetchWithAWS4 = () => {
     .then(data => {
         console.log(data);
         //Data is actually returned a series of events...one of those is the record data. We have created a way to handle this (as it will probably be necessary in some browser even if we find the "correct way")
+        //https://aws.amazon.com/blogs/developer/introducing-support-for-amazon-s3-select-in-the-aws-sdk-for-ruby/
         const coercedData = data.slice(data.indexOf("{"), data.lastIndexOf("}") + 1);
         const forcedJsonStr = "{ \"data\":[" + coercedData + "]}";
         const forcedJson = JSON.parse(forcedJsonStr);

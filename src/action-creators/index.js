@@ -73,6 +73,14 @@ export const keyPressHandler = (e) => {
     }
 };
 
+const getSignatureKey = (key, dateStamp, regionName, serviceName) => {
+    var kDate = Crypto.HmacSHA256(dateStamp, "AWS4" + key);
+    var kRegion = Crypto.HmacSHA256(regionName, kDate);
+    var kService = Crypto.HmacSHA256(serviceName, kRegion);
+    var kSigning = Crypto.HmacSHA256("aws4_request", kService);
+    return kSigning;
+}
+
 const s3SelectBody = `<?xml version="1.0" encoding="UTF-8"?>
 <SelectRequest>
     <Expression>Select s.name, CAST(s.strength as INT) str, cast(s.cr as INT) cr from S3Object s where CAST(s.strength as INT) > 50 and CAST(s.cr as INT) >= 20</Expression>
@@ -92,29 +100,22 @@ const s3SelectBody = `<?xml version="1.0" encoding="UTF-8"?>
     </RequestProgress>                                  
 </SelectRequest>`;
 
-const getSignatureKey = (key, dateStamp, regionName, serviceName) => {
-    var kDate = Crypto.HmacSHA256(dateStamp, "AWS4" + key);
-    var kRegion = Crypto.HmacSHA256(regionName, kDate);
-    var kService = Crypto.HmacSHA256(serviceName, kRegion);
-    var kSigning = Crypto.HmacSHA256("aws4_request", kService);
-    return kSigning;
-}
-
 const signAndFetchWithAWS4 = () => {
     let opts = {
         service: 's3', 
         region: 'us-west-2', 
-        path: '/cleverorc/pathfinder/allCreatures.json?select&select-type=2',
+        path: '/cleverorcmonstersearch/pathfinder/allCreatures.json?select&select-type=2',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: s3SelectBody
+        body: s3SelectBody,
+        method: 'POST'
     }
-    const awsAccessKey = 'fakeAccessKey';
-    const awsSecret = 'fakeSecret'
-    aws4.sign(opts, {accessKeyId: awsAccessKey, secretAccessKey: awsSecret});
+    //const awsAccessKey = 'fakekey';
+    //const awsSecret = 'fakesecret'
+    //aws4.sign(opts, {accessKeyId: awsAccessKey, secretAccessKey: awsSecret});
     console.log(opts);
-    return fetch('https://s3-us-west-2.amazonaws.com/cleverorc/pathfinder/allCreatures.json?select&select-type=2', opts)
+    return fetch('https://s3-us-west-2.amazonaws.com/cleverorcmonstersearch/pathfinder/allCreatures.json?select&select-type=2', opts)
     .then(resp => {
         console.log(resp);
         console.log(resp.body);

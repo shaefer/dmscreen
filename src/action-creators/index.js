@@ -144,7 +144,14 @@ const fetchSelect = (monsterName, dispatch) => {
         .replace(new RegExp("[,()']", 'g'), "")
         .replace(new RegExp(" ", 'g'), "_");
 
-    const results = signAndFetchWithAWS4();
+    //const results = signAndFetchWithAWS4();
+    const results = fetch("https://99hy8krr49.execute-api.us-west-2.amazonaws.com/prod?cr=%3C=10&str=%3E=40")
+        .then(resp => resp.json())
+        .then(json => {
+            console.log("REAL RESPONSE FROM S3 Select URL");
+            console.log(json);
+            return json.results
+        });
     return results.then(monsters => {
         dispatch(showS3SelectResult(monsters));
     });

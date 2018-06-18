@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {BrowserRouter, Switch, Route} from 'react-router-dom'
 
-import MonsterFinder from './MonsterFinder'
+import MonsterFinder from './components/MonsterFinder/MonsterFinder'
 import MonsterSearch from './components/MonsterSearch/MonsterSearch'
 
 class App extends Component {

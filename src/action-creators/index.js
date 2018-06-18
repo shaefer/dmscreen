@@ -73,78 +73,12 @@ export const keyPressHandler = (e) => {
     }
 };
 
-const getSignatureKey = (key, dateStamp, regionName, serviceName) => {
-    var kDate = Crypto.HmacSHA256(dateStamp, "AWS4" + key);
-    var kRegion = Crypto.HmacSHA256(regionName, kDate);
-    var kService = Crypto.HmacSHA256(serviceName, kRegion);
-    var kSigning = Crypto.HmacSHA256("aws4_request", kService);
-    return kSigning;
-}
-
-const s3SelectBody = `<?xml version="1.0" encoding="UTF-8"?>
-<SelectRequest>
-    <Expression>Select s.name, CAST(s.strength as INT) str, cast(s.cr as INT) cr from S3Object s where CAST(s.strength as INT) > 50 and CAST(s.cr as INT) >= 20</Expression>
-    <ExpressionType>SQL</ExpressionType>
-    <InputSerialization>
-        <JSON>
-            <Type>DOCUMENT</Type>
-        </JSON>
-    </InputSerialization>
-    <OutputSerialization>
-        <JSON>
-            <RecordDelimiter>,</RecordDelimiter>
-        </JSON>                                  
-    </OutputSerialization>
-    <RequestProgress>
-        <Enabled>FALSE</Enabled>
-    </RequestProgress>                                  
-</SelectRequest>`;
-
-const signAndFetchWithAWS4 = () => {
-    let opts = {
-        service: 's3', 
-        region: 'us-west-2', 
-        path: '/cleverorcmonstersearch/pathfinder/allCreatures.json?select&select-type=2',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: s3SelectBody,
-        method: 'POST'
-    }
-    //const awsAccessKey = 'fakekey';
-    //const awsSecret = 'fakesecret'
-    //aws4.sign(opts, {accessKeyId: awsAccessKey, secretAccessKey: awsSecret});
-    console.log(opts);
-    return fetch('https://s3-us-west-2.amazonaws.com/cleverorcmonstersearch/pathfinder/allCreatures.json?select&select-type=2', opts)
-    .then(resp => {
-        console.log(resp);
-        console.log(resp.body);
-        resp.headers.forEach(function(val, key) { console.log(key + ' -> ' + val); });
-        const transformedBody = resp.text();
-        //I feel like the answer is here: https://developer.mozilla.org/en-US/docs/Web/API/ReadableStream
-        console.log(transformedBody);
-        return transformedBody;
-    })
-    .then(data => {
-        console.log(data);
-        //Data is actually returned a series of events...one of those is the record data. We have created a way to handle this (as it will probably be necessary in some browser even if we find the "correct way")
-        //https://aws.amazon.com/blogs/developer/introducing-support-for-amazon-s3-select-in-the-aws-sdk-for-ruby/
-        const coercedData = data.slice(data.indexOf("{"), data.lastIndexOf("}") + 1);
-        const forcedJsonStr = "{ \"data\":[" + coercedData + "]}";
-        const forcedJson = JSON.parse(forcedJsonStr);
-        console.log(forcedJsonStr);
-        console.log(forcedJson);
-        return forcedJson.data;
-    });
-}
-
 const fetchSelect = (monsterName, dispatch) => {
     console.log("ABOUT TO GET: " + monsterName);
     let monsterKey = monsterName.toLowerCase()
         .replace(new RegExp("[,()']", 'g'), "")
         .replace(new RegExp(" ", 'g'), "_");
 
-    //const results = signAndFetchWithAWS4();
     const results = fetch("https://99hy8krr49.execute-api.us-west-2.amazonaws.com/prod?cr=%3C=10&str=%3E=40")
         .then(resp => resp.json())
         .then(json => {

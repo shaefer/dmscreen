@@ -73,13 +73,34 @@ export const keyPressHandler = (e) => {
     }
 };
 
-const fetchSelect = (monsterName, dispatch) => {
-    console.log("ABOUT TO GET: " + monsterName);
-    let monsterKey = monsterName.toLowerCase()
-        .replace(new RegExp("[,()']", 'g'), "")
-        .replace(new RegExp(" ", 'g'), "_");
 
-    const results = fetch("https://99hy8krr49.execute-api.us-west-2.amazonaws.com/prod?cr=%3C=10&str=%3E=40")
+
+export const fetchSelectAction = (monsterName) => (dispatch, getState) => {
+    fetchSelect(monsterName, dispatch);
+}
+
+export const monsterS3SelectChangeHandler = (values) => (dispatch, getState) => {
+    console.warn('Search via S3 select');
+    fetchSelect(values, dispatch);
+} 
+
+const fetchSelect = (searchParams, dispatch) => {
+    console.log("ABOUT TO SEARCH ON", searchParams);
+
+    let searchFields = [];
+    if (searchParams.cr)
+        searchFields.push(`cr=${searchParams.crOperator}${searchParams.cr}`);
+    if (searchParams.str)
+        searchFields.push(`str=${searchParams.strOperator}${searchParams.str}`);
+    if (searchParams.ac)
+        searchFields.push(`ac=${searchParams.acOperator}${searchParams.ac}`);
+    
+    const searchFieldsAsHtmlParams = searchFields.join("&");
+
+    const defaultParams = `cr=%3C=10&str=%3E=40`;
+    const url = `https://99hy8krr49.execute-api.us-west-2.amazonaws.com/prod?${searchFieldsAsHtmlParams}`;
+    console.log("URL TO FETCH: ", url);
+    const results = fetch(url)
         .then(resp => resp.json())
         .then(json => {
             console.log("REAL RESPONSE FROM S3 Select URL");
@@ -90,13 +111,3 @@ const fetchSelect = (monsterName, dispatch) => {
         dispatch(showS3SelectResult(monsters));
     });
 }
-
-export const fetchSelectAction = (monsterName) => (dispatch, getState) => {
-    fetchSelect(monsterName, dispatch);
-}
-
-export const monsterS3SelectChangeHandler = (e) => (dispatch, getState) => {
-    console.warn('Search via S3 select');
-    
-    fetchSelect("SomeMonster", dispatch);
-} 

@@ -1,4 +1,5 @@
 import { combineReducers } from 'redux'
+import { reducer as formReducer } from 'redux-form'
 
 import * as Actions from '../actions'
 
@@ -53,7 +54,7 @@ const s3Select = (state = { monsterList:[]}, action) => {
 }
 
 const rootReducer = combineReducers({
-  config, select, monster, s3Select
+  config, select, monster, s3Select, form: formReducer
 })
 
 export default rootReducer

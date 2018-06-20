@@ -1,10 +1,6 @@
 import Keys from '../models/Keys'
 //import Monsters from '../models/AllMonsters'
 import { showMonster, selectMonsterOption, showS3SelectResult } from '../actions'
-import Crypto from 'crypto-js'
-import AWS from 'aws-sdk';
-import dateformat from 'dateformat'
-import aws4 from 'aws4'
 
 export const fetchMonsterAction = (monsterName) => (dispatch, getState) => {
     fetchMonster(monsterName, dispatch);

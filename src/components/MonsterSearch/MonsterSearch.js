@@ -6,6 +6,7 @@ import MonsterSearchForm from './MonsterSearchForm'
 
 import ReactTable from "react-table";
 import "react-table/react-table.css";
+import "../../css/CustomFormCss.css";
 
 const mapMonsters = (monsters) => {
     return monsters.map(x => {
@@ -44,7 +45,12 @@ const mapMonstersToTable = (monsters) => {
     columns={columns}
     showPagination={false}
     pageSize={monsters.length}
-    defaultSortDesc={"name"}
+    defaultSorted={[
+        {
+            id: "name",
+            desc: false
+        }
+    ]}
     className="-striped -highlight"/>
 }
 
@@ -78,7 +84,7 @@ class MonsterSearch extends Component {
         return (
             <div>
                 <MonsterSearchForm onSubmit={this.submit} />
-                <h2>Pathfinder Monster Search (Showing {monsterCount(s3Select.monsterList)} monster{addS(s3Select.monsterList)})</h2>
+                <h3>Pathfinder Monster Search (Showing {monsterCount(s3Select.monsterList)} monster{addS(s3Select.monsterList)})</h3>
                 {mapMonstersToTable(s3Select.monsterList)}
             </div>
         );

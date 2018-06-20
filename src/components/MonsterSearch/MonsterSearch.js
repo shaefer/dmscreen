@@ -25,19 +25,27 @@ const mapMonstersToTable = (monsters) => {
     let columns = [];
     columns.push({
         Header: "Name",
-        accessor: "name"
+        accessor: "name",
+        maxWidth: 400,
+        minWidth: 100
     });
     columns.push({
         Header: "CR",
-        accessor: "cr"
+        accessor: "cr",
+        maxWidth: 100,
+        minWidth: 30
     });
     if (monsters[0].str) columns.push({
         Header: "Str",
-        accessor: "str"
+        accessor: "str",
+        maxWidth: 100,
+        minWidth: 30
     });
     if (monsters[0].ac) columns.push({
         Header: "AC",
-        accessor: "ac"
+        accessor: "ac",
+        maxWidth: 100,
+        minWidth: 30
     });
 
     return <ReactTable

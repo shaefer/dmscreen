@@ -7,10 +7,6 @@
     padding: 1em 3em;
 }
 
-.monsterSearch .searchField {
-    white-space: nowrap;
-}
-
 .monsterSearch .searchField label{
     display: inline;
 }

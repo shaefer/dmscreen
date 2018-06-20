@@ -11,12 +11,12 @@ const selectOperatorField = (name) => {
     </Field>);
 }
 
-const searchFieldSection = (prefix, displayLabel) => {
+const searchFieldSection = (prefix, displayLabel, type="text") => {
     return (
     <div className="searchField">
         {selectOperatorField(`${prefix}Operator`)}
         <label htmlFor={prefix}>{displayLabel}</label>
-        <Field name={prefix} component="input" type="text" />
+        <Field name={prefix} component="input" type={type} />
     </div>);
 }
 
@@ -24,9 +24,9 @@ let MonsterSearchForm = props => {
   const { handleSubmit } = props
   return (
     <form onSubmit={handleSubmit} className="monsterSearch">
-      {searchFieldSection("cr", "CR")}
-      {searchFieldSection("str", "Str")}
-      {searchFieldSection("ac", "AC")}
+      {searchFieldSection("cr", "CR", "number")}
+      {searchFieldSection("str", "Str", "number")}
+      {searchFieldSection("ac", "AC", "number")}
       <button type="submit">Submit</button>
     </form>
   )

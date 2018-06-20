@@ -18,3 +18,7 @@
 .ReactTable .rt-td {
     padding: 0;
 }
+
+h3 {
+    padding-left: 1em;
+}

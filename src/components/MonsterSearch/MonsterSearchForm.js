@@ -48,10 +48,10 @@ class MonsterSearchFormComponent extends Component {
 const MonsterSearchForm = reduxForm({
   form: 'monstersearch',
   initialValues: {
-      crOperator: "<=",
-      cr: 10,
+      crOperator: "btw",
+      cr: 12,
+      crEnd: 14,
       strOperator: ">=",
-      str: 30,
       acOperator: ">="
     }
 })(MonsterSearchFormComponent)

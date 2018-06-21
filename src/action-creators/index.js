@@ -99,6 +99,7 @@ const fetchSelect = (searchParams, dispatch) => {
     
     const searchFieldsAsHtmlParams = searchFields.join("&");
 
+    //https://monstersearchapi.cleverorc.com/?
     const url = `https://99hy8krr49.execute-api.us-west-2.amazonaws.com/prod?${searchFieldsAsHtmlParams}`;
     console.log("URL TO FETCH: ", url);
     const results = fetch(url)

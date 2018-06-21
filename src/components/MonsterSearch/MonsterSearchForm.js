@@ -1,38 +1,51 @@
-import React from 'react'
-import { Field, reduxForm } from 'redux-form'
+import React, {Component} from 'react'
+import {connect} from 'react-redux'
+import { Field, reduxForm, formValueSelector } from 'redux-form'
 
-const selectOperatorField = (name) => {
+const selectOperatorField = (prefix, refs) => {
+
+    const name =  `${prefix}Operator`;
     return (<Field name={name} component="select">
     <option>&gt;</option>
     <option>&gt;=</option>
     <option>&lt;</option>
     <option>&lt;=</option>
     <option>=</option>
+    <option value="btw">Between</option>
     </Field>);
 }
 
-const searchFieldSection = (prefix, displayLabel, type="text") => {
+const searchFieldSection = (prefix, displayLabel, type="text", operatorVal) => {
+    const throughFieldClass = (operatorVal === 'btw') ? "" : "hidden"
+    const throughField = (
+        <span className={throughFieldClass}>-<Field name={prefix + "End"} component="input" type={type}/></span>
+    );
+    
     return (
     <div className="searchField">
-        {selectOperatorField(`${prefix}Operator`)}
+        {selectOperatorField(prefix)}
         <label htmlFor={prefix}>{displayLabel}</label>
         <Field name={prefix} component="input" type={type} />
+        {throughField}
     </div>);
 }
 
-let MonsterSearchForm = props => {
-  const { handleSubmit } = props
-  return (
-    <form onSubmit={handleSubmit} className="monsterSearch">
-      {searchFieldSection("cr", "CR", "number")}
-      {searchFieldSection("str", "Str", "number")}
-      {searchFieldSection("ac", "AC", "number")}
-      <button type="submit">Submit</button>
-    </form>
-  )
+class MonsterSearchFormComponent extends Component {
+    render() {
+        console.log("RENDER FORM COMP", this.props, this.props.crOperator)
+        const { handleSubmit } = this.props
+        return (
+          <form onSubmit={handleSubmit} className="monsterSearch">
+            {searchFieldSection("cr", "CR", "number", this.props["crOperator"])}
+            {searchFieldSection("str", "Str", "number", this.props["strOperator"])}
+            {searchFieldSection("ac", "AC", "number", this.props["acOperator"])}
+            <button type="submit">Submit</button>
+          </form>
+        )
+    }
 }
 
-MonsterSearchForm = reduxForm({
+const MonsterSearchForm = reduxForm({
   form: 'monstersearch',
   initialValues: {
       crOperator: "<=",
@@ -41,6 +54,19 @@ MonsterSearchForm = reduxForm({
       str: 30,
       acOperator: ">="
     }
-})(MonsterSearchForm)
+})(MonsterSearchFormComponent)
 
-export default MonsterSearchForm
+const selector = formValueSelector('monstersearch') // <-- same as form name
+const MonsterSearchFormConnected = connect(
+  state => {
+    return {
+        crOperator : selector(state, 'crOperator'),
+        strOperator : selector(state, 'strOperator'),
+        acOperator : selector(state, 'acOperator')
+    }
+  }
+)(MonsterSearchForm)
+
+
+
+export default MonsterSearchFormConnected

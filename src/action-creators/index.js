@@ -84,16 +84,21 @@ const fetchSelect = (searchParams, dispatch) => {
     console.log("ABOUT TO SEARCH ON", searchParams);
 
     let searchFields = [];
-    if (searchParams.cr)
-        searchFields.push(`cr=${searchParams.crOperator}${searchParams.cr}`);
-    if (searchParams.str)
-        searchFields.push(`str=${searchParams.strOperator}${searchParams.str}`);
-    if (searchParams.ac)
-        searchFields.push(`ac=${searchParams.acOperator}${searchParams.ac}`);
+    if (searchParams.cr) {
+        const through = (searchParams.crOperator === 'btw') ? "-" + searchParams.crEnd : "";
+        searchFields.push(`cr=${searchParams.crOperator}${searchParams.cr}${through}`);
+    }
+    if (searchParams.str) {
+        const through = (searchParams.strOperator === 'btw') ? "-" + searchParams.strEnd : "";
+        searchFields.push(`str=${searchParams.strOperator}${searchParams.str}${through}`);
+    }
+    if (searchParams.ac) {
+        const through = (searchParams.acOperator === 'btw') ? "-" + searchParams.acEnd : "";
+        searchFields.push(`ac=${searchParams.acOperator}${searchParams.ac}${through}`);
+    }
     
     const searchFieldsAsHtmlParams = searchFields.join("&");
 
-    const defaultParams = `cr=%3C=10&str=%3E=40`;
     const url = `https://99hy8krr49.execute-api.us-west-2.amazonaws.com/prod?${searchFieldsAsHtmlParams}`;
     console.log("URL TO FETCH: ", url);
     const results = fetch(url)

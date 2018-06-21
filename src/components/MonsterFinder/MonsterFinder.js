@@ -50,7 +50,7 @@ class MonsterFinder extends Component {
   }
 
   render() {
-    const { config, select, monster, s3Select } = this.props;
+    const { monster } = this.props; //These props can be destructured to pull out any of the reducers (config, select, monster, s3Select, etc.)
     console.log(monster.statBlock.name)
     return (
       <div className="flex-container">

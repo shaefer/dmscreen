@@ -62,3 +62,6 @@ typings/
 
 #script generated files
 tmp
+
+#create-react-scripts build dir
+build/

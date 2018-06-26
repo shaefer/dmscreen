@@ -96,6 +96,9 @@ const fetchSelect = (searchParams, dispatch) => {
         const through = (searchParams.acOperator === 'btw') ? "-" + searchParams.acEnd : "";
         searchFields.push(`ac=${searchParams.acOperator}${searchParams.ac}${through}`);
     }
+    if (searchParams.environment) {
+        searchFields.push(`environment=${searchParams.environmentOperator}${searchParams.environment}`)
+    }
     
     const searchFieldsAsHtmlParams = searchFields.join("&");
 

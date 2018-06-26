@@ -5,6 +5,7 @@ import "react-table/react-table.css";
 class MonsterTable extends Component {
     render() {
         let monsters = this.props.monsters;
+        console.log("MONSTERS", monsters);
         if (!monsters || (monsters.length === 0)) {
             monsters = [{name: "No Monsters Found", cr:0, str:1, ac:10}];
         }
@@ -30,6 +31,12 @@ class MonsterTable extends Component {
         if (monsters[0].ac) columns.push({
             Header: "AC",
             accessor: "ac",
+            maxWidth: 100,
+            minWidth: 30
+        });
+        if (monsters[0].environment) columns.push({
+            Header: "Environment",
+            accessor: "environment",
             maxWidth: 100,
             minWidth: 30
         });

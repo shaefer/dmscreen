@@ -15,7 +15,14 @@ const selectOperatorField = (prefix, refs) => {
     </Field>);
 }
 
-const searchFieldSection = (prefix, displayLabel, type="text", operatorVal) => {
+const selectTextOperatorField = (prefix, refs) => {
+        const name =  `${prefix}Operator`;
+        return (<Field name={name} component="select" style={{display:"none"}}>
+        <option value="like">=</option>
+        </Field>);
+    }
+
+const searchFieldSection = (prefix, displayLabel, type="number", operatorVal) => {
     const throughFieldClass = (operatorVal === 'btw') ? "" : "hidden"
     const throughField = (
         <span className={throughFieldClass}>-<Field name={prefix + "End"} component="input" type={type}/></span>
@@ -30,6 +37,16 @@ const searchFieldSection = (prefix, displayLabel, type="text", operatorVal) => {
     </div>);
 }
 
+const searchTextFieldSection = (prefix, displayLabel, type="text", operatorVal) => {
+
+    return (
+    <div className="searchField">
+        <label htmlFor={prefix}>{displayLabel}</label>
+        {selectTextOperatorField(prefix)}
+        <Field name={prefix} component="input" type={type} />
+    </div>);
+}
+
 class MonsterSearchFormComponent extends Component {
     render() {
         console.log("RENDER FORM COMP", this.props, this.props.crOperator)
@@ -39,6 +56,7 @@ class MonsterSearchFormComponent extends Component {
             {searchFieldSection("cr", "CR", "number", this.props["crOperator"])}
             {searchFieldSection("str", "Str", "number", this.props["strOperator"])}
             {searchFieldSection("ac", "AC", "number", this.props["acOperator"])}
+            {searchTextFieldSection("environment", "Environment", "text", this.props["environmentOperator"])}
             <button type="submit">Submit</button>
           </form>
         )
@@ -52,7 +70,8 @@ const MonsterSearchForm = reduxForm({
       cr: 12,
       crEnd: 14,
       strOperator: ">=",
-      acOperator: ">="
+      acOperator: ">=",
+      environmentOperator: "like"
     }
 })(MonsterSearchFormComponent)
 

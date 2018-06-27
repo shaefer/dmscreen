@@ -53,8 +53,20 @@ const s3Select = (state = { monsterList:[]}, action) => {
   }
 }
 
+const dmScreen = (state = {results:[]}, action) => {
+  switch (action.type) {
+    case Actions.ADD_RESULT:
+      return {
+        ...state,
+        results: state.results.concat(action.result)
+      };
+    default:
+      return state;
+  }
+}
+
 const rootReducer = combineReducers({
-  config, select, monster, s3Select, form: formReducer
+  config, select, monster, s3Select, dmScreen, form: formReducer
 })
 
 export default rootReducer

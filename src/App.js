@@ -3,6 +3,7 @@ import {BrowserRouter, Switch, Route} from 'react-router-dom'
 
 import MonsterFinder from './components/MonsterFinder/MonsterFinder'
 import MonsterSearch from './components/MonsterSearch/MonsterSearch'
+import DMScreen from './components/DMScreen/DMScreen'
 
 class App extends Component {
     render() {
@@ -11,6 +12,7 @@ class App extends Component {
                 <Switch>
                     <Route exact path="/"           component={MonsterFinder} />
                     <Route       path="/search"     component={MonsterSearch} />
+                    <Route       path="/dmscreen"     component={DMScreen} />
                 </Switch>
             </BrowserRouter>
         );

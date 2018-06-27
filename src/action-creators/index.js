@@ -1,6 +1,6 @@
 import Keys from '../models/Keys'
 //import Monsters from '../models/AllMonsters'
-import { showMonster, selectMonsterOption, showS3SelectResult } from '../actions'
+import { showMonster, selectMonsterOption, showS3SelectResult, addDmScreenResult } from '../actions'
 
 export const fetchMonsterAction = (monsterName) => (dispatch, getState) => {
     fetchMonster(monsterName, dispatch);
@@ -115,4 +115,8 @@ const fetchSelect = (searchParams, dispatch) => {
     return results.then(monsters => {
         dispatch(showS3SelectResult(monsters));
     });
+}
+
+export const dmScreenAddResultAction = (result) => (dispatch, getState) => {
+    dispatch(addDmScreenResult(result));
 }

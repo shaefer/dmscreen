@@ -35,7 +35,7 @@ class MonsterSearch extends Component {
         return (
             <div>
                 <MonsterSearchForm onSubmit={this.submit} />
-                <h3>Pathfinder Monster Search (Showing {monsterCount(s3Select.monsterList)} monster{addS(s3Select.monsterList)})</h3>
+                <h3 className="searchResults">Pathfinder Monster Search (Showing {monsterCount(s3Select.monsterList)} monster{addS(s3Select.monsterList)})</h3>
                 <MonsterTable monsters={s3Select.monsterList}/>
             </div>
         );

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
-import {dmScreenAddResultAction, addCustomButtonAction, toggleFormAction} from '../../action-creators'
+import {dmScreenAddResultAction, addCustomButtonAction, toggleFormAction, fetchSelectAction} from '../../action-creators'
 import DiceBag from '../../utils/DiceBag'
 import CreateAButtonForm from '../../components/DMScreen/CreateAButtonForm'
 import './DmScreen.css'
@@ -84,16 +84,18 @@ const rollStatsFunc = (diceBag, numOfDice, numOfSides, drop=0) => {
     const pointBuyTotals = rollTotals.map(x => pathfinderPointBuyScores[x]);
     const pointBuyScore = pointBuyTotals.reduce((arr, v) => arr + v);
     const result = (
+        <div>
+        ({stats.rollTime}) 
         <section className="stats">
-            <div>Str: {stats.str.total.toString().padStart(2, "\u00a0")} <span dangerouslySetInnerHTML={{__html: stats.str.rollWithDropStr}}/></div>
-            <div>Dex: {stats.dex.total.toString().padStart(2, "\u00a0")} <span dangerouslySetInnerHTML={{__html: stats.dex.rollWithDropStr}}/></div>
-            <div>Con: {stats.con.total.toString().padStart(2, "\u00a0")} <span dangerouslySetInnerHTML={{__html: stats.con.rollWithDropStr}}/></div>
-            <div>Int: {stats.int.total.toString().padStart(2, "\u00a0")} <span dangerouslySetInnerHTML={{__html: stats.int.rollWithDropStr}}/></div>
-            <div>Wis: {stats.wis.total.toString().padStart(2, "\u00a0")} <span dangerouslySetInnerHTML={{__html: stats.wis.rollWithDropStr}}/></div>
-            <div>Cha: {stats.cha.total.toString().padStart(2, "\u00a0")} <span dangerouslySetInnerHTML={{__html: stats.cha.rollWithDropStr}}/></div>
-            <div>Point Buy Scores: {pointBuyTotals.join(",")}</div>
-            <div>Point Buy Total: {pointBuyScore}</div>
+            <div>Str: {stats.str.total.toString().padStart(2, "\u00a0")} [<span dangerouslySetInnerHTML={{__html: stats.str.rollWithDropStr}}/>]</div>
+            <div>Dex: {stats.dex.total.toString().padStart(2, "\u00a0")} [<span dangerouslySetInnerHTML={{__html: stats.dex.rollWithDropStr}}/>]</div>
+            <div>Con: {stats.con.total.toString().padStart(2, "\u00a0")} [<span dangerouslySetInnerHTML={{__html: stats.con.rollWithDropStr}}/>]</div>
+            <div>Int: {stats.int.total.toString().padStart(2, "\u00a0")} [<span dangerouslySetInnerHTML={{__html: stats.int.rollWithDropStr}}/>]</div>
+            <div>Wis: {stats.wis.total.toString().padStart(2, "\u00a0")} [<span dangerouslySetInnerHTML={{__html: stats.wis.rollWithDropStr}}/>]</div>
+            <div>Cha: {stats.cha.total.toString().padStart(2, "\u00a0")} [<span dangerouslySetInnerHTML={{__html: stats.cha.rollWithDropStr}}/>]</div>
+            <div>Point Buy Total: {pointBuyScore} [{pointBuyTotals.join(",")}]</div>
         </section>
+        </div>
     );
     return result;
 }
@@ -129,6 +131,12 @@ class DMScreen extends Component {
         return <button type="button" onClick={() => this.handleResult(rollStatsFunc(this.diceBag, numOfDice, numOfSides, drop))}>Roll Stats ({numOfDice}d{numOfSides} {dropStr})</button>
     }
 
+    makeCRButton(cr) {
+        const searchParams = {cr: cr, crOperator: "="}
+        const fetchCall = () => this.props.fetchSelectAction(searchParams);
+        return <button type="button" onClick={() => fetchCall()}>CR {cr} Monster</button>
+    }
+
     createAButton(values) {
         const button = this.makeDiceButton(values.diceButtonNumOfDice, values.diceButtonNumOfSides);
         this.props.addCustomButtonAction(button);
@@ -141,8 +149,7 @@ class DMScreen extends Component {
     render() {
         const { dmScreen } = this.props;
         console.log(dmScreen);
-        //TODO: Stats, random charts, random monsters
-        //const pathfinderPointBuyScores = {7:-4, 8:-2, 9:-1, 10:0, 11:1, 12:2, 13:3, 14:5, 15:7, 16:10, 17:13, 18:17};
+        //TODO: more random charts, random monsters
         return (
             <main className="dmScreen">
                 <section>
@@ -156,6 +163,7 @@ class DMScreen extends Component {
                     {this.makeStatsButton(3, 6)}
                     {this.makeStatsButton(4, 6, 1)}
                     {this.makeStatsButton(5, 6, 2)}
+                    {this.makeCRButton(7)}
                     {this.makeRandomChartButton(DungeonEntrances, "Dungeon Entrance")}
                     {this.makeRandomChartButton(DungeonEntrances, "Dungeon Entrance")}
                     {this.makeRandomChartButton(DungeonEntrances, "Dungeon Entrance")}
@@ -178,4 +186,4 @@ class DMScreen extends Component {
     }
 }
 
-export default connect(state => state, {dmScreenAddResultAction, addCustomButtonAction, toggleFormAction})(DMScreen)
+export default connect(state => state, {dmScreenAddResultAction, addCustomButtonAction, toggleFormAction, fetchSelectAction})(DMScreen)

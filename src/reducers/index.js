@@ -70,6 +70,14 @@ const dmScreen = (state = {results:[], buttons:[], showForm: false}, action) => 
         ...state,
         showForm: action.showForm
       };
+    case Actions.S3_SELECT_SHOW:
+    //TODO: Pull this logic up into the actionCreatorSteps so that only the final result makes it here.
+      const monsterNames = action.monsterList.map(x => x.name);
+      const selectedMonster = monsterNames[Math.floor(Math.random()*monsterNames.length)] 
+      return {
+        ...state,
+        results: state.results.concat(selectedMonster)
+      }
     default:
       return state;
   }

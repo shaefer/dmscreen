@@ -70,9 +70,9 @@ export const keyPressHandler = (e) => {
 };
 
 
-
-export const fetchSelectAction = (monsterName) => (dispatch, getState) => {
-    fetchSelect(monsterName, dispatch);
+//using for DMScreen right now
+export const fetchSelectAction = (searchParams) => (dispatch, getState) => {
+    fetchSelect(searchParams, dispatch);
 }
 
 export const monsterS3SelectChangeHandler = (values) => (dispatch, getState) => {
@@ -80,7 +80,7 @@ export const monsterS3SelectChangeHandler = (values) => (dispatch, getState) => 
     fetchSelect(values, dispatch);
 } 
 
-const fetchSelect = (searchParams, dispatch) => {
+const fetchSelect = (searchParams, dispatch, action = showS3SelectResult) => {
     console.log("ABOUT TO SEARCH ON", searchParams);
 
     let searchFields = [];
@@ -114,7 +114,7 @@ const fetchSelect = (searchParams, dispatch) => {
             return json.results
         });
     return results.then(monsters => {
-        dispatch(showS3SelectResult(monsters));
+        dispatch(action(monsters));
     });
 }
 

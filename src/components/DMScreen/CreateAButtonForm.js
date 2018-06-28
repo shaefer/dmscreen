@@ -12,14 +12,14 @@ class CreateAButtonFormComponent extends Component {
             <section>
                 <div className="customDieField">Number of Dice  <Field name="diceButtonNumOfDice" component="input" type="number"/></div>
                 <div className="customDieField">Number of Sides <Field name="diceButtonNumOfSides" component="input" type="number"/></div>
-                <button type="submit">Create Button</button><button type="button" onClick={() => toggleFormFunc(false)}>Hide Form</button>
+                <button type="submit">Create Dice Button</button><button type="button" onClick={() => toggleFormFunc(false)}>Close</button>
             </section>
             );
         }
         const notVisibleForm = (toggleFormFunc) => {
             return (
                 <section>
-                    <button type="button" onClick={() => toggleFormFunc(true)}>Show Form</button>
+                    <button type="button" onClick={() => toggleFormFunc(true)}>Create Custom Button</button>
                 </section>
             );
         }

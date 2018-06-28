@@ -9,7 +9,7 @@ const dungeonEntrances = ['A well',
 'A cold, bottomless pit',
 'A ruined road descends into an ivy covered hole',
 'A masoleum',
-'A knight''s sarcophagus',
+'A knight\'s sarcophagus',
 'An ancient door carved with warnings',
 'A stone valve covered in runes',
 'A grinning demon mouth',
@@ -49,3 +49,4 @@ const dungeonEntrances = ['A well',
 'A bridge made from rainbows',
 'A moonbeam reveals a door in a stone circle'
 ]
+export default dungeonEntrances

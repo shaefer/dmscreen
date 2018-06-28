@@ -2,3 +2,17 @@
   padding: 0 1.5em;
   margin: 0.5em 0 0.5em 0.5em;
 }
+
+.dmScreen .result {
+  border: 1px solid gray;
+  border-radius: 1em;
+  padding: .2em;
+}
+
+.dmScreen .strikeThrough {
+  text-decoration: line-through
+}
+
+.dmScreen .stats {
+  font-family: monospace
+}

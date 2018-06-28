@@ -40,3 +40,5 @@ const backgrounds = ['Military veteran',
 'Oppressed for race, sexuality, religion, etc.',
 'Monster reincarnated as a human'
 ]
+
+export default backgrounds;

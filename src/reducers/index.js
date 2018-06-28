@@ -53,12 +53,22 @@ const s3Select = (state = { monsterList:[]}, action) => {
   }
 }
 
-const dmScreen = (state = {results:[]}, action) => {
+const dmScreen = (state = {results:[], buttons:[], showForm: false}, action) => {
   switch (action.type) {
     case Actions.ADD_RESULT:
       return {
         ...state,
         results: state.results.concat(action.result)
+      };
+    case Actions.ADD_CUSTOM_BUTTON:
+      return {
+        ...state,
+        buttons: state.buttons.concat(action.button)
+      };
+    case Actions.TOGGLE_FORM:
+      return {
+        ...state,
+        showForm: action.showForm
       };
     default:
       return state;

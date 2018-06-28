@@ -1,6 +1,6 @@
 import Keys from '../models/Keys'
 //import Monsters from '../models/AllMonsters'
-import { showMonster, selectMonsterOption, showS3SelectResult, addDmScreenResult } from '../actions'
+import { showMonster, selectMonsterOption, showS3SelectResult, addDmScreenResult, addCustomButton, toggleForm } from '../actions'
 
 export const fetchMonsterAction = (monsterName) => (dispatch, getState) => {
     fetchMonster(monsterName, dispatch);
@@ -103,7 +103,8 @@ const fetchSelect = (searchParams, dispatch) => {
     const searchFieldsAsHtmlParams = searchFields.join("&");
 
     //https://monstersearchapi.cleverorc.com/?
-    const url = `https://99hy8krr49.execute-api.us-west-2.amazonaws.com/prod?${searchFieldsAsHtmlParams}`;
+    const baseUri = 'https://99hy8krr49.execute-api.us-west-2.amazonaws.com/prod';
+    const url = `${baseUri}?${searchFieldsAsHtmlParams}`;
     console.log("URL TO FETCH: ", url);
     const results = fetch(url)
         .then(resp => resp.json())
@@ -119,4 +120,12 @@ const fetchSelect = (searchParams, dispatch) => {
 
 export const dmScreenAddResultAction = (result) => (dispatch, getState) => {
     dispatch(addDmScreenResult(result));
+}
+
+export const addCustomButtonAction = (button) => (dispatch) => {
+    dispatch(addCustomButton(button))
+}
+
+export const toggleFormAction = (showForm) => (dispatch) => {
+    dispatch(toggleForm(showForm))
 }

@@ -6,6 +6,8 @@ const sum = (someArray) => {
 export const rollDice = (numOfDice, numOfSides, generator = Math.random) => {
     if (numOfDice > 10000) throw new Error("Too many dice...more than 10000");
     if (numOfSides > 10000) throw new Error("Too many sides...more than 10000");
+    if (numOfDice < 1) throw new Error("Cannot roll a negative number of dice.")
+    if (numOfSides < 1) throw new Error("Cannot roll dice with a negative number of sides.")
     let individualResults = [];
     for(let i = 1;i<=numOfDice;i++) {
         const result = Math.floor(generator() * numOfSides) + 1;

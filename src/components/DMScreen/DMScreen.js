@@ -114,6 +114,7 @@ class DMScreen extends Component {
     }
 
     makeDiceButton(numOfDice, numOfSides) {
+        if (numOfDice < 1 || numOfSides < 1) return "";
         const clickFunc = () => {
             this.handleResult(this.diceBag.rollDice(numOfDice, numOfSides).toString());
         }
@@ -131,6 +132,7 @@ class DMScreen extends Component {
     }
 
     makeCRButton(cr, numOfMonsters = 1) {
+        if (cr < 0 || numOfMonsters < 1) return "";
         const searchParams = {cr: cr, crOperator: "=", num:numOfMonsters}
         const fetchCall = () => this.props.fetchSelectAction(searchParams);
         const countStr = (numOfMonsters > 1) ? numOfMonsters + " " : "";

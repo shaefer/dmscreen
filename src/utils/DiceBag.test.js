@@ -30,6 +30,12 @@ it('should not allow more than 10000 dice rolled', () => {
     }).toThrow()
 });
 
+it('should not allow negative dice rolled', () => {
+    expect(() => {
+        DiceBag.rollDice(-1, 8); 
+    }).toThrow()
+});
+
 it('should produce repeatable results when a seed is provided', () => {
     const seed = "someRandomSeed!";
     const diceBag = DiceBag(seed);

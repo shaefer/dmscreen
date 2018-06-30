@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import {dmScreenAddResultAction, addCustomButtonAction, toggleFormAction, fetchSelectAction} from '../../action-creators'
 import DiceBag from '../../utils/DiceBag'
 import CreateAButtonForm from '../../components/DMScreen/CreateAButtonForm'
+import MonsterDisplay from '../../components/MonsterDisplay'
 import './DmScreen.css'
 
 import {DungeonEntrances, Backgrounds, DungeonLocations, DungeonTypes, DungeonRooms, NpcCharacteristicsPhysical, NpcCharacteristics} from './RandomCharts'
@@ -131,10 +132,12 @@ class DMScreen extends Component {
         return <button type="button" onClick={() => this.handleResult(rollStatsFunc(this.diceBag, numOfDice, numOfSides, drop))}>Roll Stats ({numOfDice}d{numOfSides} {dropStr})</button>
     }
 
-    makeCRButton(cr) {
-        const searchParams = {cr: cr, crOperator: "="}
+    makeCRButton(cr, numOfMonsters = 1) {
+        const searchParams = {cr: cr, crOperator: "=", num:numOfMonsters}
         const fetchCall = () => this.props.fetchSelectAction(searchParams);
-        return <button type="button" onClick={() => fetchCall()}>CR {cr} Monster</button>
+        const countStr = (numOfMonsters > 1) ? numOfMonsters + " " : "";
+        const s = (numOfMonsters > 1) ? "s" : "";
+        return <button type="button" onClick={() => fetchCall()}>{countStr}CR {cr} Monster{s}</button>
     }
 
     createAButton(values) {
@@ -164,6 +167,7 @@ class DMScreen extends Component {
                     {this.makeStatsButton(4, 6, 1)}
                     {this.makeStatsButton(5, 6, 2)}
                     {this.makeCRButton(7)}
+                    {this.makeCRButton(20, 2)}
                     {this.makeRandomChartButton(DungeonEntrances, "Dungeon Entrance")}
                     {this.makeRandomChartButton(DungeonEntrances, "Dungeon Entrance")}
                     {this.makeRandomChartButton(DungeonEntrances, "Dungeon Entrance")}

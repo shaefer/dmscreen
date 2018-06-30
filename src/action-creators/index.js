@@ -1,3 +1,4 @@
+import React from 'react'
 import Keys from '../models/Keys'
 //import Monsters from '../models/AllMonsters'
 import { showMonster, selectMonsterOption, showS3SelectResult, addDmScreenResult, addCustomButton, toggleForm } from '../actions'
@@ -72,7 +73,35 @@ export const keyPressHandler = (e) => {
 
 //using for DMScreen right now
 export const fetchSelectAction = (searchParams) => (dispatch, getState) => {
-    fetchSelect(searchParams, dispatch);
+    const chooseMonster = (monsters) => {
+        const numOfMonsters = searchParams.num; //special searchParams.
+        const monsterNames = monsters.map(x => x.name);
+        let selectedMonsters = [];
+        
+        for(let i = 0;i<numOfMonsters;i++) {
+            selectedMonsters.push(monsterNames[Math.floor(Math.random()*monsterNames.length)])
+        }
+        console.log("Select Multiple Monsters", monsters, numOfMonsters, selectedMonsters);
+        const monsterButtons = selectedMonsters.map(x => {
+            const lookupMonster = () => {
+                fetchMonster(x, dispatch);
+            }
+            return <button type="button" onClick={lookupMonster}>{x}</button>
+        })
+        //copied from dmScreen.js extract to file and reuse.
+        const rollTimeString = () => {
+            const rollTime = new Date();
+            const rollTimeMillis = ('00' + rollTime.getMilliseconds()).slice(-3);
+            const rollTimeStr = `${rollTime.toLocaleTimeString('en-US', { hour12: false })}.${rollTimeMillis}`;
+            return rollTimeStr;
+        }
+        const countStr = (numOfMonsters > 1) ? numOfMonsters + " " : "";
+        const s = (numOfMonsters > 1) ? "s" : "";
+        const desc = `(${rollTimeString()}) ${countStr}CR ${searchParams.cr} Monster${s}`
+        const result = [<span>{desc}</span>, ...monsterButtons]
+        return showS3SelectResult(result);
+    }
+    fetchSelect(searchParams, dispatch, chooseMonster);
 }
 
 export const monsterS3SelectChangeHandler = (values) => (dispatch, getState) => {

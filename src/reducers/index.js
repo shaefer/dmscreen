@@ -1,9 +1,12 @@
+import React from 'react'
 import { combineReducers } from 'redux'
 import { reducer as formReducer } from 'redux-form'
 
 import * as Actions from '../actions'
 
 import Aasimar from '../models/Aasimar'
+
+import MonsterDisplay from '../components/MonsterDisplay'
 
 const config = (state = { initialState: "basicConfig"}, action) => {
   switch (action.type) {
@@ -71,12 +74,14 @@ const dmScreen = (state = {results:[], buttons:[], showForm: false}, action) => 
         showForm: action.showForm
       };
     case Actions.S3_SELECT_SHOW:
-    //TODO: Pull this logic up into the actionCreatorSteps so that only the final result makes it here.
-      const monsterNames = action.monsterList.map(x => x.name);
-      const selectedMonster = monsterNames[Math.floor(Math.random()*monsterNames.length)] 
       return {
         ...state,
-        results: state.results.concat(selectedMonster)
+        results: [...state.results, action.monsterList]
+      }
+    case Actions.SHOW_MONSTER:
+      return {
+        ...state,
+        results: [...state.results, <MonsterDisplay monster={{statBlock: action.monster}}/>]
       }
     default:
       return state;

@@ -11,8 +11,8 @@ class CreateAButtonFormComponent extends Component {
             return (
             <main>
                 <section>
-                    <div className="customDieField">Number of Dice  <Field name="diceButtonNumOfDice" component="input" type="number"/></div>
-                    <div className="customDieField">Number of Sides <Field name="diceButtonNumOfSides" component="input" type="number"/></div>
+                    <div className="customDieField">Number of Dice  <Field name="diceButtonNumOfDice" component="input" type="number" min={1}/></div>
+                    <div className="customDieField">Number of Sides <Field name="diceButtonNumOfSides" component="input" type="number" min={1}/></div>
                     <button type="submit" onClick={handleSubmit(values =>
                     this.props.onSubmit({ 
                         ...values,
@@ -20,8 +20,8 @@ class CreateAButtonFormComponent extends Component {
                     }))}>Create Dice Button</button><button type="button" onClick={() => toggleFormFunc(false)}>Close</button>
                 </section>
                 <section>
-                    <div className="customDieField">Number of Monsters  <Field name="numOfMonsters" component="input" type="number"/></div>
-                    <div className="customDieField">CR <Field name="cr" component="input" type="number"/></div>
+                    <div className="customDieField">Number of Monsters  <Field name="numOfMonsters" component="input" type="number" min={1}/></div>
+                    <div className="customDieField">CR <Field name="cr" component="input" type="number" min={0}/></div>
                     <button name="monsterButton" type="submit" onClick={handleSubmit(values => 
                         this.props.onSubmit({ 
                             ...values,

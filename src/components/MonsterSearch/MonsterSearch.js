@@ -22,6 +22,10 @@ class MonsterSearch extends Component {
         this.handleMonsterLookup = this.handleMonsterLookup.bind(this);
     }
 
+    componentDidMount() {
+        document.title="Monster Search - Pathfinder - by Clever Orc Games"
+    }
+
     submit = values => {
         this.handleMonsterLookup(values);
     }

@@ -43,6 +43,7 @@ class MonsterFinder extends Component {
 
   componentDidMount() {
     document.addEventListener('keydown', this.handleKeyPress);
+    document.title="Monster Finder (Statblock) - Pathfinder - by Clever Orc Games"
   }
 
   componentWillUnmount() {

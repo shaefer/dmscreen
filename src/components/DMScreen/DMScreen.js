@@ -105,6 +105,10 @@ class DMScreen extends Component {
         this.toggleForm = this.toggleForm.bind(this);
     }
 
+    componentDidMount() {
+        document.title="DM Screen - Pathfinder - by Clever Orc Games"
+    }
+
     handleResult(result) {
         this.props.dmScreenAddResultAction(result);
     }
@@ -122,7 +126,7 @@ class DMScreen extends Component {
     }
 
     makeStatsButton(numOfDice, numOfSides, drop=0) {
-        const dropStr = (drop > 0) ? `drop ${drop} lowest` : "";
+        const dropStr = (drop > 0) ? `drop ${drop}` : "";
         return <button type="button" onClick={() => this.handleResult(rollStatsFunc(this.diceBag, numOfDice, numOfSides, drop))}>Roll Stats ({numOfDice}d{numOfSides} {dropStr})</button>
     }
 

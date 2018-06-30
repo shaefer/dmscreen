@@ -13,6 +13,7 @@ export const rollDice = (numOfDice, numOfSides, generator = Math.random) => {
     }
     const total = sum(individualResults);
     const individualResultsString = (numOfDice > 1) ? `[${individualResults}]` : "";
+    //This is the same code we moved into ResultTimestamp.js...but we are trying to keep dicebag at 0 dependencies.
     const rollTime = new Date();
     const rollTimeMillis = ('00' + rollTime.getMilliseconds()).slice(-3);
     const rollTimeStr = `${rollTime.toLocaleTimeString('en-US', { hour12: false })}.${rollTimeMillis}`

@@ -4,16 +4,10 @@ import {dmScreenAddResultAction, addCustomButtonAction, toggleFormAction, fetchS
 import DiceBag from '../../utils/DiceBag'
 import CreateAButtonForm from '../../components/DMScreen/CreateAButtonForm'
 import MonsterDisplay from '../../components/MonsterDisplay'
+import rollTimeString from '../../utils/ResultTimestamp'
 import './DmScreen.css'
 
 import {DungeonEntrances, Backgrounds, DungeonLocations, DungeonTypes, DungeonRooms, NpcCharacteristicsPhysical, NpcCharacteristics} from './RandomCharts'
-
-const rollTimeString = () => {
-    const rollTime = new Date();
-    const rollTimeMillis = ('00' + rollTime.getMilliseconds()).slice(-3);
-    const rollTimeStr = `${rollTime.toLocaleTimeString('en-US', { hour12: false })}.${rollTimeMillis}`;
-    return rollTimeStr;
-}
 
 const rollRandomChart = (diceBag, chart, chartName) => {
     const timeOfRoll = rollTimeString();

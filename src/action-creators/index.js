@@ -3,6 +3,8 @@ import Keys from '../models/Keys'
 //import Monsters from '../models/AllMonsters'
 import { showMonster, selectMonsterOption, showS3SelectResult, addDmScreenResult, addCustomButton, toggleForm } from '../actions'
 
+import rollTimeString from '../utils/ResultTimestamp'
+
 export const fetchMonsterAction = (monsterName) => (dispatch, getState) => {
     fetchMonster(monsterName, dispatch);
 }
@@ -88,13 +90,7 @@ export const fetchSelectAction = (searchParams) => (dispatch, getState) => {
             }
             return <button type="button" onClick={lookupMonster}>{x}</button>
         })
-        //copied from dmScreen.js extract to file and reuse.
-        const rollTimeString = () => {
-            const rollTime = new Date();
-            const rollTimeMillis = ('00' + rollTime.getMilliseconds()).slice(-3);
-            const rollTimeStr = `${rollTime.toLocaleTimeString('en-US', { hour12: false })}.${rollTimeMillis}`;
-            return rollTimeStr;
-        }
+
         const countStr = (numOfMonsters > 1) ? numOfMonsters + " " : "";
         const s = (numOfMonsters > 1) ? "s" : "";
         const desc = `(${rollTimeString()}) ${countStr}CR ${searchParams.cr} Monster${s}`

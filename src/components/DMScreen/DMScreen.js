@@ -139,7 +139,10 @@ class DMScreen extends Component {
     }
 
     createAButton(values) {
-        const button = this.makeDiceButton(values.diceButtonNumOfDice, values.diceButtonNumOfSides);
+        console.log("FORM SUBMIT FIRED", values, this);
+        const button = (values.type === 'diceButton') 
+            ? this.makeDiceButton(values.diceButtonNumOfDice, values.diceButtonNumOfSides) 
+            : this.makeCRButton(values.cr, values.numOfMonsters);
         this.props.addCustomButtonAction(button);
     }
 
@@ -165,9 +168,8 @@ class DMScreen extends Component {
                     {this.makeStatsButton(4, 6, 1)}
                     {this.makeStatsButton(5, 6, 2)}
                     {this.makeCRButton(7)}
+                    {this.makeCRButton(5, 5)}
                     {this.makeCRButton(20, 2)}
-                    {this.makeRandomChartButton(DungeonEntrances, "Dungeon Entrance")}
-                    {this.makeRandomChartButton(DungeonEntrances, "Dungeon Entrance")}
                     {this.makeRandomChartButton(DungeonEntrances, "Dungeon Entrance")}
                     {this.makeRandomChartButton(Backgrounds, "Background")}
                     {this.makeRandomChartButton(DungeonLocations, "Dungeon Location")}
@@ -176,7 +178,7 @@ class DMScreen extends Component {
                     {this.makeRandomChartButton(NpcCharacteristicsPhysical, "NPC Physical Traits")}
                     {this.makeRandomChartButton(NpcCharacteristics, "NPC Traits")}
                     {dmScreen.buttons.map(x => x)}
-                    <CreateAButtonForm onSubmit={this.createAButton} showForm={dmScreen.showForm} toggleFormFunc={this.toggleForm}/>
+                    <CreateAButtonForm onSubmit={(e) => this.createAButton(e)} showForm={dmScreen.showForm} toggleFormFunc={this.toggleForm}/>
                 </section>
                 <section>
                     <div>Results</div>

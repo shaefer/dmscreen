@@ -9,11 +9,27 @@ class CreateAButtonFormComponent extends Component {
         console.log("RENDER CREATE BUTTON FORM COMP", this.props, this.props.diceButtonNumOfDice, this.props.diceButtonNumOfSides, showForm);
         const visibleForm = (toggleFormFunc) => {
             return (
-            <section>
-                <div className="customDieField">Number of Dice  <Field name="diceButtonNumOfDice" component="input" type="number"/></div>
-                <div className="customDieField">Number of Sides <Field name="diceButtonNumOfSides" component="input" type="number"/></div>
-                <button type="submit">Create Dice Button</button><button type="button" onClick={() => toggleFormFunc(false)}>Close</button>
-            </section>
+            <main>
+                <section>
+                    <div className="customDieField">Number of Dice  <Field name="diceButtonNumOfDice" component="input" type="number"/></div>
+                    <div className="customDieField">Number of Sides <Field name="diceButtonNumOfSides" component="input" type="number"/></div>
+                    <button type="submit" onClick={handleSubmit(values =>
+                    this.props.onSubmit({ 
+                        ...values,
+                        type: 'diceButton'
+                    }))}>Create Dice Button</button><button type="button" onClick={() => toggleFormFunc(false)}>Close</button>
+                </section>
+                <section>
+                    <div className="customDieField">Number of Monsters  <Field name="numOfMonsters" component="input" type="number"/></div>
+                    <div className="customDieField">CR <Field name="cr" component="input" type="number"/></div>
+                    <button name="monsterButton" type="submit" onClick={handleSubmit(values => 
+                        this.props.onSubmit({ 
+                            ...values,
+                            type: 'monsterButton'
+                        }))}>Create Monster Button</button>
+                    <button type="button" onClick={() => toggleFormFunc(false)}>Close</button>
+                </section>
+            </main>
             );
         }
         const notVisibleForm = (toggleFormFunc) => {
@@ -39,7 +55,9 @@ const CreateAButtonForm = reduxForm({
   initialValues: {
     showForm: true,
     diceButtonNumOfDice: 3,
-    diceButtonNumOfSides: 6
+    diceButtonNumOfSides: 6,
+    cr: 10,
+    numOfMonsters: 2
   }
 })(CreateAButtonFormComponent)
 
@@ -48,7 +66,9 @@ const CreateAButtonFormConnected = connect(
   state => {
     return {
         diceButtonNumOfDice : selector(state, 'diceButtonNumOfDice'),
-        diceButtonNumOfSides : selector(state, 'diceButtonNumOfSides')
+        diceButtonNumOfSides : selector(state, 'diceButtonNumOfSides'),
+        cr : selector(state, 'cr'),
+        numOfMonsters: selector(state, 'numOfMonsters')
     }
   }
 )(CreateAButtonForm)

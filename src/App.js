@@ -5,6 +5,8 @@ import MonsterFinder from './components/MonsterFinder/MonsterFinder'
 import MonsterSearch from './components/MonsterSearch/MonsterSearch'
 import DMScreen from './components/DMScreen/DMScreen'
 
+import './css/CustomFormCss.css'
+
 class App extends Component {
     render() {
         return (

@@ -9,25 +9,25 @@ class CreateAButtonFormComponent extends Component {
         console.log("RENDER CREATE BUTTON FORM COMP", this.props, this.props.diceButtonNumOfDice, this.props.diceButtonNumOfSides, showForm);
         const visibleForm = (toggleFormFunc) => {
             return (
-            <main>
+            <main className="customDice">
                 <section>
-                    <div className="customDieField">Number of Dice  <Field name="diceButtonNumOfDice" component="input" type="number" min={1}/></div>
-                    <div className="customDieField">Number of Sides <Field name="diceButtonNumOfSides" component="input" type="number" min={1}/></div>
-                    <button type="submit" onClick={handleSubmit(values =>
+                    <span className="customDieField"><Field name="diceButtonNumOfDice" component="input" type="number" min={1} max={1000}/>
+                    <span>D</span><Field name="diceButtonNumOfSides" component="input" type="number" min={1} max={10000}/></span>
+                    <button type="submit" className="purpleAwesome" onClick={handleSubmit(values =>
                     this.props.onSubmit({ 
                         ...values,
                         type: 'diceButton'
-                    }))}>Create Dice Button</button><button type="button" onClick={() => toggleFormFunc(false)}>Close</button>
+                    }))}>Add Dice Button</button>
                 </section>
                 <section>
-                    <div className="customDieField">Number of Monsters  <Field name="numOfMonsters" component="input" type="number" min={1}/></div>
-                    <div className="customDieField">CR <Field name="cr" component="input" type="number" min={0}/></div>
-                    <button name="monsterButton" type="submit" onClick={handleSubmit(values => 
+                    <span className="customDieField"><Field name="numOfMonsters" component="input" type="number" min={1}/>
+                    CR<Field name="cr" component="input" type="number" min={0} max={30}/>Monsters</span>
+                    <button name="monsterButton" type="submit" className="purpleAwesome" onClick={handleSubmit(values => 
                         this.props.onSubmit({ 
                             ...values,
                             type: 'monsterButton'
-                        }))}>Create Monster Button</button>
-                    <button type="button" onClick={() => toggleFormFunc(false)}>Close</button>
+                        }))}>Add Monster Button</button>
+                    <br/><button type="button" className="purpleAwesome" onClick={() => toggleFormFunc(false)}>Hide Custom Button Section</button>
                 </section>
             </main>
             );
@@ -35,7 +35,7 @@ class CreateAButtonFormComponent extends Component {
         const notVisibleForm = (toggleFormFunc) => {
             return (
                 <section>
-                    <button type="button" onClick={() => toggleFormFunc(true)}>Create Custom Button</button>
+                    <button type="button" className="purpleAwesome" onClick={() => toggleFormFunc(true)}>Create Custom Button</button>
                 </section>
             );
         }

@@ -88,7 +88,7 @@ export const fetchSelectAction = (searchParams) => (dispatch, getState) => {
             const lookupMonster = () => {
                 fetchMonster(x, dispatch);
             }
-            return <button type="button" onClick={lookupMonster}>{x}</button>
+            return <button type="button" onClick={lookupMonster} className="purpleAwesome">{x}</button>
         })
 
         const countStr = (numOfMonsters > 1) ? numOfMonsters + " " : "";
@@ -139,7 +139,8 @@ const fetchSelect = (searchParams, dispatch, action = showS3SelectResult) => {
             return json.results
         });
     return results.then(monsters => {
-        dispatch(action(monsters));
+        if (monsters && monsters.length > 0)
+            dispatch(action(monsters));
     });
 }
 

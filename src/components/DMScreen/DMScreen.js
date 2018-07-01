@@ -119,16 +119,16 @@ class DMScreen extends Component {
             this.handleResult(this.diceBag.rollDice(numOfDice, numOfSides).toString());
         }
         clickFunc.bind(this);
-        return <button onClick={clickFunc}>{numOfDice}d{numOfSides}</button>;
+        return <button onClick={clickFunc} className="pinkAwesome">{numOfDice}d{numOfSides}</button>;
     }
 
     makeRandomChartButton(chart, chartName) {
-        return <button type="button" onClick={() => this.handleResult(rollRandomChart(this.diceBag, chart, chartName).toString())}>{chartName}</button>
+        return <button type="button" className="blueAwesome" onClick={() => this.handleResult(rollRandomChart(this.diceBag, chart, chartName).toString())}>{chartName}</button>
     }
 
     makeStatsButton(numOfDice, numOfSides, drop=0) {
         const dropStr = (drop > 0) ? `drop ${drop}` : "";
-        return <button type="button" onClick={() => this.handleResult(rollStatsFunc(this.diceBag, numOfDice, numOfSides, drop))}>Roll Stats ({numOfDice}d{numOfSides} {dropStr})</button>
+        return <button type="button" className="pinkAwesome" onClick={() => this.handleResult(rollStatsFunc(this.diceBag, numOfDice, numOfSides, drop))}>Roll Stats ({numOfDice}d{numOfSides} {dropStr})</button>
     }
 
     makeCRButton(cr, numOfMonsters = 1) {
@@ -137,7 +137,7 @@ class DMScreen extends Component {
         const fetchCall = () => this.props.fetchSelectAction(searchParams);
         const countStr = (numOfMonsters > 1) ? numOfMonsters + " " : "";
         const s = (numOfMonsters > 1) ? "s" : "";
-        return <button type="button" onClick={() => fetchCall()}>{countStr}CR {cr} Monster{s}</button>
+        return <button type="button" className="greenAwesome" onClick={() => fetchCall()}>{countStr}CR {cr} Monster{s}</button>
     }
 
     createAButton(values) {
@@ -145,7 +145,11 @@ class DMScreen extends Component {
         const button = (values.type === 'diceButton') 
             ? this.makeDiceButton(values.diceButtonNumOfDice, values.diceButtonNumOfSides) 
             : this.makeCRButton(values.cr, values.numOfMonsters);
-        this.props.addCustomButtonAction(button);
+        if (values.type == 'monsterButton' && values.cr > 30) {  
+            this.handleResult(<span style={{color:'red'}}>Cannot create monster button with CR > 30.</span>);
+        } else {
+            this.props.addCustomButtonAction(button);
+        }
     }
 
     toggleForm = (showForm) => {
@@ -168,7 +172,6 @@ class DMScreen extends Component {
                     {this.makeDiceButton(1, 100)}
                     {this.makeStatsButton(3, 6)}
                     {this.makeStatsButton(4, 6, 1)}
-                    {this.makeStatsButton(5, 6, 2)}
                     {this.makeCRButton(7)}
                     {this.makeCRButton(5, 5)}
                     {this.makeCRButton(20, 2)}

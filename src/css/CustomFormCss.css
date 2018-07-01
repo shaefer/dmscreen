@@ -1,28 +1,6 @@
-/*@import '../../node_modules/hiq/dist/hiq.min.css';*/
-@import '../../node_modules/milligram/dist/milligram.css';
+@import '../../node_modules/milligram/dist/milligram.min.css';
 
-.monsterSearch {
-    max-width: 500px;
-    margin: 0 auto;
-    padding: 1em 3em;
-}
-
-.monsterSearch .searchField label{
-    display: inline;
-}
-
-.monsterSearch .searchField input, .monsterSearch .searchField select{
-    width: inherit;
-}
-
-.monsterSearch .searchField input{
-    width: 60px;
-}
-
-.monsterSearch .searchField input[type="text"] {
-    width: 100px;
-}
-
+/* These 3 styles are probably specific to MonsterSearch...*/
 .ReactTable .rt-td {
     padding: 0;
 }
@@ -35,8 +13,215 @@ h3 {
     display:none;
 }
 
-@media screen and (max-height:640px) {
-    .searchResults {
-        font-size: 1.5em;
-    }
+/*Milligram customization*/
+.button,
+button,
+input[type='button'],
+input[type='reset'],
+input[type='submit'] {
+  background-color: #9b4dca;
+  border: 0.1rem solid #9b4dca;
+  border-radius: .4rem;
+  color: #fff;
+  cursor: pointer;
+  display: inline-block;
+  font-size: 1.1rem;
+  font-weight: 700;
+  height: 3.8rem;
+  letter-spacing: .1rem;
+  line-height: 3.8rem;
+  padding: 0 3.0rem;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+  white-space: nowrap;
 }
+
+
+
+button.greenGrad {
+    background: linear-gradient(0.25turn,  rgb(33, 204, 39) 0%, rgb(16, 107, 19) 80%,rgb(16, 107, 19) 100%);
+  /*background-color: rgb(33, 204, 39);*/
+  border: 0.1rem solid rgb(33, 204, 39);
+  border-radius: .4rem;
+  color: #fff;
+}
+
+button.greenAwesome {
+    font-family: 'Heebo', Helvetica, Arial, sans-serif;
+    font-weight: 400;
+    text-transform: inherit;
+    background: linear-gradient(0.5turn,  rgb(33, 204, 39) 0%, rgb(16, 107, 19) 80%,rgb(16, 107, 19) 100%);
+    border: 0.1rem solid rgb(33, 204, 39);
+    border-radius: 2rem;
+    color: #fff;
+    box-shadow: 2px 2px 5px rgb(87, 109, 117);
+    transition-duration: 0.3s;
+    -webkit-transition-duration: 0.3s;
+    -moz-transition-duration: 0.3s;
+}
+
+button.greenAwesome:hover {
+    color: #000;
+    border: 1px solid #006398;
+    box-shadow: 2px 2px 20px #AFE9FF;
+    transform: scale(0.96)
+  }
+
+  button.greenAwesome:active {
+    color: #fff;
+    background: rgb(33, 204, 39);
+  }
+
+  button.yellowAwesome {
+    font-family: 'Heebo', Helvetica, Arial, sans-serif;
+    font-weight: 400;
+    text-transform: inherit;
+    background: linear-gradient(0.5turn,  rgb(255, 217, 1) 0%, rgb(255, 166, 1) 80%,rgb(207, 131, 0) 100%);
+    border: 0.1rem solid #FFC107;
+    border-radius: 2rem;
+    color: #000;
+    box-shadow: 2px 2px 5px rgb(87, 109, 117);
+    transition-duration: 0.3s;
+    -webkit-transition-duration: 0.3s;
+    -moz-transition-duration: 0.3s;
+}
+
+button.yellowAwesome:hover {
+    color: #fff;
+    border: 1px solid #006398;
+    box-shadow: 2px 2px 20px #AFE9FF;
+    transform: scale(0.96)
+  }
+
+  button.yellowAwesome:active {
+    color: #000;
+    background: #FFC107;
+  }
+
+  button.orangeAwesome {
+    font-family: 'Heebo', Helvetica, Arial, sans-serif;
+    font-weight: 400;
+    text-transform: inherit;
+    background: linear-gradient(0.5turn,  rgb(255, 136, 1) 0%, rgb(189, 99, 2) 80%,rgb(124, 65, 1) 100%);
+    border: 0.1rem solid rgb(189, 99, 2);
+    border-radius: 2rem;
+    color: #fff;
+    box-shadow: 2px 2px 5px rgb(87, 109, 117);
+    transition-duration: 0.3s;
+    -webkit-transition-duration: 0.3s;
+    -moz-transition-duration: 0.3s;
+}
+
+button.orangeAwesome:hover {
+    color: #fff;
+    border: 1px solid #006398;
+    box-shadow: 2px 2px 20px #AFE9FF;
+    transform: scale(0.96)
+  }
+
+  button.orangeAwesome:active {
+    color: #fff;
+    background: rgb(255, 136, 1);
+  }
+
+  button.pinkAwesome {
+    font-family: 'Heebo', Helvetica, Arial, sans-serif;
+    font-weight: 400;
+    text-transform: inherit;
+    background: linear-gradient(0.5turn,    #e91e63 0%, #ec3b79 80%,#ec6695 100%);
+    border: 0.1rem solid   #e91e63;
+    border-radius: 2rem;
+    color: #fff;
+    box-shadow: 2px 2px 5px rgb(87, 109, 117);
+    transition-duration: 0.3s;
+    -webkit-transition-duration: 0.3s;
+    -moz-transition-duration: 0.3s;
+}
+
+button.pinkAwesome:hover {
+    color: #fff;
+    border: 1px solid #006398;
+    box-shadow: 2px 2px 20px #AFE9FF;
+    transform: scale(0.96)
+  }
+
+  button.pinkAwesome:active {
+    color: #fff;
+    background: #ec6695;
+  }
+
+  button.blueAwesome {
+    font-family: 'Heebo', Helvetica, Arial, sans-serif;
+    font-weight: 400;
+    text-transform: inherit;
+    background: linear-gradient(0.5turn, rgb(0, 90, 207) 0%, rgb(20, 0, 121) 80%,rgb(39, 1, 255) 100%);
+    border: 0.1rem solid rgb(20, 0, 121);
+    border-radius: 2rem;
+    color: #fff;
+    box-shadow: 2px 2px 5px rgb(87, 109, 117);
+    transition-duration: 0.3s;
+    -webkit-transition-duration: 0.3s;
+    -moz-transition-duration: 0.3s;
+}
+
+button.blueAwesome:hover {
+    color: #fff;
+    border: 1px solid #006398;
+    box-shadow: 2px 2px 20px #AFE9FF;
+    transform: scale(0.96)
+  }
+
+  button.blueAwesome:active {
+    color: #fff;
+    background: rgb(0, 90, 207);
+  }
+
+  button.purpleAwesome {
+    font-family: 'Heebo', Helvetica, Arial, sans-serif;
+    font-weight: 400;
+    text-transform: inherit;
+    background: linear-gradient(0.5turn, #470b6d 0%, #9b4dca 80%,#c77af7 100%);
+    border: 0.1rem solid #9b4dca;
+    border-radius: 2rem;
+    color: #fff;
+    box-shadow: 2px 2px 5px rgb(87, 109, 117);
+    transition-duration: 0.3s;
+    -webkit-transition-duration: 0.3s;
+    -moz-transition-duration: 0.3s;
+}
+
+button.purpleAwesome:hover {
+    color: #fff;
+    border: 1px solid #006398;
+    box-shadow: 2px 2px 20px #AFE9FF;
+    transform: scale(0.96)
+  }
+
+  button.purpleAwesome:active {
+    color: #fff;
+    background: #c77af7;
+  }
+
+button.green {
+    background-color: rgb(33, 204, 39);
+    border: 0.1rem solid rgb(33, 204, 39);
+    border-radius: .4rem;
+    color: #fff;
+}
+
+button.yellow {
+  background-color: #FFC107;
+  border: 0.1rem solid #FFC107;
+  border-radius: .4rem;
+  color: black;
+}
+
+button.blue {
+  background-color: rgb(20, 0, 121);
+  border: 0.1rem solid rgb(20, 0, 121);
+  border-radius: .4rem;
+  color: white;
+}
+
+

@@ -1,0 +1,27 @@
+.monsterSearch {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 1em 3em;
+}
+
+.monsterSearch .searchField label{
+    display: inline;
+}
+
+.monsterSearch .searchField input, .monsterSearch .searchField select{
+    width: inherit;
+}
+
+.monsterSearch .searchField input{
+    width: 60px;
+}
+
+.monsterSearch .searchField input[type="text"] {
+    width: 100px;
+}
+
+@media screen and (max-height:640px) {
+    .searchResults {
+        font-size: 1.5em;
+    }
+}

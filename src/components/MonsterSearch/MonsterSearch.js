@@ -5,7 +5,7 @@ import {monsterS3SelectChangeHandler} from '../../action-creators'
 import MonsterSearchForm from './MonsterSearchForm'
 import MonsterTable from './MonsterTable'
 
-import "../../css/CustomFormCss.css";
+import "./MonsterSearch.css"
 
 const monsterCount = (monsterList) => {
     return (monsterList) ? monsterList.length : 0;

@@ -10,6 +10,8 @@ import './css/CustomFormCss.css'
 class App extends Component {
     render() {
         return (
+            <main>
+            <header className="cleverorc">Clever Orc</header>
             <BrowserRouter>
                 <Switch>
                     <Route exact path="/"           component={MonsterFinder} />
@@ -17,6 +19,7 @@ class App extends Component {
                     <Route       path="/dmscreen"     component={DMScreen} />
                 </Switch>
             </BrowserRouter>
+            </main>
         );
     }
 }

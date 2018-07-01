@@ -119,7 +119,7 @@ class DMScreen extends Component {
             this.handleResult(this.diceBag.rollDice(numOfDice, numOfSides).toString());
         }
         clickFunc.bind(this);
-        return <button onClick={clickFunc} className="pinkAwesome">{numOfDice}d{numOfSides}</button>;
+        return <button onClick={clickFunc} className="tealAwesome">{numOfDice}d{numOfSides}</button>;
     }
 
     makeRandomChartButton(chart, chartName) {
@@ -128,7 +128,7 @@ class DMScreen extends Component {
 
     makeStatsButton(numOfDice, numOfSides, drop=0) {
         const dropStr = (drop > 0) ? `drop ${drop}` : "";
-        return <button type="button" className="pinkAwesome" onClick={() => this.handleResult(rollStatsFunc(this.diceBag, numOfDice, numOfSides, drop))}>Roll Stats ({numOfDice}d{numOfSides} {dropStr})</button>
+        return <button type="button" className="tealAwesome" onClick={() => this.handleResult(rollStatsFunc(this.diceBag, numOfDice, numOfSides, drop))}>Roll Stats ({numOfDice}d{numOfSides} {dropStr})</button>
     }
 
     makeCRButton(cr, numOfMonsters = 1) {
@@ -162,6 +162,7 @@ class DMScreen extends Component {
         //TODO: more random charts, random monsters
         return (
             <main className="dmScreen">
+                
                 <section>
                     {this.makeDiceButton(1, 4)}
                     {this.makeDiceButton(1, 6)}

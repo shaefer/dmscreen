@@ -23,6 +23,26 @@ header.cleverorc div {
   padding-left: 40px;
 }
 
+/* Styles to do css only image swap on hover for menu button */
+label.nav img {
+  cursor: pointer;
+}
+label.nav img:last-child {
+  display: none;  
+}
+label.nav:hover img:last-child {
+  display: block;  
+}
+label.nav:hover img:first-child {
+  display: none;  
+}
+label.nav:active img:last-child {
+  display: none;  
+}
+label.nav:active img:first-child {
+  display: block;  
+}
+
 /* These 3 styles are probably specific to MonsterSearch...*/
 .ReactTable .rt-td {
     padding: 0;
@@ -243,26 +263,5 @@ button.purpleAwesome:hover {
     color: #fff;
     background: #c77af7;
   }
-
-button.green {
-    background-color: rgb(33, 204, 39);
-    border: 0.1rem solid rgb(33, 204, 39);
-    border-radius: .4rem;
-    color: #fff;
-}
-
-button.yellow {
-  background-color: #FFC107;
-  border: 0.1rem solid #FFC107;
-  border-radius: .4rem;
-  color: black;
-}
-
-button.blue {
-  background-color: rgb(20, 0, 121);
-  border: 0.1rem solid rgb(20, 0, 121);
-  border-radius: .4rem;
-  color: white;
-}
 
 

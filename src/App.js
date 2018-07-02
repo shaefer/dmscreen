@@ -13,9 +13,9 @@ class App extends Component {
         return (
             <BrowserRouter>
                 <main>
-                    <header className="cleverorc"><div>Clever Orc</div></header>
+                    
                     <input className="nav" type="checkbox" id="navigation" />
-                    <label className="nav" for="navigation"><img src="/images/Hamburger_icon.png"/></label>
+                    <label className="nav" for="navigation"><img src="images/circleMenuIcon.png"/><img src="images/circleMenuIconWhite.png"/></label>
                     <nav className="mainNav">
                         <ul>
                             <li><Link to="/">Monster Finder</Link></li>
@@ -24,6 +24,7 @@ class App extends Component {
                         </ul>
                     </nav>
                     <section className="nav">
+                    <header className="cleverorc"><div>Clever Orc</div></header>
                     <Route exact path="/"           component={MonsterFinder} />
                     <Route       path="/search"     component={MonsterSearch} />
                     <Route       path="/dmscreen"     component={DMScreen} />

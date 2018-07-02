@@ -73,7 +73,7 @@ const dmScreen = (state = {results:[], buttons:[], showForm: false}, action) => 
         ...state,
         showForm: action.showForm
       };
-    case Actions.S3_SELECT_SHOW:
+    case Actions.S3_SELECT_DMSCREEN_SHOW:
       return {
         ...state,
         results: [...state.results, action.monsterList]

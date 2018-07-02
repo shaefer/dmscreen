@@ -1,7 +1,7 @@
 import React from 'react'
 import Keys from '../models/Keys'
 //import Monsters from '../models/AllMonsters'
-import { showMonster, selectMonsterOption, showS3SelectResult, addDmScreenResult, addCustomButton, toggleForm } from '../actions'
+import { showMonster, selectMonsterOption, showS3SelectResult, showS3SelectDMScreenResult, addDmScreenResult, addCustomButton, toggleForm } from '../actions'
 
 import rollTimeString from '../utils/ResultTimestamp'
 
@@ -95,7 +95,7 @@ export const fetchSelectAction = (searchParams) => (dispatch, getState) => {
         const s = (numOfMonsters > 1) ? "s" : "";
         const desc = `(${rollTimeString()}) ${countStr}CR ${searchParams.cr} Monster${s}`
         const result = [<span>{desc}</span>, ...monsterButtons]
-        return showS3SelectResult(result);
+        return showS3SelectDMScreenResult(result);
     }
     fetchSelect(searchParams, dispatch, chooseMonster);
 }

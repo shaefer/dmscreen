@@ -1,0 +1,99 @@
+/*
+                    <input className="nav" type="checkbox" id="navigation" />
+                    <label className="nav" for="navigation"></label>
+                    <nav className="mainNav">
+                        <ul>
+                            <li><Link to="/">Monster Finder</Link></li>
+                            <li><Link to="/search">Monster Search</Link></li>
+                            <li><Link to="/dmscreen">DM Screen</Link></li>
+                        </ul>
+                    </nav>
+                    <section className="nav">
+                    <Route exact path="/"           component={MonsterFinder} />
+                    <Route       path="/search"     component={MonsterSearch} />
+                    <Route       path="/dmscreen"     component={DMScreen} />
+                    </section>
+*/
+
+nav.mainNav{
+    position:fixed;
+    top:0;
+    left:0;
+    width:250px;
+    height:100%;
+    margin:0 0 0 -250px;
+    -moz-transition:all 200ms ease-in;
+    -webkit-transition:all 200ms ease-in;
+    -o-transition:all 200ms ease-in;
+    transition:all 200ms ease-in;
+}
+nav.mainNav ul{
+    width:250px;
+    height:100%;
+    padding:0;
+    margin:0;
+    list-style:none;
+    background:#222;
+    overflow:hidden;
+}
+nav.mainNav li{
+    margin:0;
+}
+nav.mainNav a{
+    color:#fff;
+    font-size:1em;
+    font-family:'helvetica neue', helvetica, arial, sans-serif;
+    text-decoration:none;
+    display:block;
+    padding:12px 15px;
+    font-weight:300;
+    letter-spacing:2px;
+    border-bottom:1px solid #333;
+}
+nav.mainNav a:hover{
+    background:#111;
+}
+
+label.nav{
+    display:block;
+    font-family:'helvetica neue', helvetica, arial, sans-serif;
+    font-weight:700;
+    width:42px;
+    height:42px;
+    line-height:42px;
+    color:#fff;
+    text-align:center;
+    font-size:2em;
+    line-height:1.1em;
+    position:fixed;
+    top:3px;
+    left:3px;
+    -moz-transition:all 200ms ease-in;
+    -webkit-transition:all 200ms ease-in;
+    -o-transition:all 200ms ease-in;
+    transition:all 200ms ease-in;
+    z-index:500;
+}
+input.nav[type="checkbox"]{
+    display:none;
+}
+input.nav[type="checkbox"]:checked ~ nav{
+    margin:0;
+}
+input.nav[type="checkbox"]:checked ~ label{
+    left:260px;
+}
+input.nav[type="checkbox"]:checked ~ section{
+    -webkit-transform:translate3d(250px, 0, 0);
+    -moz-transform:translate3d(250px, 0, 0);
+    -o-transform:translate3d(250px, 0, 0);
+    transform:translate3d(250px, 0, 0);
+
+}
+section.nav{
+    -moz-transition:all 200ms ease-in;
+    -webkit-transition:all 200ms ease-in;
+    -o-transition:all 200ms ease-in;
+    transition:all 200ms ease-in;
+
+}

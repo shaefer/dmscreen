@@ -132,7 +132,7 @@ class DMScreen extends Component {
     }
 
     makeCRButton(cr, numOfMonsters = 1) {
-        if (cr < 0 || numOfMonsters < 1 || numOfMonsters > 1000 || cr < 30) return "";
+        if (cr < 0 || numOfMonsters < 1 || numOfMonsters > 1000 || cr > 30) return "";
         const searchParams = {cr: cr, crOperator: "=", num:numOfMonsters}
         const fetchCall = () => this.props.fetchSelectAction(searchParams);
         const countStr = (numOfMonsters > 1) ? numOfMonsters + " " : "";

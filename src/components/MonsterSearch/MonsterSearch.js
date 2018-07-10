@@ -7,6 +7,8 @@ import MonsterTable from './MonsterTable'
 
 import "./MonsterSearch.css"
 
+import ReactGA from 'react-ga';
+
 const monsterCount = (monsterList) => {
     return (monsterList) ? monsterList.length : 0;
 }
@@ -23,7 +25,8 @@ class MonsterSearch extends Component {
     }
 
     componentDidMount() {
-        document.title="Monster Search - Pathfinder - by Clever Orc Games"
+        document.title="Monster Search - Pathfinder - by Clever Orc Games";
+        ReactGA.pageview({path: window.location.pathname + window.location.search, title: document.title});
     }
 
     submit = values => {

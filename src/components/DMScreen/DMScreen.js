@@ -9,6 +9,8 @@ import './DmScreen.css'
 
 import {DungeonEntrances, Backgrounds, DungeonLocations, DungeonTypes, DungeonRooms, NpcCharacteristicsPhysical, NpcCharacteristics} from './RandomCharts'
 
+import ReactGA from 'react-ga';
+
 const rollRandomChart = (diceBag, chart, chartName) => {
     const timeOfRoll = rollTimeString();
     const result = chart[diceBag.rollDice(1, chart.length).total - 1];
@@ -106,7 +108,8 @@ class DMScreen extends Component {
     }
 
     componentDidMount() {
-        document.title="DM Screen - Pathfinder - by Clever Orc Games"
+        document.title="DM Screen - Pathfinder - by Clever Orc Games";
+        ReactGA.pageview({path: window.location.pathname + window.location.search, title: document.title});
     }
 
     handleResult(result) {

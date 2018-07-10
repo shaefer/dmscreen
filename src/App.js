@@ -9,6 +9,9 @@ import License from './components/License/License'
 import './css/CustomFormCss.css'
 import './css/LeftHamburgerNav.css'
 
+import ReactGA from 'react-ga';
+ReactGA.initialize('UA-122019115-2');
+
 class App extends Component {
     render() {
         return (

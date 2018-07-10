@@ -10,9 +10,14 @@ import './css/CustomFormCss.css'
 import './css/LeftHamburgerNav.css'
 
 import ReactGA from 'react-ga';
-ReactGA.initialize('UA-122019115-2');
+
 
 class App extends Component {
+    componentDidMount() {
+        console.log("APP DID MOUNT");
+        ReactGA.initialize('UA-122019115-2');
+    }
+    
     render() {
         return (
             <BrowserRouter>

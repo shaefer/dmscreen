@@ -45,9 +45,10 @@ class MonsterFinder extends Component {
 
   componentDidMount() {
     document.addEventListener('keydown', this.handleKeyPress);
-    document.title="Monster Finder (Statblock) - Pathfinder - by Clever Orc Games"
+    const title = "Monster Finder (Statblock) - Pathfinder - by Clever Orc Games";
+    document.title = title;
 
-    ReactGA.pageview({path: window.location.pathname + window.location.search, title: document.title});
+    ReactGA.pageview(window.location.pathname + window.location.search, undefined, title);
   }
 
   componentWillUnmount() {

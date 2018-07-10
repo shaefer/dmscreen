@@ -8,6 +8,8 @@ import Aasimar from '../models/Aasimar'
 
 import MonsterDisplay from '../components/MonsterDisplay'
 
+import ReactGA from 'react-ga';
+
 const config = (state = { initialState: "basicConfig"}, action) => {
   switch (action.type) {
     default:
@@ -33,6 +35,10 @@ const monster = (state = { statBlock: Aasimar}, action) => {
     case Actions.SHOW_MONSTER: 
       //console.log("SHOW MONSTER");
       //console.log(action.monster);
+      ReactGA.event({
+        category: 'Monster Find',
+        action: action.monster.name
+      })
       return {
         ...state,
         statBlock: action.monster

@@ -8,8 +8,9 @@ import ReactGA from 'react-ga';
 class License extends Component {
 
     componentDidMount() {
-        document.title="License (OGL) - by Clever Orc Games";
-        ReactGA.pageview({path: window.location.pathname + window.location.search, title: document.title});
+        const title = "License (OGL) - by Clever Orc Games";
+        document.title=title;
+        ReactGA.pageview(window.location.pathname + window.location.search, undefined, title);
     }
 
     render() {

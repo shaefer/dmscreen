@@ -3,7 +3,6 @@ import { connect } from 'react-redux'
 import {dmScreenAddResultAction, addCustomButtonAction, toggleFormAction, fetchSelectAction} from '../../action-creators'
 import DiceBag from '../../utils/DiceBag'
 import CreateAButtonForm from '../../components/DMScreen/CreateAButtonForm'
-import MonsterDisplay from '../../components/MonsterDisplay'
 import rollTimeString from '../../utils/ResultTimestamp'
 import './DmScreen.css'
 
@@ -108,8 +107,9 @@ class DMScreen extends Component {
     }
 
     componentDidMount() {
-        document.title="DM Screen - Pathfinder - by Clever Orc Games";
-        ReactGA.pageview({path: window.location.pathname + window.location.search, title: document.title});
+        const title = "DM Screen - Pathfinder - by Clever Orc Games";
+        document.title= title;
+        ReactGA.pageview(window.location.pathname + window.location.search, undefined, title);
     }
 
     handleResult(result) {
@@ -148,7 +148,7 @@ class DMScreen extends Component {
         const button = (values.type === 'diceButton') 
             ? this.makeDiceButton(values.diceButtonNumOfDice, values.diceButtonNumOfSides) 
             : this.makeCRButton(values.cr, values.numOfMonsters);
-        if (values.type == 'monsterButton' && values.cr > 30) {  
+        if (values.type === 'monsterButton' && values.cr > 30) {  
             this.handleResult(<span style={{color:'red'}}>Cannot create monster button with CR > 30.</span>);
         } else {
             this.props.addCustomButtonAction(button);

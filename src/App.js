@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {BrowserRouter, Switch, Route, Link} from 'react-router-dom'
+import {BrowserRouter, Route, Link} from 'react-router-dom'
 
 import MonsterFinder from './components/MonsterFinder/MonsterFinder'
 import MonsterSearch from './components/MonsterSearch/MonsterSearch'
@@ -14,7 +14,6 @@ import ReactGA from 'react-ga';
 
 class App extends Component {
     componentDidMount() {
-        console.log("APP DID MOUNT");
         ReactGA.initialize('UA-122019115-2');
     }
     
@@ -22,9 +21,8 @@ class App extends Component {
         return (
             <BrowserRouter>
                 <main>
-                    
                     <input className="nav" type="checkbox" id="navigation" />
-                    <label className="nav" for="navigation"><img src="images/circleMenuIcon.png"/><img src="images/circleMenuIconWhite.png"/></label>
+                    <label className="nav" htmlFor="navigation"><img src="images/circleMenuIcon.png"/><img src="images/circleMenuIconWhite.png"/></label>
                     <nav className="mainNav">
                         <ul>
                             <li><a href="https://www.cleverorc.com">Clever Orc Home</a></li>

@@ -25,8 +25,9 @@ class MonsterSearch extends Component {
     }
 
     componentDidMount() {
-        document.title="Monster Search - Pathfinder - by Clever Orc Games";
-        ReactGA.pageview({path: window.location.pathname + window.location.search, title: document.title});
+        const title = "Monster Search - Pathfinder - by Clever Orc Games";
+        document.title = title;
+        ReactGA.pageview(window.location.pathname + window.location.search, undefined, title);
     }
 
     submit = values => {

@@ -53,6 +53,10 @@ const s3Select = (state = { monsterList:[]}, action) => {
     case Actions.S3_SELECT_SHOW: 
       //console.log("SHOW MONSTER");
       //console.log(action.monster);
+      ReactGA.event({
+        category: 'Monster Search',
+        action: action.searchParams
+      })
       return {
         ...state,
         monsterList: action.monsterList

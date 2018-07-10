@@ -140,7 +140,7 @@ const fetchSelect = (searchParams, dispatch, action = showS3SelectResult) => {
         });
     return results.then(monsters => {
         if (monsters && monsters.length > 0)
-            dispatch(action(monsters));
+            dispatch(action(monsters, searchFieldsAsHtmlParams));
     });
 }
 

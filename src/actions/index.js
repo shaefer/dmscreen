@@ -11,9 +11,10 @@ export const showMonster = (monsterJson) => ({
     monster: monsterJson
 });
 
-export const showS3SelectResult = (monsterListJson) => ({
+export const showS3SelectResult = (monsterListJson, searchParams) => ({
     type:'S3_SELECT_SHOW',
-    monsterList: monsterListJson
+    monsterList: monsterListJson,
+    searchParams: searchParams
 });
 
 export const showS3SelectDMScreenResult = (monsterListJson) => ({

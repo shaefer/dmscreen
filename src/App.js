@@ -15,15 +15,19 @@ import ReactGA from 'react-ga';
 class App extends Component {
     constructor(props) {
         super(props);
-        this.closeMenuOnClickOutsideMenuAndButton.bind(this);
+        this.handleClickOutsideOfNavBarAndNotPartOfMenuButton.bind(this);
     }
 
     componentDidMount() {
         ReactGA.initialize('UA-122019115-2');
     }
 
-    closeMenuOnClickOutsideMenuAndButton(e) {
-        if ((e.target.id !== 'navigation' && e.target.id !== 'navigationLabel') && !this.refs["navBar"].contains(e.target)  ) {
+    handleClickOutsideOfNavBarAndNotPartOfMenuButton(e) {
+        //console.log("HANDLE CLICK", e.target)
+        const isNotNavElement = (e.target.id !== 'navigation' && e.target.id !== 'navigationLabel' && e.target.id !== 'navImg');
+
+        if (isNotNavElement && !this.refs["navBar"].contains(e.target)  ) {
+            //console.log("Not a click on label or input for check AND not a click inside nav bar");
             this.refs["navBarControl"].checked = false;
         }
     }
@@ -31,9 +35,9 @@ class App extends Component {
     render() {
         return (
             <BrowserRouter>
-                <main onClick={(e) => { this.closeMenuOnClickOutsideMenuAndButton(e) }}>
+                <main onClick={(e) => { this.handleClickOutsideOfNavBarAndNotPartOfMenuButton(e) }}>
                     <input className="nav" type="checkbox" id="navigation" ref="navBarControl" />
-                    <label className="nav" id="navigationLabel" htmlFor="navigation"><img src="images/circleMenuIcon.png"/><img src="images/circleMenuIconWhite.png"/></label>
+                    <label className="nav" id="navigationLabel" htmlFor="navigation"><img id="navImg" src="images/circleMenuIcon.png"/><img src="images/circleMenuIconWhite.png"/></label>
                     <nav className="mainNav" ref="navBar">
                         <ul>
                             <li><a href="https://www.cleverorc.com">Clever Orc Home</a></li>

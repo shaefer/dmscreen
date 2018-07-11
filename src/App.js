@@ -15,18 +15,15 @@ import ReactGA from 'react-ga';
 class App extends Component {
     constructor(props) {
         super(props);
-        this.handleClick.bind(this);
+        this.closeMenuOnClickOutsideMenuAndButton.bind(this);
     }
 
     componentDidMount() {
         ReactGA.initialize('UA-122019115-2');
     }
 
-    handleClick(e) {
-        console.log("HANDLE CLICK", e.target)
+    closeMenuOnClickOutsideMenuAndButton(e) {
         if ((e.target.id !== 'navigation' && e.target.id !== 'navigationLabel') && !this.refs["navBar"].contains(e.target)  ) {
-            console.log("Not a click on label or input for check AND not a click inside nav bar");
-            //close it.
             this.refs["navBarControl"].checked = false;
         }
     }
@@ -34,7 +31,7 @@ class App extends Component {
     render() {
         return (
             <BrowserRouter>
-                <main onClick={(e) => { this.handleClick(e) }}>
+                <main onClick={(e) => { this.closeMenuOnClickOutsideMenuAndButton(e) }}>
                     <input className="nav" type="checkbox" id="navigation" ref="navBarControl" />
                     <label className="nav" id="navigationLabel" htmlFor="navigation"><img src="images/circleMenuIcon.png"/><img src="images/circleMenuIconWhite.png"/></label>
                     <nav className="mainNav" ref="navBar">

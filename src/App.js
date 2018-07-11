@@ -13,17 +13,31 @@ import ReactGA from 'react-ga';
 
 
 class App extends Component {
+    constructor(props) {
+        super(props);
+        this.handleClick.bind(this);
+    }
+
     componentDidMount() {
         ReactGA.initialize('UA-122019115-2');
+    }
+
+    handleClick(e) {
+        console.log("HANDLE CLICK", e.target)
+        if ((e.target.id !== 'navigation' && e.target.id !== 'navigationLabel') && !this.refs["navBar"].contains(e.target)  ) {
+            console.log("Not a click on label or input for check AND not a click inside nav bar");
+            //close it.
+            this.refs["navBarControl"].checked = false;
+        }
     }
     
     render() {
         return (
             <BrowserRouter>
-                <main>
-                    <input className="nav" type="checkbox" id="navigation" />
-                    <label className="nav" htmlFor="navigation"><img src="images/circleMenuIcon.png"/><img src="images/circleMenuIconWhite.png"/></label>
-                    <nav className="mainNav">
+                <main onClick={(e) => { this.handleClick(e) }}>
+                    <input className="nav" type="checkbox" id="navigation" ref="navBarControl" />
+                    <label className="nav" id="navigationLabel" htmlFor="navigation"><img src="images/circleMenuIcon.png"/><img src="images/circleMenuIconWhite.png"/></label>
+                    <nav className="mainNav" ref="navBar">
                         <ul>
                             <li><a href="https://www.cleverorc.com">Clever Orc Home</a></li>
                             <li><Link to="/">Monster Finder</Link></li>

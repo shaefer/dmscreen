@@ -48,7 +48,15 @@ class App extends Component {
                         </ul>
                     </nav>
                     <section className="nav">
-                    <header className="cleverorc"><div>Clever Orc</div></header>
+                    <header className="cleverorc">
+                        <div>
+                            <span>Clever Orc</span>
+                            <a href="https://www.patreon.com/bePatron?c=1882197" data-patreon-widget-type="become-patron-button" className="patreonLink">
+                                <img className="patreonButton" src="/images/become_a_patron_button.png"/>
+                            </a>
+                        </div>
+                        
+                    </header>
                     <Route exact path="/"           component={MonsterFinder} />
                     <Route       path="/search"     component={MonsterSearch} />
                     <Route       path="/dmscreen"     component={DMScreen} />

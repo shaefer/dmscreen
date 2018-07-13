@@ -6,21 +6,63 @@
 header.cleverorc {
   font-family: 'Playfair Display', serif;
   letter-spacing: 2px;
-  line-height: 1;
   text-transform: uppercase;
   font-size: 1.5em;
   font-weight: 700;
 
-  padding: 0.5em;
   color: black;
 
   text-shadow: 3px 3px 3px rgba(0,0,0, 0.2);
 
   background: linear-gradient(0.25turn,  #68b04d 0%, #1c8a43 80%,rgb(16, 107, 19) 100%);
+
+  height: 48px;
 }
 
 header.cleverorc div {
-  padding-left: 40px;
+  padding-left: 52px;
+  height: 100%;
+}
+
+header.cleverorc > div > span, header.cleverorc > div > a {
+  vertical-align: middle;
+}
+
+.patreonLink {
+  float: right;
+  height: 100%;
+  margin-right: 0.5em;
+}
+
+.patreonLink img{
+  width: 150px;
+  vertical-align: middle;
+}
+
+@media screen and (max-width: 359px) {
+  
+  header.cleverorc span {
+    font-size: 0.9em;
+    line-height: 48px;
+    vertical-align: middle;
+  }
+
+  .patreonLink img{
+    width: 100px;
+    vertical-align: middle;
+  }
+}
+
+@media screen and (max-width: 600px) and (min-width: 360px) {
+  header.cleverorc span {
+    font-size: 1em;
+    line-height: 48px;
+    vertical-align: middle;
+  }
+  .patreonLink img{
+    width: 120px;
+    vertical-align: middle;
+  }
 }
 
 /* Styles to do css only image swap on hover for menu button */

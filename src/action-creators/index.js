@@ -5,11 +5,12 @@ import { showMonster, selectMonsterOption, showS3SelectResult, showS3SelectDMScr
 
 import rollTimeString from '../utils/ResultTimestamp'
 
+//TODO: Remove this if it is not used...
 export const fetchMonsterAction = (monsterName) => (dispatch, getState) => {
     fetchMonster(monsterName, dispatch);
 }
 
-const fetchMonster = (monsterName, dispatch) => {
+const fetchMonster = (monsterName, dispatch, source) => {
     console.log("ABOUT TO GET: " + monsterName);
     let monsterKey = monsterName.toLowerCase()
         .replace(new RegExp("[,()']", 'g'), "")
@@ -29,7 +30,7 @@ const fetchMonster = (monsterName, dispatch) => {
     // return dispatch(showMonster(monster));
     return fetch(`https://api.cleverorc.com/monsters/${monsterKey}`)
         .then(resp => resp.json())
-        .then(data =>  dispatch(showMonster(data)))
+        .then(data =>  dispatch(showMonster(data, source)))
         .catch(err => console.log(err));
 }
 
@@ -40,7 +41,8 @@ export const monsterSelectChangeHandler = (e) => (dispatch, getState) => {
     
     const monsterName = (e && e.value) ? e.value : e.label;
     dispatch(selectMonsterOption(monsterName));
-    fetchMonster(monsterName, dispatch);
+    const source = "Monster Find"
+    fetchMonster(monsterName, dispatch, source);
 }
 
 export const keyPressHandler = (e) => {
@@ -75,7 +77,7 @@ export const keyPressHandler = (e) => {
 
 //using for DMScreen right now
 export const fetchSelectAction = (searchParams) => (dispatch, getState) => {
-    const chooseMonster = (monsters) => {
+    const chooseMonster = (monsters, searchParamsAsHtmlParams) => {
         const numOfMonsters = searchParams.num; //special searchParams.
         const monsterNames = monsters.map(x => x.name);
         let selectedMonsters = [];
@@ -85,8 +87,9 @@ export const fetchSelectAction = (searchParams) => (dispatch, getState) => {
         }
         console.log("Select Multiple Monsters", monsters, numOfMonsters, selectedMonsters);
         const monsterButtons = selectedMonsters.map(x => {
+            const source = "DM Screen"
             const lookupMonster = () => {
-                fetchMonster(x, dispatch);
+                fetchMonster(x, dispatch, source);
             }
             return <button type="button" onClick={lookupMonster} className="purpleAwesome">{x}</button>
         })
@@ -95,7 +98,7 @@ export const fetchSelectAction = (searchParams) => (dispatch, getState) => {
         const s = (numOfMonsters > 1) ? "s" : "";
         const desc = `(${rollTimeString()}) ${countStr}CR ${searchParams.cr} Monster${s}`
         const result = [<span>{desc}</span>, ...monsterButtons]
-        return showS3SelectDMScreenResult(result);
+        return showS3SelectDMScreenResult(result, searchParamsAsHtmlParams);
     }
     fetchSelect(searchParams, dispatch, chooseMonster);
 }

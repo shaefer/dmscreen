@@ -31,14 +31,17 @@ const select = (state = { selectedMonsterName: Aasimar.name}, action) => {
 
 const monster = (state = { statBlock: Aasimar}, action) => {
   //console.log("LAYOUT REDUCER");
+  const category = "Monster Find";
   switch (action.type) {
     case Actions.SHOW_MONSTER: 
       //console.log("SHOW MONSTER");
       //console.log(action.monster);
-      ReactGA.event({
-        category: 'Monster Find',
-        action: action.monster.name
-      })
+      if (action.source === category) {
+        ReactGA.event({
+          category: category,
+          action: action.monster.name
+        })
+      }
       return {
         ...state,
         statBlock: action.monster
@@ -67,6 +70,7 @@ const s3Select = (state = { monsterList:[]}, action) => {
 }
 
 const dmScreen = (state = {results:[], buttons:[], showForm: false}, action) => {
+  const category = "DM Screen";
   switch (action.type) {
     case Actions.ADD_RESULT:
       return {
@@ -84,11 +88,21 @@ const dmScreen = (state = {results:[], buttons:[], showForm: false}, action) => 
         showForm: action.showForm
       };
     case Actions.S3_SELECT_DMSCREEN_SHOW:
+      ReactGA.event({
+        category: category,
+        action: action.searchParams
+      })
       return {
         ...state,
         results: [...state.results, action.monsterList]
       }
     case Actions.SHOW_MONSTER:
+      if (action.source === category) {
+        ReactGA.event({
+          category: category,
+          action: action.monster.name
+        })
+      }
       return {
         ...state,
         results: [...state.results, <MonsterDisplay monster={{statBlock: action.monster}}/>]

@@ -5,6 +5,7 @@ import MonsterFinder from './components/MonsterFinder/MonsterFinder'
 import MonsterSearch from './components/MonsterSearch/MonsterSearch'
 import DMScreen from './components/DMScreen/DMScreen'
 import License from './components/License/License'
+import Copyright from './components/Copyright/Copyright'
 
 import './css/CustomFormCss.css'
 import './css/LeftHamburgerNav.css'
@@ -45,6 +46,7 @@ class App extends Component {
                             <li><Link to="/search">Monster Search</Link></li>
                             <li><Link to="/dmscreen">DM Screen</Link></li>
                             <li><Link to="/license">OGL</Link></li>
+                            <li><Link to="/copyright">Copyright &amp; Trademark</Link></li>
                         </ul>
                     </nav>
                     <section className="nav">
@@ -61,6 +63,7 @@ class App extends Component {
                     <Route       path="/search"     component={MonsterSearch} />
                     <Route       path="/dmscreen"     component={DMScreen} />
                     <Route       path="/license"     component={License} />
+                    <Route       path="/copyright"  component={Copyright} />
                     </section>
                 </main>
             </BrowserRouter>

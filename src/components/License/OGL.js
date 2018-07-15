@@ -126,9 +126,12 @@ const OGL = (
     </div>
     <div>	
         15. COPYRIGHT NOTICE
-        <b>Open Game License v 1.0a</b> Copyright 2000, Wizards of the Coast, Inc.
-        <b>System Reference Document</b> Copyright 2000, Wizards of the Coast, Inc.; Authors Jonathan Tweet, 
-        Monte Cook, Skip Williams, based on original material by E. Gary Gygax and Dave Arneson.
+        <div><b>Open Game License v 1.0a</b> Copyright 2000, Wizards of the Coast, Inc.</div>
+        <div><b>System Reference Document</b> Copyright 2000, Wizards of the Coast, Inc.; Authors Jonathan Tweet, 
+        Monte Cook, Skip Williams, based on original material by E. Gary Gygax and Dave Arneson.</div>
+        <div><b>Pathfinder Roleplaying Game Core Rulebook.</b> © 2009, Paizo Inc.; Author: Jason Bulmahn, based on material by Jonathan Tweet, Monte Cook, and Skip Williams.</div>
+        <div><b>The Book of Experimental Might.</b> © 2008, Monte J. Cook. All rights reserved.</div>
+        <div><b>Tome of Horrors.</b> © 2002, Necromancer Games, Inc.; Authors: Scott Greene, with Clark Peterson, Erica Balsley, Kevin Baase, Casey Christofferson, Lance Hawvermale, Travis Hawvermale, Patrick Lawinger, and Bill Webb; Based on original content from TSR.</div>
         <b>Sea Serpent, Brine</b> from the Tome of Horrors III, Copyright 2005, Necromancer Games, Inc.; Author: 
         Scott Greene, with Casey Christofferson, Erica Balsley, Kevin Baase, Lance Hawvermale, Travis Hawvermale,
         Ian S. Johnston, Patrick Lawringer, Nathan Paul, Clark Peterson, Greg Ragland, Robert Schwalb and Bill Webb.

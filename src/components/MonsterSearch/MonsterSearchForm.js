@@ -55,6 +55,7 @@ class MonsterSearchFormComponent extends Component {
           <form onSubmit={handleSubmit} className="monsterSearch">
             {searchFieldSection("cr", "CR", "number", this.props["crOperator"])}
             {searchFieldSection("str", "Str", "number", this.props["strOperator"])}
+            {searchFieldSection("dex", "Dex", "number", this.props["dexOperator"])}
             {searchFieldSection("ac", "AC", "number", this.props["acOperator"])}
             {searchTextFieldSection("environment", "Environment", "text", this.props["environmentOperator"])}
             <button type="submit">Submit</button>
@@ -70,6 +71,7 @@ const MonsterSearchForm = reduxForm({
       cr: 12,
       crEnd: 14,
       strOperator: ">=",
+      dexOperator: ">=",
       acOperator: ">=",
       environmentOperator: "like"
     }
@@ -81,6 +83,7 @@ const MonsterSearchFormConnected = connect(
     return {
         crOperator : selector(state, 'crOperator'),
         strOperator : selector(state, 'strOperator'),
+        dexOperator : selector(state, 'dexOperator'),
         acOperator : selector(state, 'acOperator')
     }
   }

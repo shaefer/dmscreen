@@ -28,6 +28,12 @@ class MonsterTable extends Component {
             maxWidth: 100,
             minWidth: 30
         });
+        if (monsters[0].dex) columns.push({
+            Header: "Dex",
+            accessor: "dex",
+            maxWidth: 100,
+            minWidth: 30
+        });
         if (monsters[0].ac) columns.push({
             Header: "AC",
             accessor: "ac",

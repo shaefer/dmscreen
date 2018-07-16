@@ -31,6 +31,17 @@ const addStrengthAsInt = (json) => {
     if (!isNaN(strAsNum)) json.strengthInt = strAsNum;
 }
 
+const addDexterityAsInt = (json) => {
+    //console.log(json.strength + " | " + (parseInt(json.strength)));
+    var asNum = parseInt(json.dexterity);
+    if (!isNaN(asNum)) json.dexterityInt = asNum;
+}
+
+const addStatJson = (json, fieldName, outputFieldName) => {
+    var asNum = parseInt(json[fieldName]);
+    if (!isNaN(asNum)) json[outputFieldName] = asNum;
+}
+
 const addCrAsNum = (json) => {
     if (json.cr && json.cr.indexOf("/") !== -1) {
         if (json.cr == '1/2')
@@ -64,9 +75,18 @@ const readStrAndCreateStrInt = (line) => {
     line = replaceEnDashWithDash(line);
 
     const json = JSON.parse(line);
-    addStrengthAsInt(json);
-    addCrAsNum(json);
-    addAcAsInt(json);
+
+
+    /* Include/exclude parsers here...for the most part we've set this up to only need it once as long as we are reconsuming the output from the last time we updated. */
+    //addStrengthAsInt(json);
+    //addCrAsNum(json);
+    //addAcAsInt(json);
+    addStatJson(json, "dexterity", "dexterityInt");
+    addStatJson(json, "constitution", "constitutionInt");
+    addStatJson(json, "intelligence", "intelligenceInt");
+    addStatJson(json, "wisdom", "wisdomInt");
+    addStatJson(json, "charisma", "charismaInt");
+
 
     return JSON.stringify(json) + "\n";
 }

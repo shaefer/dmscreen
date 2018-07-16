@@ -120,6 +120,10 @@ const fetchSelect = (searchParams, dispatch, action = showS3SelectResult) => {
         const through = (searchParams.strOperator === 'btw') ? "-" + searchParams.strEnd : "";
         searchFields.push(`str=${searchParams.strOperator}${searchParams.str}${through}`);
     }
+    if (searchParams.dex) {
+        const through = (searchParams.dexOperator === 'btw') ? "-" + searchParams.dexEnd : "";
+        searchFields.push(`dex=${searchParams.dexOperator}${searchParams.dex}${through}`);
+    }
     if (searchParams.ac) {
         const through = (searchParams.acOperator === 'btw') ? "-" + searchParams.acEnd : "";
         searchFields.push(`ac=${searchParams.acOperator}${searchParams.ac}${through}`);

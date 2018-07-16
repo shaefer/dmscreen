@@ -1,3 +1,5 @@
+import React from 'react'
+const feats = (
 			<div>
 				<h2 id="acrobatic">Acrobatic</h2>
 
@@ -102,7 +104,7 @@
 				<h2 id="catch-off-guard">Catch Off-Guard (Combat)</h2>
 				<p>Foes are surprised by your skilled use of unorthodox and improvised weapons.</p>
 				<p><b>Benefit</b>: You do not suffer any penalties for using an improvised melee weapon. Unarmed opponents are <a linkindex="475" href="glossary.html#flat-footed">flat-footed</a> against any attacks you make with an improvised melee weapon.</p>
-				<p><b>Normal</b>: You take a –4 penalty on attack rolls made with an improvised weapon.</p>
+				<p><b>Normal</b>: You take a -4 penalty on attack rolls made with an improvised weapon.</p>
 
 				<h2 id="channel-smite">Channel Smite (Combat)</h2>
 				<p>You can channel your divine energy through a melee weapon you wield.</p>
@@ -112,7 +114,7 @@
 				<h2 id="cleave">Cleave (Combat)</h2>
 				<p>You can strike two adjacent foes with a single swing.</p>
 				<p><b>Prerequisites</b>: <a linkindex="477" href="gettingStarted.html#strength">Str</a> 13, <a linkindex="478" href="#power-attack">Power Attack</a>, base attack bonus +1.</p>
-				<p><b>Benefit</b>: As a standard action, you can make a single attack at your full base attack bonus against a foe within reach. If you hit, you deal damage normally and can make an additional attack (using your full base attack bonus) against a foe that is adjacent to the first and also within reach. You can only make one additional attack per round with this feat. When you use this feat, you take a –2 penalty to your <a linkindex="479" href="combat.html#armor-class">Armor Class</a> until your next turn.</p>
+				<p><b>Benefit</b>: As a standard action, you can make a single attack at your full base attack bonus against a foe within reach. If you hit, you deal damage normally and can make an additional attack (using your full base attack bonus) against a foe that is adjacent to the first and also within reach. You can only make one additional attack per round with this feat. When you use this feat, you take a -2 penalty to your <a linkindex="479" href="combat.html#armor-class">Armor Class</a> until your next turn.</p>
 
 				<h2 id="combat-casting">Combat Casting</h2>
 				<p>You are adept at spellcasting when threatened or distracted.</p>
@@ -121,7 +123,7 @@
 
 				<p>You can increase your defense at the expense of your accuracy.</p>
 				<p><b>Prerequisite</b>: <a linkindex="482" href="gettingStarted.html#intelligence">Int</a> 13.</p>
-				<p><b>Benefit</b>: You can choose to take a –1 penalty on melee attack rolls and combat maneuver checks to gain a +1 <a linkindex="483" href="combat.html#dodge-bonuses">dodge bonus</a> to your <a linkindex="484" href="combat.html#armor-class">Armor Class</a>. When your base attack bonus reaches +4, and every +4 thereafter, the penalty increases by –1 and the <a linkindex="485" href="combat.html#dodge-bonuses">dodge bonus</a> increases by +1. You can only choose to use this feat when you declare that you are making an attack or a full-attack action with a melee weapon. The effects of this feat last until your next turn.</p>
+				<p><b>Benefit</b>: You can choose to take a -1 penalty on melee attack rolls and combat maneuver checks to gain a +1 <a linkindex="483" href="combat.html#dodge-bonuses">dodge bonus</a> to your <a linkindex="484" href="combat.html#armor-class">Armor Class</a>. When your base attack bonus reaches +4, and every +4 thereafter, the penalty increases by -1 and the <a linkindex="485" href="combat.html#dodge-bonuses">dodge bonus</a> increases by +1. You can only choose to use this feat when you declare that you are making an attack or a full-attack action with a melee weapon. The effects of this feat last until your next turn.</p>
 
 				<h2 id="combat-reflexes">Combat Reflexes (Combat)</h2>
 				<p>You can make additional attacks of opportunity.</p>
@@ -181,7 +183,7 @@
 				<h2 id="deadly-aim">Deadly Aim (Combat)</h2>
 				<p>You can make exceptionally deadly ranged attacks by pinpointing a foe's weak spot, at the expense of making the attack less likely to succeed.</p>
 				<p><b>Prerequisites</b>: <a linkindex="502" href="gettingStarted.html#dexterity">Dex</a> 13, base attack bonus +1.</p>
-				<p><b>Benefit</b>: You can choose to take a –1 penalty on all ranged attack rolls to gain a +2 bonus on all ranged damage rolls. When your base attack bonus reaches +4, and every +4 thereafter, the penalty increases by –1 and the bonus to damage increases by +2. You must choose to use this feat before making an attack roll and its effects last until your next turn. The bonus damage does not apply to touch attacks or effects that do not deal hit point damage.</p>
+				<p><b>Benefit</b>: You can choose to take a -1 penalty on all ranged attack rolls to gain a +2 bonus on all ranged damage rolls. When your base attack bonus reaches +4, and every +4 thereafter, the penalty increases by -1 and the bonus to damage increases by +2. You must choose to use this feat before making an attack roll and its effects last until your next turn. The bonus damage does not apply to touch attacks or effects that do not deal hit point damage.</p>
 
 				<h2 id="deadly-stroke">Deadly Stroke (Combat)</h2>
 				<p>With a well-placed strike, you can bring a swift and painful end to most foes.</p>
@@ -273,7 +275,7 @@
 				<p><b>Prerequisite</b>: Base attack bonus +1.</p>
 				<p><b>Benefit</b>: You make attack rolls with the weapon normally.</p>
 
-				<p><b>Normal</b>: A character who uses a weapon with which he is not proficient takes a –4 penalty on attack rolls.</p>
+				<p><b>Normal</b>: A character who uses a weapon with which he is not proficient takes a -4 penalty on attack rolls.</p>
 				<p><b>Special</b>: You can gain Exotic Weapon Proficiency multiple times. Each time you take the feat, it applies to a new type of exotic weapon. </p>
 				<h2 id="extend-spell">Extend Spell (Metamagic)</h2>
 				<p>You can make your spells last twice as long.</p>
@@ -319,8 +321,8 @@
 				<p>You are more accurate at longer ranges.</p>
 				<p><b>Prerequisites</b>: <a linkindex="553" href="#point-blank-shot">Point-Blank Shot</a>.</p>
 
-				<p><b>Benefit</b>: You only suffer a –1 penalty per full range increment between you and your target when using a ranged weapon.</p>
-				<p><b>Normal</b>: You suffer a –2 penalty per full range increment between you and your target.</p>
+				<p><b>Benefit</b>: You only suffer a -1 penalty per full range increment between you and your target when using a ranged weapon.</p>
+				<p><b>Normal</b>: You suffer a -2 penalty per full range increment between you and your target.</p>
 				<h2 id="fleet">Fleet</h2>
 				<p>You are faster than most.</p>
 				<p><b>Benefit</b>: While you are wearing light or no armor, your base speed increases by 5 feet. You lose the benefits of this feat if you carry a medium or heavy load.</p>
@@ -341,7 +343,7 @@
 
 				<p>You can strike many adjacent foes with a single blow.</p>
 				<p><b>Prerequisites</b>: <a linkindex="561" href="gettingStarted.html#strength">Str</a> 13, <a linkindex="562" href="#cleave">Cleave</a>, <a linkindex="563" href="#power-attack">Power Attack</a>, base attack bonus +4.</p>
-				<p><b>Benefit</b>: As a standard action, you can make a single attack at your full base attack bonus against a foe within reach. If you hit, you deal damage normally and can make an additional attack (using your full base attack bonus) against a foe that is adjacent to the previous foe and also within reach. If you hit, you can continue to make attacks against foes adjacent to the previous foe, so long as they are within your reach. You cannot attack an individual foe more than once during this attack action. When you use this feat, you take a –2 penalty to your <a linkindex="564" href="combat.html#armor-class">Armor Class</a> until your next turn.</p>
+				<p><b>Benefit</b>: As a standard action, you can make a single attack at your full base attack bonus against a foe within reach. If you hit, you deal damage normally and can make an additional attack (using your full base attack bonus) against a foe that is adjacent to the previous foe and also within reach. If you hit, you can continue to make attacks against foes adjacent to the previous foe, so long as they are within your reach. You cannot attack an individual foe more than once during this attack action. When you use this feat, you take a -2 penalty to your <a linkindex="564" href="combat.html#armor-class">Armor Class</a> until your next turn.</p>
 
 				<h2 id="great-fortitude">Great Fortitude</h2>
 				<p>You are resistant to poisons, diseases, and other maladies.</p>
@@ -384,7 +386,7 @@
 				<p>Your attacks penetrate the defenses of most foes. </p>
 				<p><b>Prerequisites</b>: <a linkindex="603" href="#penetrating-strike">Penetrating Strike</a>, <a linkindex="604" href="#weapon-focus">Weapon Focus</a>, 16th-level fighter.</p>
 
-				<p><b>Benefit</b>: Your attacks with weapons selected with <a linkindex="605" href="#weapon-focus">Weapon Focus</a> ignore up to 10 points of damage reduction. This amount is reduced to 5 points for damage reduction without a type (such as DR 10/—).</p>
+				<p><b>Benefit</b>: Your attacks with weapons selected with <a linkindex="605" href="#weapon-focus">Weapon Focus</a> ignore up to 10 points of damage reduction. This amount is reduced to 5 points for damage reduction without a type (such as DR 10/-).</p>
 				<h2 id="greater-shield-focus">Greater Shield Focus (Combat)</h2>
 				<p>You are skilled at deflecting blows with your shield.</p>
 				<p><b>Prerequisites</b>: <a linkindex="606" href="#shield-focus">Shield Focus</a>, <a linkindex="607" href="#shield-proficiency">Shield Proficiency</a>, base attack bonus +1, 8th-level fighter.</p>
@@ -418,7 +420,7 @@
 				<p>You are incredibly skilled at fighting with two weapons at the same time.</p>
 				<p><b>Prerequisites</b>: <a linkindex="627" href="gettingStarted.html#dexterity">Dex</a> 19, <a linkindex="628" href="#improved-two-weapon-fighting">Improved Two-Weapon Fighting</a>, <a linkindex="629" href="#two-weapon-fighting">Two-Weapon Fighting</a>, base attack bonus +11.</p>
 
-				<p><b>Benefit</b>: You get a third attack with your off-hand weapon, albeit at a –10 penalty.</p>
+				<p><b>Benefit</b>: You get a third attack with your off-hand weapon, albeit at a -10 penalty.</p>
 				<h2 id="greater-vital-strike">Greater Vital Strike (Combat)</h2>
 				<p>You can make a single attack that deals incredible damage.</p>
 				<p><b>Prerequisites</b>: <a linkindex="630" href="#improved-vital-strike">Improved Vital Strike</a>, <a linkindex="631" href="#vital-strike">Vital Strike</a>, base attack bonus +16.</p>
@@ -561,12 +563,12 @@
 				<h2 id="improved-two-weapon-fighting">Improved Two-Weapon Fighting (Combat)</h2>
 				<p>You are skilled at fighting with two weapons.</p>
 				<p><b>Prerequisites</b>: <a linkindex="698" href="gettingStarted.html#dexterity">Dex</a> 17, <a linkindex="699" href="#two-weapon-fighting">Two-Weapon Fighting</a>, base attack bonus +6.</p>
-				<p><b>Benefit</b>: In addition to the standard single extra attack you get with an off-hand weapon, you get a second attack with it, albeit at a –5 penalty.</p>
+				<p><b>Benefit</b>: In addition to the standard single extra attack you get with an off-hand weapon, you get a second attack with it, albeit at a -5 penalty.</p>
 
 				<p><b>Normal</b>: Without this feat, you can only get a single extra attack with an off-hand weapon.</p>
 				<h2 id="improved-unarmed-strike">Improved Unarmed Strike (Combat)</h2>
 				<p>You are skilled at fighting while unarmed.</p>
-				<p><b>Benefit</b>: You are considered to be armed even when unarmed—you do not provoke attacks of opportunity when you attack foes while unarmed. Your unarmed strikes can deal lethal or nonlethal damage, at your choice.</p>
+				<p><b>Benefit</b>: You are considered to be armed even when unarmed-you do not provoke attacks of opportunity when you attack foes while unarmed. Your unarmed strikes can deal lethal or nonlethal damage, at your choice.</p>
 				<p><b>Normal</b>: Without this feat, you are considered unarmed when attacking with an unarmed strike, and you can deal only nonlethal damage with such an attack.</p>
 
 				<h2 id="improved-vital-strike">Improved Vital Strike (Combat)</h2>
@@ -577,7 +579,7 @@
 				<h2 id="improvised-weapon-mastery">Improvised Weapon Mastery (Combat)</h2>
 				<p>You can turn nearly any object into a deadly weapon, from a razor-sharp chair leg to a sack of flour.</p>
 				<p><b>Prerequisites</b>: <a linkindex="702" href="#catch-off-guard">Catch Off-Guard</a> or <a linkindex="703" href="#throw-anything">Throw Anything</a>, base attack bonus +8.</p>
-				<p><b>Benefit</b>: You do not suffer any penalties for using an improvised weapon. Increase the amount of damage dealt by the improvised weapon by one step (for example, 1d4 becomes 1d6) to a maximum of 1d8 (2d6 if the improvised weapon is two-handed). The improvised weapon has a critical threat range of 19–20, with a critical multiplier of ×2.</p>
+				<p><b>Benefit</b>: You do not suffer any penalties for using an improvised weapon. Increase the amount of damage dealt by the improvised weapon by one step (for example, 1d4 becomes 1d6) to a maximum of 1d8 (2d6 if the improvised weapon is two-handed). The improvised weapon has a critical threat range of 19-20, with a critical multiplier of -2.</p>
 
 				<h2 id="intimidating-prowess">Intimidating Prowess (Combat)</h2>
 				<p>Your physical might is intimidating to others.</p>
@@ -590,35 +592,35 @@
 <thead><tr><th rowspan="2">Leadership Score</th><th rowspan="2">Cohort Level</th><th colspan="6">Number of Followers by Level</th></tr><tr><th>1st</th><th>2nd</th><th>3rd</th><th>4th</th><th>5th</th><th>6th</th></tr></thead>
 
 <tbody>
-<tr class="odd"><td>1 or lower</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
-<tr class="even"><td>2</td><td>1st</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+<tr class="odd"><td>1 or lower</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+<tr class="even"><td>2</td><td>1st</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
 
-<tr class="odd"><td>3</td><td>2nd</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
-<tr class="even"><td>4</td><td>3rd</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+<tr class="odd"><td>3</td><td>2nd</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+<tr class="even"><td>4</td><td>3rd</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
 
-<tr class="odd"><td>5</td><td>3rd</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
-<tr class="even"><td>6</td><td>4th</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+<tr class="odd"><td>5</td><td>3rd</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+<tr class="even"><td>6</td><td>4th</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
 
-<tr class="odd"><td>7</td><td>5th</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
-<tr class="even"><td>8</td><td>5th</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+<tr class="odd"><td>7</td><td>5th</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+<tr class="even"><td>8</td><td>5th</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
 
-<tr class="odd"><td>9</td><td>6th</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
-<tr class="even"><td>10</td><td>7th</td><td>5</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+<tr class="odd"><td>9</td><td>6th</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+<tr class="even"><td>10</td><td>7th</td><td>5</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
 
-<tr class="odd"><td>11</td><td>7th</td><td>6</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
-<tr class="even"><td>12</td><td>8th</td><td>8</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+<tr class="odd"><td>11</td><td>7th</td><td>6</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+<tr class="even"><td>12</td><td>8th</td><td>8</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
 
-<tr class="odd"><td>13</td><td>9th</td><td>10</td><td>1</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
-<tr class="even"><td>14</td><td>10th</td><td>15</td><td>1</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+<tr class="odd"><td>13</td><td>9th</td><td>10</td><td>1</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
+<tr class="even"><td>14</td><td>10th</td><td>15</td><td>1</td><td>-</td><td>-</td><td>-</td><td>-</td></tr>
 
-<tr class="odd"><td>15</td><td>10th</td><td>20</td><td>2</td><td>1</td><td>—</td><td>—</td><td>—</td></tr>
-<tr class="even"><td>16</td><td>11th</td><td>25</td><td>2</td><td>1</td><td>—</td><td>—</td><td>—</td></tr>
+<tr class="odd"><td>15</td><td>10th</td><td>20</td><td>2</td><td>1</td><td>-</td><td>-</td><td>-</td></tr>
+<tr class="even"><td>16</td><td>11th</td><td>25</td><td>2</td><td>1</td><td>-</td><td>-</td><td>-</td></tr>
 
-<tr class="odd"><td>17</td><td>12th</td><td>30</td><td>3</td><td>1</td><td>1</td><td>—</td><td>—</td></tr>
-<tr class="even"><td>18</td><td>12th</td><td>35</td><td>3</td><td>1</td><td>1</td><td>—</td><td>—</td></tr>
+<tr class="odd"><td>17</td><td>12th</td><td>30</td><td>3</td><td>1</td><td>1</td><td>-</td><td>-</td></tr>
+<tr class="even"><td>18</td><td>12th</td><td>35</td><td>3</td><td>1</td><td>1</td><td>-</td><td>-</td></tr>
 
-<tr class="odd"><td>19</td><td>13th</td><td>40</td><td>4</td><td>2</td><td>1</td><td>1</td><td>—</td></tr>
-<tr class="even"><td>20</td><td>14th</td><td>50</td><td>5</td><td>3</td><td>2</td><td>1</td><td>—</td></tr>
+<tr class="odd"><td>19</td><td>13th</td><td>40</td><td>4</td><td>2</td><td>1</td><td>1</td><td>-</td></tr>
+<tr class="even"><td>20</td><td>14th</td><td>50</td><td>5</td><td>3</td><td>2</td><td>1</td><td>-</td></tr>
 
 <tr class="odd"><td>21</td><td>15th</td><td>60</td><td>6</td><td>3</td><td>2</td><td>1</td><td>1</td></tr>
 <tr class="even"><td>22</td><td>15th</td><td>75</td><td>7</td><td>4</td><td>2</td><td>2</td><td>1</td></tr>
@@ -638,30 +640,30 @@
 <tr class="even"><td>Fairness and generosity</td><td>+1</td></tr>
 
 <tr class="odd"><td>Special power</td><td>+1</td></tr>
-<tr class="even"><td>Failure</td><td>–1</td></tr>
-<tr class="odd"><td>Aloofness</td><td>–1</td></tr>
-<tr class="even"><td>Cruelty</td><td>–2</td></tr></tbody></table>
+<tr class="even"><td>Failure</td><td>-1</td></tr>
+<tr class="odd"><td>Aloofness</td><td>-1</td></tr>
+<tr class="even"><td>Cruelty</td><td>-2</td></tr></tbody></table>
 
 				<p>Other modifiers may apply when you try to attract a cohort, as listed below.</p><thfoot></thfoot><table>
 <thead><tr><th>The Leader... </th><th>Modifier</th></tr></thead>
 
-<tbody><tr class="odd"><td>Has a familiar, special mount, or animal companion</td><td>–2</td></tr>
-<tr class="even"><td>Recruits a cohort of a different alignment</td><td>–1</td></tr>
-<tr class="odd"><td>Caused the death of a cohort</td><td>–2*</td></tr>
+<tbody><tr class="odd"><td>Has a familiar, special mount, or animal companion</td><td>-2</td></tr>
+<tr class="even"><td>Recruits a cohort of a different alignment</td><td>-1</td></tr>
+<tr class="odd"><td>Caused the death of a cohort</td><td>-2*</td></tr>
 <tr><td colspan="2">* Cumulative per cohort killed.</td></tr></tbody></table>
 
 				<p>Followers have different priorities from cohorts. When you try to attract a follower, use the following modifiers.</p><table>
 <thead><tr><th>The Leader... </th><th>Modifier</th></tr></thead>
 
 <tbody><tr class="odd"><td>Has a stronghold, base of operations, guildhouse, etc.</td><td>+2</td></tr>
-<tr class="even"><td>Moves around a lot</td><td>–1</td></tr>
-<tr class="odd"><td>Caused the death of other followers</td><td>–1</td></tr></tbody></table>
+<tr class="even"><td>Moves around a lot</td><td>-1</td></tr>
+<tr class="odd"><td>Caused the death of other followers</td><td>-1</td></tr></tbody></table>
 
 				<p><i>Leadership Score</i>: Your base Leadership score equals your level plus your <a linkindex="708" href="gettingStarted.html#charisma-new">Charisma</a> modifier. In order to take into account negative <a linkindex="709" href="gettingStarted.html#charisma-new">Charisma</a> modifiers, this table allows for very low Leadership scores, but you must still be 7th level or higher in order to gain the Leadership feat. Outside factors can affect your Leadership score, as detailed above.</p>
 
-				<p><i>Cohort Level</i>: You can attract a cohort of up to this level. Regardless of your Leadership score, you can only recruit a cohort who is two or more levels lower than yourself. The cohort should be equipped with gear appropriate for its level (see <a linkindex="710" href="creatingNPCs.html">Creating NPCs</a>). A cohort can be of any race or class. The cohort's alignment may not be opposed to your alignment on either the law/chaos or good/evil axis, and you take a –1 penalty to your Leadership score if you recruit a cohort of an alignment different from your own.</p>
+				<p><i>Cohort Level</i>: You can attract a cohort of up to this level. Regardless of your Leadership score, you can only recruit a cohort who is two or more levels lower than yourself. The cohort should be equipped with gear appropriate for its level (see <a linkindex="710" href="creatingNPCs.html">Creating NPCs</a>). A cohort can be of any race or class. The cohort's alignment may not be opposed to your alignment on either the law/chaos or good/evil axis, and you take a -1 penalty to your Leadership score if you recruit a cohort of an alignment different from your own.</p>
 				<p>A cohort does not count as a party member when determining the party's XP. Instead, divide the cohort's level by your level. Multiply this result by the total XP awarded to you, then add that number of experience points to the cohort's total.</p>
-				<p>If a cohort gains enough XP to bring it to a level one lower than your level, the cohort does not gain the new level—its new XP total is 1 less than the amount needed to attain the next level. </p>
+				<p>If a cohort gains enough XP to bring it to a level one lower than your level, the cohort does not gain the new level-its new XP total is 1 less than the amount needed to attain the next level. </p>
 				<p><i>Number of Followers by Level</i>: You can lead up to the indicated number of characters of each level. Followers are similar to cohorts, except they're generally low-level NPCs. Because they're usually 5 or more levels behind you, they're rarely effective in combat.</p>
 				<p>Followers don't earn experience and thus don't gain levels. When you gain a new level, consult Table: Leadership to determine if you acquire more followers, some of whom may be higher level than the existing followers. Don't consult the table to see if your cohort gains levels, however, because cohorts earn experience on their own.</p>
 
@@ -677,7 +679,7 @@
 
 				<p>You can strike foes that would normally be out of reach.</p>
 				<p><b>Prerequisites</b>: Base attack bonus +6.</p>
-				<p><b>Benefit</b>: You can increase the reach of your melee attacks by 5 feet until the end of your turn by taking a –2 penalty to your <a linkindex="715" href="combat.html#armor-class">AC</a> until your next turn. You must decide to use this ability before any attacks are made.</p>
+				<p><b>Benefit</b>: You can increase the reach of your melee attacks by 5 feet until the end of your turn by taking a -2 penalty to your <a linkindex="715" href="combat.html#armor-class">AC</a> until your next turn. You must decide to use this ability before any attacks are made.</p>
 				<h2 id="magical-aptitude">Magical Aptitude</h2>
 
 				<p>You are skilled at spellcasting and using magic items.</p>
@@ -691,7 +693,7 @@
 
 				<p>Choose a type of martial weapon. You understand how to use that type of martial weapon in combat.</p>
 				<p><b>Benefit</b>: You make attack rolls with the selected weapon normally (without the non-proficient penalty).</p>
-				<p><b>Normal</b>: When using a weapon with which you are not proficient, you take a –4 penalty on attack rolls.</p>
+				<p><b>Normal</b>: When using a weapon with which you are not proficient, you take a -4 penalty on attack rolls.</p>
 				<p><b>Special</b>: Barbarians, fighters, paladins, and rangers are proficient with all martial weapons. They need not select this feat.</p>
 				<p>You can gain Martial Weapon Proficiency multiple times. Each time you take the feat, it applies to a new type of weapon. </p>
 
@@ -721,7 +723,7 @@
 				<h2 id="mounted-archery">Mounted Archery (Combat)</h2>
 				<p>You are skilled at making ranged attacks while mounted.</p>
 				<p><b>Prerequisites</b>: Ride 1 rank, <a linkindex="749" href="#mounted-combat">Mounted Combat</a>.</p>
-				<p><b>Benefit</b>: The penalty you take when using a ranged weapon while mounted is halved: –2 instead of –4 if your mount is taking a double move, and –4 instead of –8 if your mount is running.</p>
+				<p><b>Benefit</b>: The penalty you take when using a ranged weapon while mounted is halved: -2 instead of -4 if your mount is taking a double move, and -4 instead of -8 if your mount is running.</p>
 
 				<h2 id="mounted-combat">Mounted Combat (Combat)</h2>
 				<p>You are adept at guiding your mount through combat.</p>
@@ -742,7 +744,7 @@
 				<h2 id="penetrating-strike">Penetrating Strike (Combat)</h2>
 				<p>Your attacks are capable of penetrating the defenses of some creatures.</p>
 				<p><b>Prerequisites</b>: <a linkindex="752" href="#weapon-focus">Weapon Focus</a>, base attack bonus +1, 12th-level fighter, proficiency with weapon.</p>
-				<p><b>Benefit</b>: Your attacks with weapons selected with <a linkindex="753" href="#weapon-focus">Weapon Focus</a> ignore up to 5 points of damage reduction. This feat does not apply to damage reduction without a type (such as DR 10/—).</p>
+				<p><b>Benefit</b>: Your attacks with weapons selected with <a linkindex="753" href="#weapon-focus">Weapon Focus</a> ignore up to 5 points of damage reduction. This feat does not apply to damage reduction without a type (such as DR 10/-).</p>
 
 				<h2 id="persuasive">Persuasive</h2>
 				<p>You are skilled at swaying attitudes and intimidating others into your way of thinking.</p>
@@ -760,11 +762,11 @@
 				<p>You can make exceptionally deadly melee attacks by sacrificing accuracy for strength.</p>
 				<p><b>Prerequisites</b>: <a linkindex="761" href="gettingStarted.html#strength">Str</a> 13, base attack bonus +1.</p>
 
-				<p><b>Benefit</b>: You can choose to take a –1 penalty on all melee attack rolls and combat maneuver checks to gain a +2 bonus on all melee damage rolls. This bonus to damage is increased by half (+50%) if you are making an attack with a two-handed weapon, a one handed weapon using two hands, or a primary natural weapon that adds 1-1/2 times your Strength modifier on damage rolls. This bonus to damage is halved (–50%) if you are making an attack with an off-hand weapon or secondary natural weapon. When your base attack bonus reaches +4, and every 4 points thereafter, the penalty increases by –1 and the bonus to damage increases by +2. You must choose to use this feat before making an attack roll, and its effects last until your next turn. The bonus damage does not apply to touch attacks or effects that do not deal hit point damage.</p>
+				<p><b>Benefit</b>: You can choose to take a -1 penalty on all melee attack rolls and combat maneuver checks to gain a +2 bonus on all melee damage rolls. This bonus to damage is increased by half (+50%) if you are making an attack with a two-handed weapon, a one handed weapon using two hands, or a primary natural weapon that adds 1-1/2 times your Strength modifier on damage rolls. This bonus to damage is halved (-50%) if you are making an attack with an off-hand weapon or secondary natural weapon. When your base attack bonus reaches +4, and every 4 points thereafter, the penalty increases by -1 and the bonus to damage increases by +2. You must choose to use this feat before making an attack roll, and its effects last until your next turn. The bonus damage does not apply to touch attacks or effects that do not deal hit point damage.</p>
 				<h2 id="precise-shot">Precise Shot (Combat)</h2>
 				<p>You are adept at firing ranged attacks into melee.</p>
 				<p><b>Prerequisite</b>: <a linkindex="762" href="#point-blank-shot">Point-Blank Shot</a>.</p>
-				<p><b>Benefit</b>: You can shoot or throw ranged weapons at an opponent engaged in melee without taking the standard –4 penalty on your attack roll.</p>
+				<p><b>Benefit</b>: You can shoot or throw ranged weapons at an opponent engaged in melee without taking the standard -4 penalty on your attack roll.</p>
 
 				<h2 id="quick-draw">Quick Draw (Combat)</h2>
 				<p>You can draw weapons faster than most.</p>
@@ -792,7 +794,7 @@
 
 				<p>You can make an additional ranged attack.</p>
 				<p><b>Prerequisites</b>: <a linkindex="764" href="gettingStarted.html#dexterity">Dex</a> 13, <a linkindex="765" href="#point-blank-shot">Point-Blank Shot</a>.</p>
-				<p><b>Benefit</b>: When making a full-attack action with a ranged weapon, you can fire one additional time this round. All of your attack rolls take a –2 penalty when using Rapid Shot.</p>
+				<p><b>Benefit</b>: When making a full-attack action with a ranged weapon, you can fire one additional time this round. All of your attack rolls take a -2 penalty when using Rapid Shot.</p>
 				<h2 id="ride-by-attack">Ride-By Attack (Combat)</h2>
 
 				<p>While mounted and charging, you can move, strike at a foe, and then continue moving.</p>
@@ -871,7 +873,7 @@
 				<h2 id="simple-weapon-proficiency">Simple Weapon Proficiency (Combat)</h2>
 				<p>You are trained in the use of basic weapons.</p>
 				<p><b>Benefit</b>: You make attack rolls with simple weapons without penalty.</p>
-				<p><b>Normal</b>: When using a weapon with which you are not proficient, you take a –4 penalty on attack rolls.</p>
+				<p><b>Normal</b>: When using a weapon with which you are not proficient, you take a -4 penalty on attack rolls.</p>
 				<p><b>Special</b>: All characters except for druids, monks, and wizards are automatically proficient with all simple weapons. They need not select this feat.</p>
 
 				<h2 id="skill-focus">Skill Focus</h2>
@@ -955,13 +957,13 @@
 				<p>You know just where to strike to temporarily stun a foe.</p>
 				<p><b>Prerequisites</b>: <a linkindex="830" href="gettingStarted.html#dexterity">Dex</a> 13, <a linkindex="831" href="gettingStarted.html#wisdom">Wis</a> 13, <a linkindex="832" href="#improved-unarmed-strike">Improved Unarmed Strike</a>, base attack bonus +8.</p>
 
-				<p><b>Benefit</b>: You must declare that you are using this feat before you make your attack roll (thus, a failed attack roll ruins the attempt). Stunning Fist forces a foe damaged by your unarmed attack to make a <a linkindex="833" href="combat.html#fortitude">Fortitude</a> saving throw (DC 10 + 1/2 your character level + your <a linkindex="834" href="gettingStarted.html#wisdom">Wis</a> modifier), in addition to dealing damage normally. A defender who fails this saving throw is <a linkindex="835" href="glossary.html#stunned">stunned</a> for 1 round (until just before your next turn). A <a linkindex="836" href="glossary.html#stunned">stunned</a> character can't take actions, loses any <a linkindex="837" href="gettingStarted.html#dexterity">Dexterity</a> bonus to <a linkindex="838" href="combat.html#armor-class">AC</a>, and takes a –2 penalty to <a linkindex="839" href="combat.html#armor-class">AC</a>. You may attempt a stunning attack once per day for every four levels you have attained (but see Special), and no more than once per round. Constructs, oozes, plants, undead, <a linkindex="840" href="glossary.html#incorporeal">incorporeal</a> creatures, and creatures immune to critical hits cannot be <a linkindex="841" href="glossary.html#stunned">stunned</a>.</p>
+				<p><b>Benefit</b>: You must declare that you are using this feat before you make your attack roll (thus, a failed attack roll ruins the attempt). Stunning Fist forces a foe damaged by your unarmed attack to make a <a linkindex="833" href="combat.html#fortitude">Fortitude</a> saving throw (DC 10 + 1/2 your character level + your <a linkindex="834" href="gettingStarted.html#wisdom">Wis</a> modifier), in addition to dealing damage normally. A defender who fails this saving throw is <a linkindex="835" href="glossary.html#stunned">stunned</a> for 1 round (until just before your next turn). A <a linkindex="836" href="glossary.html#stunned">stunned</a> character can't take actions, loses any <a linkindex="837" href="gettingStarted.html#dexterity">Dexterity</a> bonus to <a linkindex="838" href="combat.html#armor-class">AC</a>, and takes a -2 penalty to <a linkindex="839" href="combat.html#armor-class">AC</a>. You may attempt a stunning attack once per day for every four levels you have attained (but see Special), and no more than once per round. Constructs, oozes, plants, undead, <a linkindex="840" href="glossary.html#incorporeal">incorporeal</a> creatures, and creatures immune to critical hits cannot be <a linkindex="841" href="glossary.html#stunned">stunned</a>.</p>
 
 				<p><b>Special</b>: A monk receives Stunning Fist as a bonus feat at 1st level, even if he does not meet the prerequisites. A monk may attempt a stunning attack a number of times per day equal to his monk level, plus one more time per day for every four levels he has in classes other than monk.</p>
 				<h2 id="throw-anything">Throw Anything (Combat)</h2>
 				<p>You are used to throwing things you have on hand.</p>
 				<p><b>Benefit</b>: You do not suffer any penalties for using an improvised ranged weapon. You receive a +1 circumstance bonus on attack rolls made with thrown splash weapons.</p>
-				<p><b>Normal</b>: You take a –4 penalty on attack rolls made with an improvised weapon.</p>
+				<p><b>Normal</b>: You take a -4 penalty on attack rolls made with an improvised weapon.</p>
 
 				<h2 id="tiring-critical">Tiring Critical (Combat, Critical)</h2>
 				<p>Your critical hits cause opponents to become fatigued.</p>
@@ -1001,7 +1003,7 @@
 				<p><b>Prerequisite</b>: <a linkindex="857" href="gettingStarted.html#dexterity">Dex</a> 15.</p>
 				<p><b>Benefit</b>: Your penalties on attack rolls for fighting with two weapons are reduced. The penalty for your primary hand lessens by 2 and the one for your off hand lessens by 6. See Two-Weapon Fighting in <a linkindex="858" href="combat.html">Combat</a>.</p>
 
-				<p><b>Normal</b>: If you wield a second weapon in your off hand, you can get one extra attack per round with that weapon. When fighting in this way you suffer a –6 penalty with your regular attack or attacks with your primary hand and a –10 penalty to the attack with your off hand. If your off-hand weapon is light, the penalties are reduced by 2 each. An unarmed strike is always considered light.</p>
+				<p><b>Normal</b>: If you wield a second weapon in your off hand, you can get one extra attack per round with that weapon. When fighting in this way you suffer a -6 penalty with your regular attack or attacks with your primary hand and a -10 penalty to the attack with your off hand. If your off-hand weapon is light, the penalties are reduced by 2 each. An unarmed strike is always considered light.</p>
 				<h2 id="two-weapon-rend">Two-Weapon Rend (Combat)</h2>
 				<p>Striking with both of your weapons simultaneously, you can use them to deliver devastating wounds.</p>
 				<p><b>Prerequisites</b>: <a linkindex="859" href="gettingStarted.html#dexterity">Dex</a> 17, <a linkindex="860" href="#double-slice">Double Slice</a>, <a linkindex="861" href="#improved-two-weapon-fighting">Improved Two-Weapon Fighting</a>, <a linkindex="862" href="#two-weapon-fighting">Two-Weapon Fighting</a>, base attack bonus +11. </p>
@@ -1052,3 +1054,5 @@
 
 				<p><b>Benefit</b>: If you move more than 5 feet this turn, you gain 20% concealment for 1 round against ranged attacks.</p>
 			</div>
+);
+export default feats;

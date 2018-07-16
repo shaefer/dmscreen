@@ -6,7 +6,8 @@ import CreateAButtonForm from '../../components/DMScreen/CreateAButtonForm'
 import rollTimeString from '../../utils/ResultTimestamp'
 import './DmScreen.css'
 
-import {DungeonEntrances, Backgrounds, DungeonLocations, DungeonTypes, DungeonRooms, NpcCharacteristicsPhysical, NpcCharacteristics} from './RandomCharts'
+import {DungeonEntrances, Backgrounds, DungeonLocations, DungeonTypes, DungeonRooms, NpcCharacteristicsPhysical, NpcCharacteristics,
+        Plots, PlotTwists, NpcGoals, Rewards, Secrets, MacguffinOrQuestItem, MundaneRoomCharacteristics, ExoticRoomCharacteristics} from './RandomCharts'
 
 import ReactGA from 'react-ga';
 
@@ -186,6 +187,14 @@ class DMScreen extends Component {
                     {this.makeRandomChartButton(DungeonRooms, "Dungeon Rooms")}
                     {this.makeRandomChartButton(NpcCharacteristicsPhysical, "NPC Physical Traits")}
                     {this.makeRandomChartButton(NpcCharacteristics, "NPC Traits")}
+                    {this.makeRandomChartButton(Plots, "Plots")}
+                    {this.makeRandomChartButton(PlotTwists, "Plot Twists")}
+                    {this.makeRandomChartButton(NpcGoals, "NPC Goals")}
+                    {this.makeRandomChartButton(Rewards, "Rewards")}
+                    {this.makeRandomChartButton(Secrets, "Secrets")}
+                    {this.makeRandomChartButton(MacguffinOrQuestItem, "Macguffins And Quest Items")}
+                    {this.makeRandomChartButton(MundaneRoomCharacteristics, "Mundane Room Characteristics")}
+                    {this.makeRandomChartButton(ExoticRoomCharacteristics, "Exotic Room Characteristics")}
                     {dmScreen.buttons.map(x => x)}
                     <CreateAButtonForm onSubmit={(e) => this.createAButton(e)} showForm={dmScreen.showForm} toggleFormFunc={this.toggleForm}/>
                 </section>

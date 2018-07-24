@@ -1,0 +1,41 @@
+.versionChoice {
+    width: 80%;
+    margin: 0 auto;
+    text-align: center;
+    display: none;
+}
+
+.versionChoice img.pfImage {
+    padding-left: 40px;
+}
+
+.oglImage {
+    width: 200px;
+}
+
+.pfImage {
+    width: 400px;
+}
+
+@media screen and (max-width:480px) {
+    .versionChoice img.pfImage {
+        padding-left: 0px;
+    }
+}
+
+.co-panel {
+    margin: 0.5em 0.5em 0 0.5em;
+}
+
+.co-panel .co-panel-header {
+    background-color: green;
+    color: black;
+    border-radius: 5px 5px 0 0;
+    padding: 0.2em 0.5em;
+}
+
+.co-panel .co-panel-body {
+    border: 1px solid green;
+    border-radius: 0 0 5px 5px;
+    padding: 0.2em 0.5em;
+}

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import './MonsterFinder.css';
-import 'react-select/dist/react-select.css';
+//import 'react-select/dist/react-select.css';
 import '../../css/ReactSelectCustom.css';
 
 import { connect } from 'react-redux'
@@ -27,6 +27,8 @@ class MonsterFinder extends Component {
     this.props.monsterSelectChangeHandler(e);
   }
 
+
+  //Used to highlight the matched portion of a filter/search "react-select": "^1.2.1",
   handleOptionRender(opt, index, input) {
     const oLabel = opt.label;
     if (!input) return oLabel;

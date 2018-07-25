@@ -11,6 +11,7 @@ export const fetchMonsterAction = (monsterName) => (dispatch, getState) => {
 }
 
 const fetchMonster = (monsterName, dispatch, source) => {
+    if (!monsterName) return;
     console.log("ABOUT TO GET: " + monsterName);
     let monsterKey = monsterName.toLowerCase()
         .replace(new RegExp("[,()']", 'g'), "")

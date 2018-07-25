@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import './MonsterFinder.css';
-import 'react-select/dist/react-select.css';
+//import 'react-select/dist/react-select.css';
 import '../../css/ReactSelectCustom.css';
 
 import { connect } from 'react-redux'
@@ -60,6 +60,26 @@ class MonsterFinder extends Component {
   render() {
     const { monster } = this.props; //These props can be destructured to pull out any of the reducers (config, select, monster, s3Select, etc.)
     console.log(monster.statBlock.name)
+
+    //TODO: Move ReactSelectCustom.css styles into this custom styles piece in code...still could be in a separate file.
+    //https://react-select.com/styles
+    //https://github.com/cssinjs/jss/blob/master/docs/json-api.md#regular-rule-without-plugins
+    const customStyles = {
+      menu: (base, state) => ({
+        ...base,
+        marginTop: 0,
+      }),
+      option: (base) => ({
+        ...base,
+        padding: 3 //adjust for desktop vs how small on mobile makes it hard to select...
+      }),
+      control: (base) => ({
+        ...base,
+        height: 40,
+        lineHeight: 40
+      })
+    }
+
     return (
       <div className="flex-container">
         <div className="flex-item">
@@ -67,6 +87,7 @@ class MonsterFinder extends Component {
         </div>
         <div className="flex-item">
           <Select 
+            styles={customStyles}
             optionRenderer={this.handleOptionRender}
             onChange={this.handleMonsterSelectChange} 
             options={MonsterOptions.map(op => {

@@ -11,7 +11,7 @@
     "react-redux": "^5.0.7",
     "react-router-dom": "^4.2.2",
     "react-scripts": "1.1.3",
-    "react-select": "^1.2.1",
+    "react-select": "^2.0.0",
     "react-table": "^6.8.6",
     "redux": "^3.7.2",
     "redux-form": "^7.4.2",
@@ -24,7 +24,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "aws": "cd src/script & npm run aws",
-    "setup": "cd src/script & npm i"
+    "setup": "cd src/script & npm i",
+    "notes": "react-select ^1.2.1 was what we had before upgrade"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",

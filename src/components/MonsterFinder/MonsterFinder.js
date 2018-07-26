@@ -61,13 +61,20 @@ class MonsterFinder extends Component {
     const { monster } = this.props; //These props can be destructured to pull out any of the reducers (config, select, monster, s3Select, etc.)
     console.log(monster.statBlock.name)
 
-    //TODO: Move ReactSelectCustom.css styles into this custom styles piece in code...still could be in a separate file.
     //https://react-select.com/styles
     //https://github.com/cssinjs/jss/blob/master/docs/json-api.md#regular-rule-without-plugins
     const customStyles = {
       menu: (base, state) => ({
         ...base,
         marginTop: 0,
+      }),
+      menuList: (base) => ({
+        ...base,
+        '@media screen and (min-height:740px)': {maxHeight: 600},
+        '@media screen and (max-height:640px)': {maxHeight: 500},
+        '@media screen and (max-height:600px)': {maxHeight: 400},
+        '@media screen and (max-height:480px)': {maxHeight: 300},
+        '@media screen and (max-height:320px)': {maxHeight: 180},
       }),
       option: (base) => ({
         ...base,

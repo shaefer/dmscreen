@@ -43,3 +43,10 @@ export const toggleForm = (showForm) => ({
     type: 'TOGGLE_FORM',
     showForm: showForm
 });
+
+/* Monster Advancer 3.5 v2 Actions */
+export const LOOKUP_MONSTER = 'LOOKUP_MONSTER'
+export const lookupMonster = (fields) => ({
+    type: LOOKUP_MONSTER,
+    fields: fields
+});

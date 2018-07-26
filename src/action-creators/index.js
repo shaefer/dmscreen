@@ -1,7 +1,9 @@
 import React from 'react'
 import Keys from '../models/Keys'
 //import Monsters from '../models/AllMonsters'
-import { showMonster, selectMonsterOption, showS3SelectResult, showS3SelectDMScreenResult, addDmScreenResult, addCustomButton, toggleForm } from '../actions'
+import { showMonster, selectMonsterOption, showS3SelectResult, 
+    showS3SelectDMScreenResult, addDmScreenResult, addCustomButton, 
+    toggleForm, lookupMonster } from '../actions'
 
 import rollTimeString from '../utils/ResultTimestamp'
 
@@ -32,6 +34,21 @@ const fetchMonster = (monsterName, dispatch, source) => {
     return fetch(`https://api.cleverorc.com/monsters/${monsterKey}`)
         .then(resp => resp.json())
         .then(data =>  dispatch(showMonster(data, source)))
+        .catch(err => console.log(err));
+}
+
+export const fetchMonsterAdvancer35v2 = (monsterName, fields) => (dispatch) => {
+    const baseUri = `http://v2.monsteradvancer.com/api/monster/${monsterName}`
+    let fieldsAsHtmlParams = [];
+    for (var i = 0;i<fields.length; i++) {
+        const field = fields[i];
+        fieldsAsHtmlParams.push(field.name + "=" + field.value);
+    }
+    const uriParams = (fieldsAsHtmlParams.length > 0) ? fieldsAsHtmlParams.join("&") : "";
+    return fetch(`${baseUri}?${uriParams}`)
+        .then(resp => resp.json())
+        //.then(data =>  dispatch(displayMonster35v2(data, source)))
+        .then(data => console.log(data))
         .catch(err => console.log(err));
 }
 

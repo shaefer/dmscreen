@@ -79,6 +79,7 @@ class MonsterAdvancer extends Component {
             {value: "G", label: "Gargantuan"},
             {value: "C", label: "Colossal"}
         ];
+        //https://codepen.io/MichaelArestad/pen/ohLIa Good style idea for input boxes
         return (
             <main className="monsteradvancer">
                 <div className="versionChoice">
@@ -112,6 +113,20 @@ class MonsterAdvancer extends Component {
                                 placeholder={"Original"}
                                 options={sizeOptions}
                             />
+                        </div>
+                        <div className="co-select-container">
+                            <div className="valuePair">
+                                <label>Str</label>
+                                <input className="co-awesome" type="number" max="99" min="0" pattern="\d*"/>
+                            </div>
+                            <div className="valuePair">
+                                <label>Dex</label>
+                                <input className="co-awesome" type="number" max="99" min="0" pattern="\d*"/>
+                            </div>
+                            <div className="valuePair">
+                                <label>Con</label>
+                                <input className="co-awesome" type="number" max="99" min="0" pattern="\d*"/>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -315,4 +315,37 @@ button.purpleAwesome:hover {
     background: #c77af7;
   }
 
+  input.co-awesome {
+    width: 2em;
+    border-radius: .4em;
+    border:1px solid #cccccc;
+    padding: 0 0 0 1em;
+    display:inline-block;
+
+  }
+
+.valuePair {
+  display:inline-block;
+  position: relative;
+  height: 2em;
+}
+
+  .valuePair > label {
+    border: 1px solid green;
+    background-color: lightgreen;
+    display: inline-block;
+    border-radius: .4em 0 0 .4em;
+    position: absolute;
+    padding: 0 .5em;
+    line-height: 2em;
+    height: 100%;
+  }
+
+  .valuePair > input {
+    height: 100%;
+    border-radius: 0 .4em .4em 0;
+    width: 2.5em;
+    margin-left: 2.8em;
+  }
+
 

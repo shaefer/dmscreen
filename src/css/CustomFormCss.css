@@ -1,7 +1,7 @@
 /*@import '../../node_modules/milligram/dist/milligram.min.css';*/
 
 /* font for Global Header */
-@import url('https://fonts.googleapis.com/css?family=Playfair+Display');
+@import url('https://fonts.googleapis.com/css?family=Playfair+Display|Heebo');
 
 header.cleverorc {
   font-family: 'Playfair Display', serif;
@@ -125,8 +125,9 @@ input[type='submit'] {
 .dmScreen button, .monsteradvancer button {
   border-radius: .4em;
   cursor: pointer;
-  font-size: 0.9em;
-  padding: 0.3em 0.6em;
+  font-size: 0.7em;
+  padding: 0.6em 1.5em;
+  letter-spacing: 0.1em;
   text-align: center;
   white-space: nowrap;
   margin: 0.2em;

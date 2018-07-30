@@ -24,6 +24,7 @@ class MonsterAdvancer extends Component {
 
     getValuesButton() {
         //rather than refs we could use the onchange event of each to set a local property on this component.
+        if (!this.refs.monsterName.state.value) return;
         console.log(this.refs.hd.state.value, this.refs.monsterName.state.value, this.refs.size.state.value);
         let fields = [];
         if (this.refs.hd.state.value) fields.push({name:"hd", value:this.refs.hd.state.value.value})
@@ -31,6 +32,7 @@ class MonsterAdvancer extends Component {
         this.props.fetchMonsterAdvancer35v2(this.refs.monsterName.state.value.value, fields)
     }
 
+    //https://github.com/JedWatson/react-select/issues/1322 Setting Height
     render() {
         //https://react-select.com/styles
         const customStyles = (height = 40, width = 250) => {
@@ -45,13 +47,17 @@ class MonsterAdvancer extends Component {
                 }),
                 control: (base) => ({
                 ...base,
-                height: height,
-                lineHeight: height
+                height: height + 'px',
+                lineHeight: height + 'px'
                 }),
                 container: (base) => ({
                     ...base,
                     display:'inline-block',
-                    width: width
+                    width: width,
+                }),
+                valueContainer: (base) => ({
+                    ...base,
+                    height: height,
                 })
             }
         }
@@ -74,7 +80,7 @@ class MonsterAdvancer extends Component {
             {value: "C", label: "Colossal"}
         ];
         return (
-            <main>
+            <main className="monsteradvancer">
                 <div className="versionChoice">
                     <div>Choose a version:</div>
                     <img className="oglImage" src="images/OGL-Logo.jpg"/>
@@ -110,7 +116,7 @@ class MonsterAdvancer extends Component {
                     </div>
                 </div>
                 <section>
-                    <button type="button" onClick={this.getValuesButton}>Get Values</button>
+                    <button type="button" className="generateButton greenAwesome" onClick={this.getValuesButton}>Get Values</button>
                 </section>
             </main>
         );

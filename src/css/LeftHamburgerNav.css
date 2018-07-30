@@ -74,6 +74,11 @@ label.nav{
     transition:all 200ms ease-in;
     z-index:500;
 }
+/*Fix size of hamburger img button */
+label.nav > img {
+    width: 42px;
+    height: 42px;
+}
 input.nav[type="checkbox"]{
     display:none;
 }

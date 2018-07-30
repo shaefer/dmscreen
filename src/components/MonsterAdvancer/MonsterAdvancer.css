@@ -43,3 +43,11 @@
 .co-select-container {
     max-width: 400px;
 }
+
+.co-select-container input {
+    height: 40px;
+}
+
+.monsteradvancer button.generateButton {
+    padding: 0.5em 1em;
+}

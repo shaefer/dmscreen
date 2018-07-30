@@ -1,4 +1,4 @@
-@import '../../node_modules/milligram/dist/milligram.min.css';
+/*@import '../../node_modules/milligram/dist/milligram.min.css';*/
 
 /* font for Global Header */
 @import url('https://fonts.googleapis.com/css?family=Playfair+Display');
@@ -98,7 +98,7 @@ h3 {
     display:none;
 }
 
-/*Milligram customization*/
+/*Milligram customization
 .button,
 button,
 input[type='button'],
@@ -120,9 +120,17 @@ input[type='submit'] {
   text-decoration: none;
   text-transform: uppercase;
   white-space: nowrap;
+}*/
+
+.dmScreen button, .monsteradvancer button {
+  border-radius: .4em;
+  cursor: pointer;
+  font-size: 0.9em;
+  padding: 0.3em 0.6em;
+  text-align: center;
+  white-space: nowrap;
+  margin: 0.2em;
 }
-
-
 
 button.greenAwesome {
     font-family: 'Heebo', Helvetica, Arial, sans-serif;
@@ -142,7 +150,7 @@ button.greenAwesome:hover {
     color: #000;
     border: 1px solid #006398;
     box-shadow: 2px 2px 20px #AFE9FF;
-    transform: scale(0.96)
+    /*transform: scale(0.96)*/
   }
 
   button.greenAwesome:active {

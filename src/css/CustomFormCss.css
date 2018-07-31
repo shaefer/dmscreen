@@ -327,6 +327,7 @@ button.purpleAwesome:hover {
   position: relative;
   height: 2em;
   font-family: 'Inconsolata', monospace;
+  margin: 0.5em 0.25em;
 }
 
   .valuePair > label {

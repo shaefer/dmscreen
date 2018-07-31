@@ -14,6 +14,18 @@ class MonsterAdvancer extends Component {
     constructor() {
         super();
         this.getValuesButton = this.getValuesButton.bind(this);
+        this.changeField = this.changeField.bind(this);
+        this.monsterFields = {
+            monsterName: null,
+            size: null,
+            hd: null,
+            str: null,
+            dex: null,
+            con: null,
+            int: null,
+            wis: null,
+            cha: null
+        };
     }
 
     componentDidMount() {
@@ -22,14 +34,32 @@ class MonsterAdvancer extends Component {
         //ReactGA.pageview(window.location.pathname + window.location.search, undefined, title);
     }
 
+    pushField(fields, data, name) {
+        if (data[name]) fields.push({name: name, value: data[name]});
+    }
+
     getValuesButton() {
+        console.log(this.monsterFields);
+        const monsterFields = this.monsterFields;
         //rather than refs we could use the onchange event of each to set a local property on this component.
-        if (!this.refs.monsterName.state.value) return;
+        if (!this.monsterFields.monsterName) return;
         console.log(this.refs.hd.state.value, this.refs.monsterName.state.value, this.refs.size.state.value);
         let fields = [];
-        if (this.refs.hd.state.value) fields.push({name:"hd", value:this.refs.hd.state.value.value})
-        if (this.refs.size.state.value) fields.push({name:"size", value:this.refs.size.state.value.value})
-        this.props.fetchMonsterAdvancer35v2(this.refs.monsterName.state.value.value, fields)
+        this.pushField(fields, monsterFields, "hd");
+        this.pushField(fields, monsterFields, "size");
+        this.pushField(fields, monsterFields, "str");
+        this.pushField(fields, monsterFields, "dex");
+        this.pushField(fields, monsterFields, "con");
+        this.pushField(fields, monsterFields, "int");
+        this.pushField(fields, monsterFields, "wis");
+        this.pushField(fields, monsterFields, "cha");
+        this.props.fetchMonsterAdvancer35v2(monsterFields.monsterName, fields)
+    }
+
+    changeField(e, fieldName) {
+        const value = (e.value) ? e.value : e.target.value;
+        console.log("changeField", fieldName, value, this);
+        this.monsterFields[fieldName] = value;
     }
 
     //https://github.com/JedWatson/react-select/issues/1322 Setting Height
@@ -96,6 +126,7 @@ class MonsterAdvancer extends Component {
                                 ref="monsterName"
                                 styles={customStyles()} 
                                 options={Monsters.map(x => ({value: x, label: x}))}
+                                onChange={(e) => this.changeField(e, 'monsterName')}
                             />
                         </div>
                         <div className="co-select-container">
@@ -105,6 +136,7 @@ class MonsterAdvancer extends Component {
                                 styles={customStyles(40, 80)} 
                                 placeholder={0}
                                 options={buildNumList(0,100).map(x => ({value: x, label: x}))}
+                                onChange={(e) => this.changeField(e, 'hd')}
                             />
                             <span>Size: </span>
                             <Select 
@@ -112,32 +144,33 @@ class MonsterAdvancer extends Component {
                                 styles={customStyles(40, 150)} 
                                 placeholder={"Original"}
                                 options={sizeOptions}
+                                onChange={(e) => this.changeField(e, 'size')}
                             />
                         </div>
                         <div className="co-select-container">
                             <div className="valuePair">
                                 <label>Str</label>
-                                <input className="co-awesome" type="number" max="99" min="0" pattern="\d*"/>
+                                <input className="co-awesome" type="number" max="99" min="0" pattern="\d*" onChange={(e) => this.changeField(e, 'str')}/>
                             </div>
                             <div className="valuePair">
                                 <label>Dex</label>
-                                <input className="co-awesome" type="number" max="99" min="0" pattern="\d*"/>
+                                <input className="co-awesome" type="number" max="99" min="0" pattern="\d*" onChange={(e) => this.changeField(e, 'dex')}/>
                             </div>
                             <div className="valuePair">
                                 <label>Con</label>
-                                <input className="co-awesome" type="number" max="99" min="0" pattern="\d*"/>
+                                <input className="co-awesome" type="number" max="99" min="0" pattern="\d*" onChange={(e) => this.changeField(e, 'con')}/>
                             </div>
                             <div className="valuePair">
                                 <label>Int</label>
-                                <input className="co-awesome" type="number" max="99" min="0" pattern="\d*"/>
+                                <input className="co-awesome" type="number" max="99" min="0" pattern="\d*" onChange={(e) => this.changeField(e, 'int')}/>
                             </div>
                             <div className="valuePair">
                                 <label>Wis</label>
-                                <input className="co-awesome" type="number" max="99" min="0" pattern="\d*"/>
+                                <input className="co-awesome" type="number" max="99" min="0" pattern="\d*" onChange={(e) => this.changeField(e, 'wis')}/>
                             </div>
                             <div className="valuePair">
                                 <label>Cha</label>
-                                <input className="co-awesome" type="number" max="99" min="0" pattern="\d*"/>
+                                <input className="co-awesome" type="number" max="99" min="0" pattern="\d*" onChange={(e) => this.changeField(e, 'cha')}/>
                             </div>
                         </div>
                     </div>

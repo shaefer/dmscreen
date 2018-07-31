@@ -1,7 +1,7 @@
 /*@import '../../node_modules/milligram/dist/milligram.min.css';*/
 
 /* font for Global Header */
-@import url('https://fonts.googleapis.com/css?family=Playfair+Display|Heebo');
+@import url('https://fonts.googleapis.com/css?family=Playfair+Display|Heebo|Inconsolata');
 
 header.cleverorc {
   font-family: 'Playfair Display', serif;
@@ -320,14 +320,13 @@ button.purpleAwesome:hover {
     border-radius: .4em;
     border:1px solid #cccccc;
     padding: 0 0 0 1em;
-    display:inline-block;
-
   }
 
 .valuePair {
   display:inline-block;
   position: relative;
   height: 2em;
+  font-family: 'Inconsolata', monospace;
 }
 
   .valuePair > label {
@@ -342,6 +341,7 @@ button.purpleAwesome:hover {
   }
 
   .valuePair > input {
+    display:inline-block;
     height: 100%;
     border-radius: 0 .4em .4em 0;
     width: 2.5em;

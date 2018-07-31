@@ -127,6 +127,18 @@ class MonsterAdvancer extends Component {
                                 <label>Con</label>
                                 <input className="co-awesome" type="number" max="99" min="0" pattern="\d*"/>
                             </div>
+                            <div className="valuePair">
+                                <label>Int</label>
+                                <input className="co-awesome" type="number" max="99" min="0" pattern="\d*"/>
+                            </div>
+                            <div className="valuePair">
+                                <label>Wis</label>
+                                <input className="co-awesome" type="number" max="99" min="0" pattern="\d*"/>
+                            </div>
+                            <div className="valuePair">
+                                <label>Cha</label>
+                                <input className="co-awesome" type="number" max="99" min="0" pattern="\d*"/>
+                            </div>
                         </div>
                     </div>
                 </div>

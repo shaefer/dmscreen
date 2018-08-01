@@ -31,7 +31,7 @@ class MonsterAdvancer extends Component {
     componentDidMount() {
         const title = "Monster Advancer 3.5 v2 - by Clever Orc Games";
         document.title=title;
-        //ReactGA.pageview(window.location.pathname + window.location.search, undefined, title);
+        ReactGA.pageview(window.location.pathname + window.location.search, undefined, title);
     }
 
     pushField(fields, data, name) {

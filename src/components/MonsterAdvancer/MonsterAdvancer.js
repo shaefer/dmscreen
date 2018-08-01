@@ -26,7 +26,8 @@ class MonsterAdvancer extends Component {
             con: null,
             int: null,
             wis: null,
-            cha: null
+            cha: null,
+            templates: null
         };
     }
 
@@ -36,8 +37,8 @@ class MonsterAdvancer extends Component {
         ReactGA.pageview(window.location.pathname + window.location.search, undefined, title);
     }
 
-    pushField(fields, data, name) {
-        if (data[name]) fields.push({name: name, value: data[name]});
+    pushField(fields, data, name, isMulti = false) {
+        if (data[name]) fields.push({name: name, value: data[name], isMulti: isMulti});
     }
 
     getValuesButton() {
@@ -55,6 +56,7 @@ class MonsterAdvancer extends Component {
         this.pushField(fields, monsterFields, "int");
         this.pushField(fields, monsterFields, "wis");
         this.pushField(fields, monsterFields, "cha");
+        this.pushField(fields, monsterFields, "templates", true);
         this.props.fetchMonsterAdvancer35v2(monsterFields.monsterName, fields)
     }
 
@@ -62,6 +64,10 @@ class MonsterAdvancer extends Component {
         const value = (e.value) ? e.value : e.target.value;
         console.log("changeField", fieldName, value, this);
         this.monsterFields[fieldName] = value;
+    }
+
+    changeMultiField(e, fieldName) {
+        this.monsterFields[fieldName] = e.map(x => x.value);
     }
 
     //https://github.com/JedWatson/react-select/issues/1322 Setting Height
@@ -80,7 +86,6 @@ class MonsterAdvancer extends Component {
                 control: (base) => ({
                 ...base,
                 height: height + 'px',
-                lineHeight: height + 'px'
                 }),
                 container: (base) => ({
                     ...base,
@@ -100,6 +105,10 @@ class MonsterAdvancer extends Component {
             } 
             return hd;
         }
+        const templateOptions = [
+            {value: "Dire", label: "Dire"},
+            {value: "Fiendish", label: "Fiendish"},
+        ];
         const sizeOptions = [
             {value: "F", label: "Fine"},
             {value: "D", label: "Diminutive"},
@@ -181,6 +190,16 @@ class MonsterAdvancer extends Component {
                                     <label>Cha</label>
                                     <input className="co-awesome" type="number" max="99" min="0" pattern="\d*" onChange={(e) => this.changeField(e, 'cha')}/>
                                 </div>
+                            </div>
+                            <div className="co-select-container">
+                                <label>Templates</label>
+                                <Select 
+                                    ref="templates"
+                                    styles={customStyles(40, 250)} 
+                                    options={templateOptions}
+                                    isMulti
+                                    onChange={(e) => this.changeMultiField(e, 'templates')}
+                                />
                             </div>
                         </div>
                     </div>

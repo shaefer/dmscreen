@@ -42,7 +42,10 @@ export const fetchMonsterAdvancer35v2 = (monsterName, fields) => (dispatch) => {
     let fieldsAsHtmlParams = [];
     for (var i = 0;i<fields.length; i++) {
         const field = fields[i];
-        fieldsAsHtmlParams.push(field.name + "=" + field.value);
+        if (!field.isMulti)
+            fieldsAsHtmlParams.push(field.name + "=" + field.value);
+        else
+            fieldsAsHtmlParams.push(field.name + "=" + field.value.join(","));
     }
     const uriParams = (fieldsAsHtmlParams.length > 0) ? fieldsAsHtmlParams.join("&") : "";
     return fetch(`${baseUri}?${uriParams}`)

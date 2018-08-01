@@ -38,7 +38,7 @@ const fetchMonster = (monsterName, dispatch, source) => {
 }
 
 export const fetchMonsterAdvancer35v2 = (monsterName, fields) => (dispatch) => {
-    const baseUri = `http://v2.monsteradvancer.com/api/monster/${monsterName}`
+    const baseUri = `https://monsteradvancerv2.mircloud.host/api/monster/${monsterName}`
     let fieldsAsHtmlParams = [];
     for (var i = 0;i<fields.length; i++) {
         const field = fields[i];

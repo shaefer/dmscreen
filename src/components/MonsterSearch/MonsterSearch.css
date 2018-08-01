@@ -4,20 +4,20 @@
     padding: 1em 3em;
 }
 
+.monsterSearch .searchField {
+    margin-top: 0.5em;
+}
+
 .monsterSearch .searchField label{
     display: inline;
 }
 
-.monsterSearch .searchField input, .monsterSearch .searchField select{
-    width: inherit;
-}
-
-.monsterSearch .searchField input{
-    width: 60px;
-}
-
 .monsterSearch .searchField input[type="text"] {
     width: 100px;
+}
+
+.monsterSearch button.greenAwesome {
+    padding: 0.5em 1em;
 }
 
 @media screen and (max-height:640px) {

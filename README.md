@@ -31,6 +31,11 @@ aws_secret_access_key = your_secret_key
 run `npm start` in terminal
 
 
+## Scripts
+The scripts are independent projects within this one. They have separate package.json files and are designed as command line tools. Look into their package.json files to see which npm scripts you can run for each tool. The main one is a script to update and expand the base monster json file MonsterJsonUpdater.
+
+run `npm start` will look for an allCreatures.json file in the files directory and process through the json and add any new fields it is programmed to add (such as adding integer fields for each stat) It will output a file with a new name with a date appended to the name to keep things unique. 
+
 
 
 

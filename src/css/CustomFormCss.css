@@ -29,14 +29,20 @@ header.cleverorc > div > span, header.cleverorc > div > a {
 }
 
 .patreonLink {
+  position: relative;
+  display: block;
   float: right;
   height: 100%;
-  margin-right: 0.5em;
+  margin-right: 0.25em;
 }
 
 .patreonLink img{
   width: 150px;
-  vertical-align: middle;
+  margin: auto;
+  position: absolute;
+  top: 50%;
+  bottom: 50%;
+  right: 0;
 }
 
 @media screen and (max-width: 359px) {
@@ -315,11 +321,24 @@ button.purpleAwesome:hover {
     background: #c77af7;
   }
 
+  select.co-awesome {
+    height: 2em;
+    font-family: 'Inconsolata', monospace;
+  }
+
+  .semi-square {
+    -webkit-border-radius: .4em;
+    -moz-border-radius: .4em;
+    border-radius: .4em;
+ }
+
   input.co-awesome {
-    width: 2em;
+    height: 2em;
+    width: 2.5em;
     border-radius: .4em;
     border:1px solid #cccccc;
     padding: 0 0 0 1em;
+    font-family: 'Inconsolata', monospace;
   }
 
 .valuePair {

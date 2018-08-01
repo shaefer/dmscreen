@@ -5,7 +5,7 @@ import { Field, reduxForm, formValueSelector } from 'redux-form'
 const selectOperatorField = (prefix, refs) => {
 
     const name =  `${prefix}Operator`;
-    return (<Field name={name} component="select">
+    return (<Field name={name} component="select" className="co-awesome semi-square">
     <option>&gt;</option>
     <option>&gt;=</option>
     <option>&lt;</option>
@@ -17,7 +17,7 @@ const selectOperatorField = (prefix, refs) => {
 
 const selectTextOperatorField = (prefix, refs) => {
         const name =  `${prefix}Operator`;
-        return (<Field name={name} component="select" style={{display:"none"}}>
+        return (<Field name={name} component="select" style={{display:"none"}} className="co-awesome">
         <option value="like">=</option>
         </Field>);
     }
@@ -25,14 +25,14 @@ const selectTextOperatorField = (prefix, refs) => {
 const searchFieldSection = (prefix, displayLabel, type="number", operatorVal) => {
     const throughFieldClass = (operatorVal === 'btw') ? "" : "hidden"
     const throughField = (
-        <span className={throughFieldClass}>-<Field name={prefix + "End"} component="input" type={type}/></span>
+        <span className={throughFieldClass}>-<Field name={prefix + "End"} component="input" type={type} className="co-awesome"/></span>
     );
     
     return (
     <div className="searchField">
         {selectOperatorField(prefix)}
         <label htmlFor={prefix}>{displayLabel}</label>
-        <Field name={prefix} component="input" type={type} />
+        <Field name={prefix} component="input" type={type} className="co-awesome" />
         {throughField}
     </div>);
 }
@@ -43,7 +43,7 @@ const searchTextFieldSection = (prefix, displayLabel, type="text", operatorVal) 
     <div className="searchField">
         <label htmlFor={prefix}>{displayLabel}</label>
         {selectTextOperatorField(prefix)}
-        <Field name={prefix} component="input" type={type} />
+        <Field name={prefix} component="input" type={type} className="co-awesome" />
     </div>);
 }
 
@@ -58,7 +58,7 @@ class MonsterSearchFormComponent extends Component {
             {searchFieldSection("dex", "Dex", "number", this.props["dexOperator"])}
             {searchFieldSection("ac", "AC", "number", this.props["acOperator"])}
             {searchTextFieldSection("environment", "Environment", "text", this.props["environmentOperator"])}
-            <button type="submit">Submit</button>
+            <button type="submit" className="greenAwesome">Submit</button>
           </form>
         )
     }

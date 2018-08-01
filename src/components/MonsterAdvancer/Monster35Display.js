@@ -30,14 +30,14 @@ const MonsterDisplay = (monster) => {
                 <span className="co-bold">Will: </span><span>{monster.will}</span>
             </div>
             <div><span className="co-bold">Skills: </span><span dangerouslySetInnerHTML={{__html:monster.skills}}/></div>
-            <div><span className="co-bold">Feats: {monster.feats}</span></div>
-            <div><span className="co-bold">Environment: {monster.environment}</span></div>
-            <div><span className="co-bold">Organization: {monster.organization}</span></div>
-            <div><span className="co-bold">Challenge Rating: {monster.challengeRating}</span></div>
-            <div><span className="co-bold">Treasure: {monster.treasure}</span></div>
-            <div><span className="co-bold">Alignment: {monster.alignmentText}</span></div>
-            <div><span className="co-bold">Advancement: {monster.advancement}</span></div>
-            <div><span className="co-bold">Level Adjustment: {monster.levelAdjustment}</span></div>
+            <div><span className="co-bold">Feats: </span><span>{monster.feats}</span></div>
+            <div><span className="co-bold">Environment: </span><span>{monster.environment}</span></div>
+            <div><span className="co-bold">Organization: </span><span>{monster.organization}</span></div>
+            <div><span className="co-bold">Challenge Rating: </span><span>{monster.challengeRating}</span></div>
+            <div><span className="co-bold">Treasure: </span><span>{monster.treasure}</span></div>
+            <div><span className="co-bold">Alignment: </span><span>{monster.alignmentText}</span></div>
+            <div><span className="co-bold">Advancement: </span><span>{monster.advancement}</span></div>
+            <div><span className="co-bold">Level Adjustment: </span><span>{monster.levelAdjustment}</span></div>
             <div><span dangerouslySetInnerHTML={{__html:monster.specialAbilities}}/></div>
             <div><span dangerouslySetInnerHTML={{__html:monster.gear}}/></div>
         </section>

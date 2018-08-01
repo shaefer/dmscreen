@@ -48,3 +48,11 @@
 .monsteradvancer button.generateButton {
     padding: 0.5em 1em;
 }
+
+.monsterCustomization {
+    display: flex;
+}
+
+.monsterCustomization > div.co-panel {
+    width: 50%;
+}

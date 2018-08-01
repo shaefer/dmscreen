@@ -3,7 +3,7 @@ import Keys from '../models/Keys'
 //import Monsters from '../models/AllMonsters'
 import { showMonster, selectMonsterOption, showS3SelectResult, 
     showS3SelectDMScreenResult, addDmScreenResult, addCustomButton, 
-    toggleForm, lookupMonster } from '../actions'
+    toggleForm, display35Monster } from '../actions'
 
 import rollTimeString from '../utils/ResultTimestamp'
 
@@ -47,8 +47,9 @@ export const fetchMonsterAdvancer35v2 = (monsterName, fields) => (dispatch) => {
     const uriParams = (fieldsAsHtmlParams.length > 0) ? fieldsAsHtmlParams.join("&") : "";
     return fetch(`${baseUri}?${uriParams}`)
         .then(resp => resp.json())
-        //.then(data =>  dispatch(displayMonster35v2(data, source)))
-        .then(data => console.log(data))
+        .then(data => {console.log(data); return data;})
+        .then(data =>  dispatch(display35Monster(data)))
+        //.then(data => console.log(data))
         .catch(err => console.log(err));
 }
 

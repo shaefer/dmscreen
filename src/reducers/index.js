@@ -69,6 +69,18 @@ const s3Select = (state = { monsterList:[]}, action) => {
   }
 }
 
+const monsterAdvancer = (state = { monster:{} }, action) => {
+  switch (action.type) {
+    case Actions.DISPLAY_35_MONSTER: 
+      return {
+        ...state,
+        monster: action.monster
+      };
+    default:
+      return state;
+  }
+}
+
 const dmScreen = (state = {results:[], buttons:[], showForm: false}, action) => {
   const category = "DM Screen";
   switch (action.type) {
@@ -113,7 +125,7 @@ const dmScreen = (state = {results:[], buttons:[], showForm: false}, action) => 
 }
 
 const rootReducer = combineReducers({
-  config, select, monster, s3Select, dmScreen, form: formReducer
+  config, select, monster, s3Select, dmScreen, monsterAdvancer, form: formReducer
 })
 
 export default rootReducer

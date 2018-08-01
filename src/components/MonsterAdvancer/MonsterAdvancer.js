@@ -7,6 +7,8 @@ import ReactGA from 'react-ga';
 import Select from 'react-select'
 import Monsters from './Monsters'
 
+import Monster35Display from './Monster35Display'
+
 import {fetchMonsterAdvancer35v2} from '../../action-creators'
 
 class MonsterAdvancer extends Component {
@@ -109,6 +111,9 @@ class MonsterAdvancer extends Component {
             {value: "G", label: "Gargantuan"},
             {value: "C", label: "Colossal"}
         ];
+        const monsterDisplay = (this.props.monsterAdvancer.monster.name) 
+            ? Monster35Display(this.props.monsterAdvancer.monster)
+            : <span>No Monster Currently Generated</span>
         //https://codepen.io/MichaelArestad/pen/ohLIa Good style idea for input boxes
         return (
             <main className="monsteradvancer">
@@ -117,64 +122,70 @@ class MonsterAdvancer extends Component {
                     <img className="oglImage" src="images/OGL-Logo.jpg"/>
                     <img className="pfImage" src="images/pathfinder-rpg-compatibility-logo.png"/>
                 </div>
-                <div className="co-panel">
-                    <div className="co-panel-header">Monster Customization</div>
-                    <div className="co-panel-body">
-                        <div className="co-select-container">
-                            <span>Name: </span>
-                            <Select 
-                                ref="monsterName"
-                                styles={customStyles()} 
-                                options={Monsters.map(x => ({value: x, label: x}))}
-                                onChange={(e) => this.changeField(e, 'monsterName')}
-                            />
-                        </div>
-                        <div className="co-select-container">
-                            <span>HD: </span>
-                            <Select 
-                                ref="hd"
-                                styles={customStyles(40, 80)} 
-                                placeholder={0}
-                                options={buildNumList(0,100).map(x => ({value: x, label: x}))}
-                                onChange={(e) => this.changeField(e, 'hd')}
-                            />
-                            <span>Size: </span>
-                            <Select 
-                                ref="size"
-                                styles={customStyles(40, 150)} 
-                                placeholder={"Original"}
-                                options={sizeOptions}
-                                onChange={(e) => this.changeField(e, 'size')}
-                            />
-                        </div>
-                        <div className="co-select-container">
-                            <div className="valuePair">
-                                <label>Str</label>
-                                <input className="co-awesome" type="number" max="99" min="0" pattern="\d*" onChange={(e) => this.changeField(e, 'str')}/>
+                <section className="monsterCustomization">
+                    <div className="co-panel">
+                        <div className="co-panel-header">Monster Customization</div>
+                        <div className="co-panel-body">
+                            <div className="co-select-container">
+                                <span>Name: </span>
+                                <Select 
+                                    ref="monsterName"
+                                    styles={customStyles()} 
+                                    options={Monsters.map(x => ({value: x, label: x}))}
+                                    onChange={(e) => this.changeField(e, 'monsterName')}
+                                />
                             </div>
-                            <div className="valuePair">
-                                <label>Dex</label>
-                                <input className="co-awesome" type="number" max="99" min="0" pattern="\d*" onChange={(e) => this.changeField(e, 'dex')}/>
+                            <div className="co-select-container">
+                                <span>HD: </span>
+                                <Select 
+                                    ref="hd"
+                                    styles={customStyles(40, 80)} 
+                                    placeholder={0}
+                                    options={buildNumList(0,100).map(x => ({value: x, label: x}))}
+                                    onChange={(e) => this.changeField(e, 'hd')}
+                                />
+                                <span>Size: </span>
+                                <Select 
+                                    ref="size"
+                                    styles={customStyles(40, 150)} 
+                                    placeholder={"Original"}
+                                    options={sizeOptions}
+                                    onChange={(e) => this.changeField(e, 'size')}
+                                />
                             </div>
-                            <div className="valuePair">
-                                <label>Con</label>
-                                <input className="co-awesome" type="number" max="99" min="0" pattern="\d*" onChange={(e) => this.changeField(e, 'con')}/>
-                            </div>
-                            <div className="valuePair">
-                                <label>Int</label>
-                                <input className="co-awesome" type="number" max="99" min="0" pattern="\d*" onChange={(e) => this.changeField(e, 'int')}/>
-                            </div>
-                            <div className="valuePair">
-                                <label>Wis</label>
-                                <input className="co-awesome" type="number" max="99" min="0" pattern="\d*" onChange={(e) => this.changeField(e, 'wis')}/>
-                            </div>
-                            <div className="valuePair">
-                                <label>Cha</label>
-                                <input className="co-awesome" type="number" max="99" min="0" pattern="\d*" onChange={(e) => this.changeField(e, 'cha')}/>
+                            <div className="co-select-container">
+                                <div className="valuePair">
+                                    <label>Str</label>
+                                    <input className="co-awesome" type="number" max="99" min="0" pattern="\d*" onChange={(e) => this.changeField(e, 'str')}/>
+                                </div>
+                                <div className="valuePair">
+                                    <label>Dex</label>
+                                    <input className="co-awesome" type="number" max="99" min="0" pattern="\d*" onChange={(e) => this.changeField(e, 'dex')}/>
+                                </div>
+                                <div className="valuePair">
+                                    <label>Con</label>
+                                    <input className="co-awesome" type="number" max="99" min="0" pattern="\d*" onChange={(e) => this.changeField(e, 'con')}/>
+                                </div>
+                                <div className="valuePair">
+                                    <label>Int</label>
+                                    <input className="co-awesome" type="number" max="99" min="0" pattern="\d*" onChange={(e) => this.changeField(e, 'int')}/>
+                                </div>
+                                <div className="valuePair">
+                                    <label>Wis</label>
+                                    <input className="co-awesome" type="number" max="99" min="0" pattern="\d*" onChange={(e) => this.changeField(e, 'wis')}/>
+                                </div>
+                                <div className="valuePair">
+                                    <label>Cha</label>
+                                    <input className="co-awesome" type="number" max="99" min="0" pattern="\d*" onChange={(e) => this.changeField(e, 'cha')}/>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                    <div className="co-panel">
+                        <div className="co-panel-header">Monster Stat Block</div>
+                        <div className="co-panel-body">{monsterDisplay}</div>
+                    </div>
+                </section>
                 <section>
                     <button type="button" className="generateButton greenAwesome" onClick={this.getValuesButton}>Get Values</button>
                 </section>

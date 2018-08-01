@@ -122,8 +122,11 @@ class MonsterAdvancer extends Component {
                     <img className="oglImage" src="images/OGL-Logo.jpg"/>
                     <img className="pfImage" src="images/pathfinder-rpg-compatibility-logo.png"/>
                 </div>
+                <section>
+                    <button type="button" className="generateButton greenAwesome" onClick={this.getValuesButton}>Generate Monster</button>
+                </section>
                 <section className="monsterCustomization">
-                    <div className="co-panel">
+                    <div className="co-panel monsterFields">
                         <div className="co-panel-header">Monster Customization</div>
                         <div className="co-panel-body">
                             <div className="co-select-container">
@@ -181,13 +184,10 @@ class MonsterAdvancer extends Component {
                             </div>
                         </div>
                     </div>
-                    <div className="co-panel">
+                    <div className="co-panel monsterStatBlock">
                         <div className="co-panel-header">Monster Stat Block</div>
                         <div className="co-panel-body">{monsterDisplay}</div>
                     </div>
-                </section>
-                <section>
-                    <button type="button" className="generateButton greenAwesome" onClick={this.getValuesButton}>Get Values</button>
                 </section>
             </main>
         );

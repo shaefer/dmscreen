@@ -51,8 +51,14 @@
 
 .monsterCustomization {
     display: flex;
+    flex-wrap: wrap;
 }
 
-.monsterCustomization > div.co-panel {
-    width: 50%;
+.monsterCustomization > div.co-panel.monsterFields {
+    min-width: 320px;
+    flex: 1 1 320px;
+}
+.monsterCustomization > div.co-panel.monsterStatBlock {
+    min-width: 320px;
+    flex: 1 1 66%;
 }

@@ -118,7 +118,7 @@ class MonsterAdvancer extends Component {
                     <img className="pfImage" src="images/pathfinder-rpg-compatibility-logo.png"/>
                 </div>
                 <div className="co-panel">
-                    <div className="co-panel-header">Monster Name</div>
+                    <div className="co-panel-header">Monster Customization</div>
                     <div className="co-panel-body">
                         <div className="co-select-container">
                             <span>Name: </span>

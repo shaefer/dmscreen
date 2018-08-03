@@ -5,10 +5,10 @@ const MonsterDisplay = (monster) => {
     //return <div>{monster.name}</div>;
     return (
         <section>
-            <div><span>{monster.name}</span></div>
+            <div><span className="co-monsterName">{monster.name}</span></div>
             <div><span className="co-bold">{monster.size} {monster.creatureType}</span></div>
             {conditions}
-            <div><span className="co-bold">Hit Dice: </span><span>{monster.racialHd}d{monster.hdType}{monster.racialHitPonts}{monster.classHitPoints} ({monster.averageHitPointsTotal})</span></div>
+            <div><span className="co-bold">Hit Dice: </span><span>{monster.racialHd}d{monster.hdType}{monster.racialHitPoints}{monster.classHitPoints} ({monster.averageHitPointsTotal})</span></div>
             <div><span className="co-bold">Initiative: </span><span>{monster.initiative}</span></div>
             <div><span className="co-bold">Speed: </span><span>{monster.speed}</span></div>
             <div><span className="co-bold">Armor Class: </span><span dangerouslySetInnerHTML={{__html:monster.armorClass}}/><span> ({monster.armorClassBonuses})</span></div>

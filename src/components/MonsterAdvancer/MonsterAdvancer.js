@@ -81,11 +81,7 @@ class MonsterAdvancer extends Component {
                 }),
                 option: (base) => ({
                 ...base,
-                padding: 3 //adjust for desktop vs how small on mobile makes it hard to select...
-                }),
-                control: (base) => ({
-                ...base,
-                height: height + 'px',
+                padding: 4 //adjust for desktop vs how small on mobile makes it hard to select...
                 }),
                 container: (base) => ({
                     ...base,
@@ -94,7 +90,7 @@ class MonsterAdvancer extends Component {
                 }),
                 valueContainer: (base) => ({
                     ...base,
-                    height: height,
+                    minHeight: height,
                 })
             }
         }
@@ -108,6 +104,7 @@ class MonsterAdvancer extends Component {
         const templateOptions = [
             {value: "Dire", label: "Dire"},
             {value: "Fiendish", label: "Fiendish"},
+            {value: "Black Half-Dragon", label: "Half-Dragon (Black)"}
         ];
         const sizeOptions = [
             {value: "F", label: "Fine"},

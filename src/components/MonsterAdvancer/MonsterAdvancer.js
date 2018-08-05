@@ -5,9 +5,10 @@ import './MonsterAdvancer.css'
 import ReactGA from 'react-ga';
 
 import Select from 'react-select'
-import Monsters from './Monsters'
 
+import Monsters from './Monsters'
 import Monster35Display from './Monster35Display'
+import ClassLevelSelect from '../CleverSelect/ClassLevelSelect'
 
 import {fetchMonsterAdvancer35v2} from '../../action-creators'
 
@@ -27,7 +28,8 @@ class MonsterAdvancer extends Component {
             int: null,
             wis: null,
             cha: null,
-            templates: null
+            templates: null,
+            levels: null
         };
     }
 
@@ -35,6 +37,10 @@ class MonsterAdvancer extends Component {
         const title = "Monster Advancer 3.5 v2 - by Clever Orc Games";
         document.title=title;
         ReactGA.pageview(window.location.pathname + window.location.search, undefined, title);
+    }
+
+    classLevelsChanged(classLevels) {
+        this.monsterFields.levels = classLevels.map(x => x.className+x.level)
     }
 
     pushField(fields, data, name, isMulti = false) {
@@ -57,6 +63,7 @@ class MonsterAdvancer extends Component {
         this.pushField(fields, monsterFields, "wis");
         this.pushField(fields, monsterFields, "cha");
         this.pushField(fields, monsterFields, "templates", true);
+        this.pushField(fields, monsterFields, "levels", true);
         this.props.fetchMonsterAdvancer35v2(monsterFields.monsterName, fields)
     }
 
@@ -73,7 +80,7 @@ class MonsterAdvancer extends Component {
     //https://github.com/JedWatson/react-select/issues/1322 Setting Height
     render() {
         //https://react-select.com/styles
-        const customStyles = (height = 40, width = 250) => {
+        const customStyles = (width = 250, height = 38) => {
             return {
                 menu: (base, state) => ({
                 ...base,
@@ -117,6 +124,14 @@ class MonsterAdvancer extends Component {
             {value: "G", label: "Gargantuan"},
             {value: "C", label: "Colossal"}
         ];
+
+        const classOptions = [
+            {value: "Barbarian", label: "Barbarian"},
+            {value: "Cleric", label: "Cleric"},
+            {value: "Druid", label: "Druid"},
+            {value: "Fighter", label: "Fighter"},
+            {value: "Monk", label: "Monk"},
+        ];
         const monsterDisplay = (this.props.monsterAdvancer.monster.name) 
             ? Monster35Display(this.props.monsterAdvancer.monster)
             : <span>No Monster Currently Generated</span>
@@ -148,7 +163,7 @@ class MonsterAdvancer extends Component {
                                 <span>HD: </span>
                                 <Select 
                                     ref="hd"
-                                    styles={customStyles(40, 80)} 
+                                    styles={customStyles(80)} 
                                     placeholder={0}
                                     options={buildNumList(0,100).map(x => ({value: x, label: x}))}
                                     onChange={(e) => this.changeField(e, 'hd')}
@@ -156,7 +171,7 @@ class MonsterAdvancer extends Component {
                                 <span>Size: </span>
                                 <Select 
                                     ref="size"
-                                    styles={customStyles(40, 150)} 
+                                    styles={customStyles(150)} 
                                     placeholder={"Original"}
                                     options={sizeOptions}
                                     onChange={(e) => this.changeField(e, 'size')}
@@ -192,11 +207,15 @@ class MonsterAdvancer extends Component {
                                 <label>Templates</label>
                                 <Select 
                                     ref="templates"
-                                    styles={customStyles(40, 250)} 
+                                    styles={customStyles(250)} 
                                     options={templateOptions}
                                     isMulti
                                     onChange={(e) => this.changeMultiField(e, 'templates')}
+                                    value={() => console.log('set value called on tempaltes')}
                                 />
+                            </div>
+                            <div className="co-select-container">
+                                <ClassLevelSelect onChange={(e) => this.classLevelsChanged(e)}/>
                             </div>
                         </div>
                     </div>

@@ -35,7 +35,7 @@ class ClassLevelSelect extends Component {
         const currentClassLevels = this.state.classLevels;
         const level = currentClassLevels[className].level
         currentClassLevels[e.value] = {className:e.value, level:level}
-        delete currentClassLevels[className]
+        delete currentClassLevels[className];
         this.setState({
             ...this.state,
             classLevels: currentClassLevels
@@ -45,7 +45,12 @@ class ClassLevelSelect extends Component {
     setLevelForClass(e, className) {
         console.log("setLevelForClass", e, className);
         const currentClassLevels = this.state.classLevels;
-        currentClassLevels[className] = {className:className, level:e.target.value}
+        const valAsInt = parseInt(e.target.value);
+        if (!valAsInt) {
+            delete currentClassLevels[className];
+        } else {
+            currentClassLevels[className] = {className:className, level:e.target.value}
+        }
         this.setState({
             ...this.state,
             classLevels: currentClassLevels
@@ -96,13 +101,15 @@ class ClassLevelSelect extends Component {
                 })
             }
         };
-        const classOptions = [
-            {value: "Barbarian", label: "Barbarian"},
-            {value: "Cleric", label: "Cleric"},
-            {value: "Druid", label: "Druid"},
-            {value: "Fighter", label: "Fighter"},
-            {value: "Monk", label: "Monk"},
-        ];
+        const classes = ["Barbarian", "Bard", "Cleric", "Druid", "Fighter", "Monk", "Paladin", "Rogue", "Sorcerer", "Wizard", "Adept", "Aristocrat", "Expert", "Warrior"];
+
+        const diff = (a1, a2) => {
+            return a1.concat(a2).filter(function(val, index, arr){
+                return arr.indexOf(val) === arr.lastIndexOf(val);
+            });
+        }
+        const classesSelected = (!this.state.classLevels) ? [] : Object.keys(this.state.classLevels);
+        const classOptions = diff(classes, classesSelected).map(x => {return {value: x, label: x}});
 
         //Sort just makes the order obvious and consistent. Having the order not change at all once present might be less jarring. If the user changes one of the classes once they are up there...leave that order by sotring the classLevels in the order they were added regardless of the key itself.
         const renderClassLevels = (!this.state.classLevels) ? "" : Object.keys(this.state.classLevels).sort().map(x => {
@@ -115,10 +122,11 @@ class ClassLevelSelect extends Component {
                         onChange={(e) => this.setClassForLevel(e, obj.className)}
                         value={{value: obj.className, label: obj.className}}
                     />
-                    <input value={obj.level} onChange={(e) => this.setLevelForClass(e, obj.className)}  className="co-awesome"/>
+                    <input value={obj.level} onChange={(e) => this.setLevelForClass(e, obj.className)}  className="co-awesome"  type="number" max="99" min="0" pattern="\d*"/>
                 </div>
             );
         });
+
 
         //Remove classOptions that are already in use.
         console.log(this.props)
@@ -132,7 +140,7 @@ class ClassLevelSelect extends Component {
                     onChange={(e) => this.selectClass(e, this)} //this is one where we need to build the special widget (or activate one already built with https://www.npmjs.com/package/react-responsive-modal)
                     value={null}
                 />
-                <input onChange={(e) => this.setUndeterminedLevel(e)} value={this.state.undeterminedLevel}  className="co-awesome"/>
+                <input onChange={(e) => this.setUndeterminedLevel(e)} value={this.state.undeterminedLevel}  className="co-awesome"  type="number" max="99" min="0" pattern="\d*"/>
             </div>
         );
     }

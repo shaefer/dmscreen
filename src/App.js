@@ -46,7 +46,7 @@ class App extends Component {
                             <li><Link to="/">Monster Finder</Link></li>
                             <li><Link to="/search">Monster Search</Link></li>
                             <li><Link to="/dmscreen">DM Screen</Link></li>
-                            {/*<li><Link to="/monsteradvancer">Monster Advancer</Link></li>*/}
+                            <li><Link to="/monsteradvancer">Monster Advancer v2 (3.5)</Link></li>
                             <li><Link to="/license">OGL</Link></li>
                             <li><Link to="/copyright">Copyright &amp; Trademark</Link></li>
                         </ul>

@@ -136,19 +136,19 @@ const fetchSelect = (searchParams, dispatch, action = showS3SelectResult) => {
     let searchFields = [];
     if (searchParams.cr) {
         const through = (searchParams.crOperator === 'btw') ? "-" + searchParams.crEnd : "";
-        searchFields.push(`cr=${searchParams.crOperator}${searchParams.cr}${through}`);
+        searchFields.push(`cr=${encodeURI(searchParams.crOperator)}${searchParams.cr}${through}`);
     }
     if (searchParams.str) {
         const through = (searchParams.strOperator === 'btw') ? "-" + searchParams.strEnd : "";
-        searchFields.push(`str=${searchParams.strOperator}${searchParams.str}${through}`);
+        searchFields.push(`str=${encodeURI(searchParams.strOperator)}${searchParams.str}${through}`);
     }
     if (searchParams.dex) {
         const through = (searchParams.dexOperator === 'btw') ? "-" + searchParams.dexEnd : "";
-        searchFields.push(`dex=${searchParams.dexOperator}${searchParams.dex}${through}`);
+        searchFields.push(`dex=${encodeURI(searchParams.dexOperator)}${searchParams.dex}${through}`);
     }
     if (searchParams.ac) {
         const through = (searchParams.acOperator === 'btw') ? "-" + searchParams.acEnd : "";
-        searchFields.push(`ac=${searchParams.acOperator}${searchParams.ac}${through}`);
+        searchFields.push(`ac=${encodeURI(searchParams.acOperator)}${searchParams.ac}${through}`);
     }
     if (searchParams.environment) {
         searchFields.push(`environment=${searchParams.environmentOperator}${searchParams.environment}`)

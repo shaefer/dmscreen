@@ -70,3 +70,7 @@
 .co-monsterName {
     font-size: 1.5em;
 }
+
+.co-select-container * {
+    vertical-align: middle;
+}

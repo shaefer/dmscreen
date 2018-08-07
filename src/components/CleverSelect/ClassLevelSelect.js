@@ -133,14 +133,16 @@ class ClassLevelSelect extends Component {
         return (
             <div className="classLevelSelect">
                 {renderClassLevels}
-                <label>Add Class</label>
-                <Select 
-                    styles={customStyles(200)} 
-                    options={classOptions}
-                    onChange={(e) => this.selectClass(e, this)} //this is one where we need to build the special widget (or activate one already built with https://www.npmjs.com/package/react-responsive-modal)
-                    value={null}
-                />
-                <input onChange={(e) => this.setUndeterminedLevel(e)} value={this.state.undeterminedLevel}  className="co-awesome"  type="number" max="99" min="0" pattern="\d*"/>
+                <div className="classLevelSelection">
+                    <label>Add Class</label>
+                    <Select 
+                        styles={customStyles(200)} 
+                        options={classOptions}
+                        onChange={(e) => this.selectClass(e, this)} //this is one where we need to build the special widget (or activate one already built with https://www.npmjs.com/package/react-responsive-modal)
+                        value={null}
+                    />
+                    <input onChange={(e) => this.setUndeterminedLevel(e)} value={this.state.undeterminedLevel}  className="co-awesome"  type="number" max="99" min="0" pattern="\d*"/>
+                </div>
             </div>
         );
     }

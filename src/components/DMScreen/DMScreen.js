@@ -6,6 +6,9 @@ import CreateAButtonForm from '../../components/DMScreen/CreateAButtonForm'
 import rollTimeString from '../../utils/ResultTimestamp'
 import './DmScreen.css'
 
+import '../Polyfills/StartsWith'
+import '../Polyfills/PadStart'
+
 import {DungeonEntrances, Backgrounds, DungeonLocations, DungeonTypes, DungeonRooms, NpcCharacteristicsPhysical, NpcCharacteristics,
         Plots, PlotTwists, NpcGoals, Rewards, Secrets, MacguffinOrQuestItem, MundaneRoomCharacteristics, ExoticRoomCharacteristics} from './RandomCharts'
 

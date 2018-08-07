@@ -1,3 +1,11 @@
 .classLevelSelect input.co-awesome {
     height: 38px;
 }
+
+.classLevelSelection label {
+    display:inline-block;
+}
+
+.classLevelSelection * {
+    vertical-align: middle;
+}

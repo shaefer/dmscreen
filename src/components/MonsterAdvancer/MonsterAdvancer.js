@@ -40,6 +40,7 @@ class MonsterAdvancer extends Component {
     }
 
     classLevelsChanged(classLevels) {
+        if (!classLevels || classLevels.length <= 0) return;
         this.monsterFields.levels = classLevels.map(x => x.className+x.level)
     }
 
@@ -125,13 +126,6 @@ class MonsterAdvancer extends Component {
             {value: "C", label: "Colossal"}
         ];
 
-        const classOptions = [
-            {value: "Barbarian", label: "Barbarian"},
-            {value: "Cleric", label: "Cleric"},
-            {value: "Druid", label: "Druid"},
-            {value: "Fighter", label: "Fighter"},
-            {value: "Monk", label: "Monk"},
-        ];
         const monsterDisplay = (this.props.monsterAdvancer.monster.name) 
             ? Monster35Display(this.props.monsterAdvancer.monster)
             : <span>No Monster Currently Generated</span>

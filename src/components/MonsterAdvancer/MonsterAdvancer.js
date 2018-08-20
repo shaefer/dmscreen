@@ -18,19 +18,38 @@ class MonsterAdvancer extends Component {
         super();
         this.getValuesButton = this.getValuesButton.bind(this);
         this.changeField = this.changeField.bind(this);
-        this.monsterFields = {
+        this.classLevelsChanged = this.classLevelsChanged.bind(this);
+        this.state = {
             monsterName: null,
             size: null,
             hd: null,
-            str: null,
-            dex: null,
-            con: null,
-            int: null,
-            wis: null,
-            cha: null,
-            templates: null,
+            str: "",
+            dex: "",
+            con: "",
+            int: "",
+            wis: "",
+            cha: "",
+            templates: [],
             levels: null
-        };
+        }
+    }
+
+    componentWillReceiveProps(nextProps) {
+        console.log("WILL RECEIVE", nextProps, this.state);
+        const monster = nextProps.monsterAdvancer.monster;
+        this.setState({
+            monsterName: this.state.monsterName,
+            size: monster.size,
+            hd: monster.racialHd,
+            str: monster.strBase,
+            dex: monster.dexBase,
+            con: monster.conBase,
+            int: monster.intelBase,
+            wis: monster.wisBase,
+            cha: monster.chaBase,
+            templates: this.state.templates,
+            levels: this.state.levels
+        });
     }
 
     componentDidMount() {
@@ -40,8 +59,14 @@ class MonsterAdvancer extends Component {
     }
 
     classLevelsChanged(classLevels) {
+        console.log("classLevelsChanged", this);
         if (!classLevels || classLevels.length <= 0) return;
-        this.monsterFields.levels = classLevels.map(x => x.className+x.level)
+        //this.state.levels = classLevels.map(x => x.className+x.level);
+        const newState = {
+            ...this.state,
+            levels : classLevels.map(x => x.className+x.level)
+        }
+        this.setState(newState);
     }
 
     pushField(fields, data, name, isMulti = false) {
@@ -49,11 +74,9 @@ class MonsterAdvancer extends Component {
     }
 
     getValuesButton() {
-        console.log(this.monsterFields);
-        const monsterFields = this.monsterFields;
-        //rather than refs we could use the onchange event of each to set a local property on this component.
-        if (!this.monsterFields.monsterName) return;
-        console.log(this.refs.hd.state.value, this.refs.monsterName.state.value, this.refs.size.state.value);
+        console.log(this.state);
+        const monsterFields = this.state;
+        if (!monsterFields.monsterName) return;
         let fields = [];
         this.pushField(fields, monsterFields, "hd");
         this.pushField(fields, monsterFields, "size");
@@ -65,17 +88,25 @@ class MonsterAdvancer extends Component {
         this.pushField(fields, monsterFields, "cha");
         this.pushField(fields, monsterFields, "templates", true);
         this.pushField(fields, monsterFields, "levels", true);
-        this.props.fetchMonsterAdvancer35v2(monsterFields.monsterName, fields)
+        this.props.fetchMonsterAdvancer35v2(monsterFields.monsterName, fields);
     }
 
     changeField(e, fieldName) {
-        const value = (e.value) ? e.value : e.target.value;
+        let value = (e.value) ? e.value : e.target.value;
         console.log("changeField", fieldName, value, this);
-        this.monsterFields[fieldName] = value;
+        const newState = {
+            ...this.state,
+            [fieldName] : value
+        }
+        console.log("newState changeField", newState);
+        this.setState(newState);
     }
 
     changeMultiField(e, fieldName) {
-        this.monsterFields[fieldName] = e.map(x => x.value);
+        this.setState({
+            ...this.state,
+            [fieldName] :  e.map(x => x.value)
+        });
     }
 
     //https://github.com/JedWatson/react-select/issues/1322 Setting Height
@@ -130,6 +161,11 @@ class MonsterAdvancer extends Component {
             ? Monster35Display(this.props.monsterAdvancer.monster)
             : <span>No Monster Currently Generated</span>
         //https://codepen.io/MichaelArestad/pen/ohLIa Good style idea for input boxes
+
+        console.log(templateOptions, this.state.templates)
+        
+        console.log("Monster Render", this.props.monsterAdvancer.monster, this.state);
+        const hdOptions = buildNumList(0,100).map(x => ({value: x, label: x}));
         return (
             <main className="monsteradvancer">
                 <div className="versionChoice">
@@ -159,8 +195,9 @@ class MonsterAdvancer extends Component {
                                     ref="hd"
                                     styles={customStyles(80)} 
                                     placeholder={0}
-                                    options={buildNumList(0,100).map(x => ({value: x, label: x}))}
+                                    options={hdOptions}
                                     onChange={(e) => this.changeField(e, 'hd')}
+                                    value={hdOptions.find(x => x.value == this.state.hd)}
                                 />
                                 <span>Size: </span>
                                 <Select 
@@ -169,32 +206,39 @@ class MonsterAdvancer extends Component {
                                     placeholder={"Original"}
                                     options={sizeOptions}
                                     onChange={(e) => this.changeField(e, 'size')}
+                                    value={sizeOptions.find(x => x.label == this.state.size)}
                                 />
                             </div>
                             <div className="co-select-container">
                                 <div className="valuePair">
                                     <label>Str</label>
-                                    <input className="co-awesome" type="number" max="99" min="0" pattern="\d*" onChange={(e) => this.changeField(e, 'str')}/>
+                                    <input className="co-awesome" type="number" max="99" min="0" pattern="\d*" onChange={(e) => this.changeField(e, 'str')}
+                                            value={this.state.str}/>
                                 </div>
                                 <div className="valuePair">
                                     <label>Dex</label>
-                                    <input className="co-awesome" type="number" max="99" min="0" pattern="\d*" onChange={(e) => this.changeField(e, 'dex')}/>
+                                    <input className="co-awesome" type="number" max="99" min="0" pattern="\d*" onChange={(e) => this.changeField(e, 'dex')}
+                                    value={this.state.dex}/>
                                 </div>
                                 <div className="valuePair">
                                     <label>Con</label>
-                                    <input className="co-awesome" type="number" max="99" min="0" pattern="\d*" onChange={(e) => this.changeField(e, 'con')}/>
+                                    <input className="co-awesome" type="number" max="99" min="0" pattern="\d*" onChange={(e) => this.changeField(e, 'con')}
+                                    value={this.state.con}/>
                                 </div>
                                 <div className="valuePair">
                                     <label>Int</label>
-                                    <input className="co-awesome" type="number" max="99" min="0" pattern="\d*" onChange={(e) => this.changeField(e, 'int')}/>
+                                    <input className="co-awesome" type="number" max="99" min="0" pattern="\d*" onChange={(e) => this.changeField(e, 'int')}
+                                    value={this.state.int}/>
                                 </div>
                                 <div className="valuePair">
                                     <label>Wis</label>
-                                    <input className="co-awesome" type="number" max="99" min="0" pattern="\d*" onChange={(e) => this.changeField(e, 'wis')}/>
+                                    <input className="co-awesome" type="number" max="99" min="0" pattern="\d*" onChange={(e) => this.changeField(e, 'wis')}
+                                    value={this.state.wis}/>
                                 </div>
                                 <div className="valuePair">
                                     <label>Cha</label>
-                                    <input className="co-awesome" type="number" max="99" min="0" pattern="\d*" onChange={(e) => this.changeField(e, 'cha')}/>
+                                    <input className="co-awesome" type="number" max="99" min="0" pattern="\d*" onChange={(e) => this.changeField(e, 'cha')}
+                                    value={this.state.cha}/>
                                 </div>
                             </div>
                             <div className="co-select-container">
@@ -205,11 +249,13 @@ class MonsterAdvancer extends Component {
                                     options={templateOptions}
                                     isMulti
                                     onChange={(e) => this.changeMultiField(e, 'templates')}
-                                    value={() => console.log('set value called on tempaltes')}
+                                    value={this.state.templates.map(x => {
+                                        return {label: x, value: x}
+                                    })}
                                 />
                             </div>
                             <div className="co-select-container">
-                                <ClassLevelSelect onChange={(e) => this.classLevelsChanged(e)}/>
+                                <ClassLevelSelect onChange={(e) => this.classLevelsChanged(e)} ref="classLevels"/>
                             </div>
                         </div>
                     </div>

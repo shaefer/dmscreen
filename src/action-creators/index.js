@@ -2,40 +2,10 @@ import React from 'react'
 import Keys from '../models/Keys'
 //import Monsters from '../models/AllMonsters'
 import { showMonster, selectMonsterOption, showS3SelectResult, 
-    showS3SelectDMScreenResult, addDmScreenResult, addCustomButton, 
-    toggleForm, display35Monster } from '../actions'
-
+    showS3SelectDMScreenResult, display35Monster } from '../actions'
+import MonstersApi from '../apiClients/MonsterApi'
 import rollTimeString from '../utils/ResultTimestamp'
-
-//TODO: Remove this if it is not used...
-export const fetchMonsterAction = (monsterName) => (dispatch, getState) => {
-    fetchMonster(monsterName, dispatch);
-}
-
-const fetchMonster = (monsterName, dispatch, source) => {
-    if (!monsterName) return;
-    console.log("ABOUT TO GET: " + monsterName);
-    let monsterKey = monsterName.toLowerCase()
-        .replace(new RegExp("[,()']", 'g'), "")
-        .replace(new RegExp(" ", 'g'), "_");
-
-    // const baseKey = monsterKey.substring(0, nthIndexOf(monsterKey, "_", 3));
-    // const baseMonster = (monsterKey.startsWith("dragon_")) ? Monsters[baseKey] : undefined;
-    // const monster = Monsters[monsterKey];
-
-    // if (baseMonster) {
-    //     const mergedMonster = {
-    //         ...baseMonster,
-    //         ...monster
-    //     }
-    //     return dispatch(showMonster(mergedMonster));
-    // }
-    // return dispatch(showMonster(monster));
-    return fetch(`https://api.cleverorc.com/monsters/${monsterKey}`)
-        .then(resp => resp.json())
-        .then(data =>  dispatch(showMonster(data, source)))
-        .catch(err => console.log(err));
-}
+import ReactGA from 'react-ga';
 
 export const fetchMonsterAdvancer35v2 = (monsterName, fields) => (dispatch) => {
     const baseUri = `https://monsteradvancerv2.mircloud.us/api/monster/${monsterName}`
@@ -63,8 +33,15 @@ export const monsterSelectChangeHandler = (e) => (dispatch, getState) => {
     
     const monsterName = (e && e.value) ? e.value : e.label;
     dispatch(selectMonsterOption(monsterName));
-    const source = "Monster Find"
-    fetchMonster(monsterName, dispatch, source);
+    MonstersApi.getMonsterByName(monsterName)
+        .then(data => {
+            ReactGA.event({
+                category: "Monster Find",
+                action: monsterName
+            });
+            return data;
+        })
+        .then(data =>  dispatch(showMonster(data)))
 }
 
 export const keyPressHandler = (e) => {
@@ -72,7 +49,12 @@ export const keyPressHandler = (e) => {
         switch(e.which) {
             case Keys.LEFT:
             console.log("LEFT KEY PRESSED");
-            fetchMonster("behir", dispatch);
+            var promise = MonstersApi.getMonsterByName("behir");
+            ReactGA.event({
+                category: "Monster Secret Key Press",
+                action: "behir"
+            });
+            promise.then(data =>  dispatch(showMonster(data)))
             break;
     
             case Keys.UP:
@@ -96,7 +78,6 @@ export const keyPressHandler = (e) => {
     }
 };
 
-
 //using for DMScreen right now
 export const fetchSelectAction = (searchParams) => (dispatch, getState) => {
     const chooseMonster = (monsters, searchParamsAsHtmlParams) => {
@@ -109,9 +90,16 @@ export const fetchSelectAction = (searchParams) => (dispatch, getState) => {
         }
         console.log("Select Multiple Monsters", monsters, numOfMonsters, selectedMonsters);
         const monsterButtons = selectedMonsters.map(x => {
-            const source = "DM Screen"
             const lookupMonster = () => {
-                fetchMonster(x, dispatch, source);
+                var promise = MonstersApi.getMonsterByName(x);
+                promise.then(data => {
+                    ReactGA.event({
+                        category: "DM Screen",
+                        action: x
+                    })
+                    return data;
+                });
+                promise.then(data =>  dispatch(showMonster(data)));
             }
             return <button type="button" onClick={lookupMonster} className="purpleAwesome">{x}</button>
         })
@@ -122,65 +110,30 @@ export const fetchSelectAction = (searchParams) => (dispatch, getState) => {
         const result = [<span>{desc}</span>, ...monsterButtons]
         return showS3SelectDMScreenResult(result, searchParamsAsHtmlParams);
     }
-    fetchSelect(searchParams, dispatch, chooseMonster);
+    var resultsPromise = MonstersApi.getMonstersByCriteria(searchParams);
+    resultsPromise.then(monsters => {
+        if (monsters && monsters.length > 0) {
+            var searchFieldsAsHtmlParams = MonstersApi.convertCriteriaToHtmlParameters(searchParams);
+            ReactGA.event({
+                category: 'Monster Search',
+                action: searchFieldsAsHtmlParams
+            });
+            dispatch(chooseMonster(monsters, searchFieldsAsHtmlParams));
+        }    
+    });
 }
 
 export const monsterS3SelectChangeHandler = (values) => (dispatch, getState) => {
     console.warn('Search via S3 select');
-    fetchSelect(values, dispatch);
-} 
-
-const fetchSelect = (searchParams, dispatch, action = showS3SelectResult) => {
-    console.log("ABOUT TO SEARCH ON", searchParams);
-
-    let searchFields = [];
-    if (searchParams.cr) {
-        const through = (searchParams.crOperator === 'btw') ? "-" + searchParams.crEnd : "";
-        searchFields.push(`cr=${encodeURI(searchParams.crOperator)}${searchParams.cr}${through}`);
-    }
-    if (searchParams.str) {
-        const through = (searchParams.strOperator === 'btw') ? "-" + searchParams.strEnd : "";
-        searchFields.push(`str=${encodeURI(searchParams.strOperator)}${searchParams.str}${through}`);
-    }
-    if (searchParams.dex) {
-        const through = (searchParams.dexOperator === 'btw') ? "-" + searchParams.dexEnd : "";
-        searchFields.push(`dex=${encodeURI(searchParams.dexOperator)}${searchParams.dex}${through}`);
-    }
-    if (searchParams.ac) {
-        const through = (searchParams.acOperator === 'btw') ? "-" + searchParams.acEnd : "";
-        searchFields.push(`ac=${encodeURI(searchParams.acOperator)}${searchParams.ac}${through}`);
-    }
-    if (searchParams.environment) {
-        searchFields.push(`environment=${searchParams.environmentOperator}${searchParams.environment}`)
-    }
-    
-    const searchFieldsAsHtmlParams = searchFields.join("&");
-
-    //https://monstersearchapi.cleverorc.com/?
-    const baseUri = 'https://99hy8krr49.execute-api.us-west-2.amazonaws.com/prod';
-    const url = `${baseUri}?${searchFieldsAsHtmlParams}`;
-    console.log("URL TO FETCH: ", url);
-    const results = fetch(url)
-        .then(resp => resp.json())
-        .then(json => {
-            console.log("REAL RESPONSE FROM S3 Select URL");
-            console.log(json);
-            return json.results
-        });
-    return results.then(monsters => {
-        if (monsters && monsters.length > 0)
-            dispatch(action(monsters, searchFieldsAsHtmlParams));
+    var resultsPromise = MonstersApi.getMonstersByCriteria(values);
+    resultsPromise.then(monsters => {
+        if (monsters && monsters.length > 0) {
+            var searchFieldsAsHtmlParams = MonstersApi.convertCriteriaToHtmlParameters(values);
+            ReactGA.event({
+                category: 'Monster Search',
+                action: searchFieldsAsHtmlParams
+            });
+            dispatch(showS3SelectResult(monsters, searchFieldsAsHtmlParams));
+        }
     });
-}
-
-export const dmScreenAddResultAction = (result) => (dispatch, getState) => {
-    dispatch(addDmScreenResult(result));
-}
-
-export const addCustomButtonAction = (button) => (dispatch) => {
-    dispatch(addCustomButton(button))
-}
-
-export const toggleFormAction = (showForm) => (dispatch) => {
-    dispatch(toggleForm(showForm))
-}
+} 

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
-import {dmScreenAddResultAction, addCustomButtonAction, toggleFormAction, fetchSelectAction} from '../../action-creators'
+import {fetchSelectAction} from '../../action-creators'
+import {dmScreenAddResultAction, addCustomButtonAction, toggleFormAction} from '../../action-creators/DmScreenActionCreators'
 import DiceBag from '../../utils/DiceBag'
 import CreateAButtonForm from '../../components/DMScreen/CreateAButtonForm'
 import rollTimeString from '../../utils/ResultTimestamp'

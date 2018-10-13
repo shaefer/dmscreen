@@ -8,22 +8,16 @@ import rollTimeString from '../utils/ResultTimestamp'
 import ReactGA from 'react-ga';
 
 export const fetchMonsterAdvancer35v2 = (monsterName, fields) => (dispatch) => {
-    const baseUri = `https://monsteradvancerv2.mircloud.us/api/monster/${monsterName}`
-    let fieldsAsHtmlParams = [];
-    for (var i = 0;i<fields.length; i++) {
-        const field = fields[i];
-        if (!field.isMulti)
-            fieldsAsHtmlParams.push(field.name + "=" + field.value);
-        else
-            fieldsAsHtmlParams.push(field.name + "=" + field.value.join(","));
-    }
-    const uriParams = (fieldsAsHtmlParams.length > 0) ? fieldsAsHtmlParams.join("&") : "";
-    return fetch(`${baseUri}?${uriParams}`)
-        .then(resp => resp.json())
-        .then(data => {console.log(data); return data;})
-        .then(data =>  dispatch(display35Monster(data)))
-        //.then(data => console.log(data))
-        .catch(err => console.log(err));
+    MonstersApi.getMonsterWithCustomizations(monsterName, fields)
+        .then(data => {
+            ReactGA.event({
+                category: "Monster Advancer Generate",
+                action: monsterName,
+                label: MonstersApi.convertFieldsToHtmlParameters(fields)
+            });
+            return data;
+        })
+        .then(data =>  dispatch(display35Monster(data)));
 }
 
 export const monsterSelectChangeHandler = (e) => (dispatch, getState) => {

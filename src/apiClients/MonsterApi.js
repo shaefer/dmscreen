@@ -67,6 +67,19 @@ export const getMonsterByName = (monsterName) => {
         .catch(err => console.log(err));
 }
 
+export const convertFieldsToHtmlParameters = (fields) => {
+    let fieldsAsHtmlParams = [];
+    for (var i = 0;i<fields.length; i++) {
+        const field = fields[i];
+        if (!field.isMulti)
+            fieldsAsHtmlParams.push(field.name + "=" + field.value);
+        else
+            fieldsAsHtmlParams.push(field.name + "=" + field.value.join(","));
+    }
+    const uriParams = (fieldsAsHtmlParams.length > 0) ? fieldsAsHtmlParams.join("&") : "";
+    return uriParams;
+}
+
 export const getMonsterWithCustomizations = (monsterName, fields) => {
     const baseUri = `https://monsteradvancerv2.mircloud.us/api/monster/${monsterName}`
     let fieldsAsHtmlParams = [];
@@ -77,7 +90,7 @@ export const getMonsterWithCustomizations = (monsterName, fields) => {
         else
             fieldsAsHtmlParams.push(field.name + "=" + field.value.join(","));
     }
-    const uriParams = (fieldsAsHtmlParams.length > 0) ? fieldsAsHtmlParams.join("&") : "";
+    const uriParams = convertFieldsToHtmlParameters(fields);
     return fetch(`${baseUri}?${uriParams}`)
         .then(resp => resp.json())
         .then(data => {console.log(data); return data;})
@@ -87,5 +100,7 @@ export const getMonsterWithCustomizations = (monsterName, fields) => {
 export default { 
     getMonstersByCriteria: getMonstersByCriteria, 
     convertCriteriaToHtmlParameters: convertCriteriaToHtmlParameters,
-    getMonsterByName: getMonsterByName 
+    getMonsterByName: getMonsterByName,
+    getMonsterWithCustomizations: getMonsterWithCustomizations,
+    convertFieldsToHtmlParameters: convertFieldsToHtmlParameters
 };

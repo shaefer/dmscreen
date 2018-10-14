@@ -1,11 +1,12 @@
 import React from 'react'
 import Keys from '../models/Keys'
 //import Monsters from '../models/AllMonsters'
-import { showMonster, selectMonsterOption, showS3SelectResult, 
-    showS3SelectDMScreenResult, display35Monster } from '../actions'
+import { showMonster, selectMonsterOption, showS3SelectResult, display35Monster } from '../actions'
 import MonstersApi from '../apiClients/MonsterApi'
 import rollTimeString from '../utils/ResultTimestamp'
-import ReactGA from 'react-ga';
+import ReactGA from 'react-ga'
+import { addMonsterResult, showS3SelectDMScreenResult } from '../actions/DmScreenActions'
+import MonsterDisplay from '../components/MonsterDisplay'
 
 export const fetchMonsterAdvancer35v2 = (monsterName, fields) => (dispatch) => {
     MonstersApi.getMonsterWithCustomizations(monsterName, fields)
@@ -90,7 +91,10 @@ const chooseMonster = (monsters, searchParamsAsHtmlParams, numOfMonsters, cr, di
                     })
                     return data;
                 })
-                .then(data =>  dispatch(showMonster(data)));
+                .then(data => {
+                    const result = <MonsterDisplay monster={{statBlock: data}}/>
+                    dispatch(addMonsterResult(result))
+                });
         }
         return <button type="button" onClick={lookupMonster} className="purpleAwesome">{x}</button>
     });
@@ -107,6 +111,14 @@ export const fetchSelectAction = (searchParams) => (dispatch, getState) => {
 
     MonstersApi.getMonstersByCriteria(searchParams)
         .then(monsters => {
+            var searchFieldsAsHtmlParams = MonstersApi.convertCriteriaToHtmlParameters(searchParams);
+            ReactGA.event({
+                category: "DM Screen",
+                action: searchFieldsAsHtmlParams
+            });
+            return monsters;
+        })
+        .then(monsters => {
             if (monsters && monsters.length > 0) {
                 var searchFieldsAsHtmlParams = MonstersApi.convertCriteriaToHtmlParameters(searchParams);
                 ReactGA.event({
@@ -115,7 +127,10 @@ export const fetchSelectAction = (searchParams) => (dispatch, getState) => {
                 });
                 dispatch(chooseMonster(monsters, searchFieldsAsHtmlParams, searchParams.num, searchParams.cr, dispatch));
             }    
-        });
+        })
+        .catch(ex => {
+            console.log(ex);
+        })
 }
 
 export const monsterS3SelectChangeHandler = (values) => (dispatch, getState) => {

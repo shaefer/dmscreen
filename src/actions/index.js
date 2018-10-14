@@ -1,7 +1,6 @@
 export const SHOW_MONSTER = 'SHOW_MONSTER'
 export const SELECT_MONSTER = 'SELECT_MONSTER'
 export const S3_SELECT_SHOW = 'S3_SELECT_SHOW'
-export const S3_SELECT_DMSCREEN_SHOW = 'S3_SELECT_DMSCREEN_SHOW'
 
 export const showMonster = (monsterJson) => ({
     type: 'SHOW_MONSTER',
@@ -10,12 +9,6 @@ export const showMonster = (monsterJson) => ({
 
 export const showS3SelectResult = (monsterListJson, searchParams) => ({
     type:'S3_SELECT_SHOW',
-    monsterList: monsterListJson,
-    searchParams: searchParams
-});
-
-export const showS3SelectDMScreenResult = (monsterListJson, searchParams) => ({
-    type:'S3_SELECT_DMSCREEN_SHOW',
     monsterList: monsterListJson,
     searchParams: searchParams
 });

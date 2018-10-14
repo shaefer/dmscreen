@@ -1,11 +1,7 @@
-import React from 'react'
 import * as DmScreenActions from '../actions/DmScreenActions'
 import * as Actions from '../actions'
-import MonsterDisplay from '../components/MonsterDisplay'
-import ReactGA from 'react-ga';
 
 const dmScreen = (state = {results:[], buttons:[], showForm: false}, action) => {
-    const category = "DM Screen";
     switch (action.type) {
       case DmScreenActions.ADD_RESULT:
         return {
@@ -22,25 +18,15 @@ const dmScreen = (state = {results:[], buttons:[], showForm: false}, action) => 
           ...state,
           showForm: action.showForm
         };
-      case Actions.S3_SELECT_DMSCREEN_SHOW:
-        ReactGA.event({
-          category: category,
-          action: action.searchParams
-        })
+      case DmScreenActions.S3_SELECT_DMSCREEN_SHOW:
         return {
           ...state,
           results: [...state.results, action.monsterList]
         }
-      case Actions.SHOW_MONSTER:
-        if (action.source === category) {
-          ReactGA.event({
-            category: category,
-            action: action.monster.name
-          })
-        }
+      case DmScreenActions.ADD_MONSTER_RESULT:
         return {
           ...state,
-          results: [...state.results, <MonsterDisplay monster={{statBlock: action.monster}}/>]
+          results: [...state.results, action.result]
         }
       default:
         return state;

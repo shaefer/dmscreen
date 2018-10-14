@@ -72,62 +72,63 @@ export const keyPressHandler = (e) => {
     }
 };
 
-//using for DMScreen right now
-export const fetchSelectAction = (searchParams) => (dispatch, getState) => {
-    const chooseMonster = (monsters, searchParamsAsHtmlParams) => {
-        const numOfMonsters = searchParams.num; //special searchParams.
-        const monsterNames = monsters.map(x => x.name);
-        let selectedMonsters = [];
-        
-        for(let i = 0;i<numOfMonsters;i++) {
-            selectedMonsters.push(monsterNames[Math.floor(Math.random()*monsterNames.length)])
-        }
-        console.log("Select Multiple Monsters", monsters, numOfMonsters, selectedMonsters);
-        const monsterButtons = selectedMonsters.map(x => {
-            const lookupMonster = () => {
-                var promise = MonstersApi.getMonsterByName(x);
-                promise.then(data => {
+const chooseMonster = (monsters, searchParamsAsHtmlParams, numOfMonsters, cr, dispatch) => {
+    const monsterNames = monsters.map(x => x.name);
+    let selectedMonsters = [];
+    
+    for(let i = 0;i<numOfMonsters;i++) {
+        selectedMonsters.push(monsterNames[Math.floor(Math.random()*monsterNames.length)])
+    }
+    console.log("Select Multiple Monsters", monsters, numOfMonsters, selectedMonsters);
+    const monsterButtons = selectedMonsters.map(x => {
+        const lookupMonster = () => {
+            MonstersApi.getMonsterByName(x)
+                .then(data => {
                     ReactGA.event({
                         category: "DM Screen",
                         action: x
                     })
                     return data;
-                });
-                promise.then(data =>  dispatch(showMonster(data)));
-            }
-            return <button type="button" onClick={lookupMonster} className="purpleAwesome">{x}</button>
-        })
-
-        const countStr = (numOfMonsters > 1) ? numOfMonsters + " " : "";
-        const s = (numOfMonsters > 1) ? "s" : "";
-        const desc = `(${rollTimeString()}) ${countStr}CR ${searchParams.cr} Monster${s}`
-        const result = [<span>{desc}</span>, ...monsterButtons]
-        return showS3SelectDMScreenResult(result, searchParamsAsHtmlParams);
-    }
-    var resultsPromise = MonstersApi.getMonstersByCriteria(searchParams);
-    resultsPromise.then(monsters => {
-        if (monsters && monsters.length > 0) {
-            var searchFieldsAsHtmlParams = MonstersApi.convertCriteriaToHtmlParameters(searchParams);
-            ReactGA.event({
-                category: 'Monster Search',
-                action: searchFieldsAsHtmlParams
-            });
-            dispatch(chooseMonster(monsters, searchFieldsAsHtmlParams));
-        }    
+                })
+                .then(data =>  dispatch(showMonster(data)));
+        }
+        return <button type="button" onClick={lookupMonster} className="purpleAwesome">{x}</button>
     });
+
+    const countStr = (numOfMonsters > 1) ? numOfMonsters + " " : "";
+    const s = (numOfMonsters > 1) ? "s" : "";
+    const desc = `(${rollTimeString()}) ${countStr}CR ${cr} Monster${s}`
+    const result = [<span>{desc}</span>, ...monsterButtons]
+    return showS3SelectDMScreenResult(result, searchParamsAsHtmlParams);
+}
+
+//using for DMScreen right now
+export const fetchSelectAction = (searchParams) => (dispatch, getState) => {
+
+    MonstersApi.getMonstersByCriteria(searchParams)
+        .then(monsters => {
+            if (monsters && monsters.length > 0) {
+                var searchFieldsAsHtmlParams = MonstersApi.convertCriteriaToHtmlParameters(searchParams);
+                ReactGA.event({
+                    category: 'Monster Search',
+                    action: searchFieldsAsHtmlParams
+                });
+                dispatch(chooseMonster(monsters, searchFieldsAsHtmlParams, searchParams.num, searchParams.cr, dispatch));
+            }    
+        });
 }
 
 export const monsterS3SelectChangeHandler = (values) => (dispatch, getState) => {
     console.warn('Search via S3 select');
-    var resultsPromise = MonstersApi.getMonstersByCriteria(values);
-    resultsPromise.then(monsters => {
-        if (monsters && monsters.length > 0) {
-            var searchFieldsAsHtmlParams = MonstersApi.convertCriteriaToHtmlParameters(values);
-            ReactGA.event({
-                category: 'Monster Search',
-                action: searchFieldsAsHtmlParams
-            });
-            dispatch(showS3SelectResult(monsters, searchFieldsAsHtmlParams));
-        }
-    });
+    MonstersApi.getMonstersByCriteria(values)
+        .then(monsters => {
+            if (monsters && monsters.length > 0) {
+                var searchFieldsAsHtmlParams = MonstersApi.convertCriteriaToHtmlParameters(values);
+                ReactGA.event({
+                    category: 'Monster Search',
+                    action: searchFieldsAsHtmlParams
+                });
+                dispatch(showS3SelectResult(monsters, searchFieldsAsHtmlParams));
+            }
+        });
 } 

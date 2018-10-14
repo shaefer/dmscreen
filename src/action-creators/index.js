@@ -5,7 +5,7 @@ import { showMonster, selectMonsterOption, showS3SelectResult, display35Monster 
 import MonstersApi from '../apiClients/MonsterApi'
 import rollTimeString from '../utils/ResultTimestamp'
 import ReactGA from 'react-ga'
-import { addMonsterResult, showS3SelectDMScreenResult } from '../actions/DmScreenActions'
+import { addMonsterResult, showS3SelectDMScreenResult, addDmScreenResult } from '../actions/DmScreenActions'
 import MonsterDisplay from '../components/MonsterDisplay'
 
 export const fetchMonsterAdvancer35v2 = (monsterName, fields) => (dispatch) => {
@@ -93,7 +93,7 @@ const chooseMonster = (monsters, searchParamsAsHtmlParams, numOfMonsters, cr, di
                 })
                 .then(data => {
                     const result = <MonsterDisplay monster={{statBlock: data}}/>
-                    dispatch(addMonsterResult(result))
+                    dispatch(addDmScreenResult(result))
                 });
         }
         return <button type="button" onClick={lookupMonster} className="purpleAwesome">{x}</button>

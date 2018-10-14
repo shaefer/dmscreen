@@ -1,12 +1,11 @@
 import * as DmScreenActions from '../actions/DmScreenActions'
-import * as Actions from '../actions'
 
 const dmScreen = (state = {results:[], buttons:[], showForm: false}, action) => {
     switch (action.type) {
       case DmScreenActions.ADD_RESULT:
         return {
           ...state,
-          results: state.results.concat(action.result)
+          results: [...state.results, action.result]
         };
       case DmScreenActions.ADD_CUSTOM_BUTTON:
         return {
@@ -22,11 +21,6 @@ const dmScreen = (state = {results:[], buttons:[], showForm: false}, action) => 
         return {
           ...state,
           results: [...state.results, action.monsterList]
-        }
-      case DmScreenActions.ADD_MONSTER_RESULT:
-        return {
-          ...state,
-          results: [...state.results, action.result]
         }
       default:
         return state;

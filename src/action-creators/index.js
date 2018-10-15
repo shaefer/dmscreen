@@ -75,8 +75,6 @@ export const keyPressHandler = (e) => {
 
 const chooseMonster = (monsters, searchParamsAsHtmlParams, numOfMonsters, searchParams, dispatch) => {
     const monsterNames = monsters.map(x => x.name);
-    console.log("CHOOSING MONSTERS");
-    console.log(monsters);
     let selectedMonsters = [];
     
     for(let i = 0;i<numOfMonsters;i++) {

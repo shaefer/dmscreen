@@ -5,8 +5,16 @@ import { showMonster, selectMonsterOption, showS3SelectResult, display35Monster 
 import MonstersApi from '../apiClients/MonsterApi'
 import rollTimeString from '../utils/ResultTimestamp'
 import ReactGA from 'react-ga'
-import { addMonsterResult, showS3SelectDMScreenResult, addDmScreenResult } from '../actions/DmScreenActions'
+import { showS3SelectDMScreenResult, addDmScreenResult } from '../actions/DmScreenActions'
 import MonsterDisplay from '../components/MonsterDisplay'
+
+import {
+    Accordion,
+    AccordionItem,
+    AccordionItemTitle,
+    AccordionItemBody,
+} from 'react-accessible-accordion';
+import '../components/DMScreen/AccordianMonsterDisplay.css'
 
 export const fetchMonsterAdvancer35v2 = (monsterName, fields) => (dispatch) => {
     MonstersApi.getMonsterWithCustomizations(monsterName, fields)
@@ -84,6 +92,7 @@ const chooseMonster = (monsters, searchParamsAsHtmlParams, numOfMonsters, search
     const isRange = searchParams.crEnd;
     console.log("Select Multiple Monsters", monsters, numOfMonsters, selectedMonsters);
     const monsterButtons = selectedMonsters.map(x => {
+        const monsterEntry = monsters.find(y => y.name === x);
         const lookupMonster = () => {
             MonstersApi.getMonsterByName(x)
                 .then(data => {
@@ -94,11 +103,26 @@ const chooseMonster = (monsters, searchParamsAsHtmlParams, numOfMonsters, search
                     return data;
                 })
                 .then(data => {
-                    const result = <MonsterDisplay monster={{statBlock: data}}/>
+                    const result = (
+                        <section className="monsterDisplayResult">
+                            <Accordion>
+                                <AccordionItem>
+                                    <AccordionItemTitle>
+                                        <div className="u-position-relative">
+                                            {`(${rollTimeString()}) `}{x}{` CR ${monsterEntry.cr}`}<div className="accordion__arrow"/>
+                                        </div>
+                                    </AccordionItemTitle>
+                                    <AccordionItemBody>
+                                        <MonsterDisplay monster={{statBlock: data}}/>
+                                    </AccordionItemBody>
+                                </AccordionItem>
+                            </Accordion>
+                        </section>
+                    )
                     dispatch(addDmScreenResult(result))
                 });
         }
-        const monsterEntry = monsters.find(y => y.name === x);
+       
         const crNote = (isRange) ? `(CR ${monsterEntry.cr})` : "";
         return <button type="button" onClick={lookupMonster} className="purpleAwesome">{x}{crNote}</button>
     });

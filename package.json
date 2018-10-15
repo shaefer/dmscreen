@@ -5,6 +5,7 @@
   "dependencies": {
     "prop-types": "^15.6.1",
     "react": "^16.3.0",
+    "react-accessible-accordion": "^2.4.4",
     "react-dom": "^16.3.0",
     "react-ga": "^2.5.3",
     "react-redux": "^5.0.7",

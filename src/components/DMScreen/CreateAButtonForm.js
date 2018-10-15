@@ -22,12 +22,23 @@ class CreateAButtonFormComponent extends Component {
                 <section>
                     <span className="customDieField"><Field name="numOfMonsters" component="input" type="number" min={1}/>
                     CR<Field name="cr" component="input" type="number" min={0} max={30}/>Monsters</span>
-                    <button name="monsterButton" type="submit" className="purpleAwesome" onClick={handleSubmit(values => 
+                    <button name="crButton" type="submit" className="purpleAwesome" onClick={handleSubmit(values => 
                         this.props.onSubmit({ 
                             ...values,
-                            type: 'monsterButton'
-                        }))}>Add Monster Button</button>
-                    <br/><button type="button" className="purpleAwesome" onClick={() => toggleFormFunc(false)}>Hide Custom Button Section</button>
+                            type: 'crButton'
+                        }))}>Add Monster by CR Button</button>
+                </section>
+                <section>
+                    <span className="customDieField"><Field name="numOfMonstersRange" component="input" type="number" min={1}/>
+                    CR<Field name="crStart" component="input" type="number" min={0} max={30}/>-<Field name="crEnd" component="input" type="number" min={0} max={30}/>Monsters</span>
+                    <button name="crRangeButton" type="submit" className="purpleAwesome" onClick={handleSubmit(values => 
+                        this.props.onSubmit({ 
+                            ...values,
+                            type: 'crRangeButton'
+                        }))}>Add Monster by CR Range Button</button>
+                </section>
+                <section>
+                    <button type="button" className="purpleAwesome" onClick={() => toggleFormFunc(false)}>Hide Custom Button Section</button>
                 </section>
             </main>
             );
@@ -56,8 +67,11 @@ const CreateAButtonForm = reduxForm({
     showForm: true,
     diceButtonNumOfDice: 3,
     diceButtonNumOfSides: 6,
+    numOfMonsters: 2,
     cr: 10,
-    numOfMonsters: 2
+    numOfMonstersRange: 6,
+    crStart: 9,
+    crEnd: 11,
   }
 })(CreateAButtonFormComponent)
 
@@ -68,7 +82,10 @@ const CreateAButtonFormConnected = connect(
         diceButtonNumOfDice : selector(state, 'diceButtonNumOfDice'),
         diceButtonNumOfSides : selector(state, 'diceButtonNumOfSides'),
         cr : selector(state, 'cr'),
-        numOfMonsters: selector(state, 'numOfMonsters')
+        crEnd : selector(state, 'crStart'),
+        crEnd : selector(state, 'crEnd'),
+        numOfMonsters: selector(state, 'numOfMonsters'),
+        numOfMonstersRange: selector(state, 'numOfMonstersRange'),
     }
   }
 )(CreateAButtonForm)

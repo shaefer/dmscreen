@@ -52,10 +52,14 @@ class DMScreen extends Component {
     }
 
     createAButton(values) {
-        const button = (values.type === 'diceButton') 
-            ? <DiceButton numOfDice={values.diceButtonNumOfDice} numOfSides={values.diceButtonNumOfSides}/>
-            : <CRButton cr={values.cr} numOfMonsters={values.numOfMonsters}/>;
-        if (values.type === 'monsterButton' && values.cr > 30) {  
+        let button;
+        if (values.type === 'diceButton') 
+            button = <DiceButton numOfDice={values.diceButtonNumOfDice} numOfSides={values.diceButtonNumOfSides}/>
+        if (values.type === 'crButton')
+            button = <CRButton cr={values.cr} numOfMonsters={values.numOfMonsters}/>;
+        if (values.type === 'crRangeButton')
+            button = <CRRangeButton crStart={values.crStart} crEnd={values.crEnd} numOfMonsters={values.numOfMonstersRange}/>
+        if ((values.type === 'crButton' && values.cr > 30) || values.type === 'crRangeButton' && values.crEnd > 30)  {  
             this.handleResult(<span style={{color:'red'}}>Cannot create monster button with CR > 30.</span>);
         } else {
             this.props.addCustomButtonAction(button);

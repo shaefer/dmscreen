@@ -4,6 +4,7 @@ import {dmScreenAddResultAction, addCustomButtonAction, toggleFormAction} from '
 import DiceBag from '../../utils/DiceBag'
 import CreateAButtonForm from './CreateAButtonForm'
 import CRButton from './CRButton'
+import CRRangeButton from './CRRangeButton'
 import DiceButton from './DiceButton'
 import StatsButton from './StatsButton'
 import rollTimeString from '../../utils/ResultTimestamp'
@@ -85,6 +86,7 @@ class DMScreen extends Component {
                     <CRButton cr={7}/>
                     <CRButton cr={5} numOfMonsters={5}/>
                     <CRButton cr={20} numOfMonsters={2}/>
+                    <CRRangeButton crStart={5} crEnd={8} numOfMonsters={10}/>
                     {this.makeRandomChartButton(DungeonEntrances, "Dungeon Entrance")}
                     {this.makeRandomChartButton(Backgrounds, "Background")}
                     {this.makeRandomChartButton(DungeonLocations, "Dungeon Location")}

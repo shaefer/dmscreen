@@ -73,13 +73,15 @@ export const keyPressHandler = (e) => {
     }
 };
 
-const chooseMonster = (monsters, searchParamsAsHtmlParams, numOfMonsters, cr, dispatch) => {
+const chooseMonster = (monsters, searchParamsAsHtmlParams, numOfMonsters, searchParams, dispatch) => {
     const monsterNames = monsters.map(x => x.name);
     let selectedMonsters = [];
     
     for(let i = 0;i<numOfMonsters;i++) {
         selectedMonsters.push(monsterNames[Math.floor(Math.random()*monsterNames.length)])
     }
+
+    const isRange = searchParams.crEnd;
     console.log("Select Multiple Monsters", monsters, numOfMonsters, selectedMonsters);
     const monsterButtons = selectedMonsters.map(x => {
         const lookupMonster = () => {
@@ -96,36 +98,30 @@ const chooseMonster = (monsters, searchParamsAsHtmlParams, numOfMonsters, cr, di
                     dispatch(addDmScreenResult(result))
                 });
         }
-        return <button type="button" onClick={lookupMonster} className="purpleAwesome">{x}</button>
+        const monsterEntry = monsters.find(y => y.name === x);
+        const crNote = (isRange) ? `(CR ${monsterEntry.cr})` : "";
+        return <button type="button" onClick={lookupMonster} className="purpleAwesome">{x}{crNote}</button>
     });
 
     const countStr = (numOfMonsters > 1) ? numOfMonsters + " " : "";
     const s = (numOfMonsters > 1) ? "s" : "";
-    const desc = `(${rollTimeString()}) ${countStr}CR ${cr} Monster${s}`
+    const range = (isRange) ? `${searchParams.cr}-${searchParams.crEnd}` : searchParams.cr;
+    const desc = `(${rollTimeString()}) ${countStr}CR ${range} Monster${s}`
     const result = [<span>{desc}</span>, ...monsterButtons]
     return showS3SelectDMScreenResult(result, searchParamsAsHtmlParams);
 }
 
 //using for DMScreen right now
 export const fetchSelectAction = (searchParams) => (dispatch, getState) => {
-
     MonstersApi.getMonstersByCriteria(searchParams)
-        .then(monsters => {
-            var searchFieldsAsHtmlParams = MonstersApi.convertCriteriaToHtmlParameters(searchParams);
-            ReactGA.event({
-                category: "DM Screen",
-                action: searchFieldsAsHtmlParams
-            });
-            return monsters;
-        })
         .then(monsters => {
             if (monsters && monsters.length > 0) {
                 var searchFieldsAsHtmlParams = MonstersApi.convertCriteriaToHtmlParameters(searchParams);
                 ReactGA.event({
-                    category: 'Monster Search',
+                    category: 'DM Screen',
                     action: searchFieldsAsHtmlParams
                 });
-                dispatch(chooseMonster(monsters, searchFieldsAsHtmlParams, searchParams.num, searchParams.cr, dispatch));
+                dispatch(chooseMonster(monsters, searchFieldsAsHtmlParams, searchParams.num, searchParams, dispatch));
             }    
         })
         .catch(ex => {

@@ -7,7 +7,10 @@ import CRButton from './CRButton'
 import CRRangeButton from './CRRangeButton'
 import DiceButton from './DiceButton'
 import StatsButton from './StatsButton'
+import ButtonMenu from './ButtonMenu'
 import rollTimeString from '../../utils/ResultTimestamp'
+import {Overlay} from 'react-overlays'
+
 import './DmScreen.css'
 
 import '../Polyfills/StartsWith'
@@ -78,34 +81,40 @@ class DMScreen extends Component {
             <main className="dmScreen">
                 
                 <section>
-                    <DiceButton numOfDice={1} numOfSides={4}/>
-                    <DiceButton numOfDice={1} numOfSides={6}/>
-                    <DiceButton numOfDice={1} numOfSides={8}/>
-                    <DiceButton numOfDice={1} numOfSides={10}/>
-                    <DiceButton numOfDice={1} numOfSides={12}/>
-                    <DiceButton numOfDice={1} numOfSides={20}/>
-                    <DiceButton numOfDice={1} numOfSides={100}/>
-                    <StatsButton numOfDice={3} numOfSides={6}/>
-                    <StatsButton numOfDice={4} numOfSides={6} drop={1}/>
-                    <CRButton cr={7}/>
-                    <CRButton cr={5} numOfMonsters={5}/>
-                    <CRButton cr={20} numOfMonsters={2}/>
-                    <CRRangeButton crStart={5} crEnd={8} numOfMonsters={10}/>
-                    {this.makeRandomChartButton(DungeonEntrances, "Dungeon Entrance")}
-                    {this.makeRandomChartButton(Backgrounds, "Background")}
-                    {this.makeRandomChartButton(DungeonLocations, "Dungeon Location")}
-                    {this.makeRandomChartButton(DungeonTypes, "Dungeon Types")}
-                    {this.makeRandomChartButton(DungeonRooms, "Dungeon Rooms")}
-                    {this.makeRandomChartButton(NpcCharacteristicsPhysical, "NPC Physical Traits")}
-                    {this.makeRandomChartButton(NpcCharacteristics, "NPC Traits")}
-                    {this.makeRandomChartButton(Plots, "Plots")}
-                    {this.makeRandomChartButton(PlotTwists, "Plot Twists")}
-                    {this.makeRandomChartButton(NpcGoals, "NPC Goals")}
-                    {this.makeRandomChartButton(Rewards, "Rewards")}
-                    {this.makeRandomChartButton(Secrets, "Secrets")}
-                    {this.makeRandomChartButton(MacguffinOrQuestItem, "Macguffins And Quest Items")}
-                    {this.makeRandomChartButton(MundaneRoomCharacteristics, "Mundane Room Characteristics")}
-                    {this.makeRandomChartButton(ExoticRoomCharacteristics, "Exotic Room Characteristics")}
+                    <ButtonMenu label="Roll Dice/Stats">
+                        <DiceButton numOfDice={1} numOfSides={4}/>
+                        <DiceButton numOfDice={1} numOfSides={6}/>
+                        <DiceButton numOfDice={1} numOfSides={8}/>
+                        <DiceButton numOfDice={1} numOfSides={10}/>
+                        <DiceButton numOfDice={1} numOfSides={12}/>
+                        <DiceButton numOfDice={1} numOfSides={20}/>
+                        <DiceButton numOfDice={1} numOfSides={100}/>
+                        <StatsButton numOfDice={3} numOfSides={6}/>
+                        <StatsButton numOfDice={4} numOfSides={6} drop={1}/>
+                    </ButtonMenu>
+                    <ButtonMenu label="Roll Monster(s) by CR">
+                        <CRButton cr={7}/>
+                        <CRButton cr={5} numOfMonsters={5}/>
+                        <CRButton cr={20} numOfMonsters={2}/>
+                        <CRRangeButton crStart={5} crEnd={8} numOfMonsters={10}/>
+                    </ButtonMenu>
+                    <ButtonMenu label="Random Charts">
+                        {this.makeRandomChartButton(DungeonEntrances, "Dungeon Entrance")}
+                        {this.makeRandomChartButton(Backgrounds, "Background")}
+                        {this.makeRandomChartButton(DungeonLocations, "Dungeon Location")}
+                        {this.makeRandomChartButton(DungeonTypes, "Dungeon Types")}
+                        {this.makeRandomChartButton(DungeonRooms, "Dungeon Rooms")}
+                        {this.makeRandomChartButton(NpcCharacteristicsPhysical, "NPC Physical Traits")}
+                        {this.makeRandomChartButton(NpcCharacteristics, "NPC Traits")}
+                        {this.makeRandomChartButton(Plots, "Plots")}
+                        {this.makeRandomChartButton(PlotTwists, "Plot Twists")}
+                        {this.makeRandomChartButton(NpcGoals, "NPC Goals")}
+                        {this.makeRandomChartButton(Rewards, "Rewards")}
+                        {this.makeRandomChartButton(Secrets, "Secrets")}
+                        {this.makeRandomChartButton(MacguffinOrQuestItem, "Macguffins And Quest Items")}
+                        {this.makeRandomChartButton(MundaneRoomCharacteristics, "Mundane Room Characteristics")}
+                        {this.makeRandomChartButton(ExoticRoomCharacteristics, "Exotic Room Characteristics")}
+                    </ButtonMenu>
                     {dmScreen.buttons.map(x => x)}
                     <CreateAButtonForm onSubmit={(e) => this.createAButton(e)} showForm={dmScreen.showForm} toggleFormFunc={this.toggleForm}/>
                 </section>

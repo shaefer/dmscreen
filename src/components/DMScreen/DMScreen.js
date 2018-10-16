@@ -9,7 +9,6 @@ import DiceButton from './DiceButton'
 import StatsButton from './StatsButton'
 import ButtonMenu from './ButtonMenu'
 import rollTimeString from '../../utils/ResultTimestamp'
-import {Overlay} from 'react-overlays'
 
 import './DmScreen.css'
 
@@ -56,17 +55,34 @@ class DMScreen extends Component {
 
     createAButton(values) {
         let button;
-        if (values.type === 'diceButton') 
+        if (values.type === 'diceButton') {
+            if (values.diceButtonNumOfDice > 1000) {
+                this.handleResult(<span style={{color:'red'}}>Cannot roll more than 1000 dice at once.</span>);
+            }
             button = <DiceButton numOfDice={values.diceButtonNumOfDice} numOfSides={values.diceButtonNumOfSides}/>
-        if (values.type === 'crButton')
-            button = <CRButton cr={values.cr} numOfMonsters={values.numOfMonsters}/>;
-        if (values.type === 'crRangeButton')
-            button = <CRRangeButton crStart={values.crStart} crEnd={values.crEnd} numOfMonsters={values.numOfMonstersRange}/>
-        if ((values.type === 'crButton' && values.cr > 30) || values.type === 'crRangeButton' && values.crEnd > 30)  {  
-            this.handleResult(<span style={{color:'red'}}>Cannot create monster button with CR > 30.</span>);
-        } else {
-            this.props.addCustomButtonAction(button);
         }
+        if (values.type === 'crButton') {
+            if (values.numOfMonsters > 1000) {
+                this.handleResult(<span style={{color:'red'}}>Cannot roll more than 1000 monsters at once.</span>);
+            }
+            if (values.cr > 30) {  
+                this.handleResult(<span style={{color:'red'}}>Cannot create monster button with CR > 30.</span>);
+            }
+            button = <CRButton cr={values.cr} numOfMonsters={values.numOfMonsters}/>;
+        }
+        if (values.type === 'crRangeButton') {
+            if (values.numOfMonstersRange > 1000) {
+                this.handleResult(<span style={{color:'red'}}>Cannot roll more than 1000 monsters at once.</span>);
+            }
+            if (values.crEnd > 30) {  
+                this.handleResult(<span style={{color:'red'}}>Cannot create monster button with CR > 30.</span>);
+            }
+            if (values.crStart > values.crEnd) {  
+                this.handleResult(<span style={{color:'red'}}>CR Range must be from smallest CR to largest CR.</span>);
+            }
+            button = <CRRangeButton crStart={values.crStart} crEnd={values.crEnd} numOfMonsters={values.numOfMonstersRange}/>
+        }
+        this.props.addCustomButtonAction(button);
     }
 
     toggleForm = (showForm) => {
@@ -76,7 +92,14 @@ class DMScreen extends Component {
     render() {
         const { dmScreen } = this.props;
         console.log("DMSCREEN");
-        //TODO: more random charts, random monsters
+        const isDiceButton = (button) => {
+            const buttonType = button.type.WrappedComponent.name;
+            return buttonType === 'DiceButton' || buttonType === 'StatsButton'
+        }
+        const isMonsterButton = (button) => {
+            const buttonType = button.type.WrappedComponent.name;
+            return buttonType === 'CRButton' || buttonType === 'CRRangeButton'
+        }
         return (
             <main className="dmScreen">
                 
@@ -91,12 +114,14 @@ class DMScreen extends Component {
                         <DiceButton numOfDice={1} numOfSides={100}/>
                         <StatsButton numOfDice={3} numOfSides={6}/>
                         <StatsButton numOfDice={4} numOfSides={6} drop={1}/>
+                        {dmScreen.buttons.filter(isDiceButton).map(x => x)}
                     </ButtonMenu>
                     <ButtonMenu label="Roll Monster(s) by CR">
                         <CRButton cr={7}/>
                         <CRButton cr={5} numOfMonsters={5}/>
                         <CRButton cr={20} numOfMonsters={2}/>
                         <CRRangeButton crStart={5} crEnd={8} numOfMonsters={10}/>
+                        {dmScreen.buttons.filter(isMonsterButton).map(x => x)}
                     </ButtonMenu>
                     <ButtonMenu label="Random Charts">
                         {this.makeRandomChartButton(DungeonEntrances, "Dungeon Entrance")}
@@ -115,7 +140,6 @@ class DMScreen extends Component {
                         {this.makeRandomChartButton(MundaneRoomCharacteristics, "Mundane Room Characteristics")}
                         {this.makeRandomChartButton(ExoticRoomCharacteristics, "Exotic Room Characteristics")}
                     </ButtonMenu>
-                    {dmScreen.buttons.map(x => x)}
                     <CreateAButtonForm onSubmit={(e) => this.createAButton(e)} showForm={dmScreen.showForm} toggleFormFunc={this.toggleForm}/>
                 </section>
                 <section>

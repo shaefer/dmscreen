@@ -1,5 +1,6 @@
 import * as DmScreenActions from '../actions/DmScreenActions'
 import { DMScreenDefaultState } from '../components/DMScreen/DMScreen';
+import {reorder} from 'react-reorder'
 
 const isDiceButton = (button) => {
   const buttonType = button.type.WrappedComponent.name;
@@ -40,6 +41,13 @@ const dmScreen = (state = DMScreenDefaultState, action) => {
           ...state,
           results: [...state.results, action.monsterList]
         }
+      case DmScreenActions.REORDER_BUTTON_LIST:
+        const reorderedList = reorder(state[action.listKey], action.previousIndex, action.nextIndex);
+        const newState = {
+          ...state,
+        }
+        newState[action.listKey] = reorderedList;
+        return newState;
       default:
         return state;
     }

@@ -16,3 +16,14 @@
 .dmScreen .stats {
   font-family: monospace
 }
+
+.buttonOrderContainer {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.buttonOrderContainer li {
+  display: inline-block;
+}

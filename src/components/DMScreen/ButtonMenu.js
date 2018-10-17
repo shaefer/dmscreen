@@ -10,11 +10,9 @@ const overlayWrapperStyles = {
 }
 
 const buttonContainerStyles = {
-    marginTop: '5px',
     backgroundColor: 'lightgray',
     borderRadius: '8px',
     padding: '5px',
-    display: 'inline-block'
 }
 
 class ButtonMenu extends Component {

@@ -10,6 +10,7 @@
     "react-ga": "^2.5.3",
     "react-overlays": "^0.8.3",
     "react-redux": "^5.0.7",
+    "react-reorder": "^3.0.0-alpha.7",
     "react-router-dom": "^4.2.2",
     "react-scripts": "1.1.5",
     "react-select": "^2.0.0",

@@ -73,7 +73,7 @@ class DMScreen extends Component {
         this.props.addCustomButtonAction(button);
     }
 
-    toggleForm = (showForm) => {
+    toggleForm(showForm) {
         this.props.toggleFormAction(showForm);
     }
 

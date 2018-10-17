@@ -20,8 +20,6 @@ import {DungeonEntrances, Backgrounds, DungeonLocations, DungeonTypes, DungeonRo
 
 import ReactGA from 'react-ga';
 
-
-
 class DMScreen extends Component {
     constructor() {
         super();
@@ -80,28 +78,19 @@ class DMScreen extends Component {
     render() {
         const { dmScreen } = this.props;
         console.log("DMSCREEN");
-        const isDiceButton = (button) => {
-            const buttonType = button.type.WrappedComponent.name;
-            return buttonType === 'DiceButton' || buttonType === 'StatsButton'
-        }
-        const isMonsterButton = (button) => {
-            const buttonType = button.type.WrappedComponent.name;
-            return buttonType === 'CRButton' || buttonType === 'CRRangeButton'
-        }
+
         return (
             <main className="dmScreen">
                 
                 <section>
                     <ButtonMenu label="Roll Dice/Stats">
                         {dmScreen.diceAndStatsButtons.map(x => x)}
-                        {dmScreen.buttons.filter(isDiceButton).map(x => x)}
                     </ButtonMenu>
                     <ButtonMenu label="Roll Monster(s) by CR">
                         {dmScreen.monsterButtons.map(x => x)}
-                        {dmScreen.buttons.filter(isMonsterButton).map(x => x)}
                     </ButtonMenu>
                     <ButtonMenu label="Random Charts">
-                    {dmScreen.chartButtons.map(x => x)}
+                        {dmScreen.chartButtons.map(x => x)}
                     </ButtonMenu>
                     <CreateAButtonForm onSubmit={(e) => this.createAButton(e)} showForm={dmScreen.showForm} toggleFormFunc={this.toggleForm}/>
                 </section>

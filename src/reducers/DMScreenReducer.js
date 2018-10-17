@@ -1,6 +1,7 @@
 import * as DmScreenActions from '../actions/DmScreenActions'
+import { DMScreenDefaultState } from '../components/DMScreen/DMScreen';
 
-const dmScreen = (state = {results:[], buttons:[], showForm: false}, action) => {
+const dmScreen = (state = DMScreenDefaultState, action) => {
     switch (action.type) {
       case DmScreenActions.ADD_RESULT:
         return {

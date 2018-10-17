@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
-import {dmScreenAddResultAction, addCustomButtonAction, toggleFormAction} from '../../action-creators/DmScreenActionCreators'
+import {dmScreenAddResultAction, addCustomButtonAction, toggleFormAction, reorderButtonListAction} from '../../action-creators/DmScreenActionCreators'
 import DiceBag from '../../utils/DiceBag'
 import CreateAButtonForm from './CreateAButtonForm'
 import CRButton from './CRButton'
@@ -9,6 +9,7 @@ import DiceButton from './DiceButton'
 import StatsButton from './StatsButton'
 import ButtonMenu from './ButtonMenu'
 import ChartButton from './ChartButton'
+import Reorder from 'react-reorder';
 
 import './DmScreen.css'
 
@@ -27,6 +28,7 @@ class DMScreen extends Component {
         this.diceBag = DiceBag(null); //seed is null so that we always get unseeded random results
         this.createAButton = this.createAButton.bind(this);
         this.toggleForm = this.toggleForm.bind(this);
+        this.reorderButtonList = this.reorderButtonList.bind(this);
     }
 
     componentDidMount() {
@@ -75,22 +77,43 @@ class DMScreen extends Component {
         this.props.toggleFormAction(showForm);
     }
 
+    reorderButtonList(previousIndex, nextIndex, listKey) {
+        this.props.reorderButtonListAction(listKey, previousIndex, nextIndex);
+    }
+
     render() {
         const { dmScreen } = this.props;
         console.log("DMSCREEN");
 
         return (
             <main className="dmScreen">
-                
-                <section>
+                <section className="noselect">
                     <ButtonMenu label="Roll Dice/Stats">
-                        {dmScreen.diceAndStatsButtons.map(x => x)}
+                        <Reorder reorderId="diceAndStatsButtonList" 
+                                onReorder={(event, previousIndex, nextIndex) => this.reorderButtonList(previousIndex, nextIndex, "diceAndStatsButtons")} 
+                                holdTime={250}
+                                component="ul" 
+                                className="buttonOrderContainer">
+                            {dmScreen.diceAndStatsButtons.map(x => <li>{x}</li>)}
+                        </Reorder>
                     </ButtonMenu>
                     <ButtonMenu label="Roll Monster(s) by CR">
-                        {dmScreen.monsterButtons.map(x => x)}
+                        <Reorder reorderId="monsterButtonList" 
+                                onReorder={(event, previousIndex, nextIndex) => this.reorderButtonList(previousIndex, nextIndex, "monsterButtons")} 
+                                holdTime={250}
+                                component="ul" 
+                                className="buttonOrderContainer">
+                            {dmScreen.monsterButtons.map(x => <li>{x}</li>)}
+                        </Reorder>
                     </ButtonMenu>
                     <ButtonMenu label="Random Charts">
-                        {dmScreen.chartButtons.map(x => x)}
+                        <Reorder reorderId="chartButtonList" 
+                                onReorder={(event, previousIndex, nextIndex) => this.reorderButtonList(previousIndex, nextIndex, "chartButtons")} 
+                                holdTime={250}
+                                component="ul" 
+                                className="buttonOrderContainer">
+                            {dmScreen.chartButtons.map(x => <li>{x}</li>)}
+                        </Reorder>
                     </ButtonMenu>
                     <CreateAButtonForm onSubmit={(e) => this.createAButton(e)} showForm={dmScreen.showForm} toggleFormFunc={this.toggleForm}/>
                 </section>
@@ -104,7 +127,8 @@ class DMScreen extends Component {
     }
 }
 
-export default connect(state => state, {dmScreenAddResultAction, addCustomButtonAction, toggleFormAction })(DMScreen)
+export default connect(state => state, {dmScreenAddResultAction, addCustomButtonAction, toggleFormAction, reorderButtonListAction})(DMScreen)
+
 export const DMScreenDefaultState = {
     results:[], buttons:[], showForm: false,
     diceAndStatsButtons : [

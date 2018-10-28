@@ -8,6 +8,7 @@ import CRRangeButton from './CRRangeButton'
 import DiceButton from './connectedComponents/DiceButtonContainer'
 import ButtonMenu from './ButtonMenu'
 import Reorder from 'react-reorder';
+import TavernNameButton from './connectedComponents/TavernNameButtonContainer'
 
 import './DmScreen.css'
 
@@ -116,6 +117,7 @@ class DMScreen extends Component {
                             {dmScreen.chartButtons.map(x => <li>{x}</li>)}
                         </Reorder>
                     </ButtonMenu>
+                    <TavernNameButton count={10}/>
                     <CreateAButtonForm onSubmit={(e) => this.createAButton(e)} showForm={dmScreen.showForm} toggleFormFunc={this.toggleForm}/>
                 </section>
                 <section>

@@ -81,31 +81,46 @@ class DMScreen extends Component {
     render() {
         const { dmScreen } = this.props;
         console.log("DMSCREEN");
+
+        const diceAndStatsButtons = [...dmScreen.diceButtons, ...dmScreen.statsButtons];
+        const orderedDiceAndStatsButtons = dmScreen.diceAndStatsButtonOrder.map(x => diceAndStatsButtons.find(y => y.id === x));
+        const diceButtonsAsListItems = orderedDiceAndStatsButtons.map(x => {
+            if (x.type === 'dice') {
+                return <li><DiceButton numOfDice={x.numOfDice} numOfSides={x.numOfSides}/></li>;
+            } else if (x.type === 'stats') {
+                return <li><StatsButton numOfDice={x.numOfDice} numOfSides={x.numOfSides} drop={x.drop || 1}/></li>;
+            }
+        });
+        //monsterButtonOrder
+        const monsterButtons = [...dmScreen.crButtons, ...dmScreen.crRangeButtons];
+        const orderedMonsterButtons = dmScreen.monsterButtonOrder.map(x => monsterButtons.find(y => y.id === x));
+        const monsterButtonsAsListItems = orderedMonsterButtons.map(x => {
+            if (x.type === 'cr') {
+                return <li><CRButton cr={x.cr} numOfMonsters={(x.numOfMonsters || 1)}/></li>;
+            } else if (x.type === 'crRange') {
+                return <li><CRRangeButton crStart={x.crStart} crEnd={x.crEnd} numOfMonsters={x.numOfMonsters || 1}/></li>;
+            }
+        });
+
         return (
             <main className="dmScreen">
                 <section className="noselect">
                     <ButtonMenu label="Roll Dice/Stats">
                         <Reorder reorderId="diceAndStatsButtonList" 
-                                onReorder={(event, previousIndex, nextIndex) => this.reorderButtonList(previousIndex, nextIndex, "diceAndStatsButtons")} 
+                                onReorder={(event, previousIndex, nextIndex) => this.reorderButtonList(previousIndex, nextIndex, "diceAndStatsButtonOrder")} 
                                 holdTime={250}
                                 component="ul" 
                                 className="buttonOrderContainer">
-                            {[
-                                ...dmScreen.diceButtons.map(x => <li><DiceButton numOfDice={x.numOfDice} numOfSides={x.numOfSides}/></li>),
-                                ...dmScreen.statsButtons.map(x => <li><StatsButton numOfDice={x.numOfDice} numOfSides={x.numOfSides} drop={x.drop || 1}/></li>)
-                            ]}
+                            {diceButtonsAsListItems}
                         </Reorder>
                     </ButtonMenu>
                     <ButtonMenu label="Roll Monster(s) by CR">
                         <Reorder reorderId="monsterButtonList" 
-                                onReorder={(event, previousIndex, nextIndex) => this.reorderButtonList(previousIndex, nextIndex, "monsterButtons")} 
+                                onReorder={(event, previousIndex, nextIndex) => this.reorderButtonList(previousIndex, nextIndex, "monsterButtonOrder")} 
                                 holdTime={250}
                                 component="ul" 
                                 className="buttonOrderContainer">
-                            {[
-                                ...dmScreen.crButtons.map(x => <li><CRButton cr={x.cr} numOfMonsters={(x.numOfMonsters || 1)}/></li>),
-                                ...dmScreen.crRangeButtons.map(x => <li><CRRangeButton crStart={x.crStart} crEnd={x.crEnd} numOfMonsters={x.numOfMonsters || 1}/></li>)
-                            ]}
+                            {monsterButtonsAsListItems}
                         </Reorder>
                     </ButtonMenu>
                     <ButtonMenu label="Random Charts">

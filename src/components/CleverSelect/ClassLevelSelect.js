@@ -27,7 +27,7 @@ class ClassLevelSelect extends Component {
             ...this.state,
             classLevels: currentClassLevels
         })
-        widget.clear
+        widget.clear();
         console.log(this)
     }
     setClassForLevel(e, className) {
@@ -45,7 +45,7 @@ class ClassLevelSelect extends Component {
     setLevelForClass(e, className) {
         console.log("setLevelForClass", e, className);
         const currentClassLevels = this.state.classLevels;
-        const valAsInt = parseInt(e.target.value);
+        const valAsInt = parseInt(e.target.value, 10);
         if (!valAsInt) {
             delete currentClassLevels[className];
         } else {

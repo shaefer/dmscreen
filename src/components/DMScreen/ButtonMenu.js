@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import DiceBag from '../../utils/DiceBag'
 import {Overlay} from 'react-overlays'
-import DiceButton from './DiceButton'
-import StatsButton from './StatsButton'
 
 const overlayWrapperStyles = {
     position: 'relative',

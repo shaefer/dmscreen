@@ -134,8 +134,8 @@ class MonsterAdvancer extends Component {
             <main className="monsteradvancer">
                 <div className="versionChoice">
                     <div>Choose a version:</div>
-                    <img className="oglImage" src="images/OGL-Logo.jpg"/>
-                    <img className="pfImage" src="images/pathfinder-rpg-compatibility-logo.png"/>
+                    <img className="oglImage" src="images/OGL-Logo.jpg" alt="OGL Logo"/>
+                    <img className="pfImage" src="images/pathfinder-rpg-compatibility-logo.png" alt="Pathfinder Compatability Logo"/>
                 </div>
                 <section>
                     <button type="button" className="generateButton greenAwesome" onClick={this.getValuesButton}>Generate Monster</button>

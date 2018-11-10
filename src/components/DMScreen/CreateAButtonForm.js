@@ -82,7 +82,7 @@ const CreateAButtonFormConnected = connect(
         diceButtonNumOfDice : selector(state, 'diceButtonNumOfDice'),
         diceButtonNumOfSides : selector(state, 'diceButtonNumOfSides'),
         cr : selector(state, 'cr'),
-        crEnd : selector(state, 'crStart'),
+        crStart : selector(state, 'crStart'),
         crEnd : selector(state, 'crEnd'),
         numOfMonsters: selector(state, 'numOfMonsters'),
         numOfMonstersRange: selector(state, 'numOfMonstersRange'),

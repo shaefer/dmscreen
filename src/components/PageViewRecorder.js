@@ -4,14 +4,10 @@ const RecordPageView = (path, trackerNames, title) => {
     ReactGA.pageview(path, trackerNames, title);
 }
 
-const RecordEvent = (category, action, label) => {
-    let event = {
-        category: category,
-        action: action,
-    }
-    //TODO: Verify that just sending label as undefined does the same thing. If so, this code becomes much simpler.
-    if (label)
-        event.label = label;
+const RecordEvent = (event) => {
+    //Google analytics requires event to have at least a category field and an action field.
+    //Google analytics allows a label field to be supplied optionally.
+    console.log("Record event", event);
     ReactGA.event(event);
 }
 

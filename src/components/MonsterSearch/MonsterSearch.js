@@ -11,7 +11,8 @@ import '../Polyfills/IsNaN'
 
 import "./MonsterSearch.css"
 
-import ReactGA from 'react-ga';
+import PageViewRecorder from '../../components/PageViewRecorder';
+
 
 const monsterCount = (monsterList) => {
     return (monsterList) ? monsterList.length : 0;
@@ -31,7 +32,7 @@ class MonsterSearch extends Component {
     componentDidMount() {
         const title = "Monster Search - Pathfinder - by Clever Orc Games";
         document.title = title;
-        ReactGA.pageview(window.location.pathname + window.location.search, undefined, title);
+        PageViewRecorder.recordPageView(window.location.pathname + window.location.search, undefined, title);
     }
 
     submit = values => {

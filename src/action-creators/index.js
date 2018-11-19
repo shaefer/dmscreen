@@ -4,7 +4,7 @@ import Keys from '../models/Keys'
 import { showMonster, selectMonsterOption, showS3SelectResult, display35Monster } from '../actions'
 import MonstersApi from '../apiClients/MonsterApi'
 import rollTimeString from '../utils/ResultTimestamp'
-import ReactGA from 'react-ga'
+import PageViewRecorder from '../components/PageViewRecorder'
 import { showS3SelectDMScreenResult, addDmScreenResult } from '../actions/DmScreenActions'
 import MonsterDisplay from '../components/MonsterDisplay'
 
@@ -19,7 +19,7 @@ import '../components/DMScreen/AccordianMonsterDisplay.css'
 export const fetchMonsterAdvancer35v2 = (monsterName, fields) => (dispatch) => {
     MonstersApi.getMonsterWithCustomizations(monsterName, fields)
         .then(data => {
-            ReactGA.event({
+            PageViewRecorder.recordEvent({
                 category: "Monster Advancer Generate",
                 action: monsterName,
                 label: MonstersApi.convertFieldsToHtmlParameters(fields)
@@ -38,7 +38,7 @@ export const monsterSelectChangeHandler = (e) => (dispatch, getState) => {
     dispatch(selectMonsterOption(monsterName));
     MonstersApi.getMonsterByName(monsterName)
         .then(data => {
-            ReactGA.event({
+            PageViewRecorder.recordEvent({
                 category: "Monster Find",
                 action: monsterName
             });
@@ -53,7 +53,7 @@ export const keyPressHandler = (e) => {
             case Keys.LEFT:
             console.log("LEFT KEY PRESSED");
             var promise = MonstersApi.getMonsterByName("behir");
-            ReactGA.event({
+            PageViewRecorder.recordEvent({
                 category: "Monster Secret Key Press",
                 action: "behir"
             });
@@ -96,7 +96,7 @@ const chooseMonster = (monsters, searchParamsAsHtmlParams, numOfMonsters, search
         const lookupMonster = () => {
             MonstersApi.getMonsterByName(x)
                 .then(data => {
-                    ReactGA.event({
+                    PageViewRecorder.recordEvent({
                         category: "DM Screen",
                         action: x
                     })
@@ -141,7 +141,7 @@ export const fetchSelectAction = (searchParams) => (dispatch, getState) => {
         .then(monsters => {
             if (monsters && monsters.length > 0) {
                 var searchFieldsAsHtmlParams = MonstersApi.convertCriteriaToHtmlParameters(searchParams);
-                ReactGA.event({
+                PageViewRecorder.recordEvent({
                     category: 'DM Screen',
                     action: searchFieldsAsHtmlParams
                 });
@@ -159,7 +159,7 @@ export const monsterS3SelectChangeHandler = (values) => (dispatch, getState) => 
         .then(monsters => {
             if (monsters && monsters.length > 0) {
                 var searchFieldsAsHtmlParams = MonstersApi.convertCriteriaToHtmlParameters(values);
-                ReactGA.event({
+                PageViewRecorder.recordEvent({
                     category: 'Monster Search',
                     action: searchFieldsAsHtmlParams
                 });

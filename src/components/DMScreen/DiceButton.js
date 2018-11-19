@@ -1,8 +1,5 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux'
-import {dmScreenAddResultAction} from '../../action-creators/DmScreenActionCreators'
 import DiceBag from '../../utils/DiceBag'
-
 
 class DiceButton extends Component {
     constructor() {
@@ -29,4 +26,4 @@ class DiceButton extends Component {
     }
 }
 
-export default connect(state => state, {dmScreenAddResultAction})(DiceButton)
+export default DiceButton;

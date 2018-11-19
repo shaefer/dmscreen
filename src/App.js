@@ -21,7 +21,13 @@ class App extends Component {
     }
 
     componentDidMount() {
-        ReactGA.initialize('UA-122019115-2');
+        console.log("Main APP Mounted");
+        console.log(process.env.NODE_ENV);
+        const env = process.env.NODE_ENV;
+        if (env === 'production')
+            ReactGA.initialize('UA-122019115-2');
+        else
+            console.log(`Environment is: ${env} Google Analytics has been disabled.`)
     }
 
     handleClickOutsideOfNavBarAndNotPartOfMenuButton(e) {
@@ -39,7 +45,7 @@ class App extends Component {
             <BrowserRouter>
                 <main onClick={(e) => { this.handleClickOutsideOfNavBarAndNotPartOfMenuButton(e) }}>
                     <input className="nav" type="checkbox" id="navigation" ref="navBarControl" />
-                    <label className="nav" id="navigationLabel" htmlFor="navigation"><img id="navImg" src="images/circleMenuIcon.png"/><img src="images/circleMenuIconWhite.png"/></label>
+                    <label className="nav" id="navigationLabel" htmlFor="navigation"><img id="navImg" src="images/circleMenuIcon.png" alt="menuIcon1"/><img src="images/circleMenuIconWhite.png" alt="menuIcon2"/></label>
                     <nav className="mainNav" ref="navBar">
                         <ul>
                             <li><a href="https://www.cleverorc.com">Clever Orc Home</a></li>
@@ -56,7 +62,7 @@ class App extends Component {
                         <div>
                             <span>Clever Orc</span>
                             <a href="https://www.patreon.com/bePatron?c=1882197" data-patreon-widget-type="become-patron-button" className="patreonLink">
-                                <img className="patreonButton" src="/images/become_a_patron_button.png"/>
+                                <img className="patreonButton" src="/images/become_a_patron_button.png" alt="patreonButtonImage"/>
                             </a>
                         </div>
                         

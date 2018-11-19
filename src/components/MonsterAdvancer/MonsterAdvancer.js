@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import { connect } from 'react-redux'
 import './MonsterAdvancer.css'
 
-import ReactGA from 'react-ga';
+import PageViewRecorder from '../../components/PageViewRecorder';
 
 import Select from 'react-select'
 
@@ -36,7 +36,7 @@ class MonsterAdvancer extends Component {
     componentDidMount() {
         const title = "Monster Advancer 3.5 v2 - by Clever Orc Games";
         document.title=title;
-        ReactGA.pageview(window.location.pathname + window.location.search, undefined, title);
+        PageViewRecorder.recordPageView(window.location.pathname + window.location.search, undefined, title);
     }
 
     classLevelsChanged(classLevels) {
@@ -134,8 +134,8 @@ class MonsterAdvancer extends Component {
             <main className="monsteradvancer">
                 <div className="versionChoice">
                     <div>Choose a version:</div>
-                    <img className="oglImage" src="images/OGL-Logo.jpg"/>
-                    <img className="pfImage" src="images/pathfinder-rpg-compatibility-logo.png"/>
+                    <img className="oglImage" src="images/OGL-Logo.jpg" alt="OGL Logo"/>
+                    <img className="pfImage" src="images/pathfinder-rpg-compatibility-logo.png" alt="Pathfinder Compatability Logo"/>
                 </div>
                 <section>
                     <button type="button" className="generateButton greenAwesome" onClick={this.getValuesButton}>Generate Monster</button>

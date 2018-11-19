@@ -2,14 +2,14 @@ import React, {Component} from 'react'
 
 import './Copyright.css'
 
-import ReactGA from 'react-ga';
+import PageViewRecorder from '../../components/PageViewRecorder'
 
 class License extends Component {
 
     componentDidMount() {
         const title = "Copyright and Trademark - by Clever Orc Games";
         document.title=title;
-        ReactGA.pageview(window.location.pathname + window.location.search, undefined, title);
+        PageViewRecorder.recordPageView(window.location.pathname + window.location.search, undefined, title);
     }
 
     render() {

@@ -5,21 +5,18 @@ import DiceBag from '../../utils/DiceBag'
 import CreateAButtonForm from './CreateAButtonForm'
 import CRButton from './CRButton'
 import CRRangeButton from './CRRangeButton'
-import DiceButton from './DiceButton'
-import StatsButton from './StatsButton'
+import DiceButton from './connectedComponents/DiceButtonContainer'
 import ButtonMenu from './ButtonMenu'
-import ChartButton from './ChartButton'
 import Reorder from 'react-reorder';
+import TavernNameButton from './connectedComponents/TavernNameButtonContainer'
 
 import './DmScreen.css'
 
 import '../Polyfills/StartsWith'
 import '../Polyfills/PadStart'
 
-import {DungeonEntrances, Backgrounds, DungeonLocations, DungeonTypes, DungeonRooms, NpcCharacteristicsPhysical, NpcCharacteristics,
-        Plots, PlotTwists, NpcGoals, Rewards, Secrets, MacguffinOrQuestItem, MundaneRoomCharacteristics, ExoticRoomCharacteristics} from './RandomCharts'
-
-import ReactGA from 'react-ga';
+import PageViewRecorder from '../../components/PageViewRecorder';
+import StatsButton from './StatsButton';
 
 class DMScreen extends Component {
     constructor() {
@@ -34,7 +31,7 @@ class DMScreen extends Component {
     componentDidMount() {
         const title = "DM Screen - Pathfinder - by Clever Orc Games";
         document.title= title;
-        ReactGA.pageview(window.location.pathname + window.location.search, undefined, title);
+        PageViewRecorder.recordPageView(window.location.pathname + window.location.search, undefined, title);
     }
 
     handleResult(result) {
@@ -42,12 +39,12 @@ class DMScreen extends Component {
     }
 
     createAButton(values) {
-        let button;
+        let buttonData;
         if (values.type === 'diceButton') {
             if (values.diceButtonNumOfDice > 1000) {
                 this.handleResult(<span style={{color:'red'}}>Cannot roll more than 1000 dice at once.</span>);
             }
-            button = <DiceButton numOfDice={values.diceButtonNumOfDice} numOfSides={values.diceButtonNumOfSides}/>
+            buttonData = {numOfDice: values.diceButtonNumOfDice, numOfSides: values.diceButtonNumOfSides, type: 'diceButton'}
         }
         if (values.type === 'crButton') {
             if (values.numOfMonsters > 1000) {
@@ -56,7 +53,7 @@ class DMScreen extends Component {
             if (values.cr > 30) {  
                 this.handleResult(<span style={{color:'red'}}>Cannot create monster button with CR > 30.</span>);
             }
-            button = <CRButton cr={values.cr} numOfMonsters={values.numOfMonsters}/>;
+            buttonData = { cr:values.cr, numOfMonsters:values.numOfMonsters, type: 'crButton'}
         }
         if (values.type === 'crRangeButton') {
             if (values.numOfMonstersRange > 1000) {
@@ -68,9 +65,9 @@ class DMScreen extends Component {
             if (values.crStart > values.crEnd) {  
                 this.handleResult(<span style={{color:'red'}}>CR Range must be from smallest CR to largest CR.</span>);
             }
-            button = <CRRangeButton crStart={values.crStart} crEnd={values.crEnd} numOfMonsters={values.numOfMonstersRange}/>
+            buttonData = {crStart:values.crStart, crEnd:values.crEnd, numOfMonsters:values.numOfMonstersRange, type: 'crRangeButton'}
         }
-        this.props.addCustomButtonAction(button);
+        this.props.addCustomButtonAction(buttonData);
     }
 
     toggleForm(showForm) {
@@ -85,25 +82,45 @@ class DMScreen extends Component {
         const { dmScreen } = this.props;
         console.log("DMSCREEN");
 
+        const diceAndStatsButtons = [...dmScreen.diceButtons, ...dmScreen.statsButtons];
+        const orderedDiceAndStatsButtons = dmScreen.diceAndStatsButtonOrder.map(x => diceAndStatsButtons.find(y => y.id === x));
+        const diceButtonsAsListItems = orderedDiceAndStatsButtons.map(x => {
+            if (x.type === 'dice') {
+                return <li><DiceButton numOfDice={x.numOfDice} numOfSides={x.numOfSides}/></li>;
+            } else if (x.type === 'stats') {
+                return <li><StatsButton numOfDice={x.numOfDice} numOfSides={x.numOfSides} drop={x.drop || 1}/></li>;
+            }
+        });
+        //monsterButtonOrder
+        const monsterButtons = [...dmScreen.crButtons, ...dmScreen.crRangeButtons];
+        const orderedMonsterButtons = dmScreen.monsterButtonOrder.map(x => monsterButtons.find(y => y.id === x));
+        const monsterButtonsAsListItems = orderedMonsterButtons.map(x => {
+            if (x.type === 'cr') {
+                return <li><CRButton cr={x.cr} numOfMonsters={(x.numOfMonsters || 1)}/></li>;
+            } else if (x.type === 'crRange') {
+                return <li><CRRangeButton crStart={x.crStart} crEnd={x.crEnd} numOfMonsters={x.numOfMonsters || 1}/></li>;
+            }
+        });
+
         return (
             <main className="dmScreen">
                 <section className="noselect">
                     <ButtonMenu label="Roll Dice/Stats">
                         <Reorder reorderId="diceAndStatsButtonList" 
-                                onReorder={(event, previousIndex, nextIndex) => this.reorderButtonList(previousIndex, nextIndex, "diceAndStatsButtons")} 
+                                onReorder={(event, previousIndex, nextIndex) => this.reorderButtonList(previousIndex, nextIndex, "diceAndStatsButtonOrder")} 
                                 holdTime={250}
                                 component="ul" 
                                 className="buttonOrderContainer">
-                            {dmScreen.diceAndStatsButtons.map(x => <li>{x}</li>)}
+                            {diceButtonsAsListItems}
                         </Reorder>
                     </ButtonMenu>
                     <ButtonMenu label="Roll Monster(s) by CR">
                         <Reorder reorderId="monsterButtonList" 
-                                onReorder={(event, previousIndex, nextIndex) => this.reorderButtonList(previousIndex, nextIndex, "monsterButtons")} 
+                                onReorder={(event, previousIndex, nextIndex) => this.reorderButtonList(previousIndex, nextIndex, "monsterButtonOrder")} 
                                 holdTime={250}
                                 component="ul" 
                                 className="buttonOrderContainer">
-                            {dmScreen.monsterButtons.map(x => <li>{x}</li>)}
+                            {monsterButtonsAsListItems}
                         </Reorder>
                     </ButtonMenu>
                     <ButtonMenu label="Random Charts">
@@ -115,6 +132,7 @@ class DMScreen extends Component {
                             {dmScreen.chartButtons.map(x => <li>{x}</li>)}
                         </Reorder>
                     </ButtonMenu>
+                    <TavernNameButton count={10}/>
                     <CreateAButtonForm onSubmit={(e) => this.createAButton(e)} showForm={dmScreen.showForm} toggleFormFunc={this.toggleForm}/>
                 </section>
                 <section>
@@ -128,41 +146,3 @@ class DMScreen extends Component {
 }
 
 export default connect(state => state, {dmScreenAddResultAction, addCustomButtonAction, toggleFormAction, reorderButtonListAction})(DMScreen)
-
-export const DMScreenDefaultState = {
-    results:[], buttons:[], showForm: false,
-    diceAndStatsButtons : [
-        <DiceButton numOfDice={1} numOfSides={4}/>,
-        <DiceButton numOfDice={1} numOfSides={6}/>,
-        <DiceButton numOfDice={1} numOfSides={8}/>,
-        <DiceButton numOfDice={1} numOfSides={10}/>,
-        <DiceButton numOfDice={1} numOfSides={12}/>,
-        <DiceButton numOfDice={1} numOfSides={20}/>,
-        <DiceButton numOfDice={1} numOfSides={100}/>,
-        <StatsButton numOfDice={3} numOfSides={6}/>,
-        <StatsButton numOfDice={4} numOfSides={6} drop={1}/>,
-    ],
-    monsterButtons : [
-        <CRButton cr={7}/>,
-        <CRButton cr={5} numOfMonsters={5}/>,
-        <CRButton cr={20} numOfMonsters={2}/>,
-        <CRRangeButton crStart={5} crEnd={8} numOfMonsters={10}/>,
-    ],
-    chartButtons : [
-        <ChartButton chart={DungeonEntrances} chartName={"Dungeon Entrance"}/>,
-        <ChartButton chart={DungeonLocations} chartName={"Dungeon Locations"}/>,
-        <ChartButton chart={Backgrounds} chartName={"Backgrounds"}/>,
-        <ChartButton chart={DungeonTypes} chartName={"Dungeon Types"}/>,
-        <ChartButton chart={DungeonRooms} chartName={"Dungeon Rooms"}/>,
-        <ChartButton chart={NpcCharacteristicsPhysical} chartName={"NPC Physical Traits"}/>,
-        <ChartButton chart={NpcCharacteristics} chartName={"NPC Traits"}/>,
-        <ChartButton chart={Plots} chartName={"Plots"}/>,
-        <ChartButton chart={PlotTwists} chartName={"Plot Twists"}/>,
-        <ChartButton chart={NpcGoals} chartName={"NPC Goals"}/>,
-        <ChartButton chart={Rewards} chartName={"Rewards"}/>,
-        <ChartButton chart={Secrets} chartName={"Secrets"}/>,
-        <ChartButton chart={MacguffinOrQuestItem} chartName={"Macguffins And Quest Items"}/>,
-        <ChartButton chart={MundaneRoomCharacteristics} chartName={"Mundane Room Characteristics"}/>,
-        <ChartButton chart={ExoticRoomCharacteristics} chartName={"Exotic Room Characteristics"}/>,
-    ]
-}

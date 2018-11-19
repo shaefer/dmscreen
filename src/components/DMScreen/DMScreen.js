@@ -15,7 +15,7 @@ import './DmScreen.css'
 import '../Polyfills/StartsWith'
 import '../Polyfills/PadStart'
 
-import ReactGA from 'react-ga';
+import PageViewRecorder from '../../components/PageViewRecorder';
 import StatsButton from './StatsButton';
 
 class DMScreen extends Component {
@@ -31,7 +31,7 @@ class DMScreen extends Component {
     componentDidMount() {
         const title = "DM Screen - Pathfinder - by Clever Orc Games";
         document.title= title;
-        ReactGA.pageview(window.location.pathname + window.location.search, undefined, title);
+        PageViewRecorder.recordPageView(window.location.pathname + window.location.search, undefined, title);
     }
 
     handleResult(result) {

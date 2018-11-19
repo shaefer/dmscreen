@@ -10,7 +10,7 @@ import {keyPressHandler, monsterSelectChangeHandler} from '../../action-creators
 import MonsterDisplay from '../MonsterDisplay'
 import MonsterOptions from '../MonsterOptions'
 
-import ReactGA from 'react-ga';
+import PageViewRecorder from '../../components/PageViewRecorder';
 
 class MonsterFinder extends Component {
   constructor() {
@@ -50,7 +50,7 @@ class MonsterFinder extends Component {
     const title = "Monster Finder (Statblock) - Pathfinder - by Clever Orc Games";
     document.title = title;
 
-    ReactGA.pageview(window.location.pathname + window.location.search, undefined, title);
+    PageViewRecorder.recordPageView(window.location.pathname + window.location.search, undefined, title);
   }
 
   componentWillUnmount() {

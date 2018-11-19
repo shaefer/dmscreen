@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import { connect } from 'react-redux'
 import './MonsterAdvancer.css'
 
-import ReactGA from 'react-ga';
+import PageViewRecorder from '../../components/PageViewRecorder';
 
 import Select from 'react-select'
 
@@ -36,7 +36,7 @@ class MonsterAdvancer extends Component {
     componentDidMount() {
         const title = "Monster Advancer 3.5 v2 - by Clever Orc Games";
         document.title=title;
-        ReactGA.pageview(window.location.pathname + window.location.search, undefined, title);
+        PageViewRecorder.recordPageView(window.location.pathname + window.location.search, undefined, title);
     }
 
     classLevelsChanged(classLevels) {

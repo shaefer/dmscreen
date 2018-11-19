@@ -3,23 +3,23 @@
   "version": "0.2.0",
   "private": true,
   "dependencies": {
-    "prop-types": "^15.6.1",
-    "react": "^16.3.0",
-    "react-accessible-accordion": "^2.4.4",
-    "react-dom": "^16.3.0",
+    "prop-types": "^15.6.2",
+    "react": "^16.6.3",
+    "react-accessible-accordion": "^2.4.5",
+    "react-dom": "^16.6.3",
     "react-ga": "^2.5.3",
     "react-overlays": "^0.8.3",
-    "react-redux": "^5.0.7",
+    "react-redux": "^5.1.1",
     "react-reorder": "^3.0.0-alpha.7",
-    "react-router-dom": "^4.2.2",
-    "react-scripts": "1.1.5",
-    "react-select": "^2.0.0",
+    "react-router-dom": "^4.3.1",
+    "react-scripts": "2.1.1",
+    "react-select": "^2.1.1",
     "react-table": "^6.8.6",
     "redux": "^3.7.2",
     "redux-form": "^7.4.2",
     "redux-logger": "^3.0.6",
-    "redux-thunk": "^2.2.0",
-    "seedrandom": "^2.4.3"
+    "redux-thunk": "^2.3.0",
+    "seedrandom": "^2.4.4"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -31,6 +31,12 @@
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
-    "babel-preset-env": "^1.6.1"
-  }
+    "babel-preset-env": "^1.7.0"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
 }

@@ -26,8 +26,10 @@ class App extends Component {
         const env = process.env.NODE_ENV;
         if (env === 'production')
             ReactGA.initialize('UA-122019115-2');
-        else
+        else {
             console.log(`Environment is: ${env} Google Analytics has been disabled.`)
+            window['ga-disable-UA-122019115-2'] = true
+        }
     }
 
     handleClickOutsideOfNavBarAndNotPartOfMenuButton(e) {

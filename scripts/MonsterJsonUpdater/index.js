@@ -162,7 +162,7 @@ const sortByKeys = (line) => {
     return {result: result, success: true, id: json.name};
 }
 
-const examineFeats = (line) => {
+const examineField = (line) => {
     const json = JSON.parse(line);
     console.log(json.feats)
     const result = JSON.stringify(json) + "\n";
@@ -177,8 +177,9 @@ const options = commandLineArgs(optionDefinitions);
 const now = new Date();
 const dateString = now.toLocaleDateString()+"_"+now.getHours()+"-" + now.getMinutes() + "-" + now.getSeconds();
 console.log("About to process file");
-processFile(options.src, "files/output/allCreatures_"+dateString+".json", examineFeats);
+processFile(options.src, "files/output/allCreatures_"+dateString+".json", examineField);
 
+//v2 is what is currently deployed.
 //v3 is all int based fields converted to ints. 
 //v4 parsed ac into individual fields as well as mods
 //v5 has sorted keys

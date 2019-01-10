@@ -10,6 +10,7 @@
   },
   "scripts": {
     "start": "npx babel-node index.js files/allCreatures.json",
+    "json_parse": "npx babel-node index.js files/creature_sample.json",
     "test": "react-scripts test --env=jsdom"
   },
   "devDependencies": {

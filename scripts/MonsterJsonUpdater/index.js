@@ -164,7 +164,57 @@ const sortByKeys = (line) => {
 
 const examineField = (line) => {
     const json = JSON.parse(line);
-    console.log(json.feats)
+    console.log(json.hp)
+    const result = JSON.stringify(json) + "\n";
+    return {result: result, success: true, id: json.name};
+}
+
+const parseHpAndHd = (line) => {
+    const json = JSON.parse(line);
+    const regex = /(\d+)\s\((\d+)d(\d+)[\+]?(-?\d*)\)/g;
+    const powerRegex = /(regeneration|fast healing) (\d+) ?(\([\w, ]*\))?/g;
+    if (json.hp) {
+        let powerMatch;
+        while((powerMatch = powerRegex.exec(json.hp)) !== null) {
+            if (powerMatch.index === powerRegex.lastIndex) {
+                powerRegex.lastIndex++;
+            }
+            console.log(powerMatch[1], powerMatch[2], powerMatch[3])
+            //TODO: Decide how we want regeneration and fast healing entries to look (maybe this indicates other special abilities and qualities as well)
+        }
+
+
+        let m;
+
+        while ((m = regex.exec(json.hp)) !== null) {
+            // This is necessary to avoid infinite loops with zero-width matches
+            if (m.index === regex.lastIndex) {
+                regex.lastIndex++;
+            }
+            
+            // The result can be accessed through the `m`-variable.
+            // m.forEach((match, groupIndex) => {
+            //     console.log(`Found match, group ${groupIndex}: ${match}`);
+            // });
+            const hitPoints =  parseInt(m[1]);
+            json.hitPoints = hitPoints;
+            const hitDice = parseInt(m[2]);
+            json.hitDice = hitDice;
+            const hdType = parseInt(m[3]);
+            json.hdType = hdType;
+            const hitPointAdjustment = (parseInt(m[4]) || 0);
+            json.hitPointAdjustment = hitPointAdjustment;
+
+            // console.log(m[0])
+            // console.log('hp: ' + hitPoints);
+            // console.log('hd: ' + hitDice);
+            // console.log('hdType: ' + hdType);
+            // console.log('hpBonus: ' + hitPointAdjustment);
+        }
+    }
+    else {
+        console.log(json.name + " had no hp field")
+    }
     const result = JSON.stringify(json) + "\n";
     return {result: result, success: true, id: json.name};
 }
@@ -177,15 +227,15 @@ const options = commandLineArgs(optionDefinitions);
 const now = new Date();
 const dateString = now.toLocaleDateString()+"_"+now.getHours()+"-" + now.getMinutes() + "-" + now.getSeconds();
 console.log("About to process file");
-processFile(options.src, "files/output/allCreatures_"+dateString+".json", examineField);
+processFile(options.src, "files/output/allCreatures_"+dateString+".json", parseHpAndHd);
 
 //v2 is what is currently deployed.
 //v3 is all int based fields converted to ints. 
 //v4 parsed ac into individual fields as well as mods
 //v5 has sorted keys
 
-//TODO: parse speed
 //TODO: parse hitpoints and hitdice from hp field
+//TODO: parse speed
 //TODO: parse skills into array and objects
 //TODO: parse feats into array (Trick is: Weapon Focus (bite, claw) which will prevent clean splitting)
 //TODO: parse languages into an array

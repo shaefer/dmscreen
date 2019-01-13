@@ -15,22 +15,31 @@ const dmScreen = (state = DMScreenDefaultState, action) => {
         };
       case DmScreenActions.ADD_CUSTOM_BUTTON:
         console.log("ADD CUSTOM BUTTON REDUCER ACTION", action)
+        const newId = state.currentId + 1;
+        action.button.id = newId;
         if (action.button.type === 'diceButton') {
           return {
             ...state,
-            diceButtons: [...state.diceButtons, action.button]
+            currentId: newId,
+            diceButtons: [...state.diceButtons, action.button],
+            diceAndStatsButtonOrder: [...state.diceAndStatsButtonOrder, newId]
           };
         }
         if (action.button.type === 'crButton') {
           return {
             ...state,
-            crButtons: [...state.crButtons, action.button]
+            currentId: newId,
+            crButtons: [...state.crButtons, action.button],
+            monsterButtonOrder: [...state.monsterButtonOrder, newId]
           };
         }
         if (action.button.type === 'crRangeButton') {
+          console.log("Adding button of type crRangeButton", action.button)
           return {
             ...state,
-            crRangeButtons: [...state.crRangeButtons, action.button]
+            currentId: newId,
+            crRangeButtons: [...state.crRangeButtons, action.button],
+            monsterButtonOrder: [...state.monsterButtonOrder, newId]
           };
         }
         console.error(`Received an unexpected button type: ${action.button.type}. State will remain unchanged.`)
@@ -63,29 +72,29 @@ const dmScreen = (state = DMScreenDefaultState, action) => {
 
   //TODO: fix magic strings by replacing with some storaged consts. 
 const diceButtons = [
-  {numOfDice: 1, numOfSides: 4, id:1, type: 'dice'},
-  {numOfDice: 1, numOfSides: 6, id:2, type: 'dice'},
-  {numOfDice: 1, numOfSides: 8, id:3, type: 'dice'},
-  {numOfDice: 1, numOfSides: 10, id:4, type: 'dice'},
-  {numOfDice: 1, numOfSides: 12, id:5, type: 'dice'},
-  {numOfDice: 1, numOfSides: 20, id:6, type: 'dice'},
-  {numOfDice: 1, numOfSides: 100, id:7, type: 'dice'},
+  {numOfDice: 1, numOfSides: 4, id:1, type: 'diceButton'},
+  {numOfDice: 1, numOfSides: 6, id:2, type: 'diceButton'},
+  {numOfDice: 1, numOfSides: 8, id:3, type: 'diceButton'},
+  {numOfDice: 1, numOfSides: 10, id:4, type: 'diceButton'},
+  {numOfDice: 1, numOfSides: 12, id:5, type: 'diceButton'},
+  {numOfDice: 1, numOfSides: 20, id:6, type: 'diceButton'},
+  {numOfDice: 1, numOfSides: 100, id:7, type: 'diceButton'},
 ];
 
 const statsButtons = [
-  {numOfDice: 3, numOfSides: 6, id:8, type: 'stats'},
-  {numOfDice: 4, numOfSides: 6, drop: 1, id:9, type: 'stats'},
-  {numOfDice: 5, numOfSides: 6, drop: 2, id:10, type: 'stats'},
+  {numOfDice: 3, numOfSides: 6, id:8, type: 'statsButton'},
+  {numOfDice: 4, numOfSides: 6, drop: 1, id:9, type: 'statsButton'},
+  {numOfDice: 5, numOfSides: 6, drop: 2, id:10, type: 'statsButton'},
 ];
 
 const crButtons = [
-  {cr:7, id:11, type: 'cr'},
-  {cr:5, numOfMonsters:5, id:12, type: 'cr'},
-  {cr:20, numOfMonsters:2, id:13, type: 'cr'},
+  {cr:7, id:11, type: 'crButton'},
+  {cr:5, numOfMonsters:5, id:12, type: 'crButton'},
+  {cr:20, numOfMonsters:2, id:13, type: 'crButton'},
 ];
 
 const crRangeButtons = [
-  {crStart:5, crEnd:8, numOfMonsters:10, id:14, type: 'crRange'}
+  {crStart:5, crEnd:8, numOfMonsters:10, id:14, type: 'crRangeButton'}
 ];
 
 
@@ -95,6 +104,7 @@ const DMScreenDefaultStateCreator = (diceButtons, statsButtons, crButtons, crRan
     results:[], buttons:[], showForm: false,
     diceAndStatsButtonOrder: [...diceButtons.map(x => x.id), ...statsButtons.map(x => x.id)],
     monsterButtonOrder: [...crButtons.map(x => x.id), ...crRangeButtons.map(x => x.id)],
+    currentId: 14,
     diceButtons : diceButtons,
     statsButtons: statsButtons,
     crButtons : crButtons,

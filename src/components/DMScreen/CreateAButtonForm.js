@@ -85,7 +85,7 @@ const CreateAButtonFormConnected = connect(
         crStart : selector(state, 'crStart'),
         crEnd : selector(state, 'crEnd'),
         numOfMonsters: selector(state, 'numOfMonsters'),
-        numOfMonstersRange: selector(state, 'numOfMonstersRange'),
+        numOfMonstersRange: selector(state, 'numOfMonstersRange'), 
     }
   }
 )(CreateAButtonForm)

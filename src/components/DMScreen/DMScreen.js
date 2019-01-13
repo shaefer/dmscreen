@@ -39,6 +39,7 @@ class DMScreen extends Component {
     }
 
     createAButton(values) {
+        console.log("Trying to create a button: ", values)
         let buttonData;
         if (values.type === 'diceButton') {
             if (values.diceButtonNumOfDice > 1000) {
@@ -67,6 +68,7 @@ class DMScreen extends Component {
             }
             buttonData = {crStart:values.crStart, crEnd:values.crEnd, numOfMonsters:values.numOfMonstersRange, type: 'crRangeButton'}
         }
+        console.log("Adding custom button with buttonData: ", buttonData)
         this.props.addCustomButtonAction(buttonData);
     }
 
@@ -85,21 +87,25 @@ class DMScreen extends Component {
         const diceAndStatsButtons = [...dmScreen.diceButtons, ...dmScreen.statsButtons];
         const orderedDiceAndStatsButtons = dmScreen.diceAndStatsButtonOrder.map(x => diceAndStatsButtons.find(y => y.id === x));
         const diceButtonsAsListItems = orderedDiceAndStatsButtons.map(x => {
-            if (x.type === 'dice') {
+            if (x.type === 'diceButton') {
                 return <li><DiceButton numOfDice={x.numOfDice} numOfSides={x.numOfSides}/></li>;
-            } else if (x.type === 'stats') {
+            } else if (x.type === 'statsButton') {
                 return <li><StatsButton numOfDice={x.numOfDice} numOfSides={x.numOfSides} drop={x.drop || 1}/></li>;
             }
         });
         //monsterButtonOrder
+        console.log("RENDERING DM SCREEN WITH CRRANGEBUTTONS: ", dmScreen.crRangeButtons)
         const monsterButtons = [...dmScreen.crButtons, ...dmScreen.crRangeButtons];
         const orderedMonsterButtons = dmScreen.monsterButtonOrder.map(x => monsterButtons.find(y => y.id === x));
         const monsterButtonsAsListItems = orderedMonsterButtons.map(x => {
-            if (x.type === 'cr') {
+            if (x.type === 'crButton') {
                 return <li><CRButton cr={x.cr} numOfMonsters={(x.numOfMonsters || 1)}/></li>;
-            } else if (x.type === 'crRange') {
+            } else if (x.type === 'crRangeButton') {
                 return <li><CRRangeButton crStart={x.crStart} crEnd={x.crEnd} numOfMonsters={x.numOfMonsters || 1}/></li>;
+            } else {
+                console.log("Didn't render button: ", x)
             }
+
         });
 
         return (

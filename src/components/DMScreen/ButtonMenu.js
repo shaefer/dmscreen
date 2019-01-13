@@ -37,14 +37,17 @@ class ButtonMenu extends Component {
     render() {
 
         const hideShowLabel = (this.state.showOverlay) ? "Hide" : "Show";
+        const id = Math.random() + "_toggle";
         const isChecked = (this.state.showOverlay) 
-            ? <input class="apple-switch" type="checkbox" checked="checked" onClick={this.toggle}/> 
-            : <input class="apple-switch" type="checkbox" onClick={this.toggle}/>
+            ? <input className="apple-switch tgl tgl-light" type="checkbox" checked="checked" onClick={this.toggle} id={id}/> 
+            : <input className="apple-switch tgl tgl-light" type="checkbox" onClick={this.toggle} id={id}/>
         return (<div style={overlayWrapperStyles}>
-            <span  ref="target">
+            <span style={{display:"inline-block"}} ref="target">
                 {isChecked}
+                <label htmlFor={id} className="tgl-btn"></label>
             </span>
             <span>{hideShowLabel} {this.props.label}</span>
+            
 
             <Overlay
                 show={this.state.showOverlay}

@@ -57,13 +57,16 @@ class DMScreen extends Component {
             buttonData = { cr:values.cr, numOfMonsters:values.numOfMonsters, type: 'crButton'}
         }
         if (values.type === 'crRangeButton') {
-            if (values.numOfMonstersRange > 1000) {
+            const crStart = parseInt(values.crStart);
+            const crEnd = parseInt(values.crEnd);
+            const numOfMonsters = parseInt(values.numOfMonstersRange);
+            if (numOfMonsters > 1000) {
                 this.handleResult(<span style={{color:'red'}}>Cannot roll more than 1000 monsters at once.</span>);
             }
-            if (values.crEnd > 30) {  
+            if (crEnd > 30) {  
                 this.handleResult(<span style={{color:'red'}}>Cannot create monster button with CR > 30.</span>);
             }
-            if (values.crStart > values.crEnd) {  
+            if (crStart > crEnd) {  
                 this.handleResult(<span style={{color:'red'}}>CR Range must be from smallest CR to largest CR.</span>);
             }
             buttonData = {crStart:values.crStart, crEnd:values.crEnd, numOfMonsters:values.numOfMonstersRange, type: 'crRangeButton'}

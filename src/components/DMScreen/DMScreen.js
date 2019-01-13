@@ -137,9 +137,11 @@ class DMScreen extends Component {
                                 className="buttonOrderContainer">
                             {dmScreen.chartButtons.map(x => <li>{x}</li>)}
                         </Reorder>
+                        <TavernNameButton count={10}/>
                     </ButtonMenu>
-                    <TavernNameButton count={10}/>
-                    <CreateAButtonForm onSubmit={(e) => this.createAButton(e)} showForm={dmScreen.showForm} toggleFormFunc={this.toggleForm}/>
+                    <ButtonMenu label="Custom Button Creation">
+                        <CreateAButtonForm onSubmit={(e) => this.createAButton(e)} showForm={dmScreen.showForm} toggleFormFunc={this.toggleForm}/>
+                    </ButtonMenu>
                 </section>
                 <section>
                     <div>Results</div>

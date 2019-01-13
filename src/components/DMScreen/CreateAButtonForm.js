@@ -7,7 +7,7 @@ class CreateAButtonFormComponent extends Component {
     render() {
         const { handleSubmit, showForm, toggleFormFunc } = this.props
         console.log("RENDER CREATE BUTTON FORM COMP", this.props, this.props.diceButtonNumOfDice, this.props.diceButtonNumOfSides, showForm);
-        const visibleForm = (toggleFormFunc) => {
+        const visibleForm = () => {
             return (
             <main className="customDice">
                 <section>
@@ -37,25 +37,12 @@ class CreateAButtonFormComponent extends Component {
                             type: 'crRangeButton'
                         }))}>Add Monster by CR Range Button</button>
                 </section>
-                <section>
-                    <button type="button" className="purpleAwesome" onClick={() => toggleFormFunc(false)}>Hide Custom Button Section</button>
-                </section>
             </main>
-            );
-        }
-        const notVisibleForm = (toggleFormFunc) => {
-            return (
-                <section>
-                    <button type="button" className="purpleAwesome" onClick={() => toggleFormFunc(true)}>Create Custom Button</button>
-                </section>
             );
         }
         return (
           <form onSubmit={handleSubmit} className="createAButton">
-            {(showForm) 
-                ? visibleForm(toggleFormFunc)
-                : notVisibleForm(toggleFormFunc)
-            }
+            {visibleForm()}
           </form>
         )
     }

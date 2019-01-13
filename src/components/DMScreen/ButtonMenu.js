@@ -2,9 +2,11 @@ import React, { Component } from 'react';
 import DiceBag from '../../utils/DiceBag'
 import {Overlay} from 'react-overlays'
 
+import './ButtonMenu.css'
+
 const overlayWrapperStyles = {
     position: 'relative',
-    display: 'inline'
+    //display: 'inline'
 }
 
 const buttonContainerStyles = {
@@ -20,7 +22,7 @@ class ButtonMenu extends Component {
         this.toggle = this.toggle.bind(this);
         this.hide = this.hide.bind(this);
         this.state = {
-            showOverlay: false
+            showOverlay: true
         }
     }
 
@@ -33,9 +35,17 @@ class ButtonMenu extends Component {
     }
 
     render() {
+
         const hideShowLabel = (this.state.showOverlay) ? "Hide" : "Show";
+        const isChecked = (this.state.showOverlay) 
+            ? <input class="apple-switch" type="checkbox" checked="checked" onClick={this.toggle}/> 
+            : <input class="apple-switch" type="checkbox" onClick={this.toggle}/>
         return (<div style={overlayWrapperStyles}>
-            <button ref="target" onClick={this.toggle} className="tealAwesome">{hideShowLabel} {this.props.label}</button>
+            <span  ref="target">
+                {isChecked}
+            </span>
+            <span>{hideShowLabel} {this.props.label}</span>
+
             <Overlay
                 show={this.state.showOverlay}
                 onHide={this.hide}

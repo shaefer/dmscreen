@@ -171,10 +171,11 @@ const examineField = (line) => {
 
 const parseHpAndHd = (line) => {
     const json = JSON.parse(line);
-    const regex = /(\d+)\s\((\d+)d(\d+)[\+]?(-?\d*)\)/g;
-    const powerRegex = /(regeneration|fast healing) (\d+) ?(\([\w, ]*\))?/g;
+    
+    
     if (json.hp) {
         let powerMatch;
+        const powerRegex = /(regeneration|fast healing) (\d+) ?(\([\w, ]*\))?/g;
         while((powerMatch = powerRegex.exec(json.hp)) !== null) {
             if (powerMatch.index === powerRegex.lastIndex) {
                 powerRegex.lastIndex++;
@@ -185,7 +186,7 @@ const parseHpAndHd = (line) => {
 
 
         let m;
-
+        const regex = /(\d+)\s\((\d+)d(\d+)[\+]?(-?\d*)\)/g;
         while ((m = regex.exec(json.hp)) !== null) {
             // This is necessary to avoid infinite loops with zero-width matches
             if (m.index === regex.lastIndex) {

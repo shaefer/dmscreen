@@ -169,6 +169,56 @@ const examineField = (line) => {
     return {result: result, success: true, id: json.name};
 }
 
+const condenseAbilityScores = (line) => {
+    const json = JSON.parse(line);
+    //verify that each field exists...b/c there should be a value for everyone one...if not there is an error we should correct.
+    //Ifrit is currently missing con b/c of bad parse of dex that ate it.
+    //Owl, Giant ate the cha score because of bad wis parse.
+    //Best guess looks like no stats should have extra data (we do display - instead of 0 for constructs and undead but they are all just a dash)
+    json.ability_scores = {
+        str: json.strength,
+        dex: json.dexterity,
+        con: json.constitution,
+        int: json.intelligence,
+        wis: json.wisdom,
+        cha: json.charisma,
+    }
+
+    if (json.strength_details) {
+        console.error(json.name + " has strength_details")
+        const result = JSON.stringify(json) + "\n";
+        return {result: result, success: false, id: json.name};
+    }
+    if (json.dexterity_details) {
+        console.error(json.name + " has dexterity_details")
+        const result = JSON.stringify(json) + "\n";
+        return {result: result, success: false, id: json.name};
+    }
+    if (json.constitution_details) {
+        console.error(json.name + " has constitution_details")
+        const result = JSON.stringify(json) + "\n";
+        return {result: result, success: false, id: json.name};
+    }
+    if (json.intelligence_details) {
+        console.error(json.name + " has intelligence_details")
+        const result = JSON.stringify(json) + "\n";
+        return {result: result, success: false, id: json.name};
+    }
+    if (json.wisdom_details) {
+        console.error(json.name + " has wisdom_details")
+        const result = JSON.stringify(json) + "\n";
+        return {result: result, success: false, id: json.name};
+    }
+    if (json.charisma_details) {
+        console.error(json.name + " has charisma_details")
+        const result = JSON.stringify(json) + "\n";
+        return {result: result, success: false, id: json.name};
+    }
+
+    const result = JSON.stringify(json) + "\n";
+    return {result: result, success: true, id: json.name};
+}
+
 const parseHpAndHd = (line) => {
     const json = JSON.parse(line);
     
@@ -228,14 +278,24 @@ const options = commandLineArgs(optionDefinitions);
 const now = new Date();
 const dateString = now.toLocaleDateString()+"_"+now.getHours()+"-" + now.getMinutes() + "-" + now.getSeconds();
 console.log("About to process file");
-processFile(options.src, "files/output/allCreatures_"+dateString+".json", parseHpAndHd);
+processFile(options.src, "files/output/allCreatures_"+dateString+".json", sortByKeys);
 
 //v2 is what is currently deployed.
 //v3 is all int based fields converted to ints. 
 //v4 parsed ac into individual fields as well as mods
-//v5 has sorted keys
+//v5 has sorted keys --> WILL have to re-sort any time we add new fields
+//v6 hp parsed (for hitPoints, hitDice, hdType, hitPointAdjustment) and resorted keys
 
-//TODO: parse hitpoints and hitdice from hp field
+//DONE parse all stats into fields containing just the ints
+//DONE parse ac into individual fields and mods
+//DONE parse cr into a number (decimal value 1/8 = 0.125, 1/3 = 0.333, etc.)
+//DONE parse hitpoints and hitdice from hp field
+
+//TODO: condense abilityScores into an object
+//TODO: condense armorClass into an object
+//TODO: Make special abilities section for parsed special abilities
+//TODO: parse regeneration and fast healing from hp field
+
 //TODO: parse speed
 //TODO: parse skills into array and objects
 //TODO: parse feats into array (Trick is: Weapon Focus (bite, claw) which will prevent clean splitting)

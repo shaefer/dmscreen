@@ -184,6 +184,8 @@ const condenseAbilityScores = (line) => {
         cha: json.charisma,
     }
 
+    //TODO: remove the original top level fields.
+
     if (json.strength_details) {
         console.error(json.name + " has strength_details")
         const result = JSON.stringify(json) + "\n";

@@ -164,7 +164,80 @@ const sortByKeys = (line) => {
 
 const examineField = (line) => {
     const json = JSON.parse(line);
-    console.log(json.hp)
+    let i = 0;
+    if (json.sections) {
+        const specialAbilityBlock = json.sections.filter(x => x.name == 'Special Abilities') //other sections include description paragraphs.
+        if (specialAbilityBlock.length == 1) {
+            const saSection = specialAbilityBlock[0];
+            let specialAbilities = [];
+            console.log("SA CREATURE: " + json.name)
+            for(let i = 0;i<saSection.sections.length; i++) {
+                const sa = saSection.sections[i];
+                
+                const specialAbility = {
+                    name: sa.name,
+                    description: sa.body,
+                }
+                //TODO: Parse sa.body for saving throws and stat basis for saving throws: DC 20 Fortitude save. The save DC is Constitution-based
+                if (sa.ability_types) specialAbility.type = sa.ability_types.ability_type;
+                specialAbilities.push(specialAbility)   
+            }
+            json.special_abilities = specialAbilities;
+        }
+        else {
+            console.log("NO POWERS: " + json.name + " " + specialAbilityBlock.length)
+        }
+    }
+    const result = JSON.stringify(json) + "\n";
+    return {result: result, success: true, id: json.name};
+}
+
+const condenseArmorClass = (line) => {
+    const json = JSON.parse(line);
+
+    json.armor_class = {
+        ac: {
+            standard: json.ac_standard,
+            flat_footed: json.ac_flat_footed,
+            touch: json.ac_touch
+        },
+        ac_details: json.ac,
+        ac_modifiers: json.ac_modifiers,
+        ac_modifiers_details: json.ac_modifiers_details,
+    }
+
+    json.ac = undefined;
+    json.ac_modifiers = undefined;
+    json.ac_modifiers_details = undefined;
+    json.ac_standard = undefined;
+    json.ac_flat_footed = undefined;
+    json.ac_touch = undefined;
+
+    const result = JSON.stringify(json) + "\n";
+    return {result: result, success: true, id: json.name};
+}
+
+const condenseSavingThrows = (line) => {
+    const json = JSON.parse(line);
+    
+    json.saving_throws = {
+        fort: json.fortitude,
+        ref: json.reflex,
+        will: json.will
+    }
+
+    if (json.fortitude_details) json.saving_throws.fortitude_details = json.fortitude_details;
+    if (json.reflex_details) json.saving_throws.reflex_details = json.reflex_details;
+    if (json.will_details) json.saving_throws.will_details = json.will_details;
+
+    json.fortitude = undefined;
+    json.reflex = undefined;
+    json.will = undefined;
+
+    if (json.fortitude_details) json.fortitude_details = undefined;
+    if (json.reflex_details) json.reflex_details = undefined;
+    if (json.will_details) json.will_details = undefined;
+
     const result = JSON.stringify(json) + "\n";
     return {result: result, success: true, id: json.name};
 }
@@ -184,6 +257,13 @@ const condenseAbilityScores = (line) => {
         cha: json.charisma,
     }
 
+    json.strength = undefined;
+    json.dexterity = undefined;
+    json.constitution = undefined;
+    json.intelligence = undefined;
+    json.wisdom = undefined;
+    json.charisma = undefined;
+    
     //TODO: remove the original top level fields.
 
     if (json.strength_details) {
@@ -193,6 +273,7 @@ const condenseAbilityScores = (line) => {
     }
     if (json.dexterity_details) {
         console.error(json.name + " has dexterity_details")
+        console.log(json.ability_scores)
         const result = JSON.stringify(json) + "\n";
         return {result: result, success: false, id: json.name};
     }
@@ -208,6 +289,7 @@ const condenseAbilityScores = (line) => {
     }
     if (json.wisdom_details) {
         console.error(json.name + " has wisdom_details")
+        console.log(json.ability_scores)
         const result = JSON.stringify(json) + "\n";
         return {result: result, success: false, id: json.name};
     }
@@ -280,21 +362,23 @@ const options = commandLineArgs(optionDefinitions);
 const now = new Date();
 const dateString = now.toLocaleDateString()+"_"+now.getHours()+"-" + now.getMinutes() + "-" + now.getSeconds();
 console.log("About to process file");
-processFile(options.src, "files/output/allCreatures_"+dateString+".json", sortByKeys);
+processFile(options.src, "files/output/allCreatures_"+dateString+".json", examineField);
 
 //v2 is what is currently deployed.
 //v3 is all int based fields converted to ints. 
 //v4 parsed ac into individual fields as well as mods
 //v5 has sorted keys --> WILL have to re-sort any time we add new fields
 //v6 hp parsed (for hitPoints, hitDice, hdType, hitPointAdjustment) and resorted keys
+//v7 stats into object and saving throws into object and armor_class into object
 
 //DONE parse all stats into fields containing just the ints
 //DONE parse ac into individual fields and mods
 //DONE parse cr into a number (decimal value 1/8 = 0.125, 1/3 = 0.333, etc.)
 //DONE parse hitpoints and hitdice from hp field
+//DONE: condense abilityScores into an object
+//DONE: parse saving throws into an object
+//DONE: condense armorClass into an object
 
-//TODO: condense abilityScores into an object
-//TODO: condense armorClass into an object
 //TODO: Make special abilities section for parsed special abilities
 //TODO: parse regeneration and fast healing from hp field
 

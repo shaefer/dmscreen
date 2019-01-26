@@ -6,9 +6,10 @@ import {condenseArmorClass, parseArmorClassFields} from './lineParsers/ArmorClas
 import parseHpAndHd from './lineParsers/HitPointsAndHitDice'
 import condenseSavingThrows from './lineParsers/SavingThrows'
 import parseSpecialAbilities from './lineParsers/SpecialAbilities'
-import examineField from './lineParsers/FieldExaminer'
+import examineField from './lineParsers/FieldExaminer' //examineField("fieldName")
 import convertFieldsToInt from './lineParsers/FieldsAsInt'
 import condenseAbilityScores from './lineParsers/AbilityScores'
+import parseSkills from './lineParsers/Skills'
 
 const processFile = (fileNameAndPath, outputPath, alterLineFunc) => {
 
@@ -55,7 +56,7 @@ const options = commandLineArgs(optionDefinitions);
 const now = new Date();
 const dateString = now.toLocaleDateString()+"_"+now.getHours()+"-" + now.getMinutes() + "-" + now.getSeconds();
 console.log("About to process file");
-processFile(options.src, "files/output/allCreatures_"+dateString+".json", examineField("hp"));
+processFile(options.src, "files/output/allCreatures_"+dateString+".json", parseSkills);
 
 //v2 is what is currently deployed.
 //v3 is all int based fields converted to ints. 
@@ -63,6 +64,7 @@ processFile(options.src, "files/output/allCreatures_"+dateString+".json", examin
 //v5 has sorted keys --> WILL have to re-sort any time we add new fields
 //v6 hp parsed (for hitPoints, hitDice, hdType, hitPointAdjustment) and resorted keys
 //v7 stats into object and saving throws into object and armor_class into object
+//v8 parsed special abilities into field with meta data about savingThrows.
 
 //DONE parse all stats into fields containing just the ints
 //DONE parse ac into individual fields and mods
@@ -71,8 +73,8 @@ processFile(options.src, "files/output/allCreatures_"+dateString+".json", examin
 //DONE: condense abilityScores into an object
 //DONE: parse saving throws into an object
 //DONE: condense armorClass into an object
+//DONE: Make special abilities section for parsed special abilities
 
-//TODO: Make special abilities section for parsed special abilities
 //TODO: parse regeneration and fast healing from hp field
 
 //TODO: parse speed
@@ -83,7 +85,6 @@ processFile(options.src, "files/output/allCreatures_"+dateString+".json", examin
 
 //TODO: parse senses into array
 //TODO: parse special qualities into array
-//TODO: parse special abilities from random section blocks
 //TODO: parse immunities into array
 //TODO: parse aura into array (probably)
 //TODO: parse creature_subtypes into array (probably)

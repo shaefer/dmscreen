@@ -65,6 +65,7 @@ processFile(options.src, "files/output/allCreatures_"+dateString+".json", parseS
 //v6 hp parsed (for hitPoints, hitDice, hdType, hitPointAdjustment) and resorted keys
 //v7 stats into object and saving throws into object and armor_class into object
 //v8 parsed special abilities into field with meta data about savingThrows.
+//v9 parsed skills into new fields skills and skills_details
 
 //DONE parse all stats into fields containing just the ints
 //DONE parse ac into individual fields and mods
@@ -74,11 +75,10 @@ processFile(options.src, "files/output/allCreatures_"+dateString+".json", parseS
 //DONE: parse saving throws into an object
 //DONE: condense armorClass into an object
 //DONE: Make special abilities section for parsed special abilities
+//DONE: parse skills into array and objects
 
 //TODO: parse regeneration and fast healing from hp field
-
 //TODO: parse speed
-//TODO: parse skills into array and objects
 //TODO: parse feats into array (Trick is: Weapon Focus (bite, claw) which will prevent clean splitting)
 //TODO: parse languages into an array
 //TODO: parse resistances into array and objects

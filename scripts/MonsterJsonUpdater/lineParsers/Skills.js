@@ -23,7 +23,8 @@ const parseSkills = (line) => {
         skills.push(skill)
     }
     console.log(skills);
-
+    json.skill_details = json.skills;
+    json.skills = skills;
     const result = JSON.stringify(json) + "\n";
     return {result: result, success: true, id: json.name};
 }

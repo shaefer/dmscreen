@@ -1,4 +1,5 @@
-import {calculateFastBaseAttackBonus, calculateMediumBaseAttackBonus, calculateSlowBaseAttackBonus, cal, getBaseAttackBonusByHitDiceAndCreatureType} from './MonsterCalculator'
+import {calculateFastBaseAttackBonus, calculateMediumBaseAttackBonus, calculateSlowBaseAttackBonus,
+   getBaseAttackBonusByHitDiceAndCreatureType} from './BaseAttackBonusCalculator'
 
 
 //http://legacy.aonprd.com/bestiary/monsterCreation.html

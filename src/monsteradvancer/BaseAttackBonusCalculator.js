@@ -1,10 +1,5 @@
 import creatureStatsByType from './creatureStatsByType'
 
-const hdTypes = ["d4", "d6", "d8", "d10", "d12"];
-const creatureTypes = ["Aberration", "Animal", "Construct", "Dragon", "Fey", "Humanoid", "Magical beast", "Monstrous humanoid", "Ooze", "Outsider", "Plant", "Undead", "Vermin"];
-const saveTypes = [{name:"Reflex", abbr: "Ref"}, {name:"Will", abbr: "Will"}, {name:"Fortitude", abbr: "Fort"}];
-const abilityScores = [{name: "Strength", abbr: "Str"}, {name: "Dexterity", abbr: "Dex"}, {name: "Constitution", abbr: "Con"}, {name:"Intelligence", abbr: "Int"}, {name: "Wisdom", abbr: "Wis"}, {name:"Charisma", abbr: "Cha"}];
-
 //TODO: Not sure this particularly Javascripty...or needed. But it might make it easy to store the serializable speedId and convert to the function as needed...maybe we return the function rather than actually do the calculation...
 export const calculateBaseAttackBonus = (hitDice, speedId) => {
     const speed = speedId.toLowerCase();
@@ -43,4 +38,6 @@ export const getBaseAttackBonusByHitDiceAndCreatureType = (hitDice, creatureType
 
     return calculateBaseAttackBonus(hitDice, creatureTypeInfo.base_attack_bonus);
 }
+
+
 

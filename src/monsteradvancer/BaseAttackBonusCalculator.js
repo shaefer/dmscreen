@@ -1,6 +1,5 @@
 import creatureStatsByType from './creatureStatsByType'
 
-//TODO: Not sure this particularly Javascripty...or needed. But it might make it easy to store the serializable speedId and convert to the function as needed...maybe we return the function rather than actually do the calculation...
 export const calculateBaseAttackBonus = (hitDice, speedId) => {
     const speed = speedId.toLowerCase();
     if (speed == "slow") {

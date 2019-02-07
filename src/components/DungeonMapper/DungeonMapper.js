@@ -1,27 +1,12 @@
 import React, {Component} from 'react';
-import { Graph } from 'react-d3-graph'
+import { Graph } from 'react-d3-graph';
+import buildRooms from './DungeonBuilder';
 
 class DungeonMapper extends Component {
 
     render() {
-        const nodes = [
-            {id:"Armory"},
-            {id:"Kitchen"},
-            {id:"Throne Room"},
-            {id:"Dungeon"},
-        ];
-
-        const links = [
-            {source:"Throne Room", target:"Armory"},
-            {source:"Throne Room", target:"Kitchen"},
-            {source:"Kitchen", target:"Armory"},
-            {source:"Armory", target:"Dungeon"},
-        ];
-
-        const data = {
-            nodes,
-            links
-        }
+        const data = buildRooms(15);
+        console.log("DATA", data);
         const config = {
             nodeHighlightBehavior: true,
             "node": {

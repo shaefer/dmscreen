@@ -12,7 +12,7 @@ import MonsterOptions from '../MonsterOptions'
 
 import PageViewRecorder from '../../components/PageViewRecorder';
 
-class MonsterFinder extends Component {
+export class MonsterFinder extends Component {
   constructor() {
     super();
     this.handleKeyPress = this.handleKeyPress.bind(this);
@@ -108,5 +108,6 @@ class MonsterFinder extends Component {
 }
 
 const mapStateToProps = state => state;
+
 
 export default connect(mapStateToProps, {keyPressHandler, monsterSelectChangeHandler})(MonsterFinder)

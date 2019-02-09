@@ -65,3 +65,6 @@ tmp
 
 #create-react-scripts build dir
 build/
+
+#vscode
+.vscode/

@@ -5,13 +5,12 @@ import buildRooms from './DungeonBuilder';
 
 import './DungeonGraph.css'
 
-
 var width = 960;
 var height = 500;
 var force = d3.layout.force()
   .charge(-200)
-  .linkDistance(30)
-  .size([width, height]);
+  .linkDistance(70)
+  .size([width, height])
 
 // *****************************************************
 // ** d3 functions to manipulate attributes
@@ -106,19 +105,25 @@ class Graph extends React.Component {
 };
 
 class DungeonGraph extends React.Component {
-    constructor() {
-        super();
-        this.state = {
-            nodes: [],
-            links: [],
-        }
-    }
-  
-    getInitialState() {
-    return {
-      nodes: [],
-      links: [],
-    };
+  constructor() {
+      super();
+      const node1 = {id: "Shrine143851", name: "Shrine", key: "Shrine", size: 5, x:450, y:250, transform: "translate(450,250)"};
+      const node2 = {id: "Elevator143851", name: "Elevator", key: "Elevator", size: 5, x:450, y:250};
+      const node3 = {id: "Infirmary143851", name: "Infirmary", key: "Infirmary", size: 5, x:450, y:250};
+      const node4 = {id: "Barracks143851", name: "Barracks", key: "Barracks", size: 5, x:450, y:250};
+      const node5 = {id: "Laboratory143851", name: "Laboratory", key: "Laboratory", size: 5, x:450, y:250};
+      const nodes = [node1, node2, node3, node4, node5];
+      const links = [{source: node1, target: node2, key: "Shrine,Elevator", size: 5},
+        {source: node2, target: node5, key: "Elevator,Laboratory", size: 5},
+        {source: node3, target: node5, key: "Infirmary,Laboratory", size: 5},
+        {source: node4, target: node2, key: "Barracks,Elevator", size: 5},
+        {source: node5, target: node2, key: "Laboratory,Elevator", size: 5}
+      ];
+      this.state = {
+          initial: true,
+          nodes: nodes,
+          links: links,
+      }
   }
 
   componentDidMount() {
@@ -126,10 +131,17 @@ class DungeonGraph extends React.Component {
   }
 
   updateData(numOfRooms = 5) {
-    console.log("NUM OF ROOMS: " + numOfRooms)
-    const rooms = (this.props.match.params.rooms) ? (this.props.match.params.rooms) : 5 ;
-    var newState = buildRooms(rooms)
-    this.setState(newState);
+    if (this.state.initial && !this.props.match.params.rooms) {
+      this.setState({
+        ...this.state,
+        initial: false
+      })
+    } else {
+      console.log("NUM OF ROOMS: " + numOfRooms)
+      const rooms = (this.props.match.params.rooms) ? (this.props.match.params.rooms) : 5 ;
+      var newState = buildRooms(rooms)
+      this.setState(newState);
+    }
   }
 
   render() {

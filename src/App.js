@@ -8,6 +8,7 @@ import License from './components/License/License'
 import Copyright from './components/Copyright/Copyright'
 import MonsterAdvancer from './components/MonsterAdvancer/MonsterAdvancer'
 import DungeonMapper from './components/DungeonMapper/DungeonMapper'
+import DungeonGraph from './components/DungeonMapper/DungeonGraph'
 
 import './css/CustomFormCss.css'
 import './css/LeftHamburgerNav.css'
@@ -76,7 +77,12 @@ class App extends Component {
                     <Route       path="/monsteradvancer"  component={MonsterAdvancer} />
                     <Route       path="/license"     component={License} />
                     <Route       path="/copyright"  component={Copyright} />
-                    <Route       path="/dungeonMapper"  component={DungeonMapper} />
+                    <Route exact path="/dungeonMapper"  component={DungeonMapper} />
+                    <Route       path="/dungeonMapper/:rooms"  component={DungeonMapper} />
+                    <Route exact path="/dungeonGraph"  component={DungeonGraph} />
+                    <Route       path="/dungeonGraph/:rooms"  render={(props) => <DungeonGraph {...props} />} />
+
+                    
                     </section>
                 </main>
             </BrowserRouter>

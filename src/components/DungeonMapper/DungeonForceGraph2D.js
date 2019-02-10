@@ -23,9 +23,13 @@ class DungeonForceGraph2D extends React.Component {
             links
         }
 
-        return <ForceGraph2D
-            graphData={data}
-        />
+        return (
+            <section>
+                <ForceGraph2D
+                    graphData={data}
+                />
+            </section>
+        )
     }
 
 }

@@ -9,6 +9,8 @@ import Copyright from './components/Copyright/Copyright'
 import MonsterAdvancer from './components/MonsterAdvancer/MonsterAdvancer'
 import DungeonMapper from './components/DungeonMapper/DungeonMapper'
 import DungeonGraph from './components/DungeonMapper/DungeonGraph'
+import DungeonForceGraph from './components/DungeonMapper/DungeonForceGraph'
+import DungeonForceGraph2D from './components/DungeonMapper/DungeonForceGraph2D'
 
 import './css/CustomFormCss.css'
 import './css/LeftHamburgerNav.css'
@@ -79,7 +81,7 @@ class App extends Component {
                     <Route       path="/copyright"  component={Copyright} />
                     <Route exact path="/dungeonMapper"  component={DungeonMapper} />
                     <Route       path="/dungeonMapper/:rooms"  component={DungeonMapper} />
-                    <Route exact path="/dungeonGraph"  component={DungeonGraph} />
+                    <Route exact path="/dungeonGraph"  component={DungeonForceGraph2D} />
                     <Route       path="/dungeonGraph/:rooms"  render={(props) => <DungeonGraph {...props} />} />
 
                     

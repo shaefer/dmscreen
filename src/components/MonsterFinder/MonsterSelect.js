@@ -22,11 +22,15 @@ const buildGetSuggestionsFunction = (listItems) => {
 const getSuggestionValue = suggestion => suggestion;
 
 // Use your imagination to render suggestions.
-const renderSuggestion = suggestion => (
-  <div>
-    {suggestion}
-  </div>
-);
+const renderSuggestion = (suggestion, { query, isHighlighted }) => {
+    const match = suggestion.toLowerCase().indexOf(query.toLowerCase());
+    if (match < 0) return <div>{suggestion}</div>;
+
+    const firstPart = suggestion.substring(0, match);
+    const secondPart = suggestion.substring(firstPart.length, firstPart.length + query.length);
+    const lastPart = suggestion.substring((firstPart.length + secondPart.length));
+    return <div>{firstPart}<span className='highlightMatch'>{secondPart}</span>{lastPart}</div>
+};
 
 class MonsterSelect extends React.Component {
   constructor(props) {

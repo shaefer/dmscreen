@@ -1,8 +1,14 @@
 import React from 'react'
 import ForceGraph2D from 'react-force-graph-2d';
 import buildRooms from './DungeonBuilder';
+import PageViewRecorder from '../../components/PageViewRecorder';
 
 class DungeonForceGraph2D extends React.Component {
+    componentDidMount() {
+        const title = "Dungeon Graph - by Clever Orc Games";
+        document.title = title;
+        PageViewRecorder.recordPageView(window.location.pathname + window.location.search, undefined, title);
+    }
 
     render() {
         const numOfRooms = (this.props.match.params.rooms) ? this.props.match.params.rooms : 10;

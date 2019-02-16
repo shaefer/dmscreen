@@ -6,9 +6,10 @@ import '../../css/ReactSelectCustom.css';
 
 import { connect } from 'react-redux'
 import Select from 'react-select'
-import {keyPressHandler, monsterSelectChangeHandler} from '../../action-creators'
+import {keyPressHandler, monsterSelectChangeHandler, monsterSelectedHandler} from '../../action-creators'
 import MonsterDisplay from '../MonsterDisplay'
 import MonsterOptions from '../MonsterOptions'
+import MonsterSelect from './MonsterSelect'
 
 import PageViewRecorder from '../../components/PageViewRecorder';
 
@@ -23,8 +24,8 @@ export class MonsterFinder extends Component {
     this.props.keyPressHandler(e);
   }
 
-  handleMonsterSelectChange(e) {
-    this.props.monsterSelectChangeHandler(e);
+  handleMonsterSelectChange(e, {suggestion}) {
+    this.props.monsterSelectedHandler(suggestion);
   }
 
 
@@ -86,6 +87,14 @@ export class MonsterFinder extends Component {
         lineHeight: 40
       })
     }
+  //   <Select 
+  //   styles={customStyles}
+  //   optionRenderer={this.handleOptionRender}
+  //   onChange={this.handleMonsterSelectChange} 
+  //   options={MonsterOptions.map(op => {
+  //     return (op.props.value) ? {value: op.props.value, label: op.props.children} : {value: op.props.children, label: op.props.children}
+  //   })}
+  // />
 
     return (
       <div className="flex-container">
@@ -93,14 +102,9 @@ export class MonsterFinder extends Component {
           <MonsterDisplay monster={monster}/>
         </div>
         <div className="flex-item">
-          <Select 
-            styles={customStyles}
-            optionRenderer={this.handleOptionRender}
-            onChange={this.handleMonsterSelectChange} 
-            options={MonsterOptions.map(op => {
-              return (op.props.value) ? {value: op.props.value, label: op.props.children} : {value: op.props.children, label: op.props.children}
-            })}
-          />
+          <div className="flexSelect">
+            <MonsterSelect listItems={MonsterOptions.map(op => op.props.children)} onSelect={this.handleMonsterSelectChange}/>
+          </div>
         </div>
     </div>
     );
@@ -110,4 +114,4 @@ export class MonsterFinder extends Component {
 const mapStateToProps = state => state;
 
 
-export default connect(mapStateToProps, {keyPressHandler, monsterSelectChangeHandler})(MonsterFinder)
+export default connect(mapStateToProps, {keyPressHandler, monsterSelectChangeHandler, monsterSelectedHandler})(MonsterFinder)

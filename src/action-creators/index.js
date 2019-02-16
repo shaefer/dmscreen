@@ -47,6 +47,19 @@ export const monsterSelectChangeHandler = (e) => (dispatch, getState) => {
         .then(data =>  dispatch(showMonster(data)))
 }
 
+export const monsterSelectedHandler = (monsterName) => (dispatch) => {
+    dispatch(selectMonsterOption(monsterName));
+    MonstersApi.getMonsterByName(monsterName)
+        .then(data => {
+            PageViewRecorder.recordEvent({
+                category: "Monster Find",
+                action: monsterName
+            });
+            return data;
+        })
+        .then(data =>  dispatch(showMonster(data)))
+}
+
 export const keyPressHandler = (e) => {
     return (dispatch, getState) => {
         switch(e.which) {

@@ -107,8 +107,15 @@ const spells = (m) => {
         if (sec["spells prepared"]) {
             return <StatBlockLine key={"sp" + index}><B>Spells Prepared</B> <span className="sbLine sbSpells" dangerouslySetInnerHTML={{__html: sec["spells prepared"]}} ></span></StatBlockLine>
         }
-        console.warn("Mapped something weird for m.spells")
-        return "";
+
+        try {
+            const catLabel = Object.keys(sec)[0];
+            const catVal = sec[catLabel];
+            return <StatBlockLine key={"sp" + index}><B>{catLabel}</B> <span className="sbLine sbSpells" dangerouslySetInnerHTML={{__html: catVal}} ></span></StatBlockLine>
+        } catch (ex) {
+            console.error("Couldn't map m.spells some assumption about the data setup is incorrect.", m.spells);
+            return "";
+        }
     });
 }
 

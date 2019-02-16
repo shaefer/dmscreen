@@ -11,11 +11,14 @@
   order: 1;
   background-color: grey;
   flex: 1;
-  text-align: center;
 }
 
 @media screen and (max-width:640px) {
   .flex-container { flex-wrap: wrap; }
   .flex-item:first-child { flex-basis: 100%; }
   .flex-item:nth-child(2) { text-align:left; }
+  .flexSelect {
+    border: 1px solid gray;
+    width: calc(100% - 2px);
+  }
 }

@@ -7,9 +7,6 @@ import DMScreen from './components/DMScreen/DMScreen'
 import License from './components/License/License'
 import Copyright from './components/Copyright/Copyright'
 import MonsterAdvancer from './components/MonsterAdvancer/MonsterAdvancer'
-import DungeonMapper from './components/DungeonMapper/DungeonMapper'
-import DungeonGraph from './components/DungeonMapper/DungeonGraph'
-import DungeonForceGraph from './components/DungeonMapper/DungeonForceGraph'
 import DungeonForceGraph2D from './components/DungeonMapper/DungeonForceGraph2D'
 
 import './css/CustomFormCss.css'
@@ -51,7 +48,7 @@ class App extends Component {
             <BrowserRouter>
                 <main onClick={(e) => { this.handleClickOutsideOfNavBarAndNotPartOfMenuButton(e) }}>
                     <input className="nav" type="checkbox" id="navigation" ref="navBarControl" />
-                    <label className="nav" id="navigationLabel" htmlFor="navigation"><img id="navImg" src="images/circleMenuIcon.png" alt="menuIcon1"/><img src="images/circleMenuIconWhite.png" alt="menuIcon2"/></label>
+                    <label className="nav" id="navigationLabel" htmlFor="navigation"><img id="navImg" src="/images/circleMenuIcon.png" alt="menuIcon1"/><img src="/images/circleMenuIconWhite.png" alt="menuIcon2"/></label>
                     <nav className="mainNav" ref="navBar">
                         <ul>
                             <li><a href="https://www.cleverorc.com">Clever Orc Home</a></li>
@@ -79,10 +76,8 @@ class App extends Component {
                     <Route       path="/monsteradvancer"  component={MonsterAdvancer} />
                     <Route       path="/license"     component={License} />
                     <Route       path="/copyright"  component={Copyright} />
-                    <Route exact path="/dungeonMapper"  component={DungeonMapper} />
-                    <Route       path="/dungeonMapper/:rooms"  component={DungeonMapper} />
                     <Route exact path="/dungeonGraph"  component={DungeonForceGraph2D} />
-                    <Route       path="/dungeonGraph/:rooms"  render={(props) => <DungeonGraph {...props} />} />
+                    <Route       path="/dungeonGraph/:rooms"  render={(props) => <DungeonForceGraph2D {...props}/>} />
 
                     
                     </section>

@@ -28,7 +28,7 @@ const buildRooms = (numOfRooms) => {
     const roomConnections = [];
 
     const uniqueId = Math.floor(Math.random() * 1000000);
-    const namedRooms = rooms.slice(0).map(r => {return {id:r + uniqueId, name:r, key:r, size:5, x:450, y:240}});
+    const namedRooms = rooms.slice(0).map(r => {return {id:r + uniqueId, name:r, key:r}});
     const unconnectedRooms = namedRooms.slice(0);
 
     while(unconnectedRooms.length > 0) {
@@ -36,7 +36,7 @@ const buildRooms = (numOfRooms) => {
         const selectedRoomIndex = Math.floor(Math.random() * (namedRooms.length - 1));
         const roomsToConnectTo =  namedRooms.filter(r => r.name != room.name);
         const roomToConnectTo = roomsToConnectTo[selectedRoomIndex];
-        roomConnections.push({source:room, target:roomToConnectTo, key:room.key + "," + roomToConnectTo.key, size:5});
+        roomConnections.push({source:room, target:roomToConnectTo, key:room.key + "," + roomToConnectTo.key});
     }    
 
     console.log("DATA", namedRooms, roomConnections)

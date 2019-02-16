@@ -52,8 +52,6 @@ class MonsterSelect extends React.Component {
   }
 
   onClick = (event) => {
-      console.log('input focused')
-      console.log(this.state)
     this.setState({
         value: '',
         suggestions: this.state.allListItems
@@ -61,7 +59,6 @@ class MonsterSelect extends React.Component {
   }
 
   onChange = (event, obj) => {
-      console.log(obj)
     const { newValue } = obj;
     this.setState({
       value: newValue

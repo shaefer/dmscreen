@@ -2,7 +2,8 @@ import DungeonRooms from '../../data/DungeonRooms';
 
 const buildRooms = (numOfRooms) => {
     if (numOfRooms > DungeonRooms.length) {
-        throw "Max rooms is " + DungeonRooms.length;
+        console.warn("Max rooms is currently 50");
+        numOfRooms = 50;
     }
     const rooms = [];
     let availableRooms = DungeonRooms.slice(0);
@@ -37,9 +38,7 @@ const buildRooms = (numOfRooms) => {
         const roomsToConnectTo =  namedRooms.filter(r => r.name != room.name);
         const roomToConnectTo = roomsToConnectTo[selectedRoomIndex];
         roomConnections.push({source:room, target:roomToConnectTo, key:room.key + "," + roomToConnectTo.key});
-    }    
-
-    console.log("DATA", namedRooms, roomConnections)
+    }
 
     return {
         nodes: namedRooms,

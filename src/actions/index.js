@@ -1,10 +1,16 @@
 export const SHOW_MONSTER = 'SHOW_MONSTER'
+export const MONSTER_NOT_FOUND = 'MONSTER_NOT_FOUND'
 export const SELECT_MONSTER = 'SELECT_MONSTER'
 export const S3_SELECT_SHOW = 'S3_SELECT_SHOW'
 
 export const showMonster = (monsterJson) => ({
     type: 'SHOW_MONSTER',
     monster: monsterJson
+});
+
+export const monsterNotFound = (monsterName) => ({
+    type: MONSTER_NOT_FOUND,
+    monsterName: monsterName
 });
 
 export const showS3SelectResult = (monsterListJson, searchParams) => ({

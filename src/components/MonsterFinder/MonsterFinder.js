@@ -13,8 +13,8 @@ import MonsterSelect from './MonsterSelect'
 import PageViewRecorder from '../../components/PageViewRecorder';
 
 export class MonsterFinder extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.handleKeyPress = this.handleKeyPress.bind(this);
     this.handleMonsterSelectChange = this.handleMonsterSelectChange.bind(this);
   }
@@ -32,7 +32,11 @@ export class MonsterFinder extends Component {
     const title = "Monster Finder (Statblock) - Pathfinder - by Clever Orc Games";
     document.title = title;
 
+    if (this.props.match.params.monsterName)
+      this.props.monsterSelectedHandler(this.props.match.params.monsterName);
+
     PageViewRecorder.recordPageView(window.location.pathname + window.location.search, undefined, title);
+
   }
 
   componentWillUnmount() {
@@ -41,8 +45,7 @@ export class MonsterFinder extends Component {
 
   render() {
     const { monster } = this.props; //These props can be destructured to pull out any of the reducers (config, select, monster, s3Select, etc.)
-    console.log(monster.statBlock.name)
-
+    //console.log(monster.statBlock.name)
     return (
       <div className="flex-container">
         <div className="flex-item">

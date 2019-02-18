@@ -1,5 +1,63 @@
 import DungeonRooms from '../../data/DungeonRooms';
 
+function difference(a1, a2) {
+    var result = [];
+    for (var i = 0; i < a1.length; i++) {
+      if (a2.indexOf(a1[i]) === -1) {
+        result.push(a1[i]);
+      }
+    }
+    return result;
+  }
+
+const getRoomConnectionsToLinkGroupedRooms = (roomConnections) => {
+    //everything is connected to something but did we form discreet groups? 
+    let groupedRooms = [];
+    let roomsFullyExplored = [];
+    let connectionsToCheck = roomConnections.concat([]);
+    let roomsToFollowLater = [connectionsToCheck[0].source]; //leave the first connection in the full list so we can get what it is linked to as part of the core logic loop.
+    do {
+        const room1 = roomsToFollowLater.pop();
+
+        //find all connections to room1;
+        const allConnectionsThatTouchRoom1 = connectionsToCheck.filter(x => x.source === room1 || x.target === room1);
+        //all the connections we find can be removed from the list we still need to check...we've already touched them.
+        connectionsToCheck = difference(connectionsToCheck, allConnectionsThatTouchRoom1); //asymmetric difference (or venn minus)
+        const allTouchingRooms = allConnectionsThatTouchRoom1.map(x => {
+            return (x.source == room1) ? x.target : x.source;
+        });
+
+        roomsToFollowLater = [...new Set(roomsToFollowLater.concat(allTouchingRooms))]; //unique set of rooms not yet followed.
+
+        //remove current room if we have finished finding all its connections. //once we get 
+        roomsFullyExplored.push(room1);
+        //make sure rooms to explore later doesn't add back in rooms that have already been fully explored. So rooms to follow should not find any rooms that have a match in fully explored rooms.
+        roomsToFollowLater = roomsToFollowLater.filter(x => roomsFullyExplored.indexOf(x) == -1);
+        if (roomsToFollowLater.length == 0 && connectionsToCheck.length > 0) {
+            //we've finished all the links we found so far. But we might not have gone through all the remaining connections.
+            //This should happen whenever the connections have founded distinct groups. So at this point we can save off the result in "groups" clear our fullExplored array and use the next node as a new starting point.
+            groupedRooms.push(roomsFullyExplored.slice(0)); //array of arrays
+            roomsFullyExplored = [];
+            roomsToFollowLater.push(connectionsToCheck[0].source);
+        }
+    } while (roomsToFollowLater.length > 0 || connectionsToCheck.length > 0)
+    groupedRooms.push(roomsFullyExplored.slice(0));//last group never gets accounted for.
+    console.log("GROUP COUNT: This Layout had " + groupedRooms.length + " groups of rooms!", groupedRooms)
+    
+    //select how to link the groups.
+    const firstSetOfRooms = groupedRooms.pop();
+    const roomsInFirstGroup = firstSetOfRooms.length;
+    const roomToLinkIndex = Math.floor(Math.random() * roomsInFirstGroup);
+    const roomToLink = firstSetOfRooms[roomToLinkIndex];
+    const newLinks = groupedRooms.map(x => {
+        const roomsInSet = x.length;
+        const targetIndex = Math.floor(Math.random() * roomsInSet);
+        const targetRoom = x[targetIndex];
+        return { source: roomToLink, target: targetRoom, key: roomToLink.key + "," + targetRoom.key}
+    });
+    return newLinks;
+}
+
 const buildRooms = (numOfRooms) => {
     if (numOfRooms > DungeonRooms.length) {
         console.warn("Max rooms is currently 50");
@@ -40,9 +98,11 @@ const buildRooms = (numOfRooms) => {
         roomConnections.push({source:room, target:roomToConnectTo, key:room.key + "," + roomToConnectTo.key});
     }
 
+    const newConnections = getRoomConnectionsToLinkGroupedRooms(roomConnections);
+
     return {
         nodes: namedRooms,
-        links: roomConnections
+        links: roomConnections.concat(newConnections)
     }   
 };
 

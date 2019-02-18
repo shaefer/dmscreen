@@ -23,13 +23,20 @@ const select = (state = { selectedMonsterName: Aasimar.name}, action) => {
   }
 }
 
-const monster = (state = { statBlock: Aasimar}, action) => {
+const monster = (state = { statBlock: Aasimar, success: true}, action) => {
   switch (action.type) {
     case Actions.SHOW_MONSTER: 
       return {
         ...state,
+        success: true,
         statBlock: action.monster
       };
+    case Actions.MONSTER_NOT_FOUND:
+      return {
+        ...state,
+        success: false,
+        statBlock: {name: action.monsterName}
+      }
     default:
       return state;
   }

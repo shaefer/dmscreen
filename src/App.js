@@ -8,6 +8,7 @@ import License from './components/License/License'
 import Copyright from './components/Copyright/Copyright'
 import MonsterAdvancer from './components/MonsterAdvancer/MonsterAdvancer'
 import DungeonForceGraph2D from './components/DungeonMapper/DungeonForceGraph2D'
+import UrlMonsterDisplay from './components/UrlMonsterDisplay/UrlMonsterDisplay';
 
 import './css/CustomFormCss.css'
 import './css/LeftHamburgerNav.css'
@@ -44,6 +45,7 @@ class App extends Component {
     }
     
     render() {
+        console.log("MAIN APP PROPS", this.props)
         return (
             <BrowserRouter>
                 <main onClick={(e) => { this.handleClickOutsideOfNavBarAndNotPartOfMenuButton(e) }}>
@@ -62,25 +64,23 @@ class App extends Component {
                         </ul>
                     </nav>
                     <section className="nav">
-                    <header className="cleverorc">
-                        <div>
-                            <span>Clever Orc</span>
-                            <a href="https://www.patreon.com/bePatron?c=1882197" data-patreon-widget-type="become-patron-button" className="patreonLink">
-                                <img className="patreonButton" src="/images/become_a_patron_button.png" alt="patreonButtonImage"/>
-                            </a>
-                        </div>
-                        
-                    </header>
-                    <Route exact path="/"           component={MonsterFinder} />
-                    <Route       path="/search"     component={MonsterSearch} />
-                    <Route       path="/dmscreen"     component={DMScreen} />
-                    <Route       path="/monsteradvancer"  component={MonsterAdvancer} />
-                    <Route       path="/license"     component={License} />
-                    <Route       path="/copyright"  component={Copyright} />
-                    <Route exact path="/dungeonGraph"  component={DungeonForceGraph2D} />
-                    <Route       path="/dungeonGraph/:rooms"  render={(props) => <DungeonForceGraph2D {...props}/>} />
-
-                    
+                        <header className="cleverorc">
+                            <div>
+                                <span>Clever Orc</span>
+                                <a href="https://www.patreon.com/bePatron?c=1882197" data-patreon-widget-type="become-patron-button" className="patreonLink">
+                                    <img className="patreonButton" src="/images/become_a_patron_button.png" alt="patreonButtonImage"/>
+                                </a>
+                            </div>
+                        </header>
+                        <Route exact path="/"           component={MonsterFinder} />
+                        <Route       path="/monster/:monsterName"           component={(props) => <MonsterFinder {...props}/>} />
+                        <Route       path="/search"     component={MonsterSearch} />
+                        <Route       path="/dmscreen"     component={DMScreen} />
+                        <Route       path="/monsteradvancer"  component={MonsterAdvancer} />
+                        <Route       path="/license"     component={License} />
+                        <Route       path="/copyright"  component={Copyright} />
+                        <Route exact path="/dungeonGraph"  component={DungeonForceGraph2D} />
+                        <Route       path="/dungeonGraph/:rooms"  render={(props) => <DungeonForceGraph2D {...props}/>} />
                     </section>
                 </main>
             </BrowserRouter>

@@ -44,7 +44,6 @@ class App extends Component {
     }
     
     render() {
-        console.log("MAIN APP PROPS", this.props)
         return (
             <BrowserRouter>
                 <main onClick={(e) => { this.handleClickOutsideOfNavBarAndNotPartOfMenuButton(e) }}>

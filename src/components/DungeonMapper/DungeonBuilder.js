@@ -1,6 +1,7 @@
 import DungeonRooms from '../../data/DungeonRooms';
 
-function difference(a1, a2) {
+//also known as asymettric difference.
+const array_minus = (a1, a2) => {
     var result = [];
     for (var i = 0; i < a1.length; i++) {
       if (a2.indexOf(a1[i]) === -1) {
@@ -22,7 +23,7 @@ const getRoomConnectionsToLinkGroupedRooms = (roomConnections) => {
         //find all connections to room1;
         const allConnectionsThatTouchRoom1 = connectionsToCheck.filter(x => x.source === room1 || x.target === room1);
         //all the connections we find can be removed from the list we still need to check...we've already touched them.
-        connectionsToCheck = difference(connectionsToCheck, allConnectionsThatTouchRoom1); //asymmetric difference (or venn minus)
+        connectionsToCheck = array_minus(connectionsToCheck, allConnectionsThatTouchRoom1);
         const allTouchingRooms = allConnectionsThatTouchRoom1.map(x => {
             return (x.source == room1) ? x.target : x.source;
         });
@@ -42,7 +43,7 @@ const getRoomConnectionsToLinkGroupedRooms = (roomConnections) => {
         }
     } while (roomsToFollowLater.length > 0 || connectionsToCheck.length > 0)
     groupedRooms.push(roomsFullyExplored.slice(0));//last group never gets accounted for.
-    console.log("GROUP COUNT: This Layout had " + groupedRooms.length + " groups of rooms!", groupedRooms)
+    //console.debug("GROUP COUNT: This Layout had " + groupedRooms.length + " groups of rooms!", groupedRooms)
     
     //select how to link the groups.
     const firstSetOfRooms = groupedRooms.pop();

@@ -58,7 +58,6 @@ export const monsterSelectedHandler = (monsterName) => (dispatch) => {
             return data;
         })
         .then(data => { 
-            console.log("DATA FROM MONSTER API CALL", data);
             (data) ? dispatch(showMonster(data)) : dispatch(monsterNotFound(monsterName))
         })
 }

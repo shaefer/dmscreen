@@ -1,7 +1,7 @@
 import React from 'react'
 import Keys from '../models/Keys'
 //import Monsters from '../models/AllMonsters'
-import { showMonster, selectMonsterOption, showS3SelectResult, display35Monster } from '../actions'
+import { showMonster, selectMonsterOption, showS3SelectResult, display35Monster, monsterNotFound } from '../actions'
 import MonstersApi from '../apiClients/MonsterApi'
 import rollTimeString from '../utils/ResultTimestamp'
 import PageViewRecorder from '../components/PageViewRecorder'
@@ -57,7 +57,9 @@ export const monsterSelectedHandler = (monsterName) => (dispatch) => {
             });
             return data;
         })
-        .then(data =>  dispatch(showMonster(data)))
+        .then(data => { 
+            (data) ? dispatch(showMonster(data)) : dispatch(monsterNotFound(monsterName))
+        })
 }
 
 export const keyPressHandler = (e) => {

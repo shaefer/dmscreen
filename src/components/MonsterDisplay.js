@@ -124,6 +124,9 @@ const MonsterDisplay = ({monster}) => {
 
     if (!m.name)
         return <div>No Monster Currently Selected</div>;
+    if (!monster.success) {
+        return <div>A Monster named [{m.name}] was not found</div>;
+    }
 
     return (
         <div className="monsterDisplay">

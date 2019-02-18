@@ -32,7 +32,7 @@ export class MonsterFinder extends Component {
     const title = "Monster Finder (Statblock) - Pathfinder - by Clever Orc Games";
     document.title = title;
 
-    if (this.props.match.params.monsterName)
+    if (this.props.match && this.props.match.params && this.props.match.params.monsterName)
       this.props.monsterSelectedHandler(this.props.match.params.monsterName);
 
     PageViewRecorder.recordPageView(window.location.pathname + window.location.search, undefined, title);

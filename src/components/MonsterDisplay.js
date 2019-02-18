@@ -75,7 +75,8 @@ const animalCompanionSection = (section) => {
 const specialAbilitiesAndDescription = (m) => {
     const s1 = m.sections;
     if (!s1) return "";
-    return s1.map((section, index) => {
+    let allSections = [];
+    const sections = s1.map((section, index) => {
         if (section.subtype === 'special_abilities') {
             return (
                 section.sections.map((sa, saIndex) => {
@@ -92,6 +93,14 @@ const specialAbilitiesAndDescription = (m) => {
         console.log(s1);
         return "Parsing Error";
     }); 
+    if (m.special_abilities) {
+        const sa_sections = m.special_abilities.map((sa, saIndex) => {
+            if (!sa.type) return "";
+            return <StatBlockLine key={"sa" + saIndex}><B>{sa.name} <span style={{textTransform: "capitalize"}}>({sa.type.substring(0, 2)})</span></B> {sa.description}</StatBlockLine>;
+        });
+        allSections = allSections.concat(sa_sections)
+    }
+    return allSections.concat(sections);
 }
 
 const creatureSubType = (m) => {

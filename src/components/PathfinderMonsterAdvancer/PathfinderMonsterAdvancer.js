@@ -18,7 +18,7 @@ export class PathfinderMonsterAdvancer extends Component {
             ...advancedMonsterChanges
         };
         console.log(newMonster)
-        monster.statBlock = convertToMonsterForDisplay(monster.statBlock, 2);
+        monster.statBlock = convertToMonsterForDisplay(newMonster, 2);
         return <MonsterDisplay monster={monster}/>
     }
 }

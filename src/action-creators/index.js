@@ -128,7 +128,7 @@ const chooseMonster = (monsters, searchParamsAsHtmlParams, numOfMonsters, search
                                         </div>
                                     </AccordionItemTitle>
                                     <AccordionItemBody>
-                                        <MonsterDisplay monster={{statBlock: data}}/>
+                                        <MonsterDisplay monster={{statBlock: data, success: true}}/>
                                     </AccordionItemBody>
                                 </AccordionItem>
                             </Accordion>

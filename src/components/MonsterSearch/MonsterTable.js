@@ -46,6 +46,12 @@ class MonsterTable extends Component {
             maxWidth: 100,
             minWidth: 30
         });
+        if (monsters[0].creature_type) columns.push({
+            Header: "Creature Type",
+            accessor: "creature_type",
+            maxWidth: 100,
+            minWidth: 30
+        });
     
         return <ReactTable
         data={monsters}

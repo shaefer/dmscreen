@@ -20,6 +20,9 @@ export const convertCriteriaToHtmlParameters = (criteria) => {
     if (searchParams.environment) {
         searchFields.push(`environment=${searchParams.environmentOperator}${searchParams.environment}`)
     }
+    if (searchParams.creature_type) {
+        searchFields.push(`creature_type=${searchParams.creatureTypeOperator}${searchParams.creature_type}`)
+    }
     
     return searchFields.join("&");
 }

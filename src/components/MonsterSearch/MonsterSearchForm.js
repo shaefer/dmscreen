@@ -58,6 +58,7 @@ class MonsterSearchFormComponent extends Component {
             {searchFieldSection("dex", "Dex", "number", this.props["dexOperator"])}
             {searchFieldSection("ac", "AC", "number", this.props["acOperator"])}
             {searchTextFieldSection("environment", "Environment", "text", this.props["environmentOperator"])}
+            {searchTextFieldSection("creature_type", "Creature Type", "text", this.props["creatureTypeOperator"])}
             <button type="submit" className="greenAwesome">Submit</button>
           </form>
         )
@@ -73,7 +74,8 @@ const MonsterSearchForm = reduxForm({
       strOperator: ">=",
       dexOperator: ">=",
       acOperator: ">=",
-      environmentOperator: "like"
+      environmentOperator: "like",
+      creatureTypeOperator: "like",
     }
 })(MonsterSearchFormComponent)
 

@@ -85,7 +85,6 @@ class DMScreen extends Component {
 
     render() {
         const { dmScreen } = this.props;
-        console.log("DMSCREEN");
 
         const diceAndStatsButtons = [...dmScreen.diceButtons, ...dmScreen.statsButtons];
         const orderedDiceAndStatsButtons = dmScreen.diceAndStatsButtonOrder.map(x => diceAndStatsButtons.find(y => y.id === x));
@@ -97,7 +96,6 @@ class DMScreen extends Component {
             }
         });
         //monsterButtonOrder
-        console.log("RENDERING DM SCREEN WITH CRRANGEBUTTONS: ", dmScreen.crRangeButtons)
         const monsterButtons = [...dmScreen.crButtons, ...dmScreen.crRangeButtons];
         const orderedMonsterButtons = dmScreen.monsterButtonOrder.map(x => monsterButtons.find(y => y.id === x));
         const monsterButtonsAsListItems = orderedMonsterButtons.map(x => {

@@ -30,8 +30,6 @@ export const fetchMonsterAdvancer35v2 = (monsterName, fields) => (dispatch) => {
 }
 
 export const monsterSelectChangeHandler = (e) => (dispatch, getState) => {
-    console.warn('SELECT CHANGE');
-    console.log(this)
     if (!e) return "";
     
     const monsterName = (e && e.value) ? e.value : e.label;
@@ -105,7 +103,7 @@ const chooseMonster = (monsters, searchParamsAsHtmlParams, numOfMonsters, search
     }
 
     const isRange = searchParams.crEnd;
-    console.log("Select Multiple Monsters", monsters, numOfMonsters, selectedMonsters);
+    //console.log("Select Multiple Monsters", monsters, numOfMonsters, selectedMonsters);
     const monsterButtons = selectedMonsters.map(x => {
         const monsterEntry = monsters.find(y => y.name === x);
         const lookupMonster = () => {

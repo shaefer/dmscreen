@@ -1,6 +1,8 @@
 import React from 'react'
 import './MonsterDisplay.css';
 
+import {statBonusFromAbilityScore, withPlus} from '../components/PathfinderMonsterAdvancer/AdvancementUtils'
+
 const StatBlockLine = (props) => {
     if (props.inline) return ((props.data && props.required) || !props.required) ? <span className="sbLine">{props.children}</span> : "";
     return ((props.data && props.required) || !props.required) ? <div className="sbLine">{props.children}</div> : "";
@@ -137,6 +139,19 @@ const MonsterDisplay = ({monster}) => {
         return <div>A Monster named [{m.name}] was not found</div>;
     }
 
+    const defaultDisplayOptions = {
+        showFeatCount: true,
+        showStatBonuses: false,
+        showDetailedCR: false,
+    }
+    const opts = {
+        ...defaultDisplayOptions,
+        ...m.displayOptions
+    }
+    const abilityScores = <span><B>Str</B> {m.strength}, <B>Dex</B> {m.dexterity}, <B>Con</B> {m.constitution}, <B>Int</B> {m.intelligence}, <B>Wis</B> {m.wisdom}, <B>Cha</B> {m.charisma}</span>
+    const abilityScoresWithBonuses = <span><B>Str</B> {m.strength}({withPlus(statBonusFromAbilityScore(m.strength))}), <B>Dex</B> {m.dexterity}({withPlus(statBonusFromAbilityScore(m.dexterity))}), <B>Con</B> {m.constitution}({withPlus(statBonusFromAbilityScore(m.constitution))}), <B>Int</B> {m.intelligence}({withPlus(statBonusFromAbilityScore(m.intelligence))}), <B>Wis</B> {m.wisdom}({withPlus(statBonusFromAbilityScore(m.wisdom))}), <B>Cha</B> {m.charisma}({withPlus(statBonusFromAbilityScore(m.charisma))})</span>
+    const abilityScoreDisplay = (opts.showStatBonuses) ? abilityScoresWithBonuses : abilityScores;
+    const featCountStr = (m.featCount && opts.showFeatCount) ? ` (${m.featCount})` : ""; 
     return (
         <div className="monsterDisplay">
             <div className="sbLine sbName">
@@ -163,9 +178,9 @@ const MonsterDisplay = ({monster}) => {
             {spells(m)}
 
             <StatSectionHeader>statistics</StatSectionHeader>
-            <StatBlockLine><B>Str</B> {m.strength}, <B>Dex</B> {m.dexterity}, <B>Con</B> {m.constitution}, <B>Int</B> {m.intelligence}, <B>Wis</B> {m.wisdom}, <B>Cha</B> {m.charisma}</StatBlockLine>
+            <StatBlockLine>{abilityScoreDisplay}</StatBlockLine>
             <StatBlockLine><B>Base Atk</B> {m.base_attack}; <B>CMB</B> {m.cmb}; <B>CMD</B> {m.cmd}</StatBlockLine>
-            <StatBlockLine><B>Feats</B> {m.feats}</StatBlockLine>
+            <StatBlockLine><B>Feats</B>{featCountStr} {m.feats}</StatBlockLine>
             <StatBlockLine><B>Skills</B> {m.skills}</StatBlockLine>
             <StatBlockLine><B>Languages</B> {m.languages}</StatBlockLine>
             <StatBlockLine data={m.special_qualities} required><B>SQ</B> {m.special_qualities}</StatBlockLine>

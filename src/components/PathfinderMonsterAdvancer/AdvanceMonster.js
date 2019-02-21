@@ -1,4 +1,4 @@
-import { statBonusFromAbilityScore, avgHitPoints } from './AdvancementUtils'
+import { statBonusFromAbilityScore, avgHitPoints, racialFeatCount } from './AdvancementUtils'
 import creatureStatsByType from '../../monsteradvancer/creatureStatsByType';
 import { calculateBadSaveChange, calculateGoodSaveChange } from '../../monsteradvancer/BaseSaveCalculator';
 
@@ -20,12 +20,14 @@ const advanceByHitDice = (statblock, hdChange) => {
         hp: hpDisplay(newHitDice, statblock.hdType, newHitPointsAdjustment),
         hitDice: newHitDice,
         hitPointAdjustment: newHitPointsAdjustment,
-        saving_throws: getUpdatedSavingThrows(statblock, newHitDice)
+        saving_throws: getUpdatedSavingThrows(statblock, newHitDice),
+        featCount: racialFeatCount(newHitDice),
     }
 }
 
 const getUpdatedSavingThrows = (statblock, newHitDice) => {
     const currentCreatureTypeInfo = creatureStatsByType.find(x => x.creature_type.toLowerCase() == statblock.creature_type.toLowerCase());
+    //TODO: There is a MonsterConstants file we should decide if we should use for these magic strings.
     const fortIsGoodSave = currentCreatureTypeInfo.good_saving_throws.indexOf("Fort") !== -1;
     const refIsGoodSave = currentCreatureTypeInfo.good_saving_throws.indexOf("Ref") !== -1;
     const willIsGoodSave = currentCreatureTypeInfo.good_saving_throws.indexOf("Will") !== -1;

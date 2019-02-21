@@ -29,5 +29,6 @@ const convertVersion2 = (m) => {
         base_attack: withPlus(m.base_attack),
         cmb: m.cmb_details,
         cmd: m.cmd_details,
+        featCount: m.featCount,
     }
 }

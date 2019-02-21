@@ -8,6 +8,11 @@ import {advanceMonster} from './AdvanceMonster'
 
 export class PathfinderMonsterAdvancer extends Component {
     render() {
+        const opts = {
+            displayOptions: {
+                showStatBonuses: true
+            }
+        }
         const monster = {statBlock:Behir, success: true};
         const advancement = {
             hd: 4
@@ -15,7 +20,8 @@ export class PathfinderMonsterAdvancer extends Component {
         const advancedMonsterChanges = advanceMonster(monster.statBlock, advancement);
         const newMonster = {
             ...monster.statBlock,
-            ...advancedMonsterChanges
+            ...advancedMonsterChanges,
+            ...opts
         };
         console.log(newMonster)
         monster.statBlock = convertToMonsterForDisplay(newMonster, 2);

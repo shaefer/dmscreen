@@ -1,10 +1,12 @@
-import { statBonusFromAbilityScore, avgHitPoints, racialFeatCount } from './AdvancementUtils'
+import { statBonusFromAbilityScore, avgHitPoints, racialFeatCount, assignAbilityScoreChangeToHighestStat, increaseHighestStat } from './AdvancementUtils'
 import creatureStatsByType from '../../monsteradvancer/creatureStatsByType';
 import { calculateBadSaveChange, calculateGoodSaveChange } from '../../monsteradvancer/BaseSaveCalculator';
 
+
+
 export const advanceMonster = (statblock, advancement) => {
     if (advancement.hd) {
-        return advanceByHitDice(statblock, -2);
+        return advanceByHitDice(statblock, advancement.hd);
     }
 }
 
@@ -12,8 +14,18 @@ const advanceByHitDice = (statblock, hdChange) => {
     //add hd -> namechange, increases hd, increases hp, saves, feat count, bonus stat point awards, cr, exp
     //is current save good or bad based on creatureType. (this probably is not enough with specialized feats)
     //determine increase to base from old and new hitDice change using good or bad save calculation.
+
+    //increases stats has trickle down affect on a lot of things:
+    //str -> melee attacks, str skills, str-based saves for special abilities
+    //dex -> ac, init, reflex save, dex skills, dex-based saves for special abilities
+    //con -> hp, fortitude save, con-based saves for special abilities
+    //int -> skill points, int-based skills, int-based saves for special abilities
+    //wis -> will save, wis skills, wis-based saves for special abilities
+    //cha -> maybe deflection ac, cha skills, cha-based saves for special abilities
     const newHitDice = statblock.hitDice + hdChange;
 
+    //const abilityScoreAdjustments = assignAbilityScoreChangeToHighestStat(statblock.ability_scores, Math.floor(hdChange/4), "hd increase");
+    const newAbilityScores = increaseHighestStat(statblock.ability_scores, Math.floor(hdChange/4), "hd change");
     const newHitPointsAdjustment = statBonusFromAbilityScore(statblock.ability_scores.con) * newHitDice;
     return {
         advancedName: `${statblock.name} (Advanced ${hdChange} Hit Dice)`,
@@ -22,6 +34,7 @@ const advanceByHitDice = (statblock, hdChange) => {
         hitPointAdjustment: newHitPointsAdjustment,
         saving_throws: getUpdatedSavingThrows(statblock, newHitDice),
         featCount: racialFeatCount(newHitDice),
+        ability_scores: newAbilityScores,
     }
 }
 

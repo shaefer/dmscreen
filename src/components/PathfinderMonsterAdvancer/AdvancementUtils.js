@@ -13,3 +13,36 @@ export const racialFeatCount = (hitDice) => {
 export const withPlus = (stat) => {
     return (stat >= 0) ? `+${stat}` : stat;
 }
+
+const getHighestStat = (abilityScores) => {
+    const stats = Object.entries(abilityScores);
+    const highestStat = stats.sort((a,b) => b[1] - a[1])[0];
+    return highestStat;
+}
+
+export const increaseHighestStat = (abilityScores, statChange, reason) => {
+    //TODO: Ensure we have polyfilled.
+    const highestStat = getHighestStat(abilityScores);
+    const newAbilityScore = {
+        [highestStat[0]]: highestStat[1] + statChange,
+        reason
+    }
+    return {
+        ...abilityScores,
+        ...newAbilityScore
+    };
+}
+
+export const assignAbilityScoreChangeToHighestStat = (abilityScores, statChange, reason) => {
+    //TODO: Ensure we have polyfilled.
+    const highestStat = getHighestStat(abilityScores);
+    const newAbilityScore = {[highestStat[0]]: statChange}
+    const emptyAbilityScores = {
+        str:0,dex:0,con:0,int:0,wis:0,cha:0,
+        reason
+    };
+    return {
+        ...emptyAbilityScores,
+        ...newAbilityScore
+    };
+}

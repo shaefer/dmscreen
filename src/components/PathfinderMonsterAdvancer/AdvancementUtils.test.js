@@ -1,4 +1,4 @@
-import {racialFeatCount, increaseHighestStat, assignAbilityScoreChangeToHighestStat} from './AdvancementUtils'
+import {racialFeatCount, increaseHighestStat, assignAbilityScoreChangeToHighestStat, applyAbilityScoreChanges} from './AdvancementUtils'
 it('feat count is 1 + 1 per 2 hitdice beyond the first', () => {
     expect(racialFeatCount(1)).toBe(1);
     expect(racialFeatCount(2)).toBe(1);
@@ -56,4 +56,38 @@ it('create a set of changes to abilityScores with 0 sent as change.', () => {
     expect(result.wis).toBe(0);
     expect(result.cha).toBe(0);
     expect(result.reason).toBe(reason)
+});
+
+it('apply changes changes stats', () => {
+    const abilityScores = {
+        str: 10,
+        dex: 11,
+        con: 12,
+        int: 16,
+        wis: 13,
+        cha: 8
+    };
+    const changes = {
+        str: 10,
+        dex: 10,
+        con: 10,
+        int: 10,
+        wis: 10,
+        cha: 10
+    };
+    const changes2 = {
+        str: 1,
+        dex: 1,
+        con: 1,
+        int: 1,
+        wis: 1,
+        cha: 1
+    };
+    const result = applyAbilityScoreChanges(abilityScores, [changes, changes2]);
+    expect(result.str).toBe(21);
+    expect(result.dex).toBe(22);
+    expect(result.con).toBe(23);
+    expect(result.int).toBe(27);
+    expect(result.wis).toBe(24);
+    expect(result.cha).toBe(19);
 });

@@ -46,3 +46,19 @@ export const assignAbilityScoreChangeToHighestStat = (abilityScores, statChange,
         ...newAbilityScore
     };
 }
+
+export const applyAbilityScoreChanges = (abilityScores, changes) => {
+    const allScores = [abilityScores, ...changes];
+    return allScores.reduce((total, current) => {
+        const newStats = {
+            ...total,
+            ...{str: total.str + current.str},
+            ...{dex: total.dex + current.dex},
+            ...{con: total.con + current.con},
+            ...{int: total.int + current.int},
+            ...{wis: total.wis + current.wis},
+            ...{cha: total.cha + current.cha},
+        };
+        return newStats;
+    });
+}

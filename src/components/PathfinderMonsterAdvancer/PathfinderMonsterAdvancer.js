@@ -10,7 +10,8 @@ export class PathfinderMonsterAdvancer extends Component {
     render() {
         const opts = {
             displayOptions: {
-                showStatBonuses: true
+                showStatBonuses: true,
+                showStatChanges: true,
             }
         }
         const monster = {statBlock:Behir, success: true};

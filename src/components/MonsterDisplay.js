@@ -130,6 +130,21 @@ const spells = (m) => {
     });
 }
 
+const reason = (reason) => (reason) ? `${reason} = ` : ''
+const displayStatChanges = (statChanges) => {
+    if (!statChanges) return [];
+    return statChanges.map(x => {
+        const stats = [];
+        if (x.str !== 0) stats.push(`Str: ${withPlus(x.str)}`)
+        if (x.dex !== 0) stats.push(`Dex: ${withPlus(x.dex)}`)
+        if (x.con !== 0) stats.push(`Con: ${withPlus(x.con)}`)
+        if (x.int !== 0) stats.push(`Int: ${withPlus(x.int)}`)
+        if (x.wis !== 0) stats.push(`Wis: ${withPlus(x.wis)}`)
+        if (x.cha !== 0) stats.push(`Cha: ${withPlus(x.cha)}`)
+        return (stats.length === 0) ? '' : `[${reason(x.reason)}${stats.join(',')}]`
+    });
+}
+
 const MonsterDisplay = ({monster}) => {
     const m = monster.statBlock;
 
@@ -143,11 +158,15 @@ const MonsterDisplay = ({monster}) => {
         showFeatCount: true,
         showStatBonuses: false,
         showDetailedCR: false,
+        showStatChanges: false,
     }
     const opts = {
         ...defaultDisplayOptions,
         ...m.displayOptions
     }
+
+    const statChanges = displayStatChanges(m.abilityScoreChanges);
+    const abilityScoreChanges = (statChanges.length > 0 && opts.showStatChanges) ? statChanges.map(x => <StatBlockLine><span><B>Ability Score Adjustments: </B>{x}</span></StatBlockLine>) : '';
     const abilityScores = <span><B>Str</B> {m.strength}, <B>Dex</B> {m.dexterity}, <B>Con</B> {m.constitution}, <B>Int</B> {m.intelligence}, <B>Wis</B> {m.wisdom}, <B>Cha</B> {m.charisma}</span>
     const abilityScoresWithBonuses = <span><B>Str</B> {m.strength}({withPlus(statBonusFromAbilityScore(m.strength))}), <B>Dex</B> {m.dexterity}({withPlus(statBonusFromAbilityScore(m.dexterity))}), <B>Con</B> {m.constitution}({withPlus(statBonusFromAbilityScore(m.constitution))}), <B>Int</B> {m.intelligence}({withPlus(statBonusFromAbilityScore(m.intelligence))}), <B>Wis</B> {m.wisdom}({withPlus(statBonusFromAbilityScore(m.wisdom))}), <B>Cha</B> {m.charisma}({withPlus(statBonusFromAbilityScore(m.charisma))})</span>
     const abilityScoreDisplay = (opts.showStatBonuses) ? abilityScoresWithBonuses : abilityScores;
@@ -179,6 +198,7 @@ const MonsterDisplay = ({monster}) => {
 
             <StatSectionHeader>statistics</StatSectionHeader>
             <StatBlockLine>{abilityScoreDisplay}</StatBlockLine>
+            {abilityScoreChanges}
             <StatBlockLine><B>Base Atk</B> {m.base_attack}; <B>CMB</B> {m.cmb}; <B>CMD</B> {m.cmd}</StatBlockLine>
             <StatBlockLine><B>Feats</B>{featCountStr} {m.feats}</StatBlockLine>
             <StatBlockLine><B>Skills</B> {m.skills}</StatBlockLine>

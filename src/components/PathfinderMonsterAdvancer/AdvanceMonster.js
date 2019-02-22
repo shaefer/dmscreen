@@ -1,4 +1,4 @@
-import { statBonusFromAbilityScore, avgHitPoints, racialFeatCount, assignAbilityScoreChangeToHighestStat, increaseHighestStat, applyAbilityScoreChanges } from './AdvancementUtils'
+import { statBonusFromAbilityScore, avgHitPoints, racialFeatCount, withPlus, assignAbilityScoreChangeToHighestStat, increaseHighestStat, applyAbilityScoreChanges } from './AdvancementUtils'
 import creatureStatsByType from '../../monsteradvancer/creatureStatsByType';
 import { calculateBadSaveChange, calculateGoodSaveChange } from '../../monsteradvancer/BaseSaveCalculator';
 
@@ -27,7 +27,7 @@ const advanceByHitDice = (statblock, hdChange) => {
     //TODO: We might want to use this first method to get the changes and then apply so we can have a separate field that can be displayed via options to show all the stat changes and their source. 
     //const abilityScoreAdjustments = assignAbilityScoreChangeToHighestStat(statblock.ability_scores, Math.floor(hdChange/4), "hd increase");
     /** http://legacy.aonprd.com/bestiary/monsterAdvancement.html Step 3 ability scores states that every 4 hd added should result in a stat increase */
-    const abilityScoreChange = assignAbilityScoreChangeToHighestStat(statblock.ability_scores, Math.floor(hdChange/4), "hd change");
+    const abilityScoreChange = assignAbilityScoreChangeToHighestStat(statblock.ability_scores, Math.floor(hdChange/4), `${withPlus(hdChange)} Hit Dice`);
     const newAbilityScores = applyAbilityScoreChanges(statblock.ability_scores, [abilityScoreChange]);
     const newHitPointsAdjustment = statBonusFromAbilityScore(statblock.ability_scores.con) * newHitDice;
     return {
@@ -38,6 +38,7 @@ const advanceByHitDice = (statblock, hdChange) => {
         saving_throws: getUpdatedSavingThrows(statblock, newHitDice),
         featCount: racialFeatCount(newHitDice),
         ability_scores: newAbilityScores,
+        abilityScoreChanges: [abilityScoreChange],
     }
 }
 

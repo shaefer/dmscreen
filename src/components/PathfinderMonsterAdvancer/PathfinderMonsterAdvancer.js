@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import MonsterDisplay from '../MonsterDisplay'
 import Behir from '../../models/Behir_v9';
-import Aasimar from '../../models/Aasimar';
 import {convertToMonsterForDisplay} from '../MonsterDisplayConverter/MonsterDisplayConverter'
 import {advanceMonster} from './AdvanceMonster'
 
@@ -25,7 +24,8 @@ export class PathfinderMonsterAdvancer extends Component {
             ...opts
         };
         console.log(newMonster)
-        monster.statBlock = convertToMonsterForDisplay(newMonster, 2);
+        const statblockVersion = 2;
+        monster.statBlock = convertToMonsterForDisplay(newMonster, statblockVersion);
         return <MonsterDisplay monster={monster}/>
     }
 }

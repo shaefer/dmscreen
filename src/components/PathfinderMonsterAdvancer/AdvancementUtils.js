@@ -1,9 +1,13 @@
 import creatureStatsByType from './AdvancementTools/creatureStatsByType';
 import {calculateGoodSaveChange, calculateBadSaveChange} from './AdvancementTools/BaseSaveCalculator';
 
+export const calcAvgHitPoints = (hd, hdType) => {
+    return Math.floor(hd * avgHitPoints(hdType));
+}
+
 export const hpDisplay = (hd, hdType, bonusHp) => {
     const bonusHpStr = (bonusHp > 0) ? "+"+bonusHp : bonusHp;
-    return Math.floor(hd * avgHitPoints(hdType)) + bonusHp + " (" + hd + "d" + hdType + bonusHpStr + ")";
+    return calcAvgHitPoints(hd, hdType) + bonusHp + " (" + hd + "d" + hdType + bonusHpStr + ")";
 }
 
 export const avgHitPoints = (hdType) => {
@@ -153,20 +157,35 @@ export const applyChangesToSavingThrows = (savingThrows, changes) => {
     });
 }
 
-export const displayArmorClass = (acMods) => {
-    const total = 10 + acMods.reduce((acc, v) => {
-        return {mod:acc.mod + v.mod};
-    }).mod;
+export const calcTouchAc = (acMods) => {
     const touchTypes = ["Dex", "size", "dodge"];
     const getTouchMods = acMods.filter(x => touchTypes.indexOf(x.type) !== -1);
     const touchTotal = 10 + getTouchMods.reduce((acc, v) => {
         return {mod:acc.mod + v.mod};
     }).mod;
+    return touchTotal;
+}
+
+export const calcTotalAc = (acMods) => {
+    const total = 10 + acMods.reduce((acc, v) => {
+        return {mod:acc.mod + v.mod};
+    }).mod;
+    return total;
+}
+
+export const calcFlatFootedAc = (acMods) => {
     const flatFootedTypes = ["natural", "size"];
     const getFlatFootedMods = acMods.filter(x => flatFootedTypes.indexOf(x.type) !== -1);
     const ffTotal = 10 + getFlatFootedMods.reduce((acc, v) => {
         return {mod:acc.mod + v.mod};
     }).mod;
+    return ffTotal;
+}
+
+export const displayArmorClass = (acMods) => {
+    const total = calcTotalAc(acMods);
+    const touchTotal = calcTouchAc(acMods);
+    const ffTotal = calcFlatFootedAc(acMods);
     const modStr = acMods.map(x => `${withPlus(x.mod)} ${x.type}`).join(', ');
 
     return `${total}, touch ${touchTotal}, flat-footed ${ffTotal} (${modStr})`;

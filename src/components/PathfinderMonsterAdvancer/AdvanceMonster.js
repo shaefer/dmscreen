@@ -1,7 +1,8 @@
 import { statBonusFromAbilityScore, racialFeatCount, withPlus, 
     assignAbilityScoreChangeToHighestStat, applyAbilityScoreChanges,
     getSavingThrowChangesFromHitDice, applyChangesToSavingThrows, hpDisplay,
-    getSavingThrowChangesFromStatChanges, getStatBonusDifference } from './AdvancementUtils'
+    getSavingThrowChangesFromStatChanges, getStatBonusDifference, displayArmorClass,
+    calcTotalAc, calcFlatFootedAc, calcTouchAc, calcAvgHitPoints } from './AdvancementUtils'
 
 export const advanceMonster = (statblock, advancement) => {
     if (advancement.hd) {
@@ -15,6 +16,30 @@ const hpChanges = (newHitDice, hdType, hpStatBonus) => {
         hp: hpDisplay(newHitDice, hdType, newHitPointsAdjustment),
         hitDice: newHitDice,
         hitPointAdjustment: newHitPointsAdjustment,
+        hitPoints: calcAvgHitPoints(newHitDice, hdType) + newHitPointsAdjustment
+    }
+}
+
+const acChanges = (acMods, statBonusDiffs) => {
+    let dexModIndex = acMods.findIndex(x => x.type === 'Dex');
+    if (dexModIndex !== -1) {
+        acMods[dexModIndex] = {mod: acMods[dexModIndex].mod + statBonusDiffs.dex, type: "Dex"};
+    } else {
+        acMods.push({mod: statBonusDiffs.dex, type: "Dex"});
+    }
+    const acDisplay = displayArmorClass(acMods);
+    return {
+        ac: acDisplay,
+        armor_class : {
+            ac_details: acDisplay,
+            ac_modifiers: acMods,
+            ac_modifiers_details: acMods.map(x => `${withPlus(x.mod)} ${x.type}`).join(', '),
+            ac : {
+                standard: calcTotalAc(acMods),
+                flat_footed: calcFlatFootedAc(acMods),
+                touch: calcTouchAc(acMods)
+            }
+        }
     }
 }
 
@@ -43,10 +68,12 @@ export const advanceByHitDice = (statblock, hdChange) => {
 
     const statBonusDiffs = getStatBonusDifference(statblock.ability_scores, newAbilityScores);
 
+    const acFields = acChanges(statblock.armor_class.ac_modifiers.slice(0), statBonusDiffs);
     const hpFields = hpChanges(newHitDice, statblock.hdType, statBonusFromAbilityScore(statblock.ability_scores.con));
     return {
         advancedName: `${statblock.name} (Advanced ${hdChange} Hit Dice)`,
         ...hpFields,
+        ...acFields,
         init: statblock.init + statBonusDiffs.dex,
         saving_throws: applyChangesToSavingThrows(statblock.saving_throws, [savingThrowChange, savingThrowChangeStat]),
         featCount: racialFeatCount(newHitDice),

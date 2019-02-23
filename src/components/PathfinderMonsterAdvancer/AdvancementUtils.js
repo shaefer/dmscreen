@@ -111,6 +111,29 @@ export const getSavingThrowChangesFromHitDice = (statblock, newHitDice) => {
     };
 }
 
+export const getStatBonusDifference = (origStats, newStats) => {
+    return {
+        str: statBonusFromAbilityScore(newStats.str) - statBonusFromAbilityScore(origStats.str),
+        dex: statBonusFromAbilityScore(newStats.dex) - statBonusFromAbilityScore(origStats.dex),
+        con: statBonusFromAbilityScore(newStats.con) - statBonusFromAbilityScore(origStats.con),
+        int: statBonusFromAbilityScore(newStats.int) - statBonusFromAbilityScore(origStats.int),
+        wis: statBonusFromAbilityScore(newStats.wis) - statBonusFromAbilityScore(origStats.wis),
+        cha: statBonusFromAbilityScore(newStats.cha) - statBonusFromAbilityScore(origStats.cha)
+    }
+}
+
+export const getSavingThrowChangesFromStatChanges = (origStats, newStats) => {
+    const statDiff = getStatBonusDifference(origStats, newStats);
+    const fortChange = statDiff.con;
+    const refChange = statDiff.dex;
+    const willChange = statDiff.wis;
+    return {
+        fort: fortChange,
+        ref: refChange,
+        will: willChange,
+    }
+}
+
 export const getUpdatedSavingThrows = (statblock, newHitDice) => {
     const changes = getSavingThrowChangesFromHitDice(statblock, newHitDice);
     const savingThrows = statblock.saving_throws;
@@ -128,4 +151,23 @@ export const applyChangesToSavingThrows = (savingThrows, changes) => {
         };
         return newSavingThrows;
     });
+}
+
+export const displayArmorClass = (acMods) => {
+    const total = 10 + acMods.reduce((acc, v) => {
+        return {mod:acc.mod + v.mod};
+    }).mod;
+    const touchTypes = ["Dex", "size", "dodge"];
+    const getTouchMods = acMods.filter(x => touchTypes.indexOf(x.type) !== -1);
+    const touchTotal = 10 + getTouchMods.reduce((acc, v) => {
+        return {mod:acc.mod + v.mod};
+    }).mod;
+    const flatFootedTypes = ["natural", "size"];
+    const getFlatFootedMods = acMods.filter(x => flatFootedTypes.indexOf(x.type) !== -1);
+    const ffTotal = 10 + getFlatFootedMods.reduce((acc, v) => {
+        return {mod:acc.mod + v.mod};
+    }).mod;
+    const modStr = acMods.map(x => `${withPlus(x.mod)} ${x.type}`).join(', ');
+
+    return `${total}, touch ${touchTotal}, flat-footed ${ffTotal} (${modStr})`;
 }

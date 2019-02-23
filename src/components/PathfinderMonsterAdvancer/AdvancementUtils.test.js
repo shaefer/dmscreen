@@ -1,4 +1,5 @@
-import {racialFeatCount, increaseHighestStat, assignAbilityScoreChangeToHighestStat, applyAbilityScoreChanges} from './AdvancementUtils'
+import {racialFeatCount, increaseHighestStat, assignAbilityScoreChangeToHighestStat, applyAbilityScoreChanges,
+        getSavingThrowChangesFromStatChanges, displayArmorClass} from './AdvancementUtils'
 it('feat count is 1 + 1 per 2 hitdice beyond the first', () => {
     expect(racialFeatCount(1)).toBe(1);
     expect(racialFeatCount(2)).toBe(1);
@@ -90,4 +91,146 @@ it('apply changes changes stats', () => {
     expect(result.int).toBe(27);
     expect(result.wis).toBe(24);
     expect(result.cha).toBe(19);
+});
+
+it('getSavingThrowChangeFromStatChanges properly handled odd to even stat changes +1', () => {
+    const origStats = {
+        str: 10,
+        dex: 11,
+        con: 12,
+        int: 16,
+        wis: 13,
+        cha: 8
+    };
+    const newStats = {
+        str: 10,
+        dex: 12,
+        con: 12,
+        int: 16,
+        wis: 13,
+        cha: 8
+    };
+    const result = getSavingThrowChangesFromStatChanges(origStats, newStats);
+    expect(result).toEqual({
+        fort: 0,
+        ref: 1,
+        will: 0,
+    });
+});
+
+it('getSavingThrowChangeFromStatChanges properly handled odd to odd stat changes +1', () => {
+    const origStats = {
+        str: 10,
+        dex: 11,
+        con: 12,
+        int: 16,
+        wis: 13,
+        cha: 8
+    };
+    const newStats = {
+        str: 10,
+        dex: 13,
+        con: 12,
+        int: 16,
+        wis: 13,
+        cha: 8
+    };
+    const result = getSavingThrowChangesFromStatChanges(origStats, newStats);
+    expect(result).toEqual({
+        fort: 0,
+        ref: 1,
+        will: 0,
+    });
+});
+
+it('getSavingThrowChangeFromStatChanges properly handled even to odd stat changes +0', () => {
+    const origStats = {
+        str: 10,
+        dex: 11,
+        con: 12,
+        int: 16,
+        wis: 13,
+        cha: 8
+    };
+    const newStats = {
+        str: 10,
+        dex: 11,
+        con: 13,
+        int: 16,
+        wis: 13,
+        cha: 8
+    };
+    const result = getSavingThrowChangesFromStatChanges(origStats, newStats);
+    expect(result).toEqual({
+        fort: 0,
+        ref: 0,
+        will: 0,
+    });
+});
+
+it('getSavingThrowChangeFromStatChanges properly handled even to even stat changes +1', () => {
+    const origStats = {
+        str: 10,
+        dex: 11,
+        con: 12,
+        int: 16,
+        wis: 13,
+        cha: 8
+    };
+    const newStats = {
+        str: 10,
+        dex: 11,
+        con: 14,
+        int: 16,
+        wis: 13,
+        cha: 8
+    };
+    const result = getSavingThrowChangesFromStatChanges(origStats, newStats);
+    expect(result).toEqual({
+        fort: 1,
+        ref: 0,
+        will: 0
+    });
+});
+
+it('getSavingThrowChangeFromStatChanges properly handles multiple changes', () => {
+    const origStats = {
+        str: 10,
+        dex: 11,
+        con: 12,
+        int: 16,
+        wis: 13,
+        cha: 8
+    };
+    const newStats = {
+        str: 10,
+        dex: 13,
+        con: 14,
+        int: 16,
+        wis: 15,
+        cha: 8
+    };
+    const result = getSavingThrowChangesFromStatChanges(origStats, newStats);
+    expect(result).toEqual({
+        fort: 1,
+        ref: 1,
+        will: 1
+    });
+});
+
+it('armor class function builds ac display line', () => {
+    const acMods = [
+    {
+        "mod": 1,
+        "type": "Dex"
+    },
+    {
+        "mod": 12,
+        "type": "natural"
+    },
+    {
+        "mod": -2,
+        "type": "size"
+    }];
+    expect(displayArmorClass(acMods)).toBe('21, touch 9, flat-footed 20 (+1 Dex, +12 natural, -2 size)')
 });

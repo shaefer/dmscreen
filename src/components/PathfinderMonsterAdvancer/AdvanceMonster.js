@@ -1,6 +1,7 @@
 import { statBonusFromAbilityScore, racialFeatCount, withPlus, 
     assignAbilityScoreChangeToHighestStat, applyAbilityScoreChanges,
-    getSavingThrowChangesFromHitDice, applyChangesToSavingThrows, hpDisplay } from './AdvancementUtils'
+    getSavingThrowChangesFromHitDice, applyChangesToSavingThrows, hpDisplay,
+    getSavingThrowChangesFromStatChanges, getStatBonusDifference } from './AdvancementUtils'
 
 export const advanceMonster = (statblock, advancement) => {
     if (advancement.hd) {
@@ -37,12 +38,17 @@ export const advanceByHitDice = (statblock, hdChange) => {
     const newAbilityScores = applyAbilityScoreChanges(statblock.ability_scores, [abilityScoreChange]);
     
     const savingThrowChange =  getSavingThrowChangesFromHitDice(statblock, newHitDice);
-    
+    const savingThrowChangeStat = getSavingThrowChangesFromStatChanges(statblock.ability_scores, newAbilityScores);
+    //eventually figure out how to not even include change sets that are basically blank - zeroes for all 3 saving throws
+
+    const statBonusDiffs = getStatBonusDifference(statblock.ability_scores, newAbilityScores);
+
     const hpFields = hpChanges(newHitDice, statblock.hdType, statBonusFromAbilityScore(statblock.ability_scores.con));
     return {
         advancedName: `${statblock.name} (Advanced ${hdChange} Hit Dice)`,
         ...hpFields,
-        saving_throws: applyChangesToSavingThrows(statblock.saving_throws, [savingThrowChange]),
+        init: statblock.init + statBonusDiffs.dex,
+        saving_throws: applyChangesToSavingThrows(statblock.saving_throws, [savingThrowChange, savingThrowChangeStat]),
         featCount: racialFeatCount(newHitDice),
         ability_scores: newAbilityScores,
         abilityScoreChanges: [abilityScoreChange],

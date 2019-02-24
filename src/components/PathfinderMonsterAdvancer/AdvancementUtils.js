@@ -33,7 +33,7 @@ const getHighestStat = (abilityScores) => {
 }
 
 export const increaseHighestStat = (abilityScores, statChange, reason) => {
-    //TODO: Ensure we have polyfilled.
+    //TODO: Ensure we have polyfilled Object.entries for getHighestStat.
     const highestStat = getHighestStat(abilityScores);
     const newAbilityScore = {
         [highestStat[0]]: highestStat[1] + statChange,
@@ -61,14 +61,15 @@ export const assignAbilityScoreChangeToHighestStat = (abilityScores, statChange,
 
 export const applyAbilityScoreChanges = (abilityScores, changes) => {
     const allScores = [abilityScores, ...changes];
+    //TODO: Add logic to handle stat minimums and base stats that start as 0 not changing.
     return allScores.reduce((total, current) => {
         const newStats = {
-            str: total.str + current.str,
-            dex: total.dex + current.dex,
-            con: total.con + current.con,
-            int: total.int + current.int,
-            wis: total.wis + current.wis,
-            cha: total.cha + current.cha,
+            str: total.str + (current.str || 0),
+            dex: total.dex + (current.dex || 0),
+            con: total.con + (current.con || 0),
+            int: total.int + (current.int || 0),
+            wis: total.wis + (current.wis || 0),
+            cha: total.cha + (current.cha || 0),
         };
         return newStats;
     });

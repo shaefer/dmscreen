@@ -135,13 +135,13 @@ const displayStatChanges = (statChanges) => {
     if (!statChanges) return [];
     return statChanges.map(x => {
         const stats = [];
-        if (x.str !== 0) stats.push(`Str: ${withPlus(x.str)}`)
-        if (x.dex !== 0) stats.push(`Dex: ${withPlus(x.dex)}`)
-        if (x.con !== 0) stats.push(`Con: ${withPlus(x.con)}`)
-        if (x.int !== 0) stats.push(`Int: ${withPlus(x.int)}`)
-        if (x.wis !== 0) stats.push(`Wis: ${withPlus(x.wis)}`)
-        if (x.cha !== 0) stats.push(`Cha: ${withPlus(x.cha)}`)
-        return (stats.length === 0) ? '' : `[${reason(x.reason)}${stats.join(',')}]`
+        if (x.str) stats.push(`Str: ${withPlus(x.str)}`)
+        if (x.dex) stats.push(`Dex: ${withPlus(x.dex)}`)
+        if (x.con) stats.push(`Con: ${withPlus(x.con)}`)
+        if (x.int) stats.push(`Int: ${withPlus(x.int)}`)
+        if (x.wis) stats.push(`Wis: ${withPlus(x.wis)}`)
+        if (x.cha) stats.push(`Cha: ${withPlus(x.cha)}`)
+        return (stats.length === 0) ? '' : `[${reason(x.reason)}${stats.join(', ')}]`
     });
 }
 
@@ -166,7 +166,7 @@ const MonsterDisplay = ({monster}) => {
     }
 
     const statChanges = displayStatChanges(m.abilityScoreChanges);
-    const abilityScoreChanges = (statChanges.length > 0 && opts.showStatChanges) ? statChanges.map(x => <StatBlockLine><span><B>Ability Score Adjustments: </B>{x}</span></StatBlockLine>) : '';
+    const abilityScoreChanges = (statChanges.length > 0 && opts.showStatChanges) ? statChanges.map(x => <StatBlockLine key={x}><span><B>Ability Score Adjustments: </B>{x}</span></StatBlockLine>) : '';
     const abilityScores = <span><B>Str</B> {m.strength}, <B>Dex</B> {m.dexterity}, <B>Con</B> {m.constitution}, <B>Int</B> {m.intelligence}, <B>Wis</B> {m.wisdom}, <B>Cha</B> {m.charisma}</span>
     const abilityScoresWithBonuses = <span><B>Str</B> {m.strength}({withPlus(statBonusFromAbilityScore(m.strength))}), <B>Dex</B> {m.dexterity}({withPlus(statBonusFromAbilityScore(m.dexterity))}), <B>Con</B> {m.constitution}({withPlus(statBonusFromAbilityScore(m.constitution))}), <B>Int</B> {m.intelligence}({withPlus(statBonusFromAbilityScore(m.intelligence))}), <B>Wis</B> {m.wisdom}({withPlus(statBonusFromAbilityScore(m.wisdom))}), <B>Cha</B> {m.charisma}({withPlus(statBonusFromAbilityScore(m.charisma))})</span>
     const abilityScoreDisplay = (opts.showStatBonuses) ? abilityScoresWithBonuses : abilityScores;

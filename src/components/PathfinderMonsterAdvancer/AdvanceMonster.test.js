@@ -7,11 +7,6 @@ it('advance by hit dice sets hp fields', () => {
     expect(behirPlus4Hd.hitPointAdjustment).toBe(70);
 });
 
-it('advance by hit dice creates advancename field', () => {
-    const behirPlus4Hd = advanceByHitDice(Behir, 4);
-    expect(behirPlus4Hd.advancedName).toBe("Behir (Advanced 4 Hit Dice)");
-});
-
 it('advance by hit dice creates abilityScore changes', () => {
     const behirPlus4Hd = advanceByHitDice(Behir, 4);
     expect(behirPlus4Hd.ability_scores).toEqual({
@@ -30,7 +25,7 @@ it('advance by hit dice creates abilityScore changes', () => {
             int: 0,
             wis: 0,
             cha: 0,
-            reason: "+4 Hit Dice"
+            reason: "Advanced Creature 4 Hit Dice"
         }
     ]);
 });
@@ -38,4 +33,9 @@ it('advance by hit dice creates abilityScore changes', () => {
 it('advance by hit dice creates featCount', () => {
     const behirPlus4Hd = advanceByHitDice(Behir, 4);
     expect(behirPlus4Hd.featCount).toBe(7);
+});
+
+it('advance by hit dice creates advancename field', () => {
+    const behirPlus4Hd = advanceByHitDice(Behir, 4);
+    expect(behirPlus4Hd.advancements[0]).toBe("Advanced 4 Hit Dice");
 });

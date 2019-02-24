@@ -51,7 +51,7 @@ const hpChanges = (hitDice, hdType, hpStatBonus) => {
 
 const changeAcMods = (acMods, acModChanges) => {
     let changedMods = acMods;
-    acModChanges.each(x => {
+    acModChanges.forEach(x => {
         changedMods = changeAcMod(changedMods, x);
     });
     return changedMods;
@@ -110,8 +110,8 @@ export const advanceBySize = (statblock, sizeChange) => {
     }
     //Do remaining adjustments to fly, stealth, ac-size, ac-naturalArmor, attack, cmd, cmb 
     const acNaturalArmorMod = {mod:totalChanges.naturalArmor, type: 'natural'};
-    const acModsAfterNaturalArmorChange = changeAcMod(statblock.armor_class.ac_modifiers, acNaturalArmorMod);
-    const acMods = changeAcMod(acModsAfterNaturalArmorChange, {mod: totalChanges.ac, type: 'size'})
+    const acSizeMod = {mod: totalChanges.ac, type: 'size'};
+    const acMods = changeAcMods(statblock.armor_class.ac_modifiers, [acNaturalArmorMod, acSizeMod]);
     const advancementsFromSize = {
         size: sizeChange,
         ...acFieldsFromMods(acMods),

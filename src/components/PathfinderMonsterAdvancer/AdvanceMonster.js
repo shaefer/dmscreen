@@ -57,15 +57,11 @@ const changeAcMods = (acMods, acModChanges) => {
     return changedMods;
 }
 
-const changeAcMod = (acMods, acModChange) => {
-    console.log('CHANGE AC', acMods, acModChange)
-    let modIndex = acMods.findIndex(x => x.type === acModChange.type);
-    if (modIndex !== -1) {
-        acMods[modIndex] = {mod: acMods[modIndex].mod + acModChange.mod, type: acModChange.type};
-    } else {
-        acMods.push(acModChange);
-    }
-    return [...acMods];
+const changeAcMod = (origAcMods, acModChange) => {
+    return origAcMods.map(x => {
+        if (x.type !== acModChange.type) return x;
+        return {mod: x.mod + acModChange.mod, type: x.type};
+    });
 }
 
 const acFieldsFromMods = (acMods) => {
@@ -108,10 +104,12 @@ export const advanceBySize = (statblock, sizeChange) => {
         con: totalChanges.con,
         reason: `Changed size from ${startSize} to ${endSize}`
     }
+    console.log('TOTAL CHANGES: ', totalChanges)
     //Do remaining adjustments to fly, stealth, ac-size, ac-naturalArmor, attack, cmd, cmb 
     const acNaturalArmorMod = {mod:totalChanges.naturalArmor, type: 'natural'};
     const acSizeMod = {mod: totalChanges.ac, type: 'size'};
     const acMods = changeAcMods(statblock.armor_class.ac_modifiers, [acNaturalArmorMod, acSizeMod]);
+    console.log("AC MODS AFTER SIZE CHANGES", acMods)
     const advancementsFromSize = {
         size: sizeChange,
         ...acFieldsFromMods(acMods),

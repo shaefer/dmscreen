@@ -3,7 +3,7 @@ import { statBonusFromAbilityScore, racialFeatCount, withPlus,
     getSavingThrowChangesFromHitDice, applyChangesToSavingThrows, hpDisplay,
     getSavingThrowChangesFromStatChanges, getStatBonusDifference, displayArmorClass,
     calcTotalAc, calcFlatFootedAc, calcTouchAc, calcAvgHitPoints } from './AdvancementUtils'
-import {MonsterSizes, MonsterSizeChanges} from './AdvancementTools/MonsterSizes'
+import {MonsterSizes, MonsterSizeChanges, sumSizeChanges} from './AdvancementTools/MonsterSizes'
 
 //There are a few fields we add as we go such as advancements that each stage might add to. If we could start with the assupmtion that that field is initialized properly the spread operator could be used with less coersion. 
 export const advanceMonster = (statblock, advancement) => {
@@ -49,13 +49,26 @@ const hpChanges = (hitDice, hdType, hpStatBonus) => {
     }
 }
 
-const acChanges = (acMods, statBonusDiffs) => {
-    let dexModIndex = acMods.findIndex(x => x.type === 'Dex');
-    if (dexModIndex !== -1) {
-        acMods[dexModIndex] = {mod: acMods[dexModIndex].mod + statBonusDiffs.dex, type: "Dex"};
+const changeAcMods = (acMods, acModChanges) => {
+    let changedMods = acMods;
+    acModChanges.each(x => {
+        changedMods = changeAcMod(changedMods, x);
+    });
+    return changedMods;
+}
+
+const changeAcMod = (acMods, acModChange) => {
+    console.log('CHANGE AC', acMods, acModChange)
+    let modIndex = acMods.findIndex(x => x.type === acModChange.type);
+    if (modIndex !== -1) {
+        acMods[modIndex] = {mod: acMods[modIndex].mod + acModChange.mod, type: acModChange.type};
     } else {
-        acMods.push({mod: statBonusDiffs.dex, type: "Dex"});
+        acMods.push(acModChange);
     }
+    return [...acMods];
+}
+
+const acFieldsFromMods = (acMods) => {
     const acDisplay = displayArmorClass(acMods);
     return {
         ac: acDisplay,
@@ -72,6 +85,12 @@ const acChanges = (acMods, statBonusDiffs) => {
     }
 }
 
+const acChanges = (origAcMods, statBonusDiffs) => {
+    const dexChange = {mod: statBonusDiffs.dex, type: 'Dex'};
+    const acMods = changeAcMod(origAcMods, dexChange);
+    return acFieldsFromMods(acMods);
+}
+
 export const advanceBySize = (statblock, sizeChange) => {
     const startSize = statblock.size;
     const endSize = sizeChange;
@@ -80,37 +99,32 @@ export const advanceBySize = (statblock, sizeChange) => {
     const endSizeIndex = MonsterSizes.findIndex(x => x.size === endSize);
     const IsUp = startSizeIndex < endSizeIndex;
 
-    console.log(startSizeIndex, endSizeIndex)
     const changes = (IsUp) ? MonsterSizeChanges.slice(startSizeIndex, endSizeIndex) : MonsterSizeChanges.slice(endSizeIndex, startSizeIndex);
 
-    console.log("CHANGES", changes)
-    const totalChanges = changes.map(x => (IsUp) ? x.upChanges : x.downChanges).reduce((acc, v) => {
-        return {
-            str: (acc.str || 0) + (v.str || 0), 
-            dex: (acc.dex || 0) + (v.dex || 0), 
-            con: (acc.con || 0) + (v.con || 0), 
-            naturalArmor: (acc.naturalArmor || 0) + (v.naturalArmor || 0), 
-            ac: (acc.ac || 0) + (v.ac || 0), 
-            attack: (acc.attack || 0) + (v.attack || 0), 
-            cmb: (acc.cmb || 0) + (v.cmb || 0), 
-            cmd: (acc.cmd || 0) + (v.cmd || 0), 
-            fly: (acc.fly || 0) + (v.fly || 0), 
-            stealth: (acc.stealth || 0) + (v.stealth || 0)
-        }
-    });
-
+    const totalChanges = sumSizeChanges(changes, IsUp);
     const totalStatChanges = {
         str: totalChanges.str,
         dex: totalChanges.dex,
         con: totalChanges.con,
+        reason: `Changed size from ${startSize} to ${endSize}`
     }
     //Do remaining adjustments to fly, stealth, ac-size, ac-naturalArmor, attack, cmd, cmb 
+    const acNaturalArmorMod = {mod:totalChanges.naturalArmor, type: 'natural'};
+    const acModsAfterNaturalArmorChange = changeAcMod(statblock.armor_class.ac_modifiers, acNaturalArmorMod);
+    const acMods = changeAcMod(acModsAfterNaturalArmorChange, {mod: totalChanges.ac, type: 'size'})
     const advancementsFromSize = {
         size: sizeChange,
+        ...acFieldsFromMods(acMods),
         advancements: [`Changed size to ${sizeChange}`]
     }
-    console.log("TOTAL STAT", totalStatChanges)
-    const advancementsFromAbilityScoreChanges = advanceByAbilityScores(statblock, [totalStatChanges], true);
+
+    const sizeAdvancedCreature = {
+        ...statblock,
+        ...advancementsFromSize,
+    }
+
+    console.log("TOTAL", totalChanges)
+    const advancementsFromAbilityScoreChanges = advanceByAbilityScores(sizeAdvancedCreature, [totalStatChanges], true);
 
     return {
         ...advancementsFromSize,

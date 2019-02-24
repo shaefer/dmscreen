@@ -17,7 +17,7 @@ export class PathfinderMonsterAdvancer extends Component {
         const advancement = {
             //hd: 4,
             //abilityScores: [{str: 2, dex: 4, reason: "Custom Ability Score Adjustments"}]
-            size: 'Fine'
+            size: 'Colossal'
         }
         const advancedMonsterChanges = advanceMonster(monster.statBlock, advancement);
         const newMonster = {

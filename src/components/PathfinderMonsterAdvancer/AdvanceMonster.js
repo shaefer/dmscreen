@@ -4,6 +4,7 @@ import { statBonusFromAbilityScore, racialFeatCount, withPlus,
     getSavingThrowChangesFromStatChanges, getStatBonusDifference, displayArmorClass,
     calcTotalAc, calcFlatFootedAc, calcTouchAc, calcAvgHitPoints } from './AdvancementUtils'
 import {MonsterSizes, MonsterSizeChanges, sumSizeChanges} from './AdvancementTools/MonsterSizes'
+import Skills from './AdvancementTools/Skills'
 
 //There are a few fields we add as we go such as advancements that each stage might add to. If we could start with the assupmtion that that field is initialized properly the spread operator could be used with less coersion. 
 export const advanceMonster = (statblock, advancement) => {
@@ -104,16 +105,36 @@ export const advanceBySize = (statblock, sizeChange) => {
         con: totalChanges.con,
         reason: `Changed size from ${startSize} to ${endSize}`
     }
-    console.log('TOTAL CHANGES: ', totalChanges)
     //Do remaining adjustments to fly, stealth, ac-size, ac-naturalArmor, attack, cmd, cmb 
     const acNaturalArmorMod = {mod:totalChanges.naturalArmor, type: 'natural'};
     const acSizeMod = {mod: totalChanges.ac, type: 'size'};
     const acMods = changeAcMods(statblock.armor_class.ac_modifiers, [acNaturalArmorMod, acSizeMod]);
-    console.log("AC MODS AFTER SIZE CHANGES", acMods)
+
+    const newSkills = statblock.skills.map(x => {
+        const skillName = x.name.trim();
+        if (skillName === 'Stealth') return {name: skillName, value: x.value + totalChanges.stealth};
+        if (skillName === 'Fly') return {name: skillName, value: x.value + totalChanges.fly};
+        return {name: skillName, value: x.value};
+    });
+
+    const newCmb = statblock.cmb + totalChanges.cmb;
+    //Find better way to note special rules like this. Probably have all special abilities marked with bonus to field cmb and special case to know whether to add to base score or not.
+    const cmbSpecial = (statblock.special_abilities.find(x => x.name === 'Grab')) ? ` (${withPlus(newCmb + 4)} grapple)` : '';
+    const cmbDisplay = withPlus(newCmb) + cmbSpecial;
+    const newCmd = statblock.cmd + totalChanges.cmd;
+    const cmdSpecial = (statblock.cmd_details.indexOf('can\'t be tripped') !== -1) ? ' (can\'t be tripped)' : ''
+    const cmdDisplay = newCmd + cmdSpecial;
+    const advancementDirection = (IsUp) ? "Increased" : "Decreased";
     const advancementsFromSize = {
+        skills: newSkills,
+        skills_details: newSkills.map(x => x.name + ' ' + withPlus(x.value)).join(', '),
+        cmb: newCmb,
+        cmb_details: cmbDisplay,
+        cmd: newCmd,
+        cmd_details: cmdDisplay,
         size: sizeChange,
         ...acFieldsFromMods(acMods),
-        advancements: [`Changed size to ${sizeChange}`]
+        advancements: [`${advancementDirection} size from ${startSize} to ${endSize}`]
     }
 
     const sizeAdvancedCreature = {
@@ -121,7 +142,6 @@ export const advanceBySize = (statblock, sizeChange) => {
         ...advancementsFromSize,
     }
 
-    console.log("TOTAL", totalChanges)
     const advancementsFromAbilityScoreChanges = advanceByAbilityScores(sizeAdvancedCreature, [totalStatChanges], true);
 
     return {
@@ -149,10 +169,37 @@ export const advanceByAbilityScores = (statblock, abilityScoreChanges, chainedAd
     const hpFields = hpChanges(newHitDice, statblock.hdType, statBonusFromAbilityScore(newAbilityScores.con));
     const advancements = (chainedAdvancement) ? {} : {advancements: [...statblock.advancements, `Stats Altered`]};
     const existingAbilityScoreChanges = (statblock.abilityScoreChanges) ? statblock.abilityScoreChanges : [];
+
+    const newSkills = statblock.skills.map(x => {
+        const skillName = x.name.trim();
+        const skillInfo = Skills.find(x => x.name === skillName);
+        const skillStat = skillInfo.abilityScore;
+        if (skillStat === 'Str') return {name: skillName, value: x.value + statBonusDiffs.str}
+        if (skillStat === 'Dex') return {name: skillName, value: x.value + statBonusDiffs.dex}
+        if (skillStat === 'Con') return {name: skillName, value: x.value + statBonusDiffs.con}
+        if (skillStat === 'Int') return {name: skillName, value: x.value + statBonusDiffs.int}
+        if (skillStat === 'Wis') return {name: skillName, value: x.value + statBonusDiffs.wis}
+        if (skillStat === 'Cha') return {name: skillName, value: x.value + statBonusDiffs.cha}
+    });
+
+    const newCmb = statblock.cmb + statBonusDiffs.str;
+    const cmbSpecial = (statblock.special_abilities.find(x => x.name === 'Grab')) ? ` (${withPlus(newCmb + 4)} grapple)` : '';
+    const cmbDisplay = withPlus(newCmb) + cmbSpecial;
+
+    const newCmd = statblock.cmd + statBonusDiffs.str + statBonusDiffs.dex;
+    const cmdSpecial = (statblock.cmd_details.indexOf('can\'t be tripped') !== -1) ? ' (can\'t be tripped)' : ''
+    const cmdDisplay = newCmd + cmdSpecial;
+
     return {
         ...advancements,
         ...hpFields,
         ...acFields,
+        cmb: newCmb,
+        cmb_details: cmbDisplay,
+        cmd: newCmd,
+        cmd_details: cmdDisplay,
+        skills: newSkills,
+        skill_details: newSkills.map(x => x.name + ' ' + withPlus(x.value)).join(', '),
         init: statblock.init + statBonusDiffs.dex,
         saving_throws: applyChangesToSavingThrows(statblock.saving_throws, [savingThrowChangeStat]),
         ability_scores: newAbilityScores,

@@ -88,6 +88,23 @@ const acChanges = (origAcMods, statBonusDiffs) => {
     return acFieldsFromMods(acMods);
 }
 
+const combatManeuverChanges = (statblock, cmbChange, cmdChange) => {
+    const newCmb = statblock.cmb + cmbChange;
+    const cmbSpecial = (statblock.special_abilities.find(x => x.name === 'Grab')) ? ` (${withPlus(newCmb + 4)} grapple)` : '';
+    const cmbDisplay = withPlus(newCmb) + cmbSpecial;
+
+    const newCmd = statblock.cmd + cmdChange; //all touch ac mods http://www.tenebraemush.net/index.php/Understanding_CMB_and_CMD
+    const cmdSpecial = (statblock.cmd_details.indexOf('can\'t be tripped') !== -1) ? ' (can\'t be tripped)' : ''
+    const cmdDisplay = newCmd + cmdSpecial;
+
+    return {
+        cmb: newCmb,
+        cmb_details: cmbDisplay,
+        cmd: newCmd,
+        cmd_details: cmdDisplay,
+    };
+}
+
 export const advanceBySize = (statblock, sizeChange) => {
     const startSize = statblock.size;
     const endSize = sizeChange;
@@ -124,7 +141,10 @@ export const advanceBySize = (statblock, sizeChange) => {
     const newCmd = statblock.cmd + totalChanges.cmd;
     const cmdSpecial = (statblock.cmd_details.indexOf('can\'t be tripped') !== -1) ? ' (can\'t be tripped)' : ''
     const cmdDisplay = newCmd + cmdSpecial;
+
     const advancementDirection = (IsUp) ? "Increased" : "Decreased";
+
+    const advancements = (statblock.advancements) ? statblock.advancements : [];
     const advancementsFromSize = {
         skills: newSkills,
         skills_details: newSkills.map(x => x.name + ' ' + withPlus(x.value)).join(', '),
@@ -134,7 +154,7 @@ export const advanceBySize = (statblock, sizeChange) => {
         cmd_details: cmdDisplay,
         size: sizeChange,
         ...acFieldsFromMods(acMods),
-        advancements: [`${advancementDirection} size from ${startSize} to ${endSize}`]
+        advancements: [...advancements, `${advancementDirection} size from ${startSize} to ${endSize}`]
     }
 
     const sizeAdvancedCreature = {
@@ -182,22 +202,15 @@ export const advanceByAbilityScores = (statblock, abilityScoreChanges, chainedAd
         if (skillStat === 'Cha') return {name: skillName, value: x.value + statBonusDiffs.cha}
     });
 
-    const newCmb = statblock.cmb + statBonusDiffs.str;
-    const cmbSpecial = (statblock.special_abilities.find(x => x.name === 'Grab')) ? ` (${withPlus(newCmb + 4)} grapple)` : '';
-    const cmbDisplay = withPlus(newCmb) + cmbSpecial;
-
-    const newCmd = statblock.cmd + statBonusDiffs.str + statBonusDiffs.dex;
-    const cmdSpecial = (statblock.cmd_details.indexOf('can\'t be tripped') !== -1) ? ' (can\'t be tripped)' : ''
-    const cmdDisplay = newCmd + cmdSpecial;
+    const cmbChange = statBonusDiffs.str;
+    const cmdChange = statBonusDiffs.str + statBonusDiffs.dex;
+    const combatManeuverFields = combatManeuverChanges(statblock, cmbChange, cmdChange);
 
     return {
         ...advancements,
         ...hpFields,
         ...acFields,
-        cmb: newCmb,
-        cmb_details: cmbDisplay,
-        cmd: newCmd,
-        cmd_details: cmdDisplay,
+        ...combatManeuverFields,
         skills: newSkills,
         skill_details: newSkills.map(x => x.name + ' ' + withPlus(x.value)).join(', '),
         init: statblock.init + statBonusDiffs.dex,

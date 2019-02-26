@@ -31,13 +31,13 @@ it('advance by size changes main size', () => {
 it('advance by size changes cmb and cmd', () => {
     const result = advanceBySize(Behir, 'Colossal');
     //18 cmb (22 grapple), 29 cmd
-    expect(result.cmb).toBe(24);
-    expect(result.cmb_details).toBe("+24 (+28 grapple)")
+    expect(result.cmb).toBe(32);
+    expect(result.cmb_details).toBe("+32 (+36 grapple)")
 });
 
 it('advance by size changes cmb and cmd', () => {
     const result = advanceBySize(Behir, 'Colossal');
     //18 cmb (22 grapple), 29 cmd
-    expect(result.cmd).toBe(35);
-    expect(result.cmd_details).toBe("35 (can't be tripped)")
+    expect(result.cmd).toBe(43); //29 + 6 cmd + 16str(+8 str bonus) + 0 dex change
+    expect(result.cmd_details).toBe("43 (can't be tripped)")
 });

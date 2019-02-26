@@ -134,24 +134,14 @@ export const advanceBySize = (statblock, sizeChange) => {
         return {name: skillName, value: x.value};
     });
 
-    const newCmb = statblock.cmb + totalChanges.cmb;
-    //Find better way to note special rules like this. Probably have all special abilities marked with bonus to field cmb and special case to know whether to add to base score or not.
-    const cmbSpecial = (statblock.special_abilities.find(x => x.name === 'Grab')) ? ` (${withPlus(newCmb + 4)} grapple)` : '';
-    const cmbDisplay = withPlus(newCmb) + cmbSpecial;
-    const newCmd = statblock.cmd + totalChanges.cmd;
-    const cmdSpecial = (statblock.cmd_details.indexOf('can\'t be tripped') !== -1) ? ' (can\'t be tripped)' : ''
-    const cmdDisplay = newCmd + cmdSpecial;
+    const combatManeuverFields = combatManeuverChanges(statblock, totalChanges.cmb, totalChanges.cmd);
 
     const advancementDirection = (IsUp) ? "Increased" : "Decreased";
-
     const advancements = (statblock.advancements) ? statblock.advancements : [];
     const advancementsFromSize = {
         skills: newSkills,
         skills_details: newSkills.map(x => x.name + ' ' + withPlus(x.value)).join(', '),
-        cmb: newCmb,
-        cmb_details: cmbDisplay,
-        cmd: newCmd,
-        cmd_details: cmdDisplay,
+        ...combatManeuverFields,
         size: sizeChange,
         ...acFieldsFromMods(acMods),
         advancements: [...advancements, `${advancementDirection} size from ${startSize} to ${endSize}`]

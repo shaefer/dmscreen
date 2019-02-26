@@ -27,8 +27,11 @@ export class PathfinderMonsterAdvancer extends Component {
         };
         console.log(newMonster)
         const statblockVersion = 2;
-        monster.statBlock = convertToMonsterForDisplay(newMonster, statblockVersion);
-        return <MonsterDisplay monster={monster}/>
+        const convertedMonster = {
+            ...monster,
+            statBlock: convertToMonsterForDisplay(newMonster, statblockVersion)
+        };
+        return <MonsterDisplay monster={convertedMonster}/>
     }
 }
 

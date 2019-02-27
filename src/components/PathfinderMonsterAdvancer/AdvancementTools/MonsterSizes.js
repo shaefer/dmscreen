@@ -22,6 +22,7 @@ export const MonsterSizeChanges = [
 ];
 
 export const sumSizeChanges = (changes, IsUp) => {
+    if (changes.length === 0) return {str: 0, dex: 0, con: 0, naturalArmor: 0, ac: 0, attack: 0, cmb: 0, cmd: 0, fly: 0, stealth:0};
     return changes.map(x => (IsUp) ? x.upChanges : x.downChanges).reduce((acc, v) => {
         return {
             str: (acc.str || 0) + (v.str || 0), 

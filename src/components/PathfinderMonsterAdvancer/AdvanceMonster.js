@@ -2,7 +2,7 @@ import { statBonusFromAbilityScore, racialFeatCount, withPlus,
     assignAbilityScoreChangeToHighestStat, applyAbilityScoreChanges,
     getSavingThrowChangesFromHitDice, applyChangesToSavingThrows, hpDisplay,
     getSavingThrowChangesFromStatChanges, getStatBonusDifference, displayArmorClass,
-    calcTotalAc, calcFlatFootedAc, calcTouchAc, calcAvgHitPoints } from './AdvancementUtils'
+    calcTotalAc, calcFlatFootedAc, calcTouchAc, calcAvgHitPoints, getConstructBonusHitPoints } from './AdvancementUtils'
 import {MonsterSizes, MonsterSizeChanges, sumSizeChanges} from './AdvancementTools/MonsterSizes'
 import Skills from './AdvancementTools/Skills'
 
@@ -40,8 +40,10 @@ const displayName = (advancements) => {
     return (advancements) ? ` (${advancements.join(", ")})` : '';
 }
 
-const hpChanges = (hitDice, hdType, hpStatBonus) => {
-    const newHitPointsAdjustment = hpStatBonus * hitDice;
+const hpChanges = (hitDice, hdType, creatureType, conBonus, chaBonus, size) => {
+    const statBonus = (creatureType === 'Undead') ? chaBonus : conBonus;
+
+    const newHitPointsAdjustment = (creatureType !== 'Construct') ? statBonus * hitDice : getConstructBonusHitPoints(size);
     return {
         hp: hpDisplay(hitDice, hdType, newHitPointsAdjustment),
         hitDice: hitDice,
@@ -90,11 +92,11 @@ const acChanges = (origAcMods, statBonusDiffs) => {
 
 const combatManeuverChanges = (statblock, cmbChange, cmdChange) => {
     const newCmb = statblock.cmb + cmbChange;
-    const cmbSpecial = (statblock.special_abilities.find(x => x.name === 'Grab')) ? ` (${withPlus(newCmb + 4)} grapple)` : '';
+    const cmbSpecial = (statblock.special_abilities && statblock.special_abilities.find(x => x.name === 'Grab')) ? ` (${withPlus(newCmb + 4)} grapple)` : '';
     const cmbDisplay = withPlus(newCmb) + cmbSpecial;
 
     const newCmd = statblock.cmd + cmdChange; //all touch ac mods http://www.tenebraemush.net/index.php/Understanding_CMB_and_CMD
-    const cmdSpecial = (statblock.cmd_details.indexOf('can\'t be tripped') !== -1) ? ' (can\'t be tripped)' : ''
+    const cmdSpecial = (statblock.cmd_details && statblock.cmd_details.indexOf('can\'t be tripped') !== -1) ? ' (can\'t be tripped)' : ''
     const cmdDisplay = newCmd + cmdSpecial;
 
     return {
@@ -108,6 +110,8 @@ const combatManeuverChanges = (statblock, cmbChange, cmdChange) => {
 export const advanceBySize = (statblock, sizeChange) => {
     const startSize = statblock.size;
     const endSize = sizeChange;
+
+    if (startSize === endSize) return {}; //no size change has occurred.
 
     const startSizeIndex = MonsterSizes.findIndex(x => x.size === startSize);
     const endSizeIndex = MonsterSizes.findIndex(x => x.size === endSize);
@@ -170,19 +174,20 @@ export const advanceBySize = (statblock, sizeChange) => {
 export const advanceByAbilityScores = (statblock, abilityScoreChanges, chainedAdvancement = false) => {
     const newHitDice = statblock.hitDice;
     const newAbilityScores = applyAbilityScoreChanges(statblock.ability_scores, abilityScoreChanges);
-    const savingThrowChangeStat = getSavingThrowChangesFromStatChanges(statblock.ability_scores, newAbilityScores);
+    const savingThrowChangeStat = getSavingThrowChangesFromStatChanges(statblock.ability_scores, newAbilityScores, statblock.creature_type);
     //eventually figure out how to not even include change sets that are basically blank - zeroes for all 3 saving throws
 
     const statBonusDiffs = getStatBonusDifference(statblock.ability_scores, newAbilityScores);
 
     const acFields = acChanges(statblock.armor_class.ac_modifiers.slice(0), statBonusDiffs);
-    const hpFields = hpChanges(newHitDice, statblock.hdType, statBonusFromAbilityScore(newAbilityScores.con));
+    const hpFields = hpChanges(newHitDice, statblock.hdType, statblock.creature_type, statBonusFromAbilityScore(newAbilityScores.con), statBonusFromAbilityScore(newAbilityScores.cha), statblock.size);
     const advancements = (chainedAdvancement) ? {} : {advancements: [...statblock.advancements, `Stats Altered`]};
     const existingAbilityScoreChanges = (statblock.abilityScoreChanges) ? statblock.abilityScoreChanges : [];
 
     const newSkills = statblock.skills.map(x => {
         const skillName = x.name.trim();
         const skillInfo = Skills.find(x => x.name === skillName);
+        if (!skillInfo) throw `Did not find ${skillName}`
         const skillStat = skillInfo.abilityScore;
         if (skillStat === 'Str') return {name: skillName, value: x.value + statBonusDiffs.str}
         if (skillStat === 'Dex') return {name: skillName, value: x.value + statBonusDiffs.dex}
@@ -223,7 +228,7 @@ export const advanceByHitDice = (statblock, hdChange) => {
     const statPointsPer4HitDiceAdded = Math.floor(hdChange/4);
     const abilityScoreChange = assignAbilityScoreChangeToHighestStat(statblock.ability_scores, statPointsPer4HitDiceAdded, `Advanced Creature ${hdChange} Hit Dice`);
     const savingThrowChange =  getSavingThrowChangesFromHitDice(statblock, newHitDice);
-    const hpFields = hpChanges(newHitDice, statblock.hdType, statBonusFromAbilityScore(statblock.ability_scores.con));
+    const hpFields = hpChanges(newHitDice, statblock.hdType, statblock.creature_type, statBonusFromAbilityScore(statblock.ability_scores.con), statBonusFromAbilityScore(statblock.ability_scores.con), statblock.size);
     const hitDiceAdvancements = {
         advancements: [`Advanced ${hdChange} Hit Dice`],
         ...hpFields,

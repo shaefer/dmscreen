@@ -7,6 +7,7 @@ import '../../css/ReactSelectCustom.css';
 import { connect } from 'react-redux'
 import {keyPressHandler, monsterSelectedHandler} from '../../action-creators'
 import MonsterDisplay from '../MonsterDisplay'
+import PathfinderMonsterAdvancer from '../PathfinderMonsterAdvancer/PathfinderMonsterAdvancer'
 import MonsterOptions from '../MonsterOptions'
 import MonsterSelect from './MonsterSelect'
 
@@ -49,7 +50,7 @@ export class MonsterFinder extends Component {
     return (
       <div className="flex-container">
         <div className="flex-item">
-          <MonsterDisplay monster={monster}/>
+          <PathfinderMonsterAdvancer monster={monster}/>
         </div>
         <div className="flex-item">
           <div className="flexSelect">

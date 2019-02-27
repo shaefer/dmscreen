@@ -60,13 +60,14 @@ export const assignAbilityScoreChangeToHighestStat = (abilityScores, statChange,
 }
 
 export const applyAbilityScoreChanges = (abilityScores, changes) => {
+    const noConAlteration = (abilityScores.con === 0) ? true : false;
     const allScores = [abilityScores, ...changes];
     //TODO: Add logic to handle stat minimums and base stats that start as 0 not changing.
     return allScores.reduce((total, current) => {
         const newStats = {
             str: total.str + (current.str || 0),
             dex: total.dex + (current.dex || 0),
-            con: total.con + (current.con || 0),
+            con: total.con + ((noConAlteration) ? 0 : (current.con || 0)),
             int: total.int + (current.int || 0),
             wis: total.wis + (current.wis || 0),
             cha: total.cha + (current.cha || 0),
@@ -116,6 +117,22 @@ export const getSavingThrowChangesFromHitDice = (statblock, newHitDice) => {
     };
 }
 
+export const getConstructBonusHitPoints = (size) => {
+    const ConstructBonusHitPoints = {
+        Diminutive: 10,
+        Fine: 10,
+        Small: 10,
+        Tiny: 10,
+        Small: 10,
+        Medium: 20,
+        Large: 30,
+        Huge: 40,
+        Gargantuan: 60,
+        Colossal: 80
+    }
+    return ConstructBonusHitPoints[size];
+}
+
 export const getStatBonusDifference = (origStats, newStats) => {
     return {
         str: statBonusFromAbilityScore(newStats.str) - statBonusFromAbilityScore(origStats.str),
@@ -127,9 +144,9 @@ export const getStatBonusDifference = (origStats, newStats) => {
     }
 }
 
-export const getSavingThrowChangesFromStatChanges = (origStats, newStats) => {
+export const getSavingThrowChangesFromStatChanges = (origStats, newStats, creatureType) => {
     const statDiff = getStatBonusDifference(origStats, newStats);
-    const fortChange = statDiff.con;
+    const fortChange = (creatureType !== 'Undead') ? statDiff.con : statDiff.cha;
     const refChange = statDiff.dex;
     const willChange = statDiff.wis;
     return {
@@ -161,25 +178,19 @@ export const applyChangesToSavingThrows = (savingThrows, changes) => {
 export const calcTouchAc = (acMods) => {
     const touchTypes = ["Dex", "size", "dodge"];
     const getTouchMods = acMods.filter(x => touchTypes.indexOf(x.type) !== -1);
-    const touchTotal = 10 + getTouchMods.reduce((acc, v) => {
-        return {mod:acc.mod + v.mod};
-    }).mod;
+    const touchTotal = 10 + getTouchMods.map(x => x.mod).reduce((acc, v) => acc + v, 0);
     return touchTotal;
 }
 
 export const calcTotalAc = (acMods) => {
-    const total = 10 + acMods.reduce((acc, v) => {
-        return {mod:acc.mod + v.mod};
-    }).mod;
+    const total = 10 + acMods.map(x => x.mod).reduce((acc, v) => acc + v, 0);
     return total;
 }
 
 export const calcFlatFootedAc = (acMods) => {
     const flatFootedTypes = ["natural", "size"];
     const getFlatFootedMods = acMods.filter(x => flatFootedTypes.indexOf(x.type) !== -1);
-    const ffTotal = 10 + getFlatFootedMods.reduce((acc, v) => {
-        return {mod:acc.mod + v.mod};
-    }).mod;
+    const ffTotal = 10 + getFlatFootedMods.map(x => x.mod).reduce((acc, v) => acc + v, 0);
     return ffTotal;
 }
 

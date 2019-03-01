@@ -1,12 +1,13 @@
 import React from 'react'
 import Keys from '../models/Keys'
 //import Monsters from '../models/AllMonsters'
-import { showMonster, selectMonsterOption, showS3SelectResult, display35Monster, monsterNotFound } from '../actions'
+import { showMonster, selectMonsterOption, showS3SelectResult, display35Monster, monsterNotFound, advanceByHitDice, resetHitDiceAdvancement } from '../actions'
 import MonstersApi from '../apiClients/MonsterApi'
 import rollTimeString from '../utils/ResultTimestamp'
 import PageViewRecorder from '../components/PageViewRecorder'
 import { showS3SelectDMScreenResult, addDmScreenResult } from '../actions/DmScreenActions'
 import MonsterDisplay from '../components/MonsterDisplay'
+import MonstersV2 from '../models/MonstersV2';
 
 import {
     Accordion,
@@ -29,6 +30,12 @@ export const fetchMonsterAdvancer35v2 = (monsterName, fields) => (dispatch) => {
         .then(data =>  dispatch(display35Monster(data)));
 }
 
+export const hitDiceAdvancementAction = (hitDice) => (dispatch) => {
+    (hitDice === 'reset') 
+        ? dispatch(resetHitDiceAdvancement()) 
+        : dispatch(advanceByHitDice(hitDice))
+}
+
 export const monsterSelectChangeHandler = (e) => (dispatch, getState) => {
     if (!e) return "";
     
@@ -46,6 +53,7 @@ export const monsterSelectChangeHandler = (e) => (dispatch, getState) => {
 }
 
 export const monsterSelectedHandler = (monsterName) => (dispatch) => {
+    console.log("MONSTER SELECTED ACTION CREATOR")
     dispatch(selectMonsterOption(monsterName));
     MonstersApi.getMonsterByName(monsterName)
         .then(data => {
@@ -54,6 +62,12 @@ export const monsterSelectedHandler = (monsterName) => (dispatch) => {
                 action: monsterName
             });
             return data;
+        })
+        .then(data => {
+            console.log("Monster found", data)
+            const v2Monster = MonstersV2.find(x => x.name === data.name);
+            if (!v2Monster) console.log("DID NOT FIND: " + data.name)
+            return (v2Monster) ? v2Monster : data;
         })
         .then(data => { 
             (data) ? dispatch(showMonster(data)) : dispatch(monsterNotFound(monsterName))

@@ -9,7 +9,7 @@
     "stream": "0.0.2"
   },
   "scripts": {
-    "start": "npx babel-node index.js files/allCreatures.json",
+    "start": "npx babel-node index.js files/creature_sample.json",
     "json_parse": "npx babel-node index.js files/creature_sample.json",
     "test": "react-scripts test --env=jsdom"
   },

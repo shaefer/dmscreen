@@ -93,7 +93,8 @@ class DMScreen extends Component {
                 return <li><DiceButton numOfDice={x.numOfDice} numOfSides={x.numOfSides}/></li>;
             } else if (x.type === 'statsButton') {
                 return <li><StatsButton numOfDice={x.numOfDice} numOfSides={x.numOfSides} drop={x.drop || 1}/></li>;
-            }
+            } 
+            return '';
         });
         //monsterButtonOrder
         const monsterButtons = [...dmScreen.crButtons, ...dmScreen.crRangeButtons];

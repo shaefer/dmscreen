@@ -13,6 +13,7 @@ import './css/CustomFormCss.css'
 import './css/LeftHamburgerNav.css'
 
 import ReactGA from 'react-ga';
+import PathfinderMonsterAdvancer from './components/PathfinderMonsterAdvancer/PathfinderMonsterAdvancer';
 
 
 class App extends Component {
@@ -79,6 +80,7 @@ class App extends Component {
                         <Route       path="/copyright"  component={Copyright} />
                         <Route exact path="/dungeonGraph"  component={DungeonForceGraph2D} />
                         <Route       path="/dungeonGraph/:rooms"  render={(props) => <DungeonForceGraph2D {...props}/>} />
+                        <Route       path="/pma" component={PathfinderMonsterAdvancer} />
                     </section>
                 </main>
             </BrowserRouter>

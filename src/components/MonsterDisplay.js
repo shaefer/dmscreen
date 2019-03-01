@@ -1,6 +1,8 @@
 import React from 'react'
 import './MonsterDisplay.css';
 
+import {statBonusFromAbilityScore, withPlus} from '../components/PathfinderMonsterAdvancer/AdvancementUtils'
+
 const StatBlockLine = (props) => {
     if (props.inline) return ((props.data && props.required) || !props.required) ? <span className="sbLine">{props.children}</span> : "";
     return ((props.data && props.required) || !props.required) ? <div className="sbLine">{props.children}</div> : "";
@@ -75,7 +77,8 @@ const animalCompanionSection = (section) => {
 const specialAbilitiesAndDescription = (m) => {
     const s1 = m.sections;
     if (!s1) return "";
-    return s1.map((section, index) => {
+    let allSections = [];
+    const sections = s1.map((section, index) => {
         if (section.subtype === 'special_abilities') {
             return (
                 section.sections.map((sa, saIndex) => {
@@ -92,6 +95,14 @@ const specialAbilitiesAndDescription = (m) => {
         console.log(s1);
         return "Parsing Error";
     }); 
+    if (m.special_abilities) {
+        const sa_sections = m.special_abilities.map((sa, saIndex) => {
+            if (!sa.type) return "";
+            return <StatBlockLine key={"sa" + saIndex}><B>{sa.name} <span style={{textTransform: "capitalize"}}>({sa.type.substring(0, 2)})</span></B> {sa.description}</StatBlockLine>;
+        });
+        allSections = allSections.concat(sa_sections)
+    }
+    return allSections.concat(sections);
 }
 
 const creatureSubType = (m) => {
@@ -119,6 +130,26 @@ const spells = (m) => {
     });
 }
 
+const reason = (reason) => (reason) ? `${reason} = ` : ''
+const displayStatChanges = (statChanges) => {
+    if (!statChanges) return [];
+    return statChanges.map(x => {
+        const stats = [];
+        if (x.str) stats.push(`Str: ${withPlus(x.str)}`)
+        if (x.dex) stats.push(`Dex: ${withPlus(x.dex)}`)
+        if (x.con) stats.push(`Con: ${withPlus(x.con)}`)
+        if (x.int) stats.push(`Int: ${withPlus(x.int)}`)
+        if (x.wis) stats.push(`Wis: ${withPlus(x.wis)}`)
+        if (x.cha) stats.push(`Cha: ${withPlus(x.cha)}`)
+        return (stats.length === 0) ? '' : `[${reason(x.reason)}${stats.join(', ')}]`
+    });
+}
+
+const displayConstitution = (con, showStatBonus, statBonus) => {
+    const statBonusDisplay = (showStatBonus) ? `(${statBonus})` : '';
+    return (con === 0) ? '-' : `${con}${statBonusDisplay}`;
+}
+
 const MonsterDisplay = ({monster}) => {
     const m = monster.statBlock;
 
@@ -128,6 +159,23 @@ const MonsterDisplay = ({monster}) => {
         return <div>A Monster named [{m.name}] was not found</div>;
     }
 
+    const defaultDisplayOptions = {
+        showFeatCount: true,
+        showStatBonuses: false,
+        showDetailedCR: false,
+        showStatChanges: false,
+    }
+    const opts = {
+        ...defaultDisplayOptions,
+        ...m.displayOptions
+    }
+
+    const statChanges = displayStatChanges(m.abilityScoreChanges);
+    const abilityScoreChanges = (statChanges.length > 0 && opts.showStatChanges) ? statChanges.map(x => <StatBlockLine key={x}><span><B>Ability Score Adjustments: </B>{x}</span></StatBlockLine>) : '';
+    const abilityScores = <span><B>Str</B> {m.strength}, <B>Dex</B> {m.dexterity}, <B>Con</B> {displayConstitution(m.constitution, opts.showStatBonuses)}, <B>Int</B> {m.intelligence}, <B>Wis</B> {m.wisdom}, <B>Cha</B> {m.charisma}</span>
+    const abilityScoresWithBonuses = <span><B>Str</B> {m.strength}({withPlus(statBonusFromAbilityScore(m.strength))}), <B>Dex</B> {m.dexterity}({withPlus(statBonusFromAbilityScore(m.dexterity))}), <B>Con</B> {displayConstitution(m.constitution,  opts.showStatBonuses, withPlus(statBonusFromAbilityScore(m.constitution)))}, <B>Int</B> {m.intelligence}({withPlus(statBonusFromAbilityScore(m.intelligence))}), <B>Wis</B> {m.wisdom}({withPlus(statBonusFromAbilityScore(m.wisdom))}), <B>Cha</B> {m.charisma}({withPlus(statBonusFromAbilityScore(m.charisma))})</span>
+    const abilityScoreDisplay = (opts.showStatBonuses) ? abilityScoresWithBonuses : abilityScores;
+    const featCountStr = (m.featCount && opts.showFeatCount) ? ` (${m.featCount})` : ""; 
     return (
         <div className="monsterDisplay">
             <div className="sbLine sbName">
@@ -154,9 +202,10 @@ const MonsterDisplay = ({monster}) => {
             {spells(m)}
 
             <StatSectionHeader>statistics</StatSectionHeader>
-            <StatBlockLine><B>Str</B> {m.strength}, <B>Dex</B> {m.dexterity}, <B>Con</B> {m.constitution}, <B>Int</B> {m.intelligence}, <B>Wis</B> {m.wisdom}, <B>Cha</B> {m.charisma}</StatBlockLine>
+            <StatBlockLine>{abilityScoreDisplay}</StatBlockLine>
+            {abilityScoreChanges}
             <StatBlockLine><B>Base Atk</B> {m.base_attack}; <B>CMB</B> {m.cmb}; <B>CMD</B> {m.cmd}</StatBlockLine>
-            <StatBlockLine><B>Feats</B> {m.feats}</StatBlockLine>
+            <StatBlockLine><B>Feats</B>{featCountStr} {m.feats}</StatBlockLine>
             <StatBlockLine><B>Skills</B> {m.skills}</StatBlockLine>
             <StatBlockLine><B>Languages</B> {m.languages}</StatBlockLine>
             <StatBlockLine data={m.special_qualities} required><B>SQ</B> {m.special_qualities}</StatBlockLine>

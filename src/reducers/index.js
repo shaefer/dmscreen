@@ -2,6 +2,7 @@ import { combineReducers } from 'redux'
 import { reducer as formReducer } from 'redux-form'
 import * as Actions from '../actions'
 import Aasimar from '../models/Aasimar'
+import MonstersV2 from '../models/MonstersV2'
 import dmScreen from './DMScreenReducer'
 
 const config = (state = { initialState: "basicConfig"}, action) => {
@@ -23,7 +24,7 @@ const select = (state = { selectedMonsterName: Aasimar.name}, action) => {
   }
 }
 
-const monster = (state = { statBlock: Aasimar, success: true}, action) => {
+const monster = (state = { statBlock: MonstersV2.find(x => x.name == 'Aasimar'), success: true}, action) => {
   switch (action.type) {
     case Actions.SHOW_MONSTER: 
       return {
@@ -66,8 +67,24 @@ const monsterAdvancer = (state = { monster:{} }, action) => {
   }
 }
 
+const advancement = (state = {}, action) => {
+  switch (action.type) {
+    case Actions.ADVANCE_HIT_DICE:
+      console.log(`Reduce to advance by hit dice ${action.hitDice}`)
+      return {
+        ...state,
+        hd: action.hitDice
+      };
+    case Actions.RESET_HD_ADVANCEMENT:
+      console.log('RESET HD ADVANCEMENT')
+      return {};
+    default:
+      return state;
+  }
+}
+
 const rootReducer = combineReducers({
-  config, select, monster, s3Select, dmScreen, monsterAdvancer, form: formReducer
+  config, select, monster, s3Select, dmScreen, monsterAdvancer, form: formReducer, advancement
 })
 
 export default rootReducer

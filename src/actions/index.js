@@ -30,3 +30,15 @@ export const display35Monster = (monster) => ({
     type: DISPLAY_35_MONSTER,
     monster: monster
 });
+
+/** Advancement Hit Dice */
+export const ADVANCE_HIT_DICE = 'ADVANCE_HIT_DICE'
+export const advanceByHitDice = (hitDice) => ({
+    type: ADVANCE_HIT_DICE,
+    hitDice: hitDice
+});
+
+export const RESET_HD_ADVANCEMENT = 'RESET_HD_ADVANCEMENT'
+export const resetHitDiceAdvancement = () => ({
+    type: RESET_HD_ADVANCEMENT
+});

@@ -5,19 +5,22 @@ import './MonsterFinder.css';
 import '../../css/ReactSelectCustom.css';
 
 import { connect } from 'react-redux'
-import {keyPressHandler, monsterSelectedHandler} from '../../action-creators'
+import {keyPressHandler, monsterSelectedHandler, hitDiceAdvancementAction} from '../../action-creators'
 import MonsterDisplay from '../MonsterDisplay'
 import PathfinderMonsterAdvancer from '../PathfinderMonsterAdvancer/PathfinderMonsterAdvancer'
+import HitDiceAdvancementSelect from './HitDiceAdvancementSelect'
 import MonsterOptions from '../MonsterOptions'
 import MonsterSelect from './MonsterSelect'
 
 import PageViewRecorder from '../../components/PageViewRecorder';
+import HitDiceAdvancementSelectMaterial from './HitDiceAdvancementSelectMaterial';
 
 export class MonsterFinder extends Component {
   constructor(props) {
     super(props);
     this.handleKeyPress = this.handleKeyPress.bind(this);
     this.handleMonsterSelectChange = this.handleMonsterSelectChange.bind(this);
+    this.handleHitDiceSelectChange = this.handleHitDiceSelectChange.bind(this);
   }
 
   handleKeyPress(e) {
@@ -26,6 +29,11 @@ export class MonsterFinder extends Component {
 
   handleMonsterSelectChange(e, {suggestion}) {
     this.props.monsterSelectedHandler(suggestion);
+    this.props.hitDiceAdvancementAction('reset');
+  }
+
+  handleHitDiceSelectChange(e) {
+    this.props.hitDiceAdvancementAction(parseInt(e.target.value));
   }
 
   componentDidMount() {
@@ -45,16 +53,23 @@ export class MonsterFinder extends Component {
   }
 
   render() {
-    const { monster } = this.props; //These props can be destructured to pull out any of the reducers (config, select, monster, s3Select, etc.)
-    //console.log(monster.statBlock.name)
+    const { monster, advancement } = this.props; //These props can be destructured to pull out any of the reducers (config, select, monster, s3Select, etc.)
+    console.log(monster.statBlock.name, monster.statBlock);
+    console.log("Hd change: ", advancement.hd, monster.statBlock.hitDice)
+    const diff = advancement.hd - monster.statBlock.hitDice;
+    const hdChange = (diff !== NaN) ? ({hd: diff}) : ({}); 
+    console.log("CHANGE HIT DICE BY ", hdChange)
+    const currentHitDice = (monster.statBlock && monster.statBlock.hitDice) ? monster.statBlock.hitDice : 0;
+    //<HitDiceAdvancementSelect currentHitDice={currentHitDice} selectedHitDice={advancement.hd} onSelect={this.handleHitDiceSelectChange} monsterKey={monster.statBlock.name}/>
     return (
       <div className="flex-container">
         <div className="flex-item">
-          <PathfinderMonsterAdvancer monster={monster}/>
+          <PathfinderMonsterAdvancer monster={monster} advancement={hdChange}/>
         </div>
         <div className="flex-item">
-          <div className="flexSelect">
+          <div className="flexSelect" style={{backgroundColor: 'white'}}>
             <MonsterSelect listItems={MonsterOptions.map(op => op.props.children)} onSelect={this.handleMonsterSelectChange}/>
+            <HitDiceAdvancementSelectMaterial currentHitDice={currentHitDice} selectedHitDice={advancement.hd} onSelect={this.handleHitDiceSelectChange}/>
           </div>
         </div>
     </div>
@@ -65,4 +80,4 @@ export class MonsterFinder extends Component {
 const mapStateToProps = state => state;
 
 
-export default connect(mapStateToProps, {keyPressHandler, monsterSelectedHandler})(MonsterFinder)
+export default connect(mapStateToProps, {keyPressHandler, monsterSelectedHandler, hitDiceAdvancementAction})(MonsterFinder)

@@ -6,7 +6,7 @@ import MonstersV2 from '../../models/MonstersV2';
 import {convertToMonsterForDisplay} from '../MonsterDisplayConverter/MonsterDisplayConverter'
 import {advanceMonster} from './AdvanceMonster'
 
-export class PathfinderMonsterAdvancer extends Component {
+export default class PathfinderMonsterAdvancer extends Component {
     render() {
         const opts = {
             // displayOptions: {
@@ -19,11 +19,12 @@ export class PathfinderMonsterAdvancer extends Component {
             ...this.props.monster,
             statBlock: monsterV2
         }
-        const advancement = {
-            //hd: 4,
-            //abilityScores: [{str: 2, dex: 4, reason: "Custom Ability Score Adjustments"}],
-            //size: 'Colossal'
-        }
+        // const advancement = {
+        //     //hd: 4,
+        //     //abilityScores: [{str: 2, dex: 4, reason: "Custom Ability Score Adjustments"}],
+        //     //size: 'Colossal'
+        // }
+        const advancement = this.props.advancement;
         const advancedMonsterChanges = advanceMonster(monster.statBlock, advancement);
         const newMonster = {
             ...monster.statBlock,
@@ -39,5 +40,3 @@ export class PathfinderMonsterAdvancer extends Component {
         return <MonsterDisplay monster={convertedMonster}/>
     }
 }
-
-export default connect(state => state, {})(PathfinderMonsterAdvancer)

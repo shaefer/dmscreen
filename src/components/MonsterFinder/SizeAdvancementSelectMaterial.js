@@ -54,7 +54,7 @@ class SizeAdvancementSelectMaterial extends React.Component {
 
     render() {
         const { classes } = this.props;
-        const sizeItems = ['Diminutive', 'Fine', 'Tiny', 'Small', 'Medium', 'Large', 'Huge', 'Gargantuan', 'Colossal'];
+        const sizeItems = ['Fine', 'Diminutive', 'Tiny', 'Small', 'Medium', 'Large', 'Huge', 'Gargantuan', 'Colossal'];
         return (<FormControl variant="outlined" className={classes.formControl}>
             <InputLabel ref={ref => {this.InputLabelRef = ref;}} htmlFor="outlined-size-native-simple">
                 Size

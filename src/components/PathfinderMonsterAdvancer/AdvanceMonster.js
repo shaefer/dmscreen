@@ -53,18 +53,30 @@ const hpChanges = (hitDice, hdType, creatureType, conBonus, chaBonus, size) => {
 }
 
 const changeAcMods = (acMods, acModChanges) => {
-    let changedMods = acMods;
+    console.log("Change AC Mod", acMods, acModChanges)
+    let changedMods = [...acMods];
     acModChanges.forEach(x => {
         changedMods = changeAcMod(changedMods, x);
     });
+    console.log(changedMods)
     return changedMods;
 }
 
 const changeAcMod = (origAcMods, acModChange) => {
-    return origAcMods.map(x => {
+    console.log("ChangeAcMod", origAcMods, acModChange)
+    const updatedMods = origAcMods.map(x => {
         if (x.type !== acModChange.type) return x;
         return {mod: x.mod + acModChange.mod, type: x.type};
     });
+    const isNewMod = (!origAcMods.find(x => x.type === acModChange.type));
+    if (isNewMod) {
+        return [
+            ...updatedMods,
+            acModChange
+        ];
+    } else {
+        return updatedMods;
+    }
 }
 
 const acFieldsFromMods = (acMods) => {
@@ -127,8 +139,8 @@ export const advanceBySize = (statblock, sizeChange) => {
         reason: `Changed size from ${startSize} to ${endSize}`
     }
     //Do remaining adjustments to fly, stealth, ac-size, ac-naturalArmor, attack, cmd, cmb 
-    const acNaturalArmorMod = {mod:totalChanges.naturalArmor, type: 'natural'};
-    const acSizeMod = {mod: totalChanges.ac, type: 'size'};
+    const acNaturalArmorMod = {mod:(totalChanges.naturalArmor) ? totalChanges.naturalArmor : 0, type: 'natural'};
+    const acSizeMod = {mod: (totalChanges.ac) ? totalChanges.ac : 0, type: 'size'};
     const acMods = changeAcMods(statblock.armor_class.ac_modifiers, [acNaturalArmorMod, acSizeMod]);
 
     const newSkills = statblock.skills.map(x => {

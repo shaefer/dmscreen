@@ -30,6 +30,7 @@ export class MonsterFinder extends Component {
   handleMonsterSelectChange(e, {suggestion}) {
     this.props.monsterSelectedHandler(suggestion);
     this.props.hitDiceAdvancementAction('reset');
+    this.props.sizeAdvancementAction('reset');
   }
 
   handleHitDiceSelectChange(e) {

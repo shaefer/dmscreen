@@ -123,7 +123,6 @@ export const getConstructBonusHitPoints = (size) => {
         Fine: 10,
         Small: 10,
         Tiny: 10,
-        Small: 10,
         Medium: 20,
         Large: 30,
         Huge: 40,

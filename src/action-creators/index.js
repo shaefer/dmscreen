@@ -1,7 +1,8 @@
 import React from 'react'
 import Keys from '../models/Keys'
 //import Monsters from '../models/AllMonsters'
-import { showMonster, selectMonsterOption, showS3SelectResult, display35Monster, monsterNotFound, advanceByHitDice, resetHitDiceAdvancement } from '../actions'
+import { showMonster, selectMonsterOption, showS3SelectResult, display35Monster, monsterNotFound, 
+    advanceByHitDice, resetHitDiceAdvancement, resetSizeAdvancement, advanceBySize } from '../actions'
 import MonstersApi from '../apiClients/MonsterApi'
 import rollTimeString from '../utils/ResultTimestamp'
 import PageViewRecorder from '../components/PageViewRecorder'
@@ -34,6 +35,12 @@ export const hitDiceAdvancementAction = (hitDice) => (dispatch) => {
     (hitDice === 'reset') 
         ? dispatch(resetHitDiceAdvancement()) 
         : dispatch(advanceByHitDice(hitDice))
+}
+
+export const sizeAdvancementAction = (value) => (dispatch) => {
+    (value === 'reset') 
+        ? dispatch(resetSizeAdvancement()) 
+        : dispatch(advanceBySize(value))
 }
 
 export const monsterSelectChangeHandler = (e) => (dispatch, getState) => {

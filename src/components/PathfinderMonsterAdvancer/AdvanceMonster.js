@@ -10,7 +10,7 @@ import Skills from './AdvancementTools/Skills'
 export const advanceMonster = (statblock, advancement) => {
     let advancedCreature = statblock;
     if (advancement.hd) {
-        const advancesFromHitDice = advanceByHitDice(statblock, advancement.hd);
+        const advancesFromHitDice = advanceByHitDice(statblock, advancement.hd - statblock.hitDice);
         advancedCreature = {
             ...statblock,
             ...advancesFromHitDice
@@ -187,7 +187,7 @@ export const advanceByAbilityScores = (statblock, abilityScoreChanges, chainedAd
     const newSkills = statblock.skills.map(x => {
         const skillName = x.name.trim();
         const skillInfo = Skills.find(x => x.name === skillName);
-        if (!skillInfo) throw `Did not find ${skillName}`
+        if (!skillInfo) throw new Error(`Did not find ${skillName}`)
         const skillStat = skillInfo.abilityScore;
         if (skillStat === 'Str') return {name: skillName, value: x.value + statBonusDiffs.str}
         if (skillStat === 'Dex') return {name: skillName, value: x.value + statBonusDiffs.dex}
@@ -195,6 +195,7 @@ export const advanceByAbilityScores = (statblock, abilityScoreChanges, chainedAd
         if (skillStat === 'Int') return {name: skillName, value: x.value + statBonusDiffs.int}
         if (skillStat === 'Wis') return {name: skillName, value: x.value + statBonusDiffs.wis}
         if (skillStat === 'Cha') return {name: skillName, value: x.value + statBonusDiffs.cha}
+        return {name: skillName, value: x.value};
     });
 
     const cmbChange = statBonusDiffs.str;

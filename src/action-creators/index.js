@@ -1,6 +1,5 @@
 import React from 'react'
 import Keys from '../models/Keys'
-//import Monsters from '../models/AllMonsters'
 import { showMonster, selectMonsterOption, showS3SelectResult, display35Monster, monsterNotFound, 
     advanceByHitDice, resetHitDiceAdvancement, resetSizeAdvancement, advanceBySize } from '../actions'
 import MonstersApi from '../apiClients/MonsterApi'

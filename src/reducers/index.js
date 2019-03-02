@@ -75,8 +75,21 @@ const advancement = (state = {}, action) => {
         ...state,
         hd: action.hitDice
       };
+    case Actions.ADVANCE_SIZE:
+      return {
+        ...state,
+        size: action.size
+      }
+    case Actions.ADVANCE_ABILITY_SCORE:
+      const newAbilityScores = {
+        ...state.ability_scores,
+        [action.abilityScore] : action.value
+      }
+      return {
+        ...state,
+        ...newAbilityScores
+      }
     case Actions.RESET_HD_ADVANCEMENT:
-      console.log('RESET HD ADVANCEMENT')
       const newHdState = {
         ...state
       };
@@ -88,11 +101,17 @@ const advancement = (state = {}, action) => {
       };
       delete newSizeState['size'];
       return newSizeState;
-    case Actions.ADVANCE_SIZE:
-    return {
-      ...state,
-      size: action.size
-    }
+    case Actions.RESET_ABILITY_SCORE_ADVANCEMENT:
+      const newAbilityScoreState = {
+        ...state
+      }
+      delete newAbilityScoreState['str'];
+      delete newAbilityScoreState['dex'];
+      delete newAbilityScoreState['con'];
+      delete newAbilityScoreState['int'];
+      delete newAbilityScoreState['wis'];
+      delete newAbilityScoreState['cha'];
+      return newAbilityScoreState;
     default:
       return state;
   }

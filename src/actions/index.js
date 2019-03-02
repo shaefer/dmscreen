@@ -53,3 +53,15 @@ export const RESET_SIZE_ADVANCEMENT = 'RESET_SIZE_ADVANCEMENT'
 export const resetSizeAdvancement = () => ({
     type: RESET_SIZE_ADVANCEMENT
 });
+
+export const ADVANCE_ABILITY_SCORE = 'ADVANCE_ABILITY_SCORE'
+export const advanceByAbilityScore = (value, abilityScore) => ({
+    type: ADVANCE_ABILITY_SCORE,
+    value: value,
+    abilityScore: abilityScore
+});
+
+export const RESET_ABILITY_SCORE_ADVANCEMENT = 'RESET_ABILITY_SCORE_ADVANCEMENT'
+export const resetAbilityScores = () => ({
+    type: RESET_ABILITY_SCORE_ADVANCEMENT
+});

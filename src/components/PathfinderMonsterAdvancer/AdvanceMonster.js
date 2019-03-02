@@ -40,6 +40,7 @@ export const advanceMonster = (statblock, advancement) => {
             ...advancedFromSize
         }
     }
+    console.log("ADVANCED CREATURE", advancedCreature)
     return {
         ...advancedCreature,
         advancedName: `${advancedCreature.name}${displayName(advancedCreature.advancements)}`
@@ -112,7 +113,7 @@ const acChanges = (origAcMods, statBonusDiffs) => {
     return acFieldsFromMods(acMods);
 }
 
-const combatManeuverChanges = (statblock, cmbChange, cmdChange) => {
+export const combatManeuverChanges = (statblock, cmbChange, cmdChange) => {
     const newCmb = statblock.cmb + cmbChange;
     const cmbSpecial = (statblock.special_abilities && statblock.special_abilities.find(x => x.name === 'Grab')) ? ` (${withPlus(newCmb + 4)} grapple)` : '';
     const cmbDisplay = withPlus(newCmb) + cmbSpecial;
@@ -121,12 +122,13 @@ const combatManeuverChanges = (statblock, cmbChange, cmdChange) => {
     const cmdSpecial = (statblock.cmd_details && statblock.cmd_details.indexOf('can\'t be tripped') !== -1) ? ' (can\'t be tripped)' : ''
     const cmdDisplay = newCmd + cmdSpecial;
 
-    return {
+    const result = {
         cmb: newCmb,
         cmb_details: cmbDisplay,
         cmd: newCmd,
         cmd_details: cmdDisplay,
     };
+    return result;
 }
 
 export const advanceBySize = (statblock, sizeChange) => {
@@ -225,7 +227,7 @@ export const advanceByAbilityScores = (statblock, abilityScoreChanges, chainedAd
     const cmbChange = statBonusDiffs.str;
     const cmdChange = statBonusDiffs.str + statBonusDiffs.dex;
     const combatManeuverFields = combatManeuverChanges(statblock, cmbChange, cmdChange);
-
+    console.log(combatManeuverFields)
     return {
         ...advancements,
         ...hpFields,

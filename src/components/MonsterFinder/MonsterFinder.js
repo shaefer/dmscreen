@@ -66,6 +66,9 @@ export class MonsterFinder extends Component {
     document.removeEventListener('keydown', this.handleKeyPress);
   }
 
+  //TODO: Handle missing cmb and cmd on a bunch of monsters.
+  //TODO: Adlet has &times; in attack string rather than an x
+  //TODO: Skills and knowledges getting updated by stats lose extras (knowledge loses subtype, any specific bonuses are also lost)
   render() {
     const { monster, advancement } = this.props; //These props can be destructured to pull out any of the reducers (config, select, monster, s3Select, etc.)
     return (

@@ -11,9 +11,11 @@ import MonsterOptions from '../MonsterOptions'
 import MonsterSelect from './MonsterSelect'
 
 import PageViewRecorder from '../../components/PageViewRecorder';
-import HitDiceAdvancementSelectMaterial from './HitDiceAdvancementSelectMaterial';
-import SizeAdvancementSelectMaterial from './SizeAdvancementSelectMaterial';
-import AbilityScoreAdvancementSelectMaterial from './AbilityScoreAdvancementSelectMaterial';
+import HitDiceAdvancementSelectMaterial from './subcomponents/HitDiceAdvancementSelectMaterial';
+import SizeAdvancementSelectMaterial from './subcomponents/SizeAdvancementSelectMaterial';
+import AbilityScoreAdvancementSelectMaterial from './subcomponents/AbilityScoreAdvancementSelectMaterial';
+
+import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 
 export class MonsterFinder extends Component {
   constructor(props) {
@@ -71,7 +73,17 @@ export class MonsterFinder extends Component {
   //TODO: Skills and knowledges getting updated by stats lose extras (knowledge loses subtype, any specific bonuses are also lost)
   render() {
     const { monster, advancement } = this.props; //These props can be destructured to pull out any of the reducers (config, select, monster, s3Select, etc.)
+    const theme = createMuiTheme({
+      overrides: {
+        MuiOutlinedInput: {
+          input: {
+            padding: 8,
+          }
+        }
+      }
+    });
     return (
+      <MuiThemeProvider theme={theme}>
       <div className="flex-container">
         <div className="flex-item">
           <PathfinderMonsterAdvancer monster={monster} advancement={advancement}/>
@@ -90,6 +102,7 @@ export class MonsterFinder extends Component {
           </div>
         </div>
     </div>
+    </MuiThemeProvider>
     );
   }
 }

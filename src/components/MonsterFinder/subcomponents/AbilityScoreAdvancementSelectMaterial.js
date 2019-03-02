@@ -14,13 +14,22 @@ const styles = theme => ({
     },
     formControl: {
       marginTop: theme.spacing.unit,
-      minWidth: 69,
-      maxWidth: 69,
+      minWidth: 68,
+      maxWidth: 68,
       backgroundColor: 'white',
     },
     selectEmpty: {
       marginTop: theme.spacing.unit * 2,
     },
+    overrides: {
+        MuiOutlinedInput: {
+          input: {
+            padding: 0,
+          },
+          root: {
+              padding:0
+          }
+        }}
   });
 
 class AbilityScoreAdvancementSelectMaterial extends React.Component {

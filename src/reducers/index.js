@@ -118,7 +118,7 @@ const advancement = (state = {}, action) => {
 }
 
 const rootReducer = combineReducers({
-  config, select, monster, s3Select, dmScreen, monsterAdvancer, form: formReducer, advancement
+  config, monster, s3Select, dmScreen, monsterAdvancer, form: formReducer, advancement
 })
 
 export default rootReducer

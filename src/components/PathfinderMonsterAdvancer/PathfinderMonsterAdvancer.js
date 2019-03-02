@@ -7,10 +7,10 @@ import {advanceMonster} from './AdvanceMonster'
 export default class PathfinderMonsterAdvancer extends Component {
     render() {
         const opts = {
-            // displayOptions: {
-            //     showStatBonuses: true,
-            //     showStatChanges: true,
-            // }
+            displayOptions: {
+                showStatBonuses: true,
+                showStatChanges: true,
+            }
         }
         const monsterV2 = MonstersV2.find(x => x.name === this.props.monster.statBlock.name); //current lookups use old data...how do we upgrade the data?
         const monster = {

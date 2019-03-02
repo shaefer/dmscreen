@@ -42,3 +42,14 @@ export const RESET_HD_ADVANCEMENT = 'RESET_HD_ADVANCEMENT'
 export const resetHitDiceAdvancement = () => ({
     type: RESET_HD_ADVANCEMENT
 });
+
+export const ADVANCE_SIZE = 'ADVANCE_SIZE'
+export const advanceBySize = (size) => ({
+    type: ADVANCE_SIZE,
+    size: size
+});
+
+export const RESET_SIZE_ADVANCEMENT = 'RESET_SIZE_ADVANCEMENT'
+export const resetSizeAdvancement = () => ({
+    type: RESET_SIZE_ADVANCEMENT
+});

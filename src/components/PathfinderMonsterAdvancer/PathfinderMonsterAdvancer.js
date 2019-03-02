@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux'
 import MonsterDisplay from '../MonsterDisplay'
-import Behir from '../../models/Behir_v9';
 import MonstersV2 from '../../models/MonstersV2';
 import {convertToMonsterForDisplay} from '../MonsterDisplayConverter/MonsterDisplayConverter'
 import {advanceMonster} from './AdvanceMonster'

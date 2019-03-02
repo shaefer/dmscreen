@@ -5,7 +5,7 @@ import './CreateAButtonForm.css'
 
 class CreateAButtonFormComponent extends Component {
     render() {
-        const { handleSubmit, showForm, toggleFormFunc } = this.props
+        const { handleSubmit, showForm } = this.props
         console.log("RENDER CREATE BUTTON FORM COMP", this.props, this.props.diceButtonNumOfDice, this.props.diceButtonNumOfSides, showForm);
         const visibleForm = () => {
             return (

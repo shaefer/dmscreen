@@ -24,7 +24,7 @@ const select = (state = { selectedMonsterName: Aasimar.name}, action) => {
   }
 }
 
-const monster = (state = { statBlock: MonstersV2.find(x => x.name == 'Aasimar'), success: true}, action) => {
+const monster = (state = { statBlock: MonstersV2.find(x => x.name === 'Aasimar'), success: true}, action) => {
   switch (action.type) {
     case Actions.SHOW_MONSTER: 
       return {
@@ -77,7 +77,22 @@ const advancement = (state = {}, action) => {
       };
     case Actions.RESET_HD_ADVANCEMENT:
       console.log('RESET HD ADVANCEMENT')
-      return {};
+      const newHdState = {
+        ...state
+      };
+      delete newHdState['hd'];
+      return newHdState;
+    case Actions.RESET_SIZE_ADVANCEMENT:
+      const newSizeState = {
+        ...state
+      };
+      delete newSizeState['size'];
+      return newSizeState;
+    case Actions.ADVANCE_SIZE:
+    return {
+      ...state,
+      size: action.size
+    }
     default:
       return state;
   }

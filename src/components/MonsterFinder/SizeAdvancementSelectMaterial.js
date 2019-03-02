@@ -23,58 +23,58 @@ const styles = theme => ({
     },
   });
 
-class HitDiceAdvancementSelectMaterial extends React.Component {
+class SizeAdvancementSelectMaterial extends React.Component {
     state = {
-        hd: '',
-        creatureOriginalHd: '',
+        size: '',
+        creatureOriginalSize: '',
         labelWidth: 0,
       };
     
       componentDidMount() {
-        const initialValue =  (this.props.selectedHitDice) ? this.props.selectedHitDice : this.props.originalHitDice;
+        const initialValue =  (this.props.selectedSize) ? this.props.selectedSize : this.props.originalSize;
         this.setState({
           labelWidth: ReactDOM.findDOMNode(this.InputLabelRef).offsetWidth,
-          hd: initialValue,
-          creatureOriginalHd: this.props.originalHitDice
+          size: initialValue,
+          creatureOriginalSize: this.props.originalSize
         });
       }
 
       componentWillReceiveProps(nextProps) {
-        const initialValue =  (nextProps.selectedHitDice) ? nextProps.selectedHitDice : nextProps.originalHitDice;
+        const initialValue =  (nextProps.selectedSize) ? nextProps.selectedSize : nextProps.originalSize;
           this.setState({
-              hd: initialValue,
-              creatureOriginalHd: nextProps.originalHitDice
+            size: initialValue,
+            creatureOriginalSize: nextProps.originalSize
           });
       }
     
       handleChange = name => event => {
         this.setState({ [name]: event.target.value });
-        this.props.onSelect(event)
+        this.props.onSelect(event) //this probably should pulled from state.
       };
 
     render() {
         const { classes } = this.props;
-        const hitDiceItems = [...Array(100).keys()];
+        const sizeItems = ['Fine', 'Diminutive', 'Tiny', 'Small', 'Medium', 'Large', 'Huge', 'Gargantuan', 'Colossal'];
         return (<FormControl variant="outlined" className={classes.formControl}>
-            <InputLabel ref={ref => {this.InputLabelRef = ref;}} htmlFor="outlined-hd-native-simple">
-                Hit Dice
+            <InputLabel ref={ref => {this.InputLabelRef = ref;}} htmlFor="outlined-size-native-simple">
+                Size
             </InputLabel>
             <Select
                 native
-                value={this.state.hd}
-                onChange={this.handleChange('hd')}
+                value={this.state.size}
+                onChange={this.handleChange('size')}
                 input={
                     <OutlinedInput
                     name="Hit Dice"
                     labelWidth={this.state.labelWidth}
-                    id="outlined-hd-native-simple"
+                    id="outlined-size-native-simple"
                     />
                 }
             >
-                {hitDiceItems.map(x => (<option value={x} key={`selectHd${x}`}>{(x === this.state.creatureOriginalHd) ? `Original HD (${x})` : x}</option>))}
+                {sizeItems.map(x => (<option value={x} key={`selectSize${x}`}>{(x === this.state.creatureOriginalSize) ? `Original Size (${x})` : x}</option>))}
             </Select>
         </FormControl>);
     }
 }
 
-export default withStyles(styles)(HitDiceAdvancementSelectMaterial);
+export default withStyles(styles)(SizeAdvancementSelectMaterial);

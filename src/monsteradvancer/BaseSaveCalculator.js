@@ -1,5 +1,3 @@
-import creatureStatsByType from './creatureStatsByType'
-
 export const calculateGoodSave = (hitDice) => {
     return Math.floor(hitDice / 2) + 2;
 }

@@ -29,10 +29,10 @@ class DungeonForceGraph2D extends React.Component {
             links
         }
 
-        const renderHoveredNodeLabel = (node) => {
-            const label = node.id;
-            return label;
-        }
+        // const renderHoveredNodeLabel = (node) => {
+        //     const label = node.id;
+        //     return label;
+        // }
 
         const renderCircleWithLabel = (node, ctx, globalScale) => {
             // Draw wider nodes by 1px on shadow canvas for more precise hovering (due to boundary anti-aliasing)

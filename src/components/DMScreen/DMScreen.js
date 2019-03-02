@@ -106,8 +106,8 @@ class DMScreen extends Component {
                 return <li><CRRangeButton crStart={x.crStart} crEnd={x.crEnd} numOfMonsters={x.numOfMonsters || 1}/></li>;
             } else {
                 console.log("Didn't render button: ", x)
+                return '';
             }
-
         });
 
         return (

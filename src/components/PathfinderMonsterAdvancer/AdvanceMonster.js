@@ -10,7 +10,7 @@ import Skills from './AdvancementTools/Skills'
 export const advanceMonster = (statblock, advancement) => {
     let advancedCreature = statblock;
     if (advancement.hd) {
-        const advancesFromHitDice = advanceByHitDice(statblock, advancement.hd);
+        const advancesFromHitDice = advanceByHitDice(statblock, advancement.hd - statblock.hitDice);
         advancedCreature = {
             ...statblock,
             ...advancesFromHitDice
@@ -53,18 +53,30 @@ const hpChanges = (hitDice, hdType, creatureType, conBonus, chaBonus, size) => {
 }
 
 const changeAcMods = (acMods, acModChanges) => {
-    let changedMods = acMods;
+    console.log("Change AC Mod", acMods, acModChanges)
+    let changedMods = [...acMods];
     acModChanges.forEach(x => {
         changedMods = changeAcMod(changedMods, x);
     });
+    console.log(changedMods)
     return changedMods;
 }
 
 const changeAcMod = (origAcMods, acModChange) => {
-    return origAcMods.map(x => {
+    console.log("ChangeAcMod", origAcMods, acModChange)
+    const updatedMods = origAcMods.map(x => {
         if (x.type !== acModChange.type) return x;
         return {mod: x.mod + acModChange.mod, type: x.type};
     });
+    const isNewMod = (!origAcMods.find(x => x.type === acModChange.type));
+    if (isNewMod) {
+        return [
+            ...updatedMods,
+            acModChange
+        ];
+    } else {
+        return updatedMods;
+    }
 }
 
 const acFieldsFromMods = (acMods) => {
@@ -127,8 +139,8 @@ export const advanceBySize = (statblock, sizeChange) => {
         reason: `Changed size from ${startSize} to ${endSize}`
     }
     //Do remaining adjustments to fly, stealth, ac-size, ac-naturalArmor, attack, cmd, cmb 
-    const acNaturalArmorMod = {mod:totalChanges.naturalArmor, type: 'natural'};
-    const acSizeMod = {mod: totalChanges.ac, type: 'size'};
+    const acNaturalArmorMod = {mod:(totalChanges.naturalArmor) ? totalChanges.naturalArmor : 0, type: 'natural'};
+    const acSizeMod = {mod: (totalChanges.ac) ? totalChanges.ac : 0, type: 'size'};
     const acMods = changeAcMods(statblock.armor_class.ac_modifiers, [acNaturalArmorMod, acSizeMod]);
 
     const newSkills = statblock.skills.map(x => {
@@ -187,7 +199,7 @@ export const advanceByAbilityScores = (statblock, abilityScoreChanges, chainedAd
     const newSkills = statblock.skills.map(x => {
         const skillName = x.name.trim();
         const skillInfo = Skills.find(x => x.name === skillName);
-        if (!skillInfo) throw `Did not find ${skillName}`
+        if (!skillInfo) throw new Error(`Did not find ${skillName}`)
         const skillStat = skillInfo.abilityScore;
         if (skillStat === 'Str') return {name: skillName, value: x.value + statBonusDiffs.str}
         if (skillStat === 'Dex') return {name: skillName, value: x.value + statBonusDiffs.dex}
@@ -195,6 +207,7 @@ export const advanceByAbilityScores = (statblock, abilityScoreChanges, chainedAd
         if (skillStat === 'Int') return {name: skillName, value: x.value + statBonusDiffs.int}
         if (skillStat === 'Wis') return {name: skillName, value: x.value + statBonusDiffs.wis}
         if (skillStat === 'Cha') return {name: skillName, value: x.value + statBonusDiffs.cha}
+        return {name: skillName, value: x.value};
     });
 
     const cmbChange = statBonusDiffs.str;

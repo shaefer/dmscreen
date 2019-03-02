@@ -25,7 +25,7 @@ const getRoomConnectionsToLinkGroupedRooms = (roomConnections) => {
         //all the connections we find can be removed from the list we still need to check...we've already touched them.
         connectionsToCheck = array_minus(connectionsToCheck, allConnectionsThatTouchRoom1);
         const allTouchingRooms = allConnectionsThatTouchRoom1.map(x => {
-            return (x.source == room1) ? x.target : x.source;
+            return (x.source === room1) ? x.target : x.source;
         });
 
         roomsToFollowLater = [...new Set(roomsToFollowLater.concat(allTouchingRooms))]; //unique set of rooms not yet followed.
@@ -33,8 +33,8 @@ const getRoomConnectionsToLinkGroupedRooms = (roomConnections) => {
         //remove current room if we have finished finding all its connections. //once we get 
         roomsFullyExplored.push(room1);
         //make sure rooms to explore later doesn't add back in rooms that have already been fully explored. So rooms to follow should not find any rooms that have a match in fully explored rooms.
-        roomsToFollowLater = roomsToFollowLater.filter(x => roomsFullyExplored.indexOf(x) == -1);
-        if (roomsToFollowLater.length == 0 && connectionsToCheck.length > 0) {
+        roomsToFollowLater = roomsToFollowLater.filter(x => roomsFullyExplored.indexOf(x) === -1);
+        if (roomsToFollowLater.length === 0 && connectionsToCheck.length > 0) {
             //we've finished all the links we found so far. But we might not have gone through all the remaining connections.
             //This should happen whenever the connections have founded distinct groups. So at this point we can save off the result in "groups" clear our fullExplored array and use the next node as a new starting point.
             groupedRooms.push(roomsFullyExplored.slice(0)); //array of arrays
@@ -72,10 +72,10 @@ const buildRooms = (numOfRooms) => {
         if (!room) {
             console.error("ROOM WAS UNDEFINED", room, availableRooms, selectedRoomIndex)
         }
-        if (selectedRoomIndex == 0) {
+        if (selectedRoomIndex === 0) {
             availableRooms.shift();
         }
-        else if (selectedRoomIndex == availableRooms.length - 1) {
+        else if (selectedRoomIndex === availableRooms.length - 1) {
             availableRooms.pop();
         }
         else {
@@ -94,7 +94,7 @@ const buildRooms = (numOfRooms) => {
     while(unconnectedRooms.length > 0) {
         const room = unconnectedRooms.shift(); //shift returns the first element while mutating the array underneath to an array without that value.
         const selectedRoomIndex = Math.floor(Math.random() * (namedRooms.length - 1));
-        const roomsToConnectTo =  namedRooms.filter(r => r.name != room.name);
+        const roomsToConnectTo =  namedRooms.filter(r => r.name !== room.name);
         const roomToConnectTo = roomsToConnectTo[selectedRoomIndex];
         roomConnections.push({source:room, target:roomToConnectTo, key:room.key + "," + roomToConnectTo.key});
     }

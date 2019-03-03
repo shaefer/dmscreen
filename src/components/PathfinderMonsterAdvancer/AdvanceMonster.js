@@ -16,8 +16,18 @@ export const advanceMonster = (statblock, advancement) => {
             ...advancesFromHitDice
         };
     }
-    if (advancement.abilityScores) {
-        const advancesFromAbilityScores = advanceByAbilityScores(advancedCreature, advancement.abilityScores);
+    if (advancement.str || advancement.dex || advancement.con || advancement.int || advancement.wis || advancement.cha) {
+        //abilityScores: [{str: 2, dex: 4, reason: "Custom Ability Score Adjustments"}],
+        const statAdvancementsMerged = {reason: 'User Customized Ability Scores'};
+        if (advancement.str) statAdvancementsMerged.str = advancement.str - statblock.ability_scores.str;
+        if (advancement.dex) statAdvancementsMerged.dex = advancement.dex - statblock.ability_scores.dex;
+        if (advancement.con) statAdvancementsMerged.con = advancement.con - statblock.ability_scores.con;
+        if (advancement.int) statAdvancementsMerged.int = advancement.int - statblock.ability_scores.int;
+        if (advancement.wis) statAdvancementsMerged.wis = advancement.wis - statblock.ability_scores.wis;
+        if (advancement.cha) statAdvancementsMerged.cha = advancement.cha - statblock.ability_scores.cha;
+        
+        console.log('Advance by ability scores', statAdvancementsMerged)
+        const advancesFromAbilityScores = advanceByAbilityScores(advancedCreature, [statAdvancementsMerged]);
         advancedCreature = {
             ...advancedCreature,
             ...advancesFromAbilityScores,
@@ -30,6 +40,7 @@ export const advanceMonster = (statblock, advancement) => {
             ...advancedFromSize
         }
     }
+    console.log("ADVANCED CREATURE", advancedCreature)
     return {
         ...advancedCreature,
         advancedName: `${advancedCreature.name}${displayName(advancedCreature.advancements)}`
@@ -102,7 +113,7 @@ const acChanges = (origAcMods, statBonusDiffs) => {
     return acFieldsFromMods(acMods);
 }
 
-const combatManeuverChanges = (statblock, cmbChange, cmdChange) => {
+export const combatManeuverChanges = (statblock, cmbChange, cmdChange) => {
     const newCmb = statblock.cmb + cmbChange;
     const cmbSpecial = (statblock.special_abilities && statblock.special_abilities.find(x => x.name === 'Grab')) ? ` (${withPlus(newCmb + 4)} grapple)` : '';
     const cmbDisplay = withPlus(newCmb) + cmbSpecial;
@@ -111,12 +122,13 @@ const combatManeuverChanges = (statblock, cmbChange, cmdChange) => {
     const cmdSpecial = (statblock.cmd_details && statblock.cmd_details.indexOf('can\'t be tripped') !== -1) ? ' (can\'t be tripped)' : ''
     const cmdDisplay = newCmd + cmdSpecial;
 
-    return {
+    const result = {
         cmb: newCmb,
         cmb_details: cmbDisplay,
         cmd: newCmd,
         cmd_details: cmdDisplay,
     };
+    return result;
 }
 
 export const advanceBySize = (statblock, sizeChange) => {
@@ -193,7 +205,9 @@ export const advanceByAbilityScores = (statblock, abilityScoreChanges, chainedAd
 
     const acFields = acChanges(statblock.armor_class.ac_modifiers.slice(0), statBonusDiffs);
     const hpFields = hpChanges(newHitDice, statblock.hdType, statblock.creature_type, statBonusFromAbilityScore(newAbilityScores.con), statBonusFromAbilityScore(newAbilityScores.cha), statblock.size);
-    const advancements = (chainedAdvancement) ? {} : {advancements: [...statblock.advancements, `Stats Altered`]};
+    console.log("ADV", statblock.advancements)
+    const existingAdvancements = (statblock.advancements) ? statblock.advancements : [];
+    const advancements = (chainedAdvancement) ? {} : {advancements: [...existingAdvancements, `Stats Altered`]};
     const existingAbilityScoreChanges = (statblock.abilityScoreChanges) ? statblock.abilityScoreChanges : [];
 
     const newSkills = statblock.skills.map(x => {
@@ -213,7 +227,7 @@ export const advanceByAbilityScores = (statblock, abilityScoreChanges, chainedAd
     const cmbChange = statBonusDiffs.str;
     const cmdChange = statBonusDiffs.str + statBonusDiffs.dex;
     const combatManeuverFields = combatManeuverChanges(statblock, cmbChange, cmdChange);
-
+    console.log(combatManeuverFields)
     return {
         ...advancements,
         ...hpFields,

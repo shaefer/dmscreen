@@ -5,14 +5,17 @@ import './MonsterFinder.css';
 import '../../css/ReactSelectCustom.css';
 
 import { connect } from 'react-redux'
-import {keyPressHandler, monsterSelectedHandler, hitDiceAdvancementAction, sizeAdvancementAction} from '../../action-creators'
+import {keyPressHandler, monsterSelectedHandler, hitDiceAdvancementAction, sizeAdvancementAction, abilityScoreAdvancementAction} from '../../action-creators'
 import PathfinderMonsterAdvancer from '../PathfinderMonsterAdvancer/PathfinderMonsterAdvancer'
 import MonsterOptions from '../MonsterOptions'
 import MonsterSelect from './MonsterSelect'
 
 import PageViewRecorder from '../../components/PageViewRecorder';
-import HitDiceAdvancementSelectMaterial from './HitDiceAdvancementSelectMaterial';
-import SizeAdvancementSelectMaterial from './SizeAdvancementSelectMaterial';
+import HitDiceAdvancementSelectMaterial from './subcomponents/HitDiceAdvancementSelectMaterial';
+import SizeAdvancementSelectMaterial from './subcomponents/SizeAdvancementSelectMaterial';
+import AbilityScoreAdvancementSelectMaterial from './subcomponents/AbilityScoreAdvancementSelectMaterial';
+
+import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 
 export class MonsterFinder extends Component {
   constructor(props) {
@@ -21,6 +24,7 @@ export class MonsterFinder extends Component {
     this.handleMonsterSelectChange = this.handleMonsterSelectChange.bind(this);
     this.handleHitDiceSelectChange = this.handleHitDiceSelectChange.bind(this);
     this.handleSizeSelectChange = this.handleSizeSelectChange.bind(this);
+    this.handleAbilityScoreSelectChange = this.handleAbilityScoreSelectChange.bind(this);
   }
 
   handleKeyPress(e) {
@@ -31,6 +35,7 @@ export class MonsterFinder extends Component {
     this.props.monsterSelectedHandler(suggestion);
     this.props.hitDiceAdvancementAction('reset');
     this.props.sizeAdvancementAction('reset');
+    this.props.abilityScoreAdvancementAction('resetall');
   }
 
   handleHitDiceSelectChange(e) {
@@ -39,6 +44,12 @@ export class MonsterFinder extends Component {
 
   handleSizeSelectChange(e) {
     this.props.sizeAdvancementAction(e.target.value);
+  } 
+
+  handleAbilityScoreSelectChange(e, abilityScore) {
+    //where abilityScore is the identifier like 'Str'
+    console.log(e.target.value, abilityScore);
+    this.props.abilityScoreAdvancementAction(parseInt(e.target.value), abilityScore);
   }
 
   componentDidMount() {
@@ -57,9 +68,22 @@ export class MonsterFinder extends Component {
     document.removeEventListener('keydown', this.handleKeyPress);
   }
 
+  //TODO: Handle missing cmb and cmd on a bunch of monsters.
+  //TODO: Adlet has &times; in attack string rather than an x
+  //TODO: Skills and knowledges getting updated by stats lose extras (knowledge loses subtype, any specific bonuses are also lost)
   render() {
     const { monster, advancement } = this.props; //These props can be destructured to pull out any of the reducers (config, select, monster, s3Select, etc.)
+    const theme = createMuiTheme({
+      overrides: {
+        MuiOutlinedInput: {
+          input: {
+            padding: 8,
+          }
+        }
+      }
+    });
     return (
+      <MuiThemeProvider theme={theme}>
       <div className="flex-container">
         <div className="flex-item">
           <PathfinderMonsterAdvancer monster={monster} advancement={advancement}/>
@@ -69,9 +93,16 @@ export class MonsterFinder extends Component {
             <MonsterSelect listItems={MonsterOptions.map(op => op.props.children)} onSelect={this.handleMonsterSelectChange}/>
             <HitDiceAdvancementSelectMaterial originalHitDice={monster.statBlock.hitDice} selectedHitDice={advancement.hd} onSelect={this.handleHitDiceSelectChange}/>
             <SizeAdvancementSelectMaterial originalSize={monster.statBlock.size} selectedSize={advancement.size} onSelect={this.handleSizeSelectChange} />
+            <AbilityScoreAdvancementSelectMaterial originalValue={monster.statBlock.ability_scores.str} selectedValue={advancement.str} abilityScore={"Str"} onSelect={this.handleAbilityScoreSelectChange}/>
+            <AbilityScoreAdvancementSelectMaterial originalValue={monster.statBlock.ability_scores.dex} selectedValue={advancement.dex} abilityScore={"Dex"} onSelect={this.handleAbilityScoreSelectChange}/>
+            <AbilityScoreAdvancementSelectMaterial originalValue={monster.statBlock.ability_scores.con} selectedValue={advancement.con} abilityScore={"Con"} onSelect={this.handleAbilityScoreSelectChange}/>
+            <AbilityScoreAdvancementSelectMaterial originalValue={monster.statBlock.ability_scores.int} selectedValue={advancement.int} abilityScore={"Int"} onSelect={this.handleAbilityScoreSelectChange}/>
+            <AbilityScoreAdvancementSelectMaterial originalValue={monster.statBlock.ability_scores.wis} selectedValue={advancement.wis} abilityScore={"Wis"} onSelect={this.handleAbilityScoreSelectChange}/>
+            <AbilityScoreAdvancementSelectMaterial originalValue={monster.statBlock.ability_scores.cha} selectedValue={advancement.cha} abilityScore={"Cha"} onSelect={this.handleAbilityScoreSelectChange}/>
           </div>
         </div>
     </div>
+    </MuiThemeProvider>
     );
   }
 }
@@ -79,4 +110,4 @@ export class MonsterFinder extends Component {
 const mapStateToProps = state => state;
 
 
-export default connect(mapStateToProps, {keyPressHandler, monsterSelectedHandler, hitDiceAdvancementAction, sizeAdvancementAction})(MonsterFinder)
+export default connect(mapStateToProps, {keyPressHandler, monsterSelectedHandler, hitDiceAdvancementAction, sizeAdvancementAction, abilityScoreAdvancementAction})(MonsterFinder)

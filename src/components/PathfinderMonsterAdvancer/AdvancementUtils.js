@@ -6,7 +6,7 @@ export const calcAvgHitPoints = (hd, hdType) => {
 }
 
 export const hpDisplay = (hd, hdType, bonusHp) => {
-    const bonusHpStr = (bonusHp > 0) ? "+"+bonusHp : bonusHp;
+    const bonusHpStr = (bonusHp >= 0) ? "+"+bonusHp : bonusHp;
     return calcAvgHitPoints(hd, hdType) + bonusHp + " (" + hd + "d" + hdType + bonusHpStr + ")";
 }
 

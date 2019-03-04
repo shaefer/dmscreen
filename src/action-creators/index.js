@@ -8,6 +8,7 @@ import rollTimeString from '../utils/ResultTimestamp'
 import PageViewRecorder from '../components/PageViewRecorder'
 import { showS3SelectDMScreenResult, addDmScreenResult } from '../actions/DmScreenActions'
 import MonsterDisplay from '../components/MonsterDisplay'
+import PathfinderMonsterAdvancer from '../components/PathfinderMonsterAdvancer/PathfinderMonsterAdvancer'
 
 import {
     Accordion,
@@ -146,7 +147,7 @@ const chooseMonster = (monsters, searchParamsAsHtmlParams, numOfMonsters, search
                                         </div>
                                     </AccordionItemTitle>
                                     <AccordionItemBody>
-                                        <MonsterDisplay monster={{statBlock: data, success: true}}/>
+                                        <PathfinderMonsterAdvancer monster={{statBlock: data, success: true}} advancement={{}}/>
                                     </AccordionItemBody>
                                 </AccordionItem>
                             </Accordion>

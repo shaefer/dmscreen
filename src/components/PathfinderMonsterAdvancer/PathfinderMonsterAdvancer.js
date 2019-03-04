@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import MonsterDisplay from '../MonsterDisplay'
-import MonstersV2 from '../../models/MonstersV2';
 import {convertToMonsterForDisplay} from '../MonsterDisplayConverter/MonsterDisplayConverter'
 import {advanceMonster} from './AdvanceMonster'
 
@@ -12,10 +11,8 @@ export default class PathfinderMonsterAdvancer extends Component {
                 showStatChanges: true,
             }
         }
-        const monsterV2 = MonstersV2.find(x => x.name === this.props.monster.statBlock.name); //current lookups use old data...how do we upgrade the data?
         const monster = {
             ...this.props.monster,
-            statBlock: monsterV2
         }
         // const advancement = {
         //     //hd: 4,

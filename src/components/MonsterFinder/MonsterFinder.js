@@ -9,6 +9,7 @@ import {keyPressHandler, monsterSelectedHandler, hitDiceAdvancementAction, sizeA
 import PathfinderMonsterAdvancer from '../PathfinderMonsterAdvancer/PathfinderMonsterAdvancer'
 import MonsterOptions from '../MonsterOptions'
 import MonsterSelect from './MonsterSelect'
+import Aasimar from '../../models/AasimarV2'
 
 import PageViewRecorder from '../../components/PageViewRecorder';
 import HitDiceAdvancementSelectMaterial from './subcomponents/HitDiceAdvancementSelectMaterial';
@@ -72,7 +73,7 @@ export class MonsterFinder extends Component {
   //TODO: Adlet has &times; in attack string rather than an x
   //TODO: Skills and knowledges getting updated by stats lose extras (knowledge loses subtype, any specific bonuses are also lost)
   render() {
-    const { monster, advancement } = this.props; //These props can be destructured to pull out any of the reducers (config, select, monster, s3Select, etc.)
+    let { monster, advancement } = this.props; //These props can be destructured to pull out any of the reducers (config, select, monster, s3Select, etc.)
     const theme = createMuiTheme({
       overrides: {
         MuiOutlinedInput: {
@@ -82,6 +83,9 @@ export class MonsterFinder extends Component {
         }
       }
     });
+    console.log("MONSTER FINDER RENDER", monster)
+    monster = (monster.success) ? monster : { success: true, statBlock: Aasimar};
+    console.log("ACTUAL RENDER", monster)
     return (
       <MuiThemeProvider theme={theme}>
       <div className="flex-container">

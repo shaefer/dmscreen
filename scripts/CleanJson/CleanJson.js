@@ -7,6 +7,7 @@
 //Similar Script to rename some of these files?
 import AWS from 'aws-sdk'
 import fs from 'fs'
+import MonstersV2 from './MonstersV2'
 
 console.log("Starting AWS Script");
 const s3 = new AWS.S3();
@@ -16,6 +17,42 @@ const params = {
     Prefix: "pathfinder/v1/monsters/",
     MaxKeys: 1000
 };
+
+const writeAllMonstersToS3 = () => {
+    MonstersV2.map(x => {
+        writeS3JsonFileForMonster(x);
+    });
+}
+
+const writeS3JsonFileForMonster = (monster, bucket='cleverorc', path='pathfinder/v2/monsters/') => {
+    const monsterKey = `${path}${monster.name}.json`;
+    const s3PutParams = {
+        Body: JSON.stringify(monster), 
+        Bucket: bucket,
+        Key: monsterKey
+    };
+
+    s3.putObject(s3PutParams, (err, data) => {
+        if (err) console.log(err, err.stack); // an error occurred
+        else     console.log(data);           // successful response
+    });
+}
+
+const getMonsterFromS3 = (monsterName, bucket='cleverorc', path='pathfinder/v2/monsters/') => {
+    const monsterKey = `${path}${monsterName}.json`;
+    const getParams = {
+        Bucket: bucket,
+        Key: monsterKey
+    }
+    s3.getObject(getParams, (err, data) => {
+        if (err) console.log(err, err.stack); // an error occurred
+        else     console.log(JSON.parse(data.Body.toString()).ability_scores.str);           // successful response
+    });
+}
+
+//writeS3JsonFileForMonster(MonstersV2.find(x => x.name === 'Aasimar'))
+//writeAllMonstersToS3();
+getMonsterFromS3('Aasimar')
 
 const writeS3DataToFile = (err, data, fileName) => {
     if (err) { console.log(err, err.stack); return; }
@@ -78,4 +115,4 @@ const listObjectsCallback = (err, data) => {
     }
 };
 
-s3.listObjects(params, listObjectsCallback);
+//s3.listObjects(params, listObjectsCallback);

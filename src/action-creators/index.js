@@ -8,7 +8,6 @@ import rollTimeString from '../utils/ResultTimestamp'
 import PageViewRecorder from '../components/PageViewRecorder'
 import { showS3SelectDMScreenResult, addDmScreenResult } from '../actions/DmScreenActions'
 import MonsterDisplay from '../components/MonsterDisplay'
-import MonstersV2 from '../models/MonstersV2';
 
 import {
     Accordion,
@@ -75,12 +74,6 @@ export const monsterSelectedHandler = (monsterName) => (dispatch) => {
                 action: monsterName
             });
             return data;
-        })
-        .then(data => {
-            console.log("Monster found", data)
-            const v2Monster = MonstersV2.find(x => x.name === data.name);
-            if (!v2Monster) console.log("DID NOT FIND: " + data.name)
-            return (v2Monster) ? v2Monster : data;
         })
         .then(data => { 
             (data) ? dispatch(showMonster(data)) : dispatch(monsterNotFound(monsterName))

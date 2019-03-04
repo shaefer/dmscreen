@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "dependencies": {
-    "aws-sdk": "^2.224.1",
+    "aws-sdk": "^2.413.0",
     "fs": "0.0.1-security"
   },
   "scripts": {
@@ -14,7 +14,7 @@
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
-    "babel-preset-env": "^1.6.1",
-    "npx": "^10.0.1"
+    "babel-preset-env": "^1.7.0",
+    "npx": "^10.2.0"
   }
 }

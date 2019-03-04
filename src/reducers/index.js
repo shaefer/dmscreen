@@ -1,8 +1,7 @@
 import { combineReducers } from 'redux'
 import { reducer as formReducer } from 'redux-form'
 import * as Actions from '../actions'
-import Aasimar from '../models/Aasimar'
-import MonstersV2 from '../models/MonstersV2'
+import Aasimar from '../models/AasimarV2'
 import dmScreen from './DMScreenReducer'
 
 const config = (state = { initialState: "basicConfig"}, action) => {
@@ -24,7 +23,7 @@ const select = (state = { selectedMonsterName: Aasimar.name}, action) => {
   }
 }
 
-const monster = (state = { statBlock: MonstersV2.find(x => x.name === 'Aasimar'), success: true}, action) => {
+const monster = (state = { statBlock: Aasimar, success: true}, action) => {
   switch (action.type) {
     case Actions.SHOW_MONSTER: 
       return {

@@ -49,9 +49,6 @@ export const getMonstersByCriteria = (criteria) => {
 export const getMonsterByName = (monsterName) => {
     if (!monsterName) return;
     console.log("ABOUT TO GET: " + monsterName);
-    let monsterKey = monsterName.toLowerCase()
-        .replace(new RegExp("[,()']", 'g'), "")
-        .replace(new RegExp(" ", 'g'), "_");
 
     // const baseKey = monsterKey.substring(0, nthIndexOf(monsterKey, "_", 3));
     // const baseMonster = (monsterKey.startsWith("dragon_")) ? Monsters[baseKey] : undefined;
@@ -65,7 +62,10 @@ export const getMonsterByName = (monsterName) => {
     //     return dispatch(showMonster(mergedMonster));
     // }
     // return dispatch(showMonster(monster));
-    return fetch(`https://api.cleverorc.com/monsters/${monsterKey}`)
+
+    const url = `https://api.cleverorc.com/monsters/${monsterName}`;
+    //const url = `https://gu98gc7rqj.execute-api.us-west-2.amazonaws.com/alpha/monsters/${monsterName}`;
+    return fetch(url)
         .then(resp => resp.json())
         .catch(err => console.log(err));
 }

@@ -64,7 +64,6 @@ export const getMonsterByName = (monsterName) => {
     // return dispatch(showMonster(monster));
 
     const url = `https://api.cleverorc.com/monsters/${monsterName}`;
-    //const url = `https://gu98gc7rqj.execute-api.us-west-2.amazonaws.com/alpha/monsters/${monsterName}`;
     return fetch(url)
         .then(resp => resp.json())
         .catch(err => console.log(err));

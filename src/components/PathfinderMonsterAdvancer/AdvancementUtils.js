@@ -77,7 +77,7 @@ export const applyAbilityScoreChanges = (abilityScores, changes) => {
 }
 
 //TODO: There is a MonsterConstants file we should decide if we should use for these magic strings.
-const IsFortSaveGood = (creatureTypeInfo) => {
+export const IsFortSaveGood = (creatureTypeInfo) => {
     if (creatureTypeInfo.creature_type !== 'Humanoid' && creatureTypeInfo.creature_type !== 'Outsider') {
         return creatureTypeInfo.good_saving_throws.indexOf("Fort") !== -1;
     } else {
@@ -85,7 +85,7 @@ const IsFortSaveGood = (creatureTypeInfo) => {
     }
 }
 
-const IsRefSaveGood = (creatureTypeInfo) => {
+export const IsRefSaveGood = (creatureTypeInfo) => {
     if (creatureTypeInfo.creature_type !== 'Humanoid' && creatureTypeInfo.creature_type !== 'Outsider') {
         return creatureTypeInfo.good_saving_throws.indexOf("Ref") !== -1;
     } else {
@@ -93,7 +93,7 @@ const IsRefSaveGood = (creatureTypeInfo) => {
     }
 }
 
-const IsWillSaveGood = (creatureTypeInfo) => {
+export const IsWillSaveGood = (creatureTypeInfo) => {
     if (creatureTypeInfo.creature_type !== 'Humanoid' && creatureTypeInfo.creature_type !== 'Outsider') {
         return creatureTypeInfo.good_saving_throws.indexOf("Will") !== -1;
     } else {
@@ -101,8 +101,12 @@ const IsWillSaveGood = (creatureTypeInfo) => {
     }
 }
 
+export const getCreatureTypeInfo = (creatureType) => {
+    return creatureStatsByType.find(x => x.creature_type.toLowerCase() === creatureType.toLowerCase());
+}
+
 export const getSavingThrowChangesFromHitDice = (statblock, newHitDice) => {
-    const currentCreatureTypeInfo = creatureStatsByType.find(x => x.creature_type.toLowerCase() === statblock.creature_type.toLowerCase());
+    const currentCreatureTypeInfo = getCreatureTypeInfo(statblock.creature_type);
 
     const goodSaveChange = calculateGoodSaveChange(statblock.hitDice, newHitDice);
     const badSaveChange = calculateBadSaveChange(statblock.hitDice, newHitDice);

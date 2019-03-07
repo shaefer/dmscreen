@@ -40,4 +40,4 @@ it('advance by hit dice creates advancename field', () => {
     expect(behirPlus4Hd.advancements[0]).toBe("Advanced 4 Hit Dice");
 });
 
-
+//TODO: Should each advancement provide a calculated change to CR? That might be awesome.

@@ -8,9 +8,11 @@ const parseAttacks = (line) => {
     const json = JSON.parse(line);
 
     //split attacks on " or " and then on "," (and trim any whitespace)
+    
     if (json.melee) {
-        const attackSequences = (json.name !== 'Inevitable, Marut') ? json.melee.split(" or ") : [json.melee];
-        if (attackSequences.length > 2) console.log("HAS MORE THAN 2 ATTACK SEQUENCES", json.name, json.melee)
+        const melee = cleanHtml(json.melee);
+        const attackSequences = (json.name !== 'Inevitable, Marut') ? melee.split(" or ") : [melee];
+        if (attackSequences.length > 2) console.log("HAS MORE THAN 2 ATTACK SEQUENCES", json.name, melee)
         const fullAttacks = attackSequences.map(x => {
             const regex = /,? ?([\+\d+]*[ a-zA-Z\*\,\d]*)([\/?\+?\-?\d*]*) ?(melee touch|touch|melee)* ?(\([^\)]+\))*/g;
             const matches = getCaptureGroups(regex, x);
@@ -38,19 +40,26 @@ const parseAttacks = (line) => {
 
             const fullAttackText = displayFullAttack(fullAttacks);
 
-            const diffMeasure = getEditDistance(json.melee, fullAttackText);
+            const diffMeasure = getEditDistance(melee, fullAttackText);
 
             if (diffMeasure > 1) {
                 console.log("--------------" + json.name + "------------")
                 console.log(json.name, diffMeasure)
-                console.log(json.melee)
+                console.log(melee)
                 console.log(fullAttackText)
             }
-        //if (fullAttackText !== json.melee) console.log(json.name, fullAttackText, json.melee)
     }
     
     const result = JSON.stringify(json) + "\n";
     return {result: result, success: true, id: json.name};
+}
+
+const cleanHtml = (str) => {
+    //remove <p class="stat-block-2">
+    //remove </p>
+    const strWithoutPStart = str.replace('<p class="stat-block-2">', '');
+    const cleanStr = strWithoutPStart.replace('</p>', '');
+    return cleanStr;
 }
 
 const displayFullAttack = (fullAttacks) => {

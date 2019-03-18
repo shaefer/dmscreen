@@ -12,7 +12,7 @@ const parseAttacks = (line) => {
     
     if (json.melee) {
         const melee = cleanHtml(json.melee);
-        const attackSequences = (json.name !== 'Inevitable, Marut') ? melee.split(" or ") : [melee];
+        const attackSequences = (json.name !== 'Inevitable, Marut' && json.name !== 'Julunggali') ? melee.split(" or ") : [melee];
         //if (attackSequences.length > 2) console.log("HAS MORE THAN 2 ATTACK SEQUENCES", json.name, melee)
         const fullAttacks = attackSequences.map(x => {
             const regex = /,? ?([\dd\+\d ]*[\+\d]*[ a-zA-Z\*\,\d]*)([\/?\+?\-?\d*]*) ?(melee touch|touch|melee)* ?(\([^\)]+\))*/g;
@@ -45,9 +45,9 @@ const parseAttacks = (line) => {
 
             if (diffMeasure > 1) {
                 //console.log("--------------" + json.name + "------------")
-                console.log(json.name, diffMeasure, melee)
-                //console.log(melee)
-                //console.log(fullAttackText)
+                console.log(json.name, diffMeasure)
+                console.log(melee)
+                console.log(fullAttackText)
             }
     }
     

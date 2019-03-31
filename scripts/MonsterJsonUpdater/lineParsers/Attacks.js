@@ -106,8 +106,8 @@ const parseRangedAttacks = (line) => {
                 console.log(fullAttackText)
 
             } else {
-                // json.ranged = fullAttackText;
-                // json.ranged_attacks = fullAttacks;
+                json.ranged = fullAttackText;
+                json.ranged_attacks = fullAttacks;
             }
     }
 
@@ -116,8 +116,6 @@ const parseRangedAttacks = (line) => {
 }
 
 const cleanHtml = (str) => {
-    //remove <p class="stat-block-2">
-    //remove </p>
     const strWithoutPStart = str.replace('<p class="stat-block-2">', '');
     const cleanStr = strWithoutPStart.replace('</p>', '');
     return cleanStr;

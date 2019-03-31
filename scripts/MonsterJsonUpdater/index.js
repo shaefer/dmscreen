@@ -67,6 +67,9 @@ processFile(options.src, "files/output/allCreatures_"+dateString+".json", parseA
 //v7 stats into object and saving throws into object and armor_class into object
 //v8 parsed special abilities into field with meta data about savingThrows.
 //v9 parsed skills into new fields skills and skills_details
+//v10-11 cleanup
+//v12 parsed melee attacks
+//v13 parsed ranged attacks
 
 //DONE parse all stats into fields containing just the ints
 //DONE parse ac into individual fields and mods

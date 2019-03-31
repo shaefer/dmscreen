@@ -51,7 +51,7 @@ const getMonsterFromS3 = (monsterName, bucket='cleverorc', path='pathfinder/v2/m
 }
 
 //writeS3JsonFileForMonster(MonstersV2.find(x => x.name === 'Couatl'))
-writeAllMonstersToS3();
+//writeAllMonstersToS3();
 getMonsterFromS3('Couatl')
 
 const writeS3DataToFile = (err, data, fileName) => {

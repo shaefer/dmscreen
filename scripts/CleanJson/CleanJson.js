@@ -34,7 +34,7 @@ const writeS3JsonFileForMonster = (monster, bucket='cleverorc', path='pathfinder
 
     s3.putObject(s3PutParams, (err, data) => {
         if (err) console.log(err, err.stack); // an error occurred
-        else     console.log(data);           // successful response
+        else     console.log(`${monster.name} SUCCESSFULLY UPDATED`, data);           // successful response
     });
 }
 
@@ -50,9 +50,9 @@ const getMonsterFromS3 = (monsterName, bucket='cleverorc', path='pathfinder/v2/m
     });
 }
 
-//writeS3JsonFileForMonster(MonstersV2.find(x => x.name === 'Aasimar'))
-//writeAllMonstersToS3();
-getMonsterFromS3('Aasimar')
+//writeS3JsonFileForMonster(MonstersV2.find(x => x.name === 'Couatl'))
+writeAllMonstersToS3();
+getMonsterFromS3('Couatl')
 
 const writeS3DataToFile = (err, data, fileName) => {
     if (err) { console.log(err, err.stack); return; }

@@ -5,13 +5,14 @@ import getCaptureGroups from '../utils/RegexHelper';
 //,? ?([\+\d+]*[ a-zA-Z\*\,\d]*)([\/?\+?\-?\d*]*) ?(touch|melee|melee touch)* ?(\([^\)]+\))*
 //,? ?([\+\d+]*[ a-zA-Z\*\,\d]*)([\/?\+?\-?\d*]*) ?(melee touch|touch|melee)* ?(\([^\)]+\))*
 //,? ?([\dd\+\d ]*[\+\d]*[ a-zA-Z\*\,\d]*)([\/?\+?\-?\d*]*) ?(melee touch|touch|melee)* ?(\([^\)]+\))*
-const parseAttacks = (line) => {
+const parseMeleeAttacks = (line) => {
     const json = JSON.parse(line);
 
     //split attacks on " or " and then on "," (and trim any whitespace)
     
     if (json.melee) {
         const melee = cleanHtml(json.melee);
+        json.melee = melee;
         const attackSequences = (json.name !== 'Inevitable, Marut' && json.name !== 'Julunggali') ? melee.split(" or ") : [melee];
         //if (attackSequences.length > 2) console.log("HAS MORE THAN 2 ATTACK SEQUENCES", json.name, melee)
         const fullAttacks = attackSequences.map(x => {
@@ -43,14 +44,73 @@ const parseAttacks = (line) => {
 
             const diffMeasure = getEditDistance(melee, fullAttackText);
 
-            if (diffMeasure > 1) {
+            if (diffMeasure > 0) {
                 //console.log("--------------" + json.name + "------------")
                 console.log(json.name, diffMeasure)
                 console.log(melee)
                 console.log(fullAttackText)
+
+            } else {
+                json.melee = fullAttackText;
+                json.melee_attacks = fullAttacks;
             }
     }
+
+    const result = JSON.stringify(json) + "\n";
+    return {result: result, success: true, id: json.name};
+}
+
+const parseRangedAttacks = (line) => {
+    const json = JSON.parse(line);
+
+    //split attacks on " or " and then on "," (and trim any whitespace)
     
+    if (json.ranged) {
+        const ranged = cleanHtml(json.ranged);
+        json.ranged = ranged;
+        const attackSequences = (json.name !== 'Inevitable, Marut' && json.name !== 'Julunggali') ? ranged.split(" or ") : [ranged];
+        //if (attackSequences.length > 2) console.log("HAS MORE THAN 2 ATTACK SEQUENCES", json.name, ranged)
+        const fullAttacks = attackSequences.map(x => {
+            const regex = /,? ?([\dd\+\d ]*[\+\d]*[ a-zA-Z\*\,\d]*)([\/?\+?\-?\d*]*) ?(ranged touch|touch|ranged)* ?(\([^\)]+\))*/g;
+            const matches = getCaptureGroups(regex, x);
+            if (matches) {
+                //console.log("YES" + matches.length, json.name, x)
+                
+                const validMatches = matches.map(m => {
+                    return {
+                        attackText: m[1],
+                        attackBonus: m[2],
+                        attackType: m[3],
+                        damage: m[4]
+                    };
+                }).filter(x => x.attackText);
+                //if (attackSequences.length > 1 && validMatches.length > 1) console.log(json.name, validMatches)
+                return validMatches; //current pattern has a blank match on a lot of entries. 
+                
+
+            }
+            console.error("NO MATCH", json.name, x)
+            return "";
+        });
+        //do something with fullattacks
+        //rebuild ranged string with all the parts we collected...it should match perfectly...address any that don't
+
+            const fullAttackText = displayFullAttack(fullAttacks);
+
+            const diffMeasure = getEditDistance(ranged, fullAttackText);
+
+            if (diffMeasure > 0) {
+                //console.log("--------------" + json.name + "------------")
+                console.log(json.name, diffMeasure)
+                console.log(ranged)
+                console.log(fullAttackText)
+
+            } else {
+                // json.ranged = fullAttackText;
+                // json.ranged_attacks = fullAttacks;
+            }
+    }
+
     const result = JSON.stringify(json) + "\n";
     return {result: result, success: true, id: json.name};
 }
@@ -114,4 +174,4 @@ const getEditDistance = function(a, b){
     return matrix[b.length][a.length];
   };
 
-export default parseAttacks;
+export default parseRangedAttacks;

@@ -5,7 +5,8 @@ import getCaptureGroups from '../../../utils/RegexHelper';
 export const calculateCR = (monster) => {
     const totalHitPoints = calcAvgHitPoints(monster.hitDice, monster.hdType) + monster.hitPointAdjustment;
     const hpCr = calculateHpCr(totalHitPoints);
-    const acCr = calculateAcCr(monster.armor_class.ac);
+    console.log(monster.armor_class)
+    const acCr = calculateAcCr(monster.armor_class.ac.standard);
    
     const attackCr = (monster.melee) ? calculateAttackCr(monster.melee_attacks) : calculateAttackCr(monster.ranged_attacks);
     const dmgCr = (monster.melee) ? calculateDamageCr(monster.melee_attacks) : calculateDamageCr(monster.ranged_attacks);
@@ -27,7 +28,7 @@ export const calculateCR = (monster) => {
     console.log(monster.name + " " + monster.cr + " " + calculatedCr);
     return {
         total: calculatedCr,
-        original: monster.cr,
+        original: monster.crAsNum,
         hp: hpCr,
         ac: acCr,
         saves: saveCr,

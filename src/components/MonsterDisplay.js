@@ -175,12 +175,13 @@ const MonsterDisplay = ({monster}) => {
     const abilityScores = <span><B>Str</B> {m.strength}, <B>Dex</B> {m.dexterity}, <B>Con</B> {displayConstitution(m.constitution, opts.showStatBonuses)}, <B>Int</B> {m.intelligence}, <B>Wis</B> {m.wisdom}, <B>Cha</B> {m.charisma}</span>
     const abilityScoresWithBonuses = <span><B>Str</B> {m.strength}({withPlus(statBonusFromAbilityScore(m.strength))}), <B>Dex</B> {m.dexterity}({withPlus(statBonusFromAbilityScore(m.dexterity))}), <B>Con</B> {displayConstitution(m.constitution,  opts.showStatBonuses, withPlus(statBonusFromAbilityScore(m.constitution)))}, <B>Int</B> {m.intelligence}({withPlus(statBonusFromAbilityScore(m.intelligence))}), <B>Wis</B> {m.wisdom}({withPlus(statBonusFromAbilityScore(m.wisdom))}), <B>Cha</B> {m.charisma}({withPlus(statBonusFromAbilityScore(m.charisma))})</span>
     const abilityScoreDisplay = (opts.showStatBonuses) ? abilityScoresWithBonuses : abilityScores;
+    const crDisplay = (opts.showCrChanges && m.crCalculation.crDiff) ? `${m.crCalculation.crAdjusted} (original CR ${m.cr})` : `${m.cr}`
     const featCountStr = (m.featCount && opts.showFeatCount) ? ` (${m.featCount})` : ""; 
     return (
         <div className="monsterDisplay">
             <div className="sbLine sbName">
                 <B><span style={{textTransform: "uppercase"}}>{m.name}</span> </B>
-                <span style={{float: "right"}}><B>CR</B><B> {m.cr}</B></span>
+                <span style={{float: "right"}}><B>CR</B><B> {crDisplay}</B></span>
             </div>
             <StatBlockLine><B>XP</B> {m.xp}</StatBlockLine>
             <StatBlockLine>{m.alignment} {m.size} <span style={{textTransform: "lowercase"}}>{m.creature_type}</span> {creatureSubType(m)}</StatBlockLine>

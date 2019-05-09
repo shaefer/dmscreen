@@ -9,6 +9,7 @@ export default class PathfinderMonsterAdvancer extends Component {
             displayOptions: {
                 showStatBonuses: true,
                 showStatChanges: true,
+                showCrChanges: true
             }
         }
         const monster = {

@@ -2,6 +2,10 @@ import MonsterStatsByCR from './MonsterStatsByCR';
 import {calcAvgHitPoints, IsFortSaveGood, IsRefSaveGood, IsWillSaveGood, getCreatureTypeInfo} from '../AdvancementUtils';
 import getCaptureGroups from '../../../utils/RegexHelper';
 
+export const roundDecimal = (num) => {
+    return Math.round( num * 1e2 ) / 1e2; //https://stackoverflow.com/questions/2283566/how-can-i-round-a-number-in-javascript-tofixed-returns-a-string/14978830    
+}
+
 export const calculateCR = (monster) => {
     const totalHitPoints = calcAvgHitPoints(monster.hitDice, monster.hdType) + monster.hitPointAdjustment;
     const hpCr = calculateHpCr(totalHitPoints);
@@ -23,7 +27,7 @@ export const calculateCR = (monster) => {
     const saveCr = (fortCr + refCr + willCr) / 3;
     const aggregateCr = (hpCr + acCr + saveCr + attackCr + dmgCr) / 5;
     
-    const calculatedCr = Math.round( aggregateCr * 1e2 ) / 1e2; //https://stackoverflow.com/questions/2283566/how-can-i-round-a-number-in-javascript-tofixed-returns-a-string/14978830
+    const calculatedCr = roundDecimal(aggregateCr); //https://stackoverflow.com/questions/2283566/how-can-i-round-a-number-in-javascript-tofixed-returns-a-string/14978830
     
     console.log(monster.name + " " + monster.cr + " " + calculatedCr);
     return {

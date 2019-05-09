@@ -3,7 +3,7 @@ import { statBonusFromAbilityScore, racialFeatCount, withPlus,
     getSavingThrowChangesFromHitDice, applyChangesToSavingThrows, hpDisplay,
     getSavingThrowChangesFromStatChanges, getStatBonusDifference, displayArmorClass,
     calcTotalAc, calcFlatFootedAc, calcTouchAc, calcAvgHitPoints, getConstructBonusHitPoints } from './AdvancementUtils'
-import { calculateCR } from './AdvancementTools/ChallengeRatingCalculator'
+import { calculateCR, roundDecimal } from './AdvancementTools/ChallengeRatingCalculator'
 import {MonsterSizes, MonsterSizeChanges, sumSizeChanges} from './AdvancementTools/MonsterSizes'
 import Skills from './AdvancementTools/Skills'
 
@@ -42,12 +42,18 @@ export const advanceMonster = (statblock, advancement) => {
         }
     }
 
+    const originalCr = calculateCR(statblock);
+    const advancedCr = calculateCR(advancedCreature);
+    const crDiff = roundDecimal(advancedCr.total - originalCr.total);
+    const crAdjusted = originalCr.original + crDiff;
     return {
         ...advancedCreature,
         advancedName: `${advancedCreature.name}${displayName(advancedCreature.advancements)}`,
         crCalculation: {
-            originalCr: calculateCR(statblock),
-            advancedCr: calculateCR(advancedCreature)
+            originalCr,
+            advancedCr,
+            crDiff,
+            crAdjusted
         }
     };
 }

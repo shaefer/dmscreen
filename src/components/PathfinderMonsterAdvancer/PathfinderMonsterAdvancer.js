@@ -9,6 +9,7 @@ export default class PathfinderMonsterAdvancer extends Component {
             displayOptions: {
                 showStatBonuses: true,
                 showStatChanges: true,
+                showCrChanges: true
             }
         }
         const monster = {
@@ -27,15 +28,11 @@ export default class PathfinderMonsterAdvancer extends Component {
             ...opts
         };
 
-        console.log(monster)
-        console.log(newMonster);
-
         const statblockVersion = 2;
         const convertedMonster = {
             ...monster,
             statBlock: convertToMonsterForDisplay(newMonster, statblockVersion)
         };
-        console.log(convertedMonster)
         return <MonsterDisplay monster={convertedMonster}/>
     }
 }

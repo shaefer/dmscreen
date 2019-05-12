@@ -1,7 +1,9 @@
 const examineField = (fieldName) => {
     return (line) => {
         const json = JSON.parse(line);
-        console.log(json[fieldName]);
+        const fieldInfo = json[fieldName];
+        if (fieldInfo && fieldInfo.includes('<p'))
+        console.log(json.name, fieldInfo);
         const result = JSON.stringify(json) + "\n";
         return {result: result, success: true, id: json.name};
     };

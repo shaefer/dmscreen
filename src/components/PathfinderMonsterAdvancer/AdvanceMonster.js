@@ -3,10 +3,12 @@ import { statBonusFromAbilityScore, racialFeatCount, withPlus,
     getSavingThrowChangesFromHitDice, applyChangesToSavingThrows, hpDisplay,
     getSavingThrowChangesFromStatChanges, getStatBonusDifference, displayArmorClass,
     calcTotalAc, calcFlatFootedAc, calcTouchAc, calcAvgHitPoints, getConstructBonusHitPoints } from './AdvancementUtils'
+import { calculateCR, roundDecimal } from './AdvancementTools/ChallengeRatingCalculator'
 import {MonsterSizes, MonsterSizeChanges, sumSizeChanges} from './AdvancementTools/MonsterSizes'
 import Skills from './AdvancementTools/Skills'
 
 //There are a few fields we add as we go such as advancements that each stage might add to. If we could start with the assupmtion that that field is initialized properly the spread operator could be used with less coersion. 
+//We probably should just do an initial spread that initializes fields that aren't always present that we would like to count on for advancement.
 export const advanceMonster = (statblock, advancement) => {
     let advancedCreature = statblock;
     if (advancement.hd) {
@@ -26,7 +28,6 @@ export const advanceMonster = (statblock, advancement) => {
         if (advancement.wis) statAdvancementsMerged.wis = advancement.wis - statblock.ability_scores.wis;
         if (advancement.cha) statAdvancementsMerged.cha = advancement.cha - statblock.ability_scores.cha;
         
-        console.log('Advance by ability scores', statAdvancementsMerged)
         const advancesFromAbilityScores = advanceByAbilityScores(advancedCreature, [statAdvancementsMerged]);
         advancedCreature = {
             ...advancedCreature,
@@ -40,10 +41,20 @@ export const advanceMonster = (statblock, advancement) => {
             ...advancedFromSize
         }
     }
-    console.log("ADVANCED CREATURE", advancedCreature)
+
+    const originalCr = calculateCR(statblock);
+    const advancedCr = calculateCR(advancedCreature);
+    const crDiff = roundDecimal(advancedCr.total - originalCr.total);
+    const crAdjusted = originalCr.original + crDiff;
     return {
         ...advancedCreature,
-        advancedName: `${advancedCreature.name}${displayName(advancedCreature.advancements)}`
+        advancedName: `${advancedCreature.name}${displayName(advancedCreature.advancements)}`,
+        crCalculation: {
+            originalCr,
+            advancedCr,
+            crDiff,
+            crAdjusted
+        }
     };
 }
 
@@ -64,17 +75,14 @@ const hpChanges = (hitDice, hdType, creatureType, conBonus, chaBonus, size) => {
 }
 
 const changeAcMods = (acMods, acModChanges) => {
-    console.log("Change AC Mod", acMods, acModChanges)
     let changedMods = [...acMods];
     acModChanges.forEach(x => {
         changedMods = changeAcMod(changedMods, x);
     });
-    console.log(changedMods)
     return changedMods;
 }
 
 const changeAcMod = (origAcMods, acModChange) => {
-    console.log("ChangeAcMod", origAcMods, acModChange)
     const updatedMods = origAcMods.map(x => {
         if (x.type !== acModChange.type) return x;
         return {mod: x.mod + acModChange.mod, type: x.type};
@@ -205,7 +213,6 @@ export const advanceByAbilityScores = (statblock, abilityScoreChanges, chainedAd
 
     const acFields = acChanges(statblock.armor_class.ac_modifiers.slice(0), statBonusDiffs);
     const hpFields = hpChanges(newHitDice, statblock.hdType, statblock.creature_type, statBonusFromAbilityScore(newAbilityScores.con), statBonusFromAbilityScore(newAbilityScores.cha), statblock.size);
-    console.log("ADV", statblock.advancements)
     const existingAdvancements = (statblock.advancements) ? statblock.advancements : [];
     const advancements = (chainedAdvancement) ? {} : {advancements: [...existingAdvancements, `Stats Altered`]};
     const existingAbilityScoreChanges = (statblock.abilityScoreChanges) ? statblock.abilityScoreChanges : [];
@@ -227,7 +234,6 @@ export const advanceByAbilityScores = (statblock, abilityScoreChanges, chainedAd
     const cmbChange = statBonusDiffs.str;
     const cmdChange = statBonusDiffs.str + statBonusDiffs.dex;
     const combatManeuverFields = combatManeuverChanges(statblock, cmbChange, cmdChange);
-    console.log(combatManeuverFields)
     return {
         ...advancements,
         ...hpFields,

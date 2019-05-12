@@ -45,7 +45,7 @@ export const advanceMonster = (statblock, advancement) => {
     const originalCr = calculateCR(statblock);
     const advancedCr = calculateCR(advancedCreature);
     const crDiff = roundDecimal(advancedCr.total - originalCr.total);
-    const crAdjusted = originalCr.original + crDiff;
+    const crAdjusted = roundDecimal(originalCr.original + crDiff);
     return {
         ...advancedCreature,
         advancedName: `${advancedCreature.name}${displayName(advancedCreature.advancements)}`,

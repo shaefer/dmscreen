@@ -1,6 +1,6 @@
 {
   "name": "dmscreen",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "private": true,
   "dependencies": {
     "@material-ui/core": "^3.9.2",
@@ -10,13 +10,13 @@
     "react-accessible-accordion": "^2.4.5",
     "react-autosuggest": "^9.4.3",
     "react-dom": "^16.6.3",
-    "react-force-graph-2d": "^1.5.1",
+    "react-force-graph-2d": "^1.6.1",
     "react-ga": "^2.5.3",
     "react-overlays": "^0.8.3",
     "react-redux": "^5.1.1",
     "react-reorder": "^3.0.0-alpha.7",
     "react-router-dom": "^4.3.1",
-    "react-scripts": "^2.1.5",
+    "react-scripts": "^3.0.1",
     "react-select": "^2.1.1",
     "react-table": "^6.8.6",
     "redux": "^3.7.2",

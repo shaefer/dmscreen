@@ -81,7 +81,10 @@ export class MonsterFinder extends Component {
             padding: 8,
           }
         }
-      }
+      },
+      typography: {
+        useNextVariants: true,
+      },
     });
     console.log("MONSTER FINDER RENDER", monster)
     monster = (monster.success) ? monster : { success: true, statBlock: Aasimar};

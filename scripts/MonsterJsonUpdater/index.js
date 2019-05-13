@@ -10,7 +10,7 @@ import examineField from './lineParsers/FieldExaminer' //examineField("fieldName
 import convertFieldsToInt from './lineParsers/FieldsAsInt'
 import condenseAbilityScores from './lineParsers/AbilityScores'
 import parseSkills from './lineParsers/Skills'
-import parseAttacks from './lineParsers/Attacks'
+import {parseMeleeAttacks, parseRangedAttacks, parseMeleeAttackToHitAndDamage} from './lineParsers/Attacks'
 
 const processFile = (fileNameAndPath, outputPath, alterLineFunc) => {
 
@@ -57,7 +57,7 @@ const options = commandLineArgs(optionDefinitions);
 const now = new Date();
 const dateString = now.toLocaleDateString()+"_"+now.getHours()+"-" + now.getMinutes() + "-" + now.getSeconds();
 console.log("About to process file");
-processFile(options.src, "files/output/allCreatures_"+dateString+".json", sortByKeys);
+processFile(options.src, "files/output/allCreatures_"+dateString+".json", parseMeleeAttackToHitAndDamage);
 
 //v2 is what is currently deployed.
 //v3 is all int based fields converted to ints. 

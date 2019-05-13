@@ -116,6 +116,8 @@ const acFieldsFromMods = (acMods) => {
 }
 
 const attackChanges = (origAttacks, statBonusDiffs) => {
+    console.log("attack changes", origAttacks)
+    if (!origAttacks) return origAttacks;
     const strBonusChange = statBonusDiffs.str;
     for (let i = 0; i<origAttacks.length; i++) {
         const attackSeq = origAttacks[i];
@@ -221,8 +223,8 @@ export const advanceByAbilityScores = (statblock, abilityScoreChanges, chainedAd
     //eventually figure out how to not even include change sets that are basically blank - zeroes for all 3 saving throws
 
     const statBonusDiffs = getStatBonusDifference(statblock.ability_scores, newAbilityScores);
-
-    const attacks = attackChanges(statblock.attacks, statBonusDiffs);
+    console.log("Advancing ability scores", statblock.name)
+    const attacks = attackChanges(statblock.melee_attacks, statBonusDiffs);
     const acFields = acChanges(statblock.armor_class.ac_modifiers.slice(0), statBonusDiffs);
     const hpFields = hpChanges(newHitDice, statblock.hdType, statblock.creature_type, statBonusFromAbilityScore(newAbilityScores.con), statBonusFromAbilityScore(newAbilityScores.cha), statblock.size);
     const existingAdvancements = (statblock.advancements) ? statblock.advancements : [];

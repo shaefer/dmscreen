@@ -5,7 +5,7 @@ import getCaptureGroups from '../utils/RegexHelper';
 //,? ?([\+\d+]*[ a-zA-Z\*\,\d]*)([\/?\+?\-?\d*]*) ?(touch|melee|melee touch)* ?(\([^\)]+\))*
 //,? ?([\+\d+]*[ a-zA-Z\*\,\d]*)([\/?\+?\-?\d*]*) ?(melee touch|touch|melee)* ?(\([^\)]+\))*
 //,? ?([\dd\+\d ]*[\+\d]*[ a-zA-Z\*\,\d]*)([\/?\+?\-?\d*]*) ?(melee touch|touch|melee)* ?(\([^\)]+\))*
-const parseMeleeAttacks = (line) => {
+export const parseMeleeAttacks = (line) => {
     const json = JSON.parse(line);
 
     //split attacks on " or " and then on "," (and trim any whitespace)
@@ -60,7 +60,7 @@ const parseMeleeAttacks = (line) => {
     return {result: result, success: true, id: json.name};
 }
 
-const parseRangedAttacks = (line) => {
+export const parseRangedAttacks = (line) => {
     const json = JSON.parse(line);
 
     //split attacks on " or " and then on "," (and trim any whitespace)
@@ -113,6 +113,82 @@ const parseRangedAttacks = (line) => {
 
     const result = JSON.stringify(json) + "\n";
     return {result: result, success: true, id: json.name};
+}
+
+export const parseMeleeAttackToHitAndDamage = (line) => {
+    const json = JSON.parse(line);
+
+    if (json.melee_attacks) {
+        const flatAttacks = json.melee_attacks.reduce((acc, val) => acc.concat(val), []);
+        const attackBonusAsInt = flatAttacks.map(x => { return {val: parseInt(x.attackBonus), orig: x.attackBonus}});
+        //+14/+14/+9/+9/+4, '', -2
+
+        for (let i = 0; i < json.melee_attacks.length; i++) {
+            const attackSeq = json.melee_attacks[i];
+            for (let j = 0; j < attackSeq.length; j++) {
+                const attack = attackSeq[j];
+                if (attack.attackBonus !== '') {
+                    attack.toHit = parseInt(attack.attackBonus);
+                    const slashesInAttackBonus = attack.attackBonus.match(/\//g)||[];
+                    const startsWithNumber = attack.attackText.match(/^\d+/);
+                    if (startsWithNumber && slashesInAttackBonus.length === 0) {
+                        //Asura, Adhukait +15/+10 2 mwk kukris is an example of a creature that lists 2 weapons but that is already accounted for in the attackBonus.
+                        attack.attackCount = startsWithNumber[0];
+                    } else {
+                        attack.attackCount = (slashesInAttackBonus).length + 1;
+                    }
+                    console.log(json.name, attack.toHit, attack.attackCount, attack.attackBonus, attack.attackText);
+                }
+            }
+        }
+    }
+
+    const result = JSON.stringify(json) + "\n";
+    return {result: result, success: true, id: json.name};
+}
+
+const calculateDamageFromAttackSequence = (attackSequence) => {
+    let sumOfDmg = 0;
+    for (let i = 0; i<attackSequence.length; i++) {
+        const dmg = attackSequence[i].damage;
+        const damageAmountsRegex = /(\d+d\d+[\+\-]*\d*|(?<!DC )(?<!DC \d)\d+)\/?(\d*-\d*\/[×x][234]|\d*-\d*|[x×][234])* ?(cold|bleed|acid|electricity|fire|negative energy|energy|sonic|Strength|Dexterity|Constitution|Wisdom|Intelligence|Charisma|Str|Dex|Con|Int|Wis|Cha)* ?(damage|drain)*/gm;
+        const matches = getCaptureGroups(damageAmountsRegex, dmg)
+        for(let i = 0;i<matches.length;i++) {
+            const match = matches[i];
+            const dice = match[1];
+            //const critRangeAndMultiplier = match[2];
+            const dmgType = match[3];
+            //const statDmgOrDrain = match[4];
+            
+            const avgDmg = diceAverage(dice);
+            console.log("match", i, dice, avgDmg)
+            sumOfDmg += avgDmg;
+        }
+        //first just dice part of damage string: \d+d\d+[\+\-]*\d*
+        //https://regex101.com/r/X8yCC3/1/
+    }
+    return sumOfDmg;
+}
+
+const diceAverage = (diceNotation) => {
+    if (diceNotation.indexOf("d") === -1) {
+        //just a straight number...no dice to roll.
+        return diceNotation;
+    } else {
+        //https://regex101.com/r/FD7Z9L/1
+        const diceRegex = /((\d*)d(\d*))([\+\-]?\d*)/gm;
+        const matches = getCaptureGroups(diceRegex, diceNotation);
+        let sumOfDmg = 0;
+        for(let i = 0;i<matches.length;i++) {
+            const match = matches[i];
+            const numOfDice = match[2];
+            const numOfSides = match[3];
+            const adjustment = parseInt(match[4]) || 0;
+            const avgDmg = (numOfDice * (numOfSides / 2 + 0.5)) + adjustment;
+            sumOfDmg += avgDmg;
+        }
+        return sumOfDmg;
+    }
 }
 
 const cleanHtml = (str) => {
@@ -171,5 +247,3 @@ const getEditDistance = function(a, b){
   
     return matrix[b.length][a.length];
   };
-
-export default parseRangedAttacks;

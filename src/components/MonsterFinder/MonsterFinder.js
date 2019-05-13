@@ -86,9 +86,7 @@ export class MonsterFinder extends Component {
         useNextVariants: true,
       },
     });
-    console.log("MONSTER FINDER RENDER", monster)
     monster = (monster.success) ? monster : { success: true, statBlock: Aasimar};
-    console.log("ACTUAL RENDER", monster)
     return (
       <MuiThemeProvider theme={theme}>
       <div className="flex-container">

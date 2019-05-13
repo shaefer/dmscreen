@@ -9,7 +9,7 @@ it('calculateCR works for monster', () => {
     expect(crs.ref).toBe(5);
     expect(crs.will).toBe(6);
     expect(crs.fort).toBe(9);
-    expect(crs.saves).toBe(6.666666666666667);
+    expect(crs.saves).toBe(6.67);
     expect(crs.hp).toBe(8);
     expect(crs.attack).toBe(8);
     expect(crs.damage).toBe(4);

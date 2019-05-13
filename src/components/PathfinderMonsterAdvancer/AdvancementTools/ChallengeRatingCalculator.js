@@ -10,12 +10,9 @@ export const roundDecimal = (num) => {
 export const calculateCR = (monster) => {
     const totalHitPoints = calcAvgHitPoints(monster.hitDice, monster.hdType) + monster.hitPointAdjustment;
     const hpCr = calculateHpCr(totalHitPoints);
-    console.log(monster.armor_class)
     const acCr = calculateAcCr(monster.armor_class.ac.standard);
-   
     const attackCr = (monster.melee) ? calculateAttackCr(monster.melee_attacks) : calculateAttackCr(monster.ranged_attacks);
     const dmgCr = (monster.melee) ? calculateDamageCr(monster.melee_attacks) : calculateDamageCr(monster.ranged_attacks);
-    //dmg
     //dc
     const creatureTypeInfo = getCreatureTypeInfo(monster.creature_type);
     const fortSave = monster.saving_throws.fort;
@@ -25,13 +22,12 @@ export const calculateCR = (monster) => {
     const willSave = monster.saving_throws.will;
     const willCr = (IsWillSaveGood(creatureTypeInfo)) ? calculateGoodSaveCr(willSave) : calculatePoorSaveCr(willSave);
 
-    const saveCr = (fortCr + refCr + willCr) / 3;
+    const saveCr = roundDecimal((fortCr + refCr + willCr) / 3);
     const aggregateCr = (hpCr + acCr + saveCr + attackCr + dmgCr) / 5;
     
     const calculatedCr = roundDecimal(aggregateCr); //https://stackoverflow.com/questions/2283566/how-can-i-round-a-number-in-javascript-tofixed-returns-a-string/14978830
     
-    console.log(monster.name + " " + monster.cr + " " + calculatedCr);
-    return {
+    const crObject = {
         total: calculatedCr,
         original: monster.crAsNum,
         hp: hpCr,
@@ -43,7 +39,8 @@ export const calculateCR = (monster) => {
         attack: attackCr,
         damage: dmgCr
     };
-    //equal parts = hp, ac, attack, dmg, dc, saves
+    console.log(monster.name, crObject);
+    return crObject;
 }
 
 export const calculateHpCr = (hp) => {
@@ -59,12 +56,10 @@ export const calculateAttackCr = (attacks) => {
     return calculateStatCr('highAttack', firstAttackBonusOfMainAttack);
 }
 
-export const calculateDamageCr = (attacks) => {
-    const firstAttack = attacks[0];
-    //calculate the dmg from each part of that attack.
+export const calculateDamageFromAttackSequence = (attackSequence) => {
     let sumOfDmg = 0;
-    for (let i = 0; i<firstAttack.length; i++) {
-        const dmg = firstAttack[i].damage;
+    for (let i = 0; i<attackSequence.length; i++) {
+        const dmg = attackSequence[i].damage;
         const damageAmountsRegex = /(\d+d\d+[\+\-]*\d*|(?<!DC )(?<!DC \d)\d+)\/?(\d*-\d*\/[×x][234]|\d*-\d*|[x×][234])* ?(cold|bleed|acid|electricity|fire|negative energy|energy|sonic|Strength|Dexterity|Constitution|Wisdom|Intelligence|Charisma|Str|Dex|Con|Int|Wis|Cha)* ?(damage|drain)*/gm;
         const matches = getCaptureGroups(damageAmountsRegex, dmg)
         for(let i = 0;i<matches.length;i++) {
@@ -73,13 +68,23 @@ export const calculateDamageCr = (attacks) => {
             //const critRangeAndMultiplier = match[2];
             const dmgType = match[3];
             //const statDmgOrDrain = match[4];
+            
             const avgDmg = diceAverage(dice);
+            console.log("match", i, dice, avgDmg)
             sumOfDmg += avgDmg;
         }
         //first just dice part of damage string: \d+d\d+[\+\-]*\d*
         //https://regex101.com/r/X8yCC3/1/
     }
-    return calculateStatCr('avgDmgHigh', sumOfDmg);
+    return sumOfDmg;
+}
+
+export const calculateDamageCr = (attacks) => {
+    console.log("input to dmg cr calc", attacks);
+    const firstAttack = attacks[0];
+    //calculate the dmg from each part of that attack.
+    const damage = calculateDamageFromAttackSequence(firstAttack);
+    return calculateStatCr('avgDmgHigh', damage);
 }
 
 const diceAverage = (diceNotation) => {
@@ -95,7 +100,7 @@ const diceAverage = (diceNotation) => {
             const match = matches[i];
             const numOfDice = match[2];
             const numOfSides = match[3];
-            const adjustment = parseInt(match[4]);
+            const adjustment = parseInt(match[4]) || 0;
             const avgDmg = (numOfDice * (numOfSides / 2 + 0.5)) + adjustment;
             sumOfDmg += avgDmg;
         }

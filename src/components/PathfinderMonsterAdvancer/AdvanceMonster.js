@@ -115,6 +115,17 @@ const acFieldsFromMods = (acMods) => {
     }
 }
 
+const attackChanges = (origAttacks, statBonusDiffs) => {
+    const strBonusChange = statBonusDiffs.str;
+    for (let i = 0; i<origAttacks.length; i++) {
+        const attackSeq = origAttacks[i];
+        for (let j = 0; j < attackSeq.length; j++) {
+            const attack = attackSeq[j];
+            console.log(attack);
+        }
+    }
+}
+
 const acChanges = (origAcMods, statBonusDiffs) => {
     const dexChange = {mod: statBonusDiffs.dex, type: 'Dex'};
     const acMods = changeAcMod(origAcMods, dexChange);
@@ -211,6 +222,7 @@ export const advanceByAbilityScores = (statblock, abilityScoreChanges, chainedAd
 
     const statBonusDiffs = getStatBonusDifference(statblock.ability_scores, newAbilityScores);
 
+    const attacks = attackChanges(statblock.attacks, statBonusDiffs);
     const acFields = acChanges(statblock.armor_class.ac_modifiers.slice(0), statBonusDiffs);
     const hpFields = hpChanges(newHitDice, statblock.hdType, statblock.creature_type, statBonusFromAbilityScore(newAbilityScores.con), statBonusFromAbilityScore(newAbilityScores.cha), statblock.size);
     const existingAdvancements = (statblock.advancements) ? statblock.advancements : [];

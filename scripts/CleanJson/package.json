@@ -10,7 +10,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "aws": "npx babel-node CleanJson.js"
+    "aws": "npx babel-node UploadMonstersToS3.js"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",

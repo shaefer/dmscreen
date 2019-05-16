@@ -125,7 +125,20 @@ const Behir = {
       {
         "attackText": "bite ",
         "attackBonus": "+15",
-        "damage": "(2d6+9 plus grab)"
+        "damage": "(2d6+9 plus grab)",
+        "toHit": 15,
+        "attackCount": 1,
+        "damage_details": [
+          {
+            "dice": [
+              {
+                "numOfDice": 2,
+                "numOfSides": 6,
+                "adjustment": 9
+              }
+            ]
+          }
+        ]
       }
     ]
   ]

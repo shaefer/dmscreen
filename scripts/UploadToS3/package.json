@@ -1,5 +1,5 @@
 {
-  "name": "cleanJsonScript",
+  "name": "upload_monsters_to_s3",
   "version": "0.0.1",
   "private": true,
   "dependencies": {

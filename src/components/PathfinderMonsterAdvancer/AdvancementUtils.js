@@ -102,6 +102,7 @@ export const IsWillSaveGood = (creatureTypeInfo) => {
 }
 
 export const getCreatureTypeInfo = (creatureType) => {
+    if (!creatureType) return;
     return creatureStatsByType.find(x => x.creature_type.toLowerCase() === creatureType.toLowerCase());
 }
 

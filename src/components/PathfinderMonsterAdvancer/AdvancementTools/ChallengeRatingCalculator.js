@@ -7,23 +7,33 @@ export const roundDecimal = (num) => {
     return Math.round( num * 1e2 ) / 1e2; //https://stackoverflow.com/questions/2283566/how-can-i-round-a-number-in-javascript-tofixed-returns-a-string/14978830    
 }
 
+const sum = (someArray) => {
+    return someArray.reduce((arr, n) => arr + n);
+}
+
 export const calculateCR = (monster) => {
     const totalHitPoints = calcAvgHitPoints(monster.hitDice, monster.hdType) + monster.hitPointAdjustment;
+
+    let calculatedCrs = [];
     const hpCr = calculateHpCr(totalHitPoints);
+    calculatedCrs.push(hpCr);
     const acCr = calculateAcCr(monster.armor_class.ac.standard);
+    calculatedCrs.push(acCr);
     const attackCr = (monster.melee) ? calculateAttackCr(monster.melee_attacks) : calculateAttackCr(monster.ranged_attacks);
     const dmgCr = (monster.melee) ? calculateDamageCr(monster.melee_attacks) : calculateDamageCr(monster.ranged_attacks);
+    if (monster.melee || monster.ranged) {
+        calculatedCrs.push(attackCr);
+        calculatedCrs.push(dmgCr);
+    }
     //dc
     const creatureTypeInfo = getCreatureTypeInfo(monster.creature_type);
-    const fortSave = monster.saving_throws.fort;
-    const fortCr = (IsFortSaveGood(creatureTypeInfo)) ? calculateGoodSaveCr(fortSave) : calculatePoorSaveCr(fortSave);
-    const refSave = monster.saving_throws.ref;
-    const refCr = (IsRefSaveGood(creatureTypeInfo)) ? calculateGoodSaveCr(refSave) : calculatePoorSaveCr(refSave);
-    const willSave = monster.saving_throws.will;
-    const willCr = (IsWillSaveGood(creatureTypeInfo)) ? calculateGoodSaveCr(willSave) : calculatePoorSaveCr(willSave);
-
-    const saveCr = roundDecimal((fortCr + refCr + willCr) / 3);
-    const aggregateCr = (hpCr + acCr + saveCr + attackCr + dmgCr) / 5;
+    const saveCrs = calculatedSaveDcs(creatureTypeInfo, monster.saving_throws.fort, monster.saving_throws.ref, monster.saving_throws.will);
+    if (saveCrs) {
+        calculatedCrs.push(saveCrs.saves);
+    }
+    console.log(monster.name, calculatedCrs)
+    const aggregateCr =sum(calculatedCrs) / calculatedCrs.length;
+    //const aggregateCr = (monster.melee || monster.ranged) ? (hpCr + acCr + saveCrs.saveCr + attackCr + dmgCr) / 5 : (hpCr + acCr + saveCrs.saveCr) / 3;
     
     const calculatedCr = roundDecimal(aggregateCr); //https://stackoverflow.com/questions/2283566/how-can-i-round-a-number-in-javascript-tofixed-returns-a-string/14978830
     
@@ -32,15 +42,30 @@ export const calculateCR = (monster) => {
         original: monster.crAsNum,
         hp: hpCr,
         ac: acCr,
-        saves: saveCr,
-        fort: fortCr,
-        ref: refCr,
-        will: willCr,
         attack: attackCr,
         damage: dmgCr
     };
-    console.log(monster.name, crObject);
-    return crObject;
+    const mergedCrs = {
+        ...crObject,
+        ...saveCrs
+    };
+    //console.log(monster.name, mergedCrs);
+    return mergedCrs;
+}
+
+const calculatedSaveDcs = (creatureTypeInfo, fortSave, refSave, willSave) => {
+    if (!creatureTypeInfo) return;
+    const fortCr = (IsFortSaveGood(creatureTypeInfo)) ? calculateGoodSaveCr(fortSave) : calculatePoorSaveCr(fortSave);
+    const refCr = (IsRefSaveGood(creatureTypeInfo)) ? calculateGoodSaveCr(refSave) : calculatePoorSaveCr(refSave);
+    const willCr = (IsWillSaveGood(creatureTypeInfo)) ? calculateGoodSaveCr(willSave) : calculatePoorSaveCr(willSave);
+
+    const saveCr = roundDecimal((fortCr + refCr + willCr) / 3);
+    return {
+        saves:saveCr,
+        fort:fortCr,
+        ref:refCr,
+        will:willCr
+    };
 }
 
 export const calculateHpCr = (hp) => {
@@ -52,6 +77,7 @@ export const calculateAcCr = (ac) => {
 }
 
 export const calculateAttackCr = (attacks) => {
+    if (!attacks) return 0;
     const firstAttackBonusOfMainAttack = parseInt(attacks[0][0].attackBonus);
     return calculateStatCr('highAttack', firstAttackBonusOfMainAttack);
 }
@@ -70,7 +96,7 @@ export const calculateDamageFromAttackSequence = (attackSequence) => {
             //const statDmgOrDrain = match[4];
             
             const avgDmg = diceAverage(dice);
-            console.log("match", i, dice, avgDmg)
+            //console.log("match", i, dice, avgDmg)
             sumOfDmg += avgDmg;
         }
         //first just dice part of damage string: \d+d\d+[\+\-]*\d*
@@ -80,7 +106,8 @@ export const calculateDamageFromAttackSequence = (attackSequence) => {
 }
 
 export const calculateDamageCr = (attacks) => {
-    console.log("input to dmg cr calc", attacks);
+    if (!attacks) return 0;
+    //console.log("input to dmg cr calc", attacks);
     const firstAttack = attacks[0];
     //calculate the dmg from each part of that attack.
     const damage = calculateDamageFromAttackSequence(firstAttack);

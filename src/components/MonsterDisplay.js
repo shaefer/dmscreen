@@ -150,6 +150,24 @@ const displayConstitution = (con, showStatBonus, statBonus) => {
     return (con === 0) ? '-' : `${con}${statBonusDisplay}`;
 }
 
+const displayFullAttack = (fullAttacks) => {
+    const attackSequencesAsText = fullAttacks.map(attackSequences => {
+        //console.log(attackSequences);
+        const attacksAsText = attackSequences.map(attack => {
+            return displayAttack(attack);
+        });
+        return attacksAsText.join(", ");
+    });
+    return attackSequencesAsText.join(" or ");
+}
+
+const displayAttack = (x) => {
+    console.log(x)
+    const attackType = (x.attackType) ? x.attackType + ' ' : '';
+    const attackBonus = (x.attackBonus) ? withPlus(x.toHit) + " " : '';
+    return  `${x.attackText}${attackBonus}${attackType}${x.damage}`;
+}
+
 const MonsterDisplay = ({monster}) => {
     const m = monster.statBlock;
 
@@ -177,6 +195,7 @@ const MonsterDisplay = ({monster}) => {
     const abilityScoreDisplay = (opts.showStatBonuses) ? abilityScoresWithBonuses : abilityScores;
     const crDisplay = (opts.showCrChanges && m.crCalculation.crDiff) ? `${m.crCalculation.crAdjusted} (original CR ${m.cr})` : `${m.cr}`
     const featCountStr = (m.featCount && opts.showFeatCount) ? ` (${m.featCount})` : ""; 
+    const meleeAttackDisplay = (m.melee) ? displayFullAttack(m.melee_attacks) : m.melee;
     return (
         <div className="monsterDisplay">
             <div className="sbLine sbName">
@@ -196,6 +215,7 @@ const MonsterDisplay = ({monster}) => {
 
             <StatSectionHeader>offense</StatSectionHeader>
             <StatBlockLine><B>Speed</B> {m.speed}</StatBlockLine>
+            <StatBlockLine data={meleeAttackDisplay} required><B>Melee</B> {meleeAttackDisplay}</StatBlockLine>
             <StatBlockLine data={m.melee} required><B>Melee</B> {m.melee}</StatBlockLine>
             <StatBlockLine data={m.ranged} required><B>Ranged</B> {m.ranged}</StatBlockLine>
             {spaceAndReach(m)}

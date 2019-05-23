@@ -36,7 +36,7 @@ export const calculateCR = (monster) => {
     //const aggregateCr = (monster.melee || monster.ranged) ? (hpCr + acCr + saveCrs.saveCr + attackCr + dmgCr) / 5 : (hpCr + acCr + saveCrs.saveCr) / 3;
     
     const calculatedCr = roundDecimal(aggregateCr); //https://stackoverflow.com/questions/2283566/how-can-i-round-a-number-in-javascript-tofixed-returns-a-string/14978830
-    console.log(monster.name, monster.crAsNum, calculatedCr)
+    //console.log(monster.name, monster.crAsNum, calculatedCr)
     const crObject = {
         total: calculatedCr,
         original: monster.crAsNum,

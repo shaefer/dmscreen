@@ -234,7 +234,7 @@ export const advanceByAbilityScores = (statblock, abilityScoreChanges, chainedAd
     const newSkills = statblock.skills.map(x => {
         const skillName = x.name.trim();
         const skillInfo = Skills.find(x => x.name === skillName);
-        if (!skillInfo) throw new Error(`Did not find ${skillName}`)
+        if (!skillInfo) throw new Error(`Did not find skill named: ${skillName} on creature ${statblock.name}`)
         const skillStat = skillInfo.abilityScore;
         if (skillStat === 'Str') return {name: skillName, value: x.value + statBonusDiffs.str}
         if (skillStat === 'Dex') return {name: skillName, value: x.value + statBonusDiffs.dex}

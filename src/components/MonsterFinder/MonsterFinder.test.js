@@ -4,7 +4,6 @@ import Aasimar from '../../models/AasimarV2'
 import Monsters from '../../models/Monsters'
 import PathfinderMonsterAdvancer from '../PathfinderMonsterAdvancer/PathfinderMonsterAdvancer';
 
-//TODO: Make a robust test that checks every monster in the full set.
 it('renders without crashing', () => {
   const div = document.createElement('div');
   const monster = {statBlock:Aasimar}
@@ -12,14 +11,11 @@ it('renders without crashing', () => {
   ReactDOM.unmountComponentAtNode(div);
 });
 
-it('all monsters render', () => {
-  const div = document.createElement('div');
-
-  Monsters.forEach(monsterStats => {
-    console.log("TEST RENDER", monsterStats.name);
+Monsters.forEach(monsterStats => {
+  it(`Render ${monsterStats.name}`, () => {
+    const div = document.createElement('div');
     const monster = {statBlock:monsterStats}
-    ReactDOM.render(<PathfinderMonsterAdvancer monster={monster} advancement={{}}/>, div);
+    ReactDOM.render(<PathfinderMonsterAdvancer monster={monster} advancement={{hd: monsterStats.hitDice + 1}}/>, div);
     ReactDOM.unmountComponentAtNode(div);
   });
-
 });

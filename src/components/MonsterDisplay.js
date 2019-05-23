@@ -216,7 +216,6 @@ const MonsterDisplay = ({monster}) => {
             <StatSectionHeader>offense</StatSectionHeader>
             <StatBlockLine><B>Speed</B> {m.speed}</StatBlockLine>
             <StatBlockLine data={meleeAttackDisplay} required><B>Melee</B> {meleeAttackDisplay}</StatBlockLine>
-            <StatBlockLine data={m.melee} required><B>Melee</B> {m.melee}</StatBlockLine>
             <StatBlockLine data={m.ranged} required><B>Ranged</B> {m.ranged}</StatBlockLine>
             {spaceAndReach(m)}
             <StatBlockLine data={m.special_attacks} required><B>Special Attacks</B> {m.special_attacks}</StatBlockLine>

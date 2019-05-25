@@ -1,6 +1,29 @@
 const Aasimar = {
+  "ability_scores": {
+    "str": 8,
+    "dex": 10,
+    "con": 14,
+    "int": 13,
+    "wis": 17,
+    "cha": 14
+  },
   "acAsInt": 15,
   "alignment": "NG",
+  "armor_class": {
+    "ac": {
+      "standard": 15,
+      "flat_footed": 15,
+      "touch": 10
+    },
+    "ac_details": "15, touch 10, flat-footed 15 (+5 armor)",
+    "ac_modifiers": [
+      {
+        "mod": 5,
+        "type": "armor"
+      }
+    ],
+    "ac_modifiers_details": "+5 armor"
+  },
   "base_attack": 0,
   "cmb": -1,
   "cmd": 9,
@@ -20,11 +43,61 @@ const Aasimar = {
   "languages": "Celestial, Common, Draconic",
   "level": "cleric 1",
   "melee": "heavy mace -1 (1d8-1)",
+  "melee_attacks": [
+    [
+      {
+        "attackText": "heavy mace ",
+        "attackBonus": "-1",
+        "damage": "(1d8-1)",
+        "toHit": -1,
+        "attackCount": 1,
+        "damage_details": [
+          {
+            "dice": [
+              {
+                "numOfDice": 1,
+                "numOfSides": 8,
+                "adjustment": -1
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  ],
   "name": "Aasimar",
   "organization": "solitary, pair, or team (3-6)",
   "racial_modifiers": "+2 Diplomacy, +2 Perception",
   "ranged": "light crossbow +0 (1d8/19-20)",
+  "ranged_attacks": [
+    [
+      {
+        "attackText": "light crossbow ",
+        "attackBonus": "+0",
+        "damage": "(1d8/19-20)",
+        "toHit": 0,
+        "attackCount": 1,
+        "damage_details": [
+          {
+            "dice": [
+              {
+                "numOfDice": 1,
+                "numOfSides": 8,
+                "adjustment": 0
+              }
+            ],
+            "critRangeAndMultiplier": "19-20"
+          }
+        ]
+      }
+    ]
+  ],
   "resist": "acid 5, cold 5, electricity 5",
+  "saving_throws": {
+    "fort": 4,
+    "ref": 0,
+    "will": 5
+  },
   "sections": [
     {
       "body": "<p>Aasimars are humans with a significant amount of celestial or other good outsider blood in their ancestry. Aasimars are not always good, but it is a natural tendency for them, and they gravitate to good faiths or organizations associated with celestials. Aasimar heritage can hide for generations, only to appear suddenly in the child of two apparently human parents. Most societies interpret aasimar births as good omens. Aasimars look mostly human except for some minor physical trait that reveals their unusual heritage. Typical aasimar features are hair that shines like metal, unusual eye or skin color, or even glowing golden halos. </p>",
@@ -101,6 +174,7 @@ const Aasimar = {
   ],
   "senses": "darkvision 60 ft.; Perception +5",
   "size": "Medium",
+  "skill_details": "Diplomacy +8, Heal +7, Knowledge (religion) +5",
   "skills": [
     {
       "name": "Diplomacy ",
@@ -131,66 +205,6 @@ const Aasimar = {
   "treasure": "NPC gear (scale mail, heavy mace, light crossbow with 10 bolts, other treasure)",
   "type": "creature",
   "url": "pfsrd://Bestiary/Monsters/Aasimar",
-  "xp": "200",
-  "ability_scores": {
-    "str": 8,
-    "dex": 10,
-    "con": 14,
-    "int": 13,
-    "wis": 17,
-    "cha": 14
-  },
-  "saving_throws": {
-    "fort": 4,
-    "ref": 0,
-    "will": 5
-  },
-  "armor_class": {
-    "ac": {
-      "standard": 15,
-      "flat_footed": 15,
-      "touch": 10
-    },
-    "ac_details": "15, touch 10, flat-footed 15 (+5 armor)",
-    "ac_modifiers": [
-      {
-        "mod": 5,
-        "type": "armor"
-      }
-    ],
-    "ac_modifiers_details": "+5 armor"
-  },
-  "skill_details": "Diplomacy +8, Heal +7, Knowledge (religion) +5",
-  "melee_attacks": [
-    [
-      {
-        "attackText": "heavy mace ",
-        "attackBonus": "-1",
-        "damage": "(1d8-1)",
-        "toHit": -1,
-        "attackCount": 1,
-        "damage_details": [
-          {
-            "dice": [
-              {
-                "numOfDice": 1,
-                "numOfSides": 8,
-                "adjustment": -1
-              }
-            ]
-          }
-        ]
-      }
-    ]
-  ],
-  "ranged_attacks": [
-    [
-      {
-        "attackText": "light crossbow ",
-        "attackBonus": "+0",
-        "damage": "(1d8/19-20)"
-      }
-    ]
-  ]
+  "xp": "200"
 };
 export default Aasimar;

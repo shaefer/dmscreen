@@ -10,7 +10,7 @@ import examineField from './lineParsers/FieldExaminer' //examineField("fieldName
 import convertFieldsToInt from './lineParsers/FieldsAsInt'
 import condenseAbilityScores from './lineParsers/AbilityScores'
 import parseSkills from './lineParsers/Skills'
-import {parseMeleeAttacks, parseRangedAttacks, parseMeleeAttackToHitAndDamage} from './lineParsers/Attacks'
+import {parseMeleeAttacks, parseRangedAttacks, parseRangedAttackToHitAndDamage} from './lineParsers/Attacks'
 
 const processFile = (fileNameAndPath, outputPath, alterLineFunc) => {
 
@@ -57,7 +57,7 @@ const options = commandLineArgs(optionDefinitions);
 const now = new Date();
 const dateString = now.toLocaleDateString()+"_"+now.getHours()+"-" + now.getMinutes() + "-" + now.getSeconds();
 console.log("About to process file");
-processFile(options.src, "files/output/allCreatures_"+dateString+".json", parseMeleeAttackToHitAndDamage);
+processFile(options.src, "files/output/allCreatures_"+dateString+".json", sortByKeys);
 
 //v2 is what is currently deployed.
 //v3 is all int based fields converted to ints. 
@@ -70,6 +70,7 @@ processFile(options.src, "files/output/allCreatures_"+dateString+".json", parseM
 //v10-11 cleanup
 //v12 parsed melee attacks
 //v13 parsed ranged attacks
+//v14 parsed dice for damage, crit, and toHit from attacks.
 
 //DONE parse all stats into fields containing just the ints
 //DONE parse ac into individual fields and mods
@@ -80,6 +81,16 @@ processFile(options.src, "files/output/allCreatures_"+dateString+".json", parseM
 //DONE: condense armorClass into an object
 //DONE: Make special abilities section for parsed special abilities
 //DONE: parse skills into array and objects
+
+//DONE: parse melee attacks into damage, toHit, and numberOfAttacks and crit parts
+//DONE: parse ranged attacks into damage, toHit, and numberOfAttacks and crit parts
+
+//TODO: parse melee attacks into numeric crit range and multiplier
+//TODO: parse melee attacks into primary, secondary, weapon-based, and full-attacks.
+
+
+//TODO: parse ranged attacks into numeric crit range and multiplier
+//TODO: parse ranged attacks into primary, secondary, weapon-based, and full-attacks.
 
 //TODO: parse regeneration and fast healing from hp field
 //TODO: parse speed

@@ -134,6 +134,25 @@ export const parseMeleeAttackToHitAndDamage = (line) => {
     return {result: result, success: true, id: json.name};
 }
 
+export const parseRangedAttackToHitAndDamage = (line) => {
+    const json = JSON.parse(line);
+    const monsterName = json.name;
+    const attacks = json.ranged_attacks;
+    if (attacks) {
+        for (let i = 0; i < attacks.length; i++) {
+            const attackSeq = attacks[i];
+            for (let j = 0; j < attackSeq.length; j++) {
+                const attack = attackSeq[j];
+                parseAndSetAttackToHitAndAttackCount(monsterName, attack);
+                parseAndSetDamageDetails(monsterName, attack);
+            }
+        }
+    }
+
+    const result = JSON.stringify(json) + "\n";
+    return {result: result, success: true, id: json.name};
+}
+
 const parseAndSetAttackToHitAndAttackCount = (monsterName, attack) => {
     if (attack.attackBonus === '') return;
     attack.toHit = parseInt(attack.attackBonus);

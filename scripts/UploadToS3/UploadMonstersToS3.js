@@ -7,7 +7,7 @@
 //Similar Script to rename some of these files?
 import AWS from 'aws-sdk'
 import fs from 'fs'
-import Monsters from './MonstersToUpload'
+import Monsters from './MonstersToUpload' //This needs to refer to a local file to work with babel-node 6. This file should match what we are testing in src/models/Monsters (We can't upgrade to babel-node 7 because of non-support of import/export)
 
 console.log("Starting AWS Script");
 const s3 = new AWS.S3();
@@ -50,7 +50,7 @@ const getMonsterFromS3 = (monsterName, bucket='cleverorc', path='pathfinder/v2/m
     });
 }
 
-writeS3JsonFileForMonster(Monsters.find(x => x.name === 'Aasimar'))
+//writeS3JsonFileForMonster(Monsters.find(x => x.name === 'Aasimar'))
 //writeAllMonstersToS3();
 getMonsterFromS3('Aasimar')
 

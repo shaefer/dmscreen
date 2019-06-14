@@ -85,6 +85,9 @@ processFile(options.src, "files/output/allCreatures_"+dateString+".json", sortBy
 //DONE: parse melee attacks into damage, toHit, and numberOfAttacks and crit parts
 //DONE: parse ranged attacks into damage, toHit, and numberOfAttacks and crit parts
 
+//https://www.d20pfsrd.com/bestiary/rules-for-monsters/universal-monster-rules/
+//https://dev.to/adnanrahic/building-a-serverless-contact-form-with-aws-lambda-and-aws-ses-4jm0
+
 //TODO: parse melee attacks into numeric crit range and multiplier
 //TODO: parse melee attacks into primary, secondary, weapon-based, and full-attacks.
 

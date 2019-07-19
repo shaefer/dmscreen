@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/shaefer/dmscreen.svg?branch=master)](https://travis-ci.com/shaefer/dmscreen)
+
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 We then added in Redux
 Using Redux we created basic usage of

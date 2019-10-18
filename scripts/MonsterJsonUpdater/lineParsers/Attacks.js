@@ -60,6 +60,63 @@ export const parseMeleeAttacks = (line) => {
     return {result: result, success: true, id: json.name};
 }
 
+
+/**
+ * Natural Attacks
+Most creatures possess one or more natural attacks (attacks made without a weapon). 
+These attacks fall into one of two categories, primary and secondary attacks. 
+Primary attacks are made using the creature’s full base attack bonus and add the creature’s full Strength bonus on damage rolls. 
+Secondary attacks are made using the creature’s base attack bonus –5 and add only 1/2 the creature’s Strength bonus on damage rolls. 
+If a creature has only one natural attack, it is always made using the creature’s full base attack bonus and adds 1-1/2 times the creature’s Strength bonus on damage rolls. 
+This increase does not apply if the creature has multiple attacks but only takes one. 
+If a creature has only one type of attack, but has multiple attacks per round, that attack is treated as a primary attack, regardless of its type. 
+You do not receive additional natural attacks for a high base attack bonus. 
+Instead, you receive additional attack rolls for multiple limb and body parts capable of making the attack (as noted by the race or ability that grants the attacks).
+ */
+
+/**
+ * 
+Natural Attack	Base Damage by Size*	Damage Type	Attack type
+        Fine	Dim.	Tiny	Small	Medium	Large	Huge	Garg.	Col.
+Bite	1	    1d2	    1d3	    1d4	    1d6	    1d8	    2d6	    2d8	    4d6	B, P, and S	Primary
+Claw	–	    1	1d2	1d3	1d4	1d6	1d8	2d6	2d8	B and S	Primary
+Gore	1	    1d2	1d3	1d4	1d6	1d8	2d6	2d8	4d6	P	Primary
+Hoof, Tentacle, Wing	–	1	1d2	1d3	1d4	1d6	1d8	2d6	2d8	B	Secondary
+Pincers, Tail Slap	1	1d2	1d3	1d4	1d6	1d8	2d6	2d8	4d6	B	Secondary
+Slam	–	1	1d2	1d3	1d4	1d6	1d8	2d6	2d8	B	Primary
+Sting	–	1	1d2	1d3	1d4	1d6	1d8	2d6	2d8	P	Primary
+Talons	–	1	1d2	1d3	1d4	1d6	1d8	2d6	2d8	S	Primary
+Other	–	1	1d2	1d3	1d4	1d6	1d8	2d6	2d8	B, P, or S	Secondary
+ */
+export const parseNaturalAttacks = (line) => {
+    const json = JSON.parse(line);
+
+    //toHit and dice.adjustment (although this will need to account for 1x 1.5x or 2x str bonus)
+    const startingDmgProgressionEquivalent = {"3d4":"2d6", "1d12":"2d6", "2d10":"4d6", "2d4":"1d8"}; //dmg amounts not on chart  equated to one that  is on the chart.
+    const completeDmgProgression = ["1", "1d2", "1d3", "1d4", "1d6", "1d8", "2d6", "2d8", "4d6", "4d8", "6d6", "6d8", "8d6", "8d8", "10d6", "10d8", "12d6", "12d8"];
+    const hoofTentacleWing = {seqStart: "Diminutive", damageType: ["B"], primary: false};
+    const pincerTailSlap = {seqStart: "Fine", damageType: ["B"], primary: false};
+    const slamStingTalon = {seqStart: "Diminutive", primary: true};
+    const naturalAttacks = {
+        attackNames: ["bite", "claw", "gore", "slam", "sting", "talons", "hoof", "tentacle", "wing", "pincer", "tail"],
+        bite: {name: "bite", seqStart:"Fine", damageType: ["B", "P", "S"], primary: true},
+        claw: {name: "claw", seqStart: "Diminutive", damageType: ["B", "S"], primary: true},
+        gore: {name: "gore", seqStart: "Fine", damageType: ["P"], primary: true},
+        hoof: {name: "hoof", ...hoofTentacleWing},
+        tentacle: {name: "tentacle", ...hoofTentacleWing},
+        wing: {name: "wing", ...hoofTentacleWing},
+        pincer: {name: "pincer", ...pincerTailSlap},
+        tail: {name: "tail slap", ...pincerTailSlap},
+        slam: {name: "slam", damageType: ["B"], ...slamStingTalon},
+        sting: {name: 'sting', damageType: ["P"], ...slamStingTalon},
+        talon: {name: 'talon', damageType: ["S"], ...slamStingTalon},
+        other: {name: 'other', seqStart: "Diminutive", damageType: ["B", "P", "S"], primary: false}
+    };
+    
+    const result = JSON.stringify(json) + "\n";
+    return {result: result, success: true, id: json.name};
+}
+
 export const parseRangedAttacks = (line) => {
     const json = JSON.parse(line);
 

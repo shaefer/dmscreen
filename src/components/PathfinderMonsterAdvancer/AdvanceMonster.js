@@ -28,7 +28,7 @@ export const advanceMonster = (statblock, advancement) => {
         if (advancement.int) statAdvancementsMerged.int = advancement.int - statblock.ability_scores.int;
         if (advancement.wis) statAdvancementsMerged.wis = advancement.wis - statblock.ability_scores.wis;
         if (advancement.cha) statAdvancementsMerged.cha = advancement.cha - statblock.ability_scores.cha;
-        
+        console.log("Advancing by ability scores", statAdvancementsMerged);
         const advancesFromAbilityScores = advanceByAbilityScores(advancedCreature, [statAdvancementsMerged]);
         advancedCreature = {
             ...advancedCreature,
@@ -123,7 +123,6 @@ const attackChanges = (origAttacks, statBonusChange, baseAttackBonusChange) => {
     return origAttacks.map(attackSeq => {
         return attackSeq.map(attack => {
             //console.log(attack, attack.toHit, statBonusChange, baseAttackBonusChange);
-            //toHit and dice.adjustment (although this will need to account for 1x 1.5x or 2x str bonus)
             return {
                 ...attack,
                 toHit: attack.toHit + statBonusChange + baseAttackBonusChange

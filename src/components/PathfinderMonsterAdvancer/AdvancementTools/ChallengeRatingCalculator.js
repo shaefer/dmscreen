@@ -52,6 +52,7 @@ export const calculateAcCr = (ac) => {
 }
 
 export const calculateAttackCr = (attacks) => {
+    if (!attacks) return 0;
     const firstAttackBonusOfMainAttack = parseInt(attacks[0][0].attackBonus);
     return calculateStatCr('highAttack', firstAttackBonusOfMainAttack);
 }
@@ -80,6 +81,7 @@ export const calculateDamageFromAttackSequence = (attackSequence) => {
 }
 
 export const calculateDamageCr = (attacks) => {
+    if (!attacks) return 0;
     console.log("input to dmg cr calc", attacks);
     const firstAttack = attacks[0];
     //calculate the dmg from each part of that attack.

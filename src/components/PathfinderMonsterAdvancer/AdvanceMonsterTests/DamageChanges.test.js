@@ -11,5 +11,6 @@ it('damage data should change on str change and get appropriate multiplier for t
     const advancedBehir = advanceMonster(Behir, {str:26});
     expect(advancedBehir.ability_scores.str).toBe(26);
     expect(statBonusFromAbilityScore(advancedBehir.ability_scores.str)).toBe(8);
-    expect(advancedBehir.melee_attacks[0][0].damage_details[0].dice[0].adjustment).toBe(12);
+    //Data needs update to manage str multipliers for natural attacks.
+    expect(advancedBehir.melee_attacks[0][0].damage_details[0].dice[0].adjustment).toBe(11);
 });

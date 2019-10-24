@@ -15,6 +15,6 @@ it('attack data should change on advancement', () => {
 
 it('attack data should change on str change', () => {
     expect(Behir.melee_attacks[0][0].toHit).toBe(15);
-    const advancedBehir = advanceMonster(Behir, {str:25});
+    const advancedBehir = advanceMonster(Behir, {str:25}); //23 to 25 = +1 toHit
     expect(advancedBehir.melee_attacks[0][0].toHit).toBe(16);
 });

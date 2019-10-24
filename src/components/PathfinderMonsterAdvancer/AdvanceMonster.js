@@ -116,16 +116,30 @@ const acFieldsFromMods = (acMods) => {
     }
 }
 
+//currently this is really melee attack changes
 const attackChanges = (origAttacks, statBonusChange, baseAttackBonusChange) => {
-    console.log("attack changes", origAttacks)
+    //console.log("attack changes", origAttacks)
     if (!origAttacks) return origAttacks;
     //const strBonusChange = statBonusDiffs.str;
     return origAttacks.map(attackSeq => {
         return attackSeq.map(attack => {
-            //console.log(attack, attack.toHit, statBonusChange, baseAttackBonusChange);
+            console.log(attack, attack.toHit, statBonusChange, baseAttackBonusChange);
+            const newDamageDetails = attack.damage_details.map(dmg  => {
+                const newDice = dmg.dice.map(dice => {
+                    return {
+                        ...dice,
+                        adjustment: dice.adjustment + statBonusChange
+                    }
+                });
+                return {
+                    ...dmg,
+                    dice: newDice
+                };
+            });
             return {
                 ...attack,
-                toHit: attack.toHit + statBonusChange + baseAttackBonusChange
+                toHit: attack.toHit + statBonusChange + baseAttackBonusChange,
+                damage_details: newDamageDetails
             };
         });
     });
@@ -226,7 +240,7 @@ export const advanceByAbilityScores = (statblock, abilityScoreChanges, chainedAd
     //eventually figure out how to not even include change sets that are basically blank - zeroes for all 3 saving throws
 
     const statBonusDiffs = getStatBonusDifference(statblock.ability_scores, newAbilityScores);
-    console.log("Advancing ability scores", statblock.name)
+    //console.debug("Advancing ability scores", statblock.name)
     const attacks = attackChanges(statblock.melee_attacks, statBonusDiffs.str, 0);
     const acFields = acChanges(statblock.armor_class.ac_modifiers.slice(0), statBonusDiffs);
     const hpFields = hpChanges(newHitDice, statblock.hdType, statblock.creature_type, statBonusFromAbilityScore(newAbilityScores.con), statBonusFromAbilityScore(newAbilityScores.cha), statblock.size);
@@ -280,7 +294,7 @@ export const advanceByHitDice = (statblock, hdChange) => {
     const abilityScoreChange = assignAbilityScoreChangeToHighestStat(statblock.ability_scores, statPointsPer4HitDiceAdded, `Advanced Creature ${hdChange} Hit Dice`);
     const savingThrowChange =  getSavingThrowChangesFromHitDice(statblock, newHitDice);
     const newBaseAttack =  getBaseAttackBonusByHitDiceAndCreatureType(newHitDice, statblock.creature_type);
-    console.log("BAB: " + statblock.base_attack, "BABNEW: " + newBaseAttack)
+    //console.log("BAB: " + statblock.base_attack, "BABNEW: " + newBaseAttack)
     const attacks = attackChanges(statblock.melee_attacks, 0, newBaseAttack - statblock.base_attack);
     const hpFields = hpChanges(newHitDice, statblock.hdType, statblock.creature_type, statBonusFromAbilityScore(statblock.ability_scores.con), statBonusFromAbilityScore(statblock.ability_scores.con), statblock.size);
     const hitDiceAdvancements = {

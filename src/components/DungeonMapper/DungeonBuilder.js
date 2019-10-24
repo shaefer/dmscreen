@@ -59,11 +59,10 @@ const getRoomConnectionsToLinkGroupedRooms = (roomConnections) => {
     return newLinks;
 }
 
+const maxRooms = DungeonRooms.length;
+
 const buildRooms = (numOfRooms) => {
-    if (numOfRooms > DungeonRooms.length) {
-        console.warn("Max rooms is currently 50");
-        numOfRooms = 50;
-    }
+    numOfRooms = (numOfRooms > maxRooms) ? maxRooms : numOfRooms; //apply max rooms
     const rooms = [];
     let availableRooms = DungeonRooms.slice(0);
     while (rooms.length < numOfRooms) {

@@ -10,12 +10,19 @@ class DungeonForceGraph2D extends React.Component {
         PageViewRecorder.recordPageView(window.location.pathname + window.location.search, undefined, title);
     }
 
+
+
     render() {
         const numOfRooms = (this.props.match.params.rooms) ? this.props.match.params.rooms : 10;
         const rooms = buildRooms(numOfRooms);
 
+        const groupRoomsIntoRandomGroups = ((room, numOfGroups = 4) => {
+            const groupId = Math.floor(Math.random() * numOfGroups);
+            return groupId;
+        });
+
         const nodes = rooms.nodes.map(n => {
-            const nodeData = {id: n.key, group: (n.name.indexOf("a") !== -1) ? 1 : 2};
+            const nodeData = {id: n.key, group: groupRoomsIntoRandomGroups(n)};
             return nodeData;
         });
 
@@ -34,6 +41,10 @@ class DungeonForceGraph2D extends React.Component {
         //     return label;
         // }
 
+        const Colors = {
+            blue: 'rgba(31, 120, 180, 0.92)'
+        };
+
         const renderCircleWithLabel = (node, ctx, globalScale) => {
             // Draw wider nodes by 1px on shadow canvas for more precise hovering (due to boundary anti-aliasing)
           const padAmount = 1;
@@ -42,7 +53,7 @@ class DungeonForceGraph2D extends React.Component {
 
           ctx.beginPath();
           ctx.arc(node.x, node.y, r, 0, 2 * Math.PI, false);
-          ctx.fillStyle = node.color || 'rgba(31, 120, 180, 0.92)';
+          ctx.fillStyle = node.color || Colors.blue;
           ctx.fill();
 
           drawLabelBasedOnNode(node, ctx, globalScale, node.id, r);

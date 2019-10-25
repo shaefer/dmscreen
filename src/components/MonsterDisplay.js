@@ -36,7 +36,8 @@ const spaceAndReach = (m) => {
 }
 
 const characterClassSection = (section) => {
-    const raceSections = section.sections;
+    let raceSections = section.sections;
+    if (!raceSections) raceSections = []; //TODO: Werewolf Hybrid form is the only entry currently requiring this check! Fix the data!
     return (
         <span key={"ccSection"}>
         <StatBlockLine><B>{section.name} Characters</B> <div><span className="sbRaceSection sbDescription" dangerouslySetInnerHTML={{__html: section.body}} ></span></div></StatBlockLine>
@@ -162,15 +163,38 @@ const displayFullAttack = (fullAttacks) => {
 }
 
 const displayAttack = (x) => {
-    console.log(x)
+    //console.log(x)
     const attackType = (x.attackType) ? x.attackType + ' ' : '';
     const attackBonus = (x.attackBonus) ? withPlus(x.toHit) + " " : '';
-    return  `${x.attackText}${attackBonus}${attackType}${x.damage}`;
+    const originalAttackDisplay = `${x.attackText}${attackBonus}${attackType}${x.damage}`;
+    const damage = displayDamage(x.damage_details);
+    const newAttackDisplay = `${x.attackText}${attackBonus}${attackType}(${damage})`;
+    if (originalAttackDisplay != newAttackDisplay) {
+        throw new Error(originalAttackDisplay + " VS " + newAttackDisplay)
+    }
+    return newAttackDisplay;
 }
+
+const damageDice = (adjustment => {
+    if (adjustment === 0) return "";
+    return withPlus(adjustment);
+});
+
+const displayDamage = (damageDetails => {
+    return damageDetails.map(detail => {
+        const newDice = detail.dice.map(dice => {
+            return `${dice.numOfDice}d${dice.numOfSides}${damageDice(dice.adjustment)}`
+        });
+        //const damageType = (detail.damageType) ? " " +detail.damageType : "";
+        const diceAndCrit = (detail.critRangeAndMultiplier) ? newDice + "/" + detail.critRangeAndMultiplier : newDice;
+        return diceAndCrit;
+
+    }).join(" plus ");
+});
 
 const MonsterDisplay = ({monster}) => {
     const m = monster.statBlock;
-
+    console.log(m.name)
     if (!m.name)
         return <div>No Monster Currently Selected</div>;
     if (!monster.success) {

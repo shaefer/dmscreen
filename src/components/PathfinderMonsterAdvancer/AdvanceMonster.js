@@ -123,7 +123,7 @@ const attackChanges = (origAttacks, statBonusChange, baseAttackBonusChange) => {
     //const strBonusChange = statBonusDiffs.str;
     return origAttacks.map(attackSeq => {
         return attackSeq.map(attack => {
-            console.log(attack, attack.toHit, statBonusChange, baseAttackBonusChange);
+            //console.log(attack, attack.toHit, statBonusChange, baseAttackBonusChange);
             const newDamageDetails = attack.damage_details.map(dmg  => {
                 const newDice = dmg.dice.map(dice => {
                     return {

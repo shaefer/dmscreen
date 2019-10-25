@@ -22,7 +22,7 @@ export default class PathfinderMonsterAdvancer extends Component {
         // }
         const advancement = this.props.advancement;
         if (advancement) {
-            //console.log("ADVANCING CREATURE", advancement)
+            console.log("ADVANCING CREATURE", advancement)
             const advancedMonsterChanges = advanceMonster(monster.statBlock, advancement);
             const newMonster = {
                 ...monster.statBlock,

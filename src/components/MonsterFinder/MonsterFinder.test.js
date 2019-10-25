@@ -14,7 +14,7 @@ it('renders without crashing', () => {
 Monsters.forEach(monsterStats => {
   it(`Render ${monsterStats.name}`, () => {
     const div = document.createElement('div');
-    const monster = {statBlock:monsterStats}
+    const monster = {statBlock:monsterStats, success: true}
     ReactDOM.render(<PathfinderMonsterAdvancer monster={monster} advancement={{hd: monsterStats.hitDice + 1}}/>, div);
     ReactDOM.unmountComponentAtNode(div);
   });

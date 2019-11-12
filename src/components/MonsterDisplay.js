@@ -151,7 +151,7 @@ const displayConstitution = (con, showStatBonus, statBonus) => {
     return (con === 0) ? '-' : `${con}${statBonusDisplay}`;
 }
 
-const displayFullAttack = (fullAttacks) => {
+export const displayFullAttack = (fullAttacks) => {
     const attackSequencesAsText = fullAttacks.map(attackSequences => {
         //console.log(attackSequences);
         const attacksAsText = attackSequences.map(attack => {
@@ -169,6 +169,7 @@ const displayAttack = (x) => {
     const originalAttackDisplay = `${x.attackText}${attackBonus}${attackType}${x.damage}`;
     const damage = displayDamage(x.damage_details);
     const newAttackDisplay = `${x.attackText}${attackBonus}${attackType}(${damage})`;
+    //enable this error throwing to see mismatches in the MonsterFinder.test.js file. 
     if (originalAttackDisplay != newAttackDisplay) {
         throw new Error(originalAttackDisplay + " VS " + newAttackDisplay)
     }
@@ -185,9 +186,9 @@ const displayDamage = (damageDetails => {
         const newDice = detail.dice.map(dice => {
             return `${dice.numOfDice}d${dice.numOfSides}${damageDice(dice.adjustment)}`
         });
-        //const damageType = (detail.damageType) ? " " +detail.damageType : "";
+        const damageType = (detail.damageType) ? " " +detail.damageType : "";
         const diceAndCrit = (detail.critRangeAndMultiplier) ? newDice + "/" + detail.critRangeAndMultiplier : newDice;
-        return diceAndCrit;
+        return diceAndCrit + damageType;
 
     }).join(" plus ");
 });

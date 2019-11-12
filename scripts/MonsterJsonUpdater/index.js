@@ -20,9 +20,7 @@ const processFile = (fileNameAndPath, outputPath, outputFileName, alterLineFunc)
     var rl = readline.createInterface(instream, outstream);
     
     //the current output path assumed an output folder inside the file folder...if one of the parent folders don't exist this will error.
-    fs.mkdirSync(outputPath, { recursive: true }, (err) => {
-        if (err) throw err;
-    });
+    ensureDirSync(outputPath);
     console.log("Wrote dirs");
     const outputFileAndPath = outputPath+"/"+outputFileName;
     console.log("")
@@ -40,11 +38,19 @@ const processFile = (fileNameAndPath, outputPath, outputFileName, alterLineFunc)
     });
     
     rl.on('close', function() {
-      console.log(`Finished. Wrote file ${outputPath}`);
+      console.log(`Finished. Wrote file ${outputFileAndPath}`);
       console.log("Failures: " + failures.length + " " + failures.join("|"))
       console.log("Successes: " + successes.length) + " " + successes.join("|")
     });
 }
+
+function ensureDirSync (dirpath) {
+    try {
+      fs.mkdirSync(dirpath, { recursive: true })
+    } catch (err) {
+      if (err.code !== 'EEXIST') throw err
+    }
+  }
 
 const sortByKeys = (line) => {
     const json = JSON.parse(line);

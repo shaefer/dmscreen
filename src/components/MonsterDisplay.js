@@ -187,7 +187,8 @@ const displayDamage = (damageDetails => {
             return (dice.numOfDice === 0) ? dice.adjustment : `${dice.numOfDice}d${dice.numOfSides}${damageDice(dice.adjustment)}`
         });
         const damageTypeRaw = (detail.damageType) ? " " +detail.damageType : "";
-        const damageType = (damageTypeRaw.endsWith("plus ")) ? damageTypeRaw.slice(0, -6) : damageTypeRaw;
+        const damageTypeWithoutTrailingSpace = (damageTypeRaw.endsWith(" ")) ? damageTypeRaw.slice(0, -1) : damageTypeRaw;
+        const damageType = (damageTypeWithoutTrailingSpace.endsWith("plus")) ? damageTypeWithoutTrailingSpace.slice(0, -5) : damageTypeWithoutTrailingSpace;
         const diceAndCrit = (detail.critRangeAndMultiplier) ? newDice + "/" + detail.critRangeAndMultiplier : newDice;
         return diceAndCrit + damageType;
 

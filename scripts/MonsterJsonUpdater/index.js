@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import fs from 'fs';
 import readline from 'readline';
 import stream from 'stream';
@@ -12,14 +13,20 @@ import condenseAbilityScores from './lineParsers/AbilityScores'
 import parseSkills from './lineParsers/Skills'
 import {parseMeleeAttacks, parseRangedAttacks, parseMeleeAttackToHitAndDamage, parseRangedAttackToHitAndDamage} from './lineParsers/Attacks'
 
-const processFile = (fileNameAndPath, outputPath, alterLineFunc) => {
+const processFile = (fileNameAndPath, outputPath, outputFileName, alterLineFunc) => {
 
     var instream = fs.createReadStream(fileNameAndPath);
     var outstream = new stream;
     var rl = readline.createInterface(instream, outstream);
     
     //the current output path assumed an output folder inside the file folder...if one of the parent folders don't exist this will error.
-    var writeStream = fs.createWriteStream(outputPath, {flags:'a+'});
+    fs.mkdirSync(outputPath, { recursive: true }, (err) => {
+        if (err) throw err;
+    });
+    console.log("Wrote dirs");
+    const outputFileAndPath = outputPath+"/"+outputFileName;
+    console.log("")
+    var writeStream = fs.createWriteStream(outputFileAndPath, {flags:'a+'});
     console.log("About to write lines");
     let lncnt = 0;
     let failures = [];
@@ -50,14 +57,14 @@ const sortByKeys = (line) => {
 }
 
 const optionDefinitions = [
-    { name: 'src', type: String, defaultOption: true, defaultValue: "files/test.txt" }
+    { name: 'src', type: String, defaultOption: true, defaultValue: "./files/creature_sample.json" }
 ];
 const options = commandLineArgs(optionDefinitions);
 
 const now = new Date();
-const dateString = now.toLocaleDateString()+"_"+now.getHours()+"-" + now.getMinutes() + "-" + now.getSeconds();
+const dateString = now.getFullYear()+"_"+(now.getMonth()+1)+"_" +now.getDate() + "_" +now.getHours()+"-" + now.getMinutes() + "-" + now.getSeconds();
 console.log("About to process file");
-processFile(options.src, "files/output/allCreatures_"+dateString+".json", parseMeleeAttackToHitAndDamage);
+processFile(options.src, "./files/output", "allCreatures_"+dateString+".json", parseRangedAttackToHitAndDamage);
 
 //v2 is what is currently deployed.
 //v3 is all int based fields converted to ints. 
@@ -71,6 +78,7 @@ processFile(options.src, "files/output/allCreatures_"+dateString+".json", parseM
 //v12 parsed melee attacks
 //v13 parsed ranged attacks
 //v14 parsed dice for damage, crit, and toHit from attacks.
+//v16 parsed attacks to better capture damage types and extra post damage descriptors
 
 //DONE parse all stats into fields containing just the ints
 //DONE parse ac into individual fields and mods

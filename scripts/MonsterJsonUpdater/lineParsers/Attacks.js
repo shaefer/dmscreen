@@ -234,8 +234,8 @@ const withPlus = (stat) => {
 const parseAndSetDamageDetails = (monsterName, attack) => {
     const dmg = attack.damage;
     //try this to just get damageDescriptor without trying to parse specifics (may still want to strip an ending "plus " from the descriptor)
-    const damageAmountsRegex = /(\d+d\d+[\+\-]*\d*|(?<!DC )(?<!DC \d)\d+)\/?(\d*-\d*\/[×x][234]|\d*-\d*|[x×][234])* ?([\[a-zA-Z\s]+)/gm;
-    const damageAmountsRegex = /(\d+d\d+[\+\-]*\d*|(?<!DC )(?<!DC \d)\d+)\/?(\d*-\d*\/[×x][234]|\d*-\d*|[x×][234])* ?(cold|bleed|acid|electricity|fire|negative energy|energy|sonic|Strength|Dexterity|Constitution|Wisdom|Intelligence|Charisma|Str|Dex|Con|Int|Wis|Cha)* ?(damage|drain)*/gm;
+    const damageAmountsRegex = /(\d+d\d+[\+\-]*\d*|(?<!DC )(?<!DC \d)\d+)\/?(\d*-\d*\/[×x][234]|\d*-\d*|[x×][234])* ?([\[a-zA-Z\s]+)*/gm;
+    //const damageAmountsRegex = /(\d+d\d+[\+\-]*\d*|(?<!DC )(?<!DC \d)\d+)\/?(\d*-\d*\/[×x][234]|\d*-\d*|[x×][234])* ?(cold|bleed|acid|electricity|fire|negative energy|energy|sonic|Strength|Dexterity|Constitution|Wisdom|Intelligence|Charisma|Str|Dex|Con|Int|Wis|Cha)* ?(damage|drain)*/gm;
     const matches = getCaptureGroups(damageAmountsRegex, dmg)
     const damageDetails = matches.map(x => {
         const dice = parseDiceNotation(x[1]);
@@ -253,6 +253,7 @@ const parseAndSetDamageDetails = (monsterName, attack) => {
 const parseDiceNotation = (diceNotation) => {
     if (diceNotation.indexOf("d") === -1) {
         //just a straight number...no dice to roll.
+        console.log("Found no dice notation", diceNotation);
         return [{numOfDice: 0, numOfSides: 0, adjustment: diceNotation}];
     } else {
         //https://regex101.com/r/FD7Z9L/1

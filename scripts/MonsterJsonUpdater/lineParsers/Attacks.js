@@ -234,7 +234,7 @@ const withPlus = (stat) => {
 const parseAndSetDamageDetails = (monsterName, attack) => {
     const dmg = attack.damage;
     //try this to just get damageDescriptor without trying to parse specifics (may still want to strip an ending "plus " from the descriptor)
-    const damageAmountsRegex = /(\d+d\d+[\+\-]*\d*|(?<!DC )(?<!DC \d)\d+)\/?(\d*-\d*\/[×x][234]|\d*-\d*|[x×][234])* ?([\[a-zA-Z\s]+)*/gm;
+    const damageAmountsRegex = /(\d+d\d+[\+\-]*\d*|(?<!DC )(?<!DC \d)\d+)\/?(\d*-\d*\/[×x][234]|\d*-\d*|[x×][234])* ?([\[a-zA-Z\s,-\/';]+)*/gm;
     //const damageAmountsRegex = /(\d+d\d+[\+\-]*\d*|(?<!DC )(?<!DC \d)\d+)\/?(\d*-\d*\/[×x][234]|\d*-\d*|[x×][234])* ?(cold|bleed|acid|electricity|fire|negative energy|energy|sonic|Strength|Dexterity|Constitution|Wisdom|Intelligence|Charisma|Str|Dex|Con|Int|Wis|Cha)* ?(damage|drain)*/gm;
     const matches = getCaptureGroups(damageAmountsRegex, dmg)
     const damageDetails = matches.map(x => {

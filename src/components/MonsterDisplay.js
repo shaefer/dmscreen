@@ -184,9 +184,10 @@ const damageDice = (adjustment => {
 const displayDamage = (damageDetails => {
     return damageDetails.map(detail => {
         const newDice = detail.dice.map(dice => {
-            return `${dice.numOfDice}d${dice.numOfSides}${damageDice(dice.adjustment)}`
+            return (dice.numOfDice === 0) ? dice.adjustment : `${dice.numOfDice}d${dice.numOfSides}${damageDice(dice.adjustment)}`
         });
-        const damageType = (detail.damageType) ? " " +detail.damageType : "";
+        const damageTypeRaw = (detail.damageType) ? " " +detail.damageType : "";
+        const damageType = (damageTypeRaw.endsWith("plus ")) ? damageTypeRaw.slice(0, -6) : damageTypeRaw;
         const diceAndCrit = (detail.critRangeAndMultiplier) ? newDice + "/" + detail.critRangeAndMultiplier : newDice;
         return diceAndCrit + damageType;
 

@@ -13,6 +13,6 @@
   },
   "scripts": {
     "test": "react-scripts test --env=jsdom",
-    "start": "node -r esm ./index.js"
+    "start": "node --inspect-brk -r esm ./index.js"
   }
 }

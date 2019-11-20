@@ -1,5 +1,7 @@
 
 import getCaptureGroups from '../utils/RegexHelper';
+import displayFullAttack from './Attacks_Utils/DisplayAttack';
+import { exception } from 'react-ga';
 //(^[\+\d+]*[ a-zA-Z]*)([\/?\+?\-?\d+]+) ?(\([^\)]+\))
 //(^[\+\d+]*[ a-zA-Z\*]*)([\/?\+?\-?\d*]*) ?(touch|melee|melee touch)* ?(\([^\)]+\)) added handling of a "type" after to hit.
 //,? ?([\+\d+]*[ a-zA-Z\*\,\d]*)([\/?\+?\-?\d*]*) ?(touch|melee|melee touch)* ?(\([^\)]+\))*
@@ -177,6 +179,7 @@ export const parseMeleeAttackToHitAndDamage = (line) => {
     const monsterName = json.name;
     const meleeAttacks = json.melee_attacks;
     if (meleeAttacks) {
+        console.log(json.melee)
         for (let i = 0; i < meleeAttacks.length; i++) {
             const attackSeq = meleeAttacks[i];
             for (let j = 0; j < attackSeq.length; j++) {
@@ -186,9 +189,21 @@ export const parseMeleeAttackToHitAndDamage = (line) => {
             }
         }
     }
+    const damages = [];
+    json.melee_attacks.forEach(x => {
+        x.forEach(y => {
+            damages.push(y.damage);
+        });
+    });
 
     const result = JSON.stringify(json) + "\n";
-    return {result: result, success: true, id: json.name};
+    const constructedFullAttack = displayFullAttack(json.melee_attacks);
+    if (constructedFullAttack == json.melee) {
+        return {result: result, success: true, id: json.name};
+    } else {
+        console.log("FAIL", constructedFullAttack, json.melee);
+        return {result: result, success: false, id: [constructedFullAttack + " vs "  + json.melee]};
+    }
 }
 
 export const parseRangedAttackToHitAndDamage = (line) => {
@@ -227,23 +242,24 @@ const parseAndSetAttackToHitAndAttackCount = (monsterName, attack) => {
     console.log(monsterName, attack.toHit, attack.attackCount, attack.attackBonus, attack.attackText);
 }
 
-const withPlus = (stat) => {
-    return (stat >= 0) ? `+${stat}` : stat;
-}
-
 const parseAndSetDamageDetails = (monsterName, attack) => {
+    console.log(monsterName, attack);
     const dmg = attack.damage;
     //try this to just get damageDescriptor without trying to parse specifics (may still want to strip an ending "plus " from the descriptor)
-    const damageAmountsRegex = /(\d+d\d+[\+\-]*\d*|(?<!DC )(?<!DC \d)\d+)\/?(\d*-\d*\/[×x][234]|\d*-\d*|[x×][234])* ?([\[a-zA-Z\s,-\/';]+)*/gm;
+    const damageAmountsRegex = /\(?(\d+d\d+[+-]?\d*)?\/?(\d\d[-–]\d\d)?\/?([x×]\d)?(.*)\)?/gm;
+    //const damageAmountsRegex = /(\d+d\d+[\+\-]*\d*|(?<!DC )(?<!DC \d)\d+)*\/?(\d*-\d*\/[×x][234]|\d*-\d*|[x×][234])* ?([\[a-zA-Z\s,-\/';]+)*/gm;
+   //const damageAmountsRegex = /(\d+d\d+[\+\-]*\d*|(?<!DC )(?<!DC \d)\d+)\/?(\d*-\d*\/[×x][234]|\d*-\d*|[x×][234])* ?([\[a-zA-Z\s,-\/';]+)*/gm;
     //const damageAmountsRegex = /(\d+d\d+[\+\-]*\d*|(?<!DC )(?<!DC \d)\d+)\/?(\d*-\d*\/[×x][234]|\d*-\d*|[x×][234])* ?(cold|bleed|acid|electricity|fire|negative energy|energy|sonic|Strength|Dexterity|Constitution|Wisdom|Intelligence|Charisma|Str|Dex|Con|Int|Wis|Cha)* ?(damage|drain)*/gm;
-    const matches = getCaptureGroups(damageAmountsRegex, dmg)
+    const allMatches = getCaptureGroups(damageAmountsRegex, dmg)
+    const matches = allMatches.filter(x => x[0] !== "");
     const damageDetails = matches.map(x => {
         const dice = parseDiceNotation(x[1]);
+        if (dice.numOfDice === 0 && dice.numOfSides === 0 && !dice.adjustment) return;
         return {
             dice: dice,
-            critRangeAndMultiplier: x[2],
-            damageType: x[3],
-            statDamageOrDrain: x[4]
+            critRange: x[2],
+            critMultiplier: x[3],
+            damageType: x[4].trim().replace(/\)$/, '')
         };
     });
     attack.damage_details = damageDetails;
@@ -251,7 +267,7 @@ const parseAndSetDamageDetails = (monsterName, attack) => {
 }
 
 const parseDiceNotation = (diceNotation) => {
-    if (diceNotation.indexOf("d") === -1) {
+    if (diceNotation === undefined || diceNotation.indexOf("d") === -1) {
         //just a straight number...no dice to roll.
         console.log("Found no dice notation", diceNotation);
         return [{numOfDice: 0, numOfSides: 0, adjustment: diceNotation}];
@@ -273,23 +289,6 @@ const cleanHtml = (str) => {
     const strWithoutPStart = str.replace('<p class="stat-block-2">', '');
     const cleanStr = strWithoutPStart.replace('</p>', '');
     return cleanStr;
-}
-
-const displayFullAttack = (fullAttacks) => {
-    const attackSequencesAsText = fullAttacks.map(attackSequences => {
-        //console.log(attackSequences);
-        const attacksAsText = attackSequences.map(attack => {
-            return displayAttack(attack);
-        });
-        return attacksAsText.join(", ");
-    });
-    return attackSequencesAsText.join(" or ");
-}
-
-const displayAttack = (x) => {
-    const attackType = (x.attackType) ? x.attackType + ' ' : '';
-    const attackBonus = (x.attackBonus) ? x.attackBonus + " " : '';
-    return  `${x.attackText}${attackBonus}${attackType}${x.damage}`;
 }
 
 const getEditDistance = function(a, b){

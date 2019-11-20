@@ -12,6 +12,8 @@ import convertFieldsToInt from './lineParsers/FieldsAsInt'
 import condenseAbilityScores from './lineParsers/AbilityScores'
 import parseSkills from './lineParsers/Skills'
 import {parseMeleeAttacks, parseRangedAttacks, parseMeleeAttackToHitAndDamage, parseRangedAttackToHitAndDamage} from './lineParsers/Attacks'
+import excludedCreatures from './excludedCreatures'
+
 
 const processFile = (fileNameAndPath, outputPath, outputFileName, alterLineFunc) => {
 
@@ -31,16 +33,29 @@ const processFile = (fileNameAndPath, outputPath, outputFileName, alterLineFunc)
     let successes = [];
     rl.on('line', function(line) {
         lncnt++;
-        const lineOutput = alterLineFunc(line);
-        //console.log("Line " + lncnt + " creature: " + lineOutput.id + " Success:" + lineOutput.success);
-        lineOutput.success ? successes.push(lineOutput.id) : failures.push(lineOutput.id);
-        writeStream.write(lineOutput.result);
+        const json = JSON.parse(line);
+        if (excludedCreatures.indexOf(json.name) !== -1 || excludedCreatures.length ===  0) {
+          try {
+          const lineOutput = alterLineFunc(line);
+          //console.log("Line " + lncnt + " creature: " + lineOutput.id + " Success:" + lineOutput.success);
+          if (lineOutput.success) {
+            successes.push(lineOutput.id) 
+          } else {
+            if (lineOutput.id)
+              lineOutput.id.forEach(x => failures.push(x));
+          }
+          writeStream.write(lineOutput.result);
+          } catch (ex) {
+            failures.push(`${json.name}: ${ex}`);
+          }
+        }
     });
     
     rl.on('close', function() {
       console.log(`Finished. Wrote file ${outputFileAndPath}`);
-      console.log("Failures: " + failures.length + " " + failures.join("|"))
-      console.log("Successes: " + successes.length) + " " + successes.join("|")
+      console.log("\n\n\nAll Failures: " + failures);
+      console.log("\n\n\nFailures: " + failures.length + " " + failures.join("\n"))
+      console.log("\n\n\nSuccesses: " + successes.length) + " " + successes.join("|")
     });
 }
 
@@ -70,7 +85,7 @@ const options = commandLineArgs(optionDefinitions);
 const now = new Date();
 const dateString = now.getFullYear()+"_"+(now.getMonth()+1)+"_" +now.getDate() + "_" +now.getHours()+"-" + now.getMinutes() + "-" + now.getSeconds();
 console.log("About to process file");
-processFile(options.src, "./files/output", "allCreatures_"+dateString+".json", parseRangedAttackToHitAndDamage);
+processFile(options.src, "./files/output", "allCreatures_"+dateString+".json", parseMeleeAttackToHitAndDamage);
 
 //v2 is what is currently deployed.
 //v3 is all int based fields converted to ints. 

@@ -238,6 +238,7 @@ const parseAndSetAttackToHitAndAttackCount = (monsterName, attack) => {
     }
     if (slashesInAttackBonus.length > 0) {
         attack.weaponBased = true;
+        //TODO: Fill out section that shows the numeric diff from the first to the next...so +14/+14/+9/+9/+4 would be 0/0/-5/-5/-10
     }
     console.log(monsterName, attack.toHit, attack.attackCount, attack.attackBonus, attack.attackText);
 }

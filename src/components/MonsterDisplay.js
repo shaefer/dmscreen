@@ -152,6 +152,7 @@ const displayConstitution = (con, showStatBonus, statBonus) => {
 }
 
 export const displayFullAttack = (fullAttacks) => {
+    if (!fullAttacks) return;
     const attackSequencesAsText = fullAttacks.map(attackSequences => {
         //console.log(attackSequences);
         const attacksAsText = attackSequences.map(attack => {
@@ -162,10 +163,18 @@ export const displayFullAttack = (fullAttacks) => {
     return attackSequencesAsText.join(" or ");
 }
 
+const displayToHitForMultipleAttacks = (attackBonusText, toHit, toHitAdjustments) => {
+    if (!toHitAdjustments || toHitAdjustments.length == 1) {
+        return (attackBonusText) ? withPlus(toHit) + " " : '';
+    } else {
+        return toHitAdjustments.map(x => withPlus(x + toHit)).join("/") + " ";
+    }
+}
+
 const displayAttack = (x) => {
     //console.log(x)
     const attackType = (x.attackType) ? x.attackType + ' ' : '';
-    const attackBonus = (x.attackBonus) ? withPlus(x.toHit) + " " : '';
+    const attackBonus = displayToHitForMultipleAttacks(x.attackBonus, x.toHit, x.toHitAdjustments);
     const originalAttackDisplay = `${x.attackText}${attackBonus}${attackType}${x.damage}`;
     const damage = displayDamage(x.damage_details);
     const newAttackDisplay = `${x.attackText}${attackBonus}${attackType}(${damage})`;
@@ -186,10 +195,17 @@ const displayDamage = (damageDetails => {
         const newDice = detail.dice.map(dice => {
             return (dice.numOfDice === 0) ? dice.adjustment : `${dice.numOfDice}d${dice.numOfSides}${damageDice(dice.adjustment)}`
         });
-        const damageTypeRaw = (detail.damageType) ? " " +detail.damageType : "";
-        const damageTypeWithoutTrailingSpace = (damageTypeRaw.endsWith(" ")) ? damageTypeRaw.slice(0, -1) : damageTypeRaw;
-        const damageType = (damageTypeWithoutTrailingSpace.endsWith("plus")) ? damageTypeWithoutTrailingSpace.slice(0, -5) : damageTypeWithoutTrailingSpace;
-        const diceAndCrit = (detail.critRangeAndMultiplier) ? newDice + "/" + detail.critRangeAndMultiplier : newDice;
+        //3 options
+        //no dice just damageType
+        //someDice no damageType
+        //someDice and damageType
+        const hasNoDiceNotation = !newDice[0]; //rewrite as filter of detail.dice?
+        const damageType = (hasNoDiceNotation) ? detail.damageType : (detail.damageType) ? " " + detail.damageType : "";
+
+        //build critRange and critMultiplier
+        const critRange = (detail.critRange) ? "/" + detail.critRange : "";
+        const critMult = (detail.critMultiplier) ? "/" + detail.critMultiplier : "";
+        const diceAndCrit = (critRange || critMult) ? newDice + critRange + critMult : newDice;
         return diceAndCrit + damageType;
 
     }).join(" plus ");

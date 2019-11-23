@@ -1,5 +1,7 @@
-const excludedCreatures = [];
-const attacksHardToParse = ["Attic Whisperer",
+const excludedCreatures = 
+[];
+const attacksHardToParse = 
+["Attic Whisperer",
 "Boggard",
 "Daemon, Piscodaemon",
 "Dark Stalker",

@@ -4,6 +4,7 @@ const withPlus = (stat) => {
 }
 
 const displayFullAttack = (fullAttacks) => {
+    if (!fullAttacks) return;
     const attackSequencesAsText = fullAttacks.map(attackSequences => {
         //console.log(attackSequences);
         const attacksAsText = attackSequences.map(attack => {
@@ -14,10 +15,19 @@ const displayFullAttack = (fullAttacks) => {
     return attackSequencesAsText.join(" or ");
 }
 
+const displayToHitForMultipleAttacks = (attackBonusText, toHit, toHitAdjustments) => {
+    if (!toHitAdjustments || toHitAdjustments.length == 1) {
+        return (attackBonusText) ? withPlus(toHit) + " " : '';
+    } else {
+        return toHitAdjustments.map(x => withPlus(x + toHit)).join("/") + " ";
+    }
+}
+
 const displayAttack = (x) => {
     //console.log(x)
     const attackType = (x.attackType) ? x.attackType + ' ' : '';
-    const attackBonus = (x.attackBonus) ? withPlus(x.toHit) + " " : '';
+    const attackBonus = displayToHitForMultipleAttacks(x.attackBonus, x.toHit, x.toHitAdjustments);
+
     const originalAttackDisplay = `${x.attackText}${attackBonus}${attackType}${x.damage}`;
     const damage = displayDamage(x.damage_details);
     const newAttackDisplay = `${x.attackText}${attackBonus}${attackType}(${damage})`;

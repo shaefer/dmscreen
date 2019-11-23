@@ -177,9 +177,9 @@ const displayAttack = (x) => {
     const originalAttackDisplay = `${x.attackText}${attackBonus}${attackType}${x.damage}`;
     const damage = displayDamage(x.damage_details);
     const newAttackDisplay = `${x.attackText}${attackBonus}${attackType}(${damage})`;
-    if (originalAttackDisplay != newAttackDisplay) {
-        throw `Attack Mismatch error ${originalAttackDisplay} VS ${newAttackDisplay}`;
-    }
+    // if (originalAttackDisplay != newAttackDisplay) {
+    //     throw `Attack Mismatch error ${originalAttackDisplay} VS ${newAttackDisplay}`;
+    // }
     return newAttackDisplay;
 }
 

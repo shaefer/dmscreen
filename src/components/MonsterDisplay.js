@@ -172,16 +172,11 @@ const displayToHitForMultipleAttacks = (attackBonusText, toHit, toHitAdjustments
 }
 
 const displayAttack = (x) => {
-    //console.log(x)
     const attackType = (x.attackType) ? x.attackType + ' ' : '';
     const attackBonus = displayToHitForMultipleAttacks(x.attackBonus, x.toHit, x.toHitAdjustments);
     const originalAttackDisplay = `${x.attackText}${attackBonus}${attackType}${x.damage}`;
     const damage = displayDamage(x.damage_details);
     const newAttackDisplay = `${x.attackText}${attackBonus}${attackType}(${damage})`;
-    //enable this error throwing to see mismatches in the MonsterFinder.test.js file. 
-    if (originalAttackDisplay != newAttackDisplay) {
-        throw new Error(originalAttackDisplay + " VS " + newAttackDisplay)
-    }
     return newAttackDisplay;
 }
 

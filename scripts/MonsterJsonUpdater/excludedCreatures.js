@@ -39,5 +39,6 @@ const attacksHardToParse =
 "Wereboar (Hybrid Form)",
 "Wererat (Hybrid Form)",
 "Wyvaran",
-"Zoog"];
+"Zoog"
+];
 export default excludedCreatures;

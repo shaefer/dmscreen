@@ -27,7 +27,6 @@ const displayAttack = (x) => {
     //console.log(x)
     const attackType = (x.attackType) ? x.attackType + ' ' : '';
     const attackBonus = displayToHitForMultipleAttacks(x.attackBonus, x.toHit, x.toHitAdjustments);
-
     const originalAttackDisplay = `${x.attackText}${attackBonus}${attackType}${x.damage}`;
     const damage = displayDamage(x.damage_details);
     const newAttackDisplay = `${x.attackText}${attackBonus}${attackType}(${damage})`;
@@ -50,6 +49,7 @@ const displayDamage = (damageDetails => {
         //no dice just damageType
         //someDice no damageType
         //someDice and damageType
+        
         const hasNoDiceNotation = !newDice[0]; //rewrite as filter of detail.dice?
         const damageType = (hasNoDiceNotation) ? detail.damageType : (detail.damageType) ? " " + detail.damageType : "";
 

@@ -177,6 +177,9 @@ const displayAttack = (x) => {
     const originalAttackDisplay = `${x.attackText}${attackBonus}${attackType}${x.damage}`;
     const damage = displayDamage(x.damage_details);
     const newAttackDisplay = `${x.attackText}${attackBonus}${attackType}(${damage})`;
+    if (originalAttackDisplay != newAttackDisplay) {
+        throw `Attack Mismatch error ${originalAttackDisplay} VS ${newAttackDisplay}`;
+    }
     return newAttackDisplay;
 }
 
@@ -188,7 +191,7 @@ const damageDice = (adjustment => {
 const displayDamage = (damageDetails => {
     return damageDetails.map(detail => {
         const newDice = detail.dice.map(dice => {
-            return (dice.numOfDice === 0) ? dice.adjustment : `${dice.numOfDice}d${dice.numOfSides}${damageDice(dice.adjustment)}`
+            return (dice.numOfDice === 0) ? "" : `${dice.numOfDice}d${dice.numOfSides}${damageDice(dice.adjustment)}`
         });
         //3 options
         //no dice just damageType

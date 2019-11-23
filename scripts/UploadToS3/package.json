@@ -1,0 +1,23 @@
+{
+  "name": "upload_monsters_to_s3",
+  "version": "0.0.2",
+  "private": true,
+  "dependencies": {
+    "aws-sdk": "^2.413.0",
+    "fs": "0.0.1-security"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "aws": "npx babel-node UploadMonstersToS3.js"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "npx": "^10.2.0"
+  },
+  "notes": {
+    "babel": "https://babeljs.io/docs/en/babel-node has a note that reads ES6-style module-loading may not function as expected. This may have been due to trying to load a file outside of the folder structure. Never was able to get ver 7 working."
+  }
+}

@@ -5,7 +5,6 @@ import {advanceMonster} from '../../../../components/PathfinderMonsterAdvancer/A
 it('calculateCR works for monster', () => {
     expect(Behir.crAsNum).toBe(8)
     const crs = calculateCR(Behir);
-    expect(crs.total).toBe(6.93);
     expect(crs.ref).toBe(5);
     expect(crs.will).toBe(6);
     expect(crs.fort).toBe(9);
@@ -15,6 +14,8 @@ it('calculateCR works for monster', () => {
     expect(crs.damage).toBe(4);
     expect(crs.ac).toBe(8);
     expect(crs.original).toBe(8);
+    console.log(crs)
+    expect(crs.total).toBe(6.93);
 });
 
 it('calculateCR works after advancement', () => {

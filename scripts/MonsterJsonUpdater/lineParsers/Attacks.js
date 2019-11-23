@@ -1,11 +1,13 @@
 
 import getCaptureGroups from '../utils/RegexHelper';
+import displayFullAttack from './Attacks_Utils/DisplayAttack';
+import { exception } from 'react-ga';
 //(^[\+\d+]*[ a-zA-Z]*)([\/?\+?\-?\d+]+) ?(\([^\)]+\))
 //(^[\+\d+]*[ a-zA-Z\*]*)([\/?\+?\-?\d*]*) ?(touch|melee|melee touch)* ?(\([^\)]+\)) added handling of a "type" after to hit.
 //,? ?([\+\d+]*[ a-zA-Z\*\,\d]*)([\/?\+?\-?\d*]*) ?(touch|melee|melee touch)* ?(\([^\)]+\))*
 //,? ?([\+\d+]*[ a-zA-Z\*\,\d]*)([\/?\+?\-?\d*]*) ?(melee touch|touch|melee)* ?(\([^\)]+\))*
 //,? ?([\dd\+\d ]*[\+\d]*[ a-zA-Z\*\,\d]*)([\/?\+?\-?\d*]*) ?(melee touch|touch|melee)* ?(\([^\)]+\))*
-const parseMeleeAttacks = (line) => {
+export const parseMeleeAttacks = (line) => {
     const json = JSON.parse(line);
 
     //split attacks on " or " and then on "," (and trim any whitespace)
@@ -60,7 +62,64 @@ const parseMeleeAttacks = (line) => {
     return {result: result, success: true, id: json.name};
 }
 
-const parseRangedAttacks = (line) => {
+
+/**
+ * Natural Attacks
+Most creatures possess one or more natural attacks (attacks made without a weapon). 
+These attacks fall into one of two categories, primary and secondary attacks. 
+Primary attacks are made using the creature’s full base attack bonus and add the creature’s full Strength bonus on damage rolls. 
+Secondary attacks are made using the creature’s base attack bonus –5 and add only 1/2 the creature’s Strength bonus on damage rolls. 
+If a creature has only one natural attack, it is always made using the creature’s full base attack bonus and adds 1-1/2 times the creature’s Strength bonus on damage rolls. 
+This increase does not apply if the creature has multiple attacks but only takes one. 
+If a creature has only one type of attack, but has multiple attacks per round, that attack is treated as a primary attack, regardless of its type. 
+You do not receive additional natural attacks for a high base attack bonus. 
+Instead, you receive additional attack rolls for multiple limb and body parts capable of making the attack (as noted by the race or ability that grants the attacks).
+ */
+
+/**
+ * 
+Natural Attack	Base Damage by Size*	Damage Type	Attack type
+        Fine	Dim.	Tiny	Small	Medium	Large	Huge	Garg.	Col.
+Bite	1	    1d2	    1d3	    1d4	    1d6	    1d8	    2d6	    2d8	    4d6	B, P, and S	Primary
+Claw	–	    1	1d2	1d3	1d4	1d6	1d8	2d6	2d8	B and S	Primary
+Gore	1	    1d2	1d3	1d4	1d6	1d8	2d6	2d8	4d6	P	Primary
+Hoof, Tentacle, Wing	–	1	1d2	1d3	1d4	1d6	1d8	2d6	2d8	B	Secondary
+Pincers, Tail Slap	1	1d2	1d3	1d4	1d6	1d8	2d6	2d8	4d6	B	Secondary
+Slam	–	1	1d2	1d3	1d4	1d6	1d8	2d6	2d8	B	Primary
+Sting	–	1	1d2	1d3	1d4	1d6	1d8	2d6	2d8	P	Primary
+Talons	–	1	1d2	1d3	1d4	1d6	1d8	2d6	2d8	S	Primary
+Other	–	1	1d2	1d3	1d4	1d6	1d8	2d6	2d8	B, P, or S	Secondary
+ */
+export const parseNaturalAttacks = (line) => {
+    const json = JSON.parse(line);
+
+    //toHit and dice.adjustment (although this will need to account for 1x 1.5x or 2x str bonus)
+    const startingDmgProgressionEquivalent = {"3d4":"2d6", "1d12":"2d6", "2d10":"4d6", "2d4":"1d8"}; //dmg amounts not on chart  equated to one that  is on the chart.
+    const completeDmgProgression = ["1", "1d2", "1d3", "1d4", "1d6", "1d8", "2d6", "2d8", "4d6", "4d8", "6d6", "6d8", "8d6", "8d8", "10d6", "10d8", "12d6", "12d8"];
+    const hoofTentacleWing = {seqStart: "Diminutive", damageType: ["B"], primary: false};
+    const pincerTailSlap = {seqStart: "Fine", damageType: ["B"], primary: false};
+    const slamStingTalon = {seqStart: "Diminutive", primary: true};
+    const naturalAttacks = {
+        attackNames: ["bite", "claw", "gore", "slam", "sting", "talons", "hoof", "tentacle", "wing", "pincer", "tail"],
+        bite: {name: "bite", seqStart:"Fine", damageType: ["B", "P", "S"], primary: true},
+        claw: {name: "claw", seqStart: "Diminutive", damageType: ["B", "S"], primary: true},
+        gore: {name: "gore", seqStart: "Fine", damageType: ["P"], primary: true},
+        hoof: {name: "hoof", ...hoofTentacleWing},
+        tentacle: {name: "tentacle", ...hoofTentacleWing},
+        wing: {name: "wing", ...hoofTentacleWing},
+        pincer: {name: "pincer", ...pincerTailSlap},
+        tail: {name: "tail slap", ...pincerTailSlap},
+        slam: {name: "slam", damageType: ["B"], ...slamStingTalon},
+        sting: {name: 'sting', damageType: ["P"], ...slamStingTalon},
+        talon: {name: 'talon', damageType: ["S"], ...slamStingTalon},
+        other: {name: 'other', seqStart: "Diminutive", damageType: ["B", "P", "S"], primary: false}
+    };
+    
+    const result = JSON.stringify(json) + "\n";
+    return {result: result, success: true, id: json.name};
+}
+
+export const parseRangedAttacks = (line) => {
     const json = JSON.parse(line);
 
     //split attacks on " or " and then on "," (and trim any whitespace)
@@ -115,27 +174,123 @@ const parseRangedAttacks = (line) => {
     return {result: result, success: true, id: json.name};
 }
 
+export const parseMeleeAttackToHitAndDamage = (line) => {
+    const json = JSON.parse(line);
+    const monsterName = json.name;
+    const meleeAttacks = json.melee_attacks;
+    if (meleeAttacks) {
+        console.log(json.melee)
+        for (let i = 0; i < meleeAttacks.length; i++) {
+            const attackSeq = meleeAttacks[i];
+            for (let j = 0; j < attackSeq.length; j++) {
+                const attack = attackSeq[j];
+                parseAndSetAttackToHitAndAttackCount(monsterName, attack);
+                parseAndSetDamageDetails(monsterName, attack);
+            }
+        }
+    }
+    // const damages = [];
+    // json.melee_attacks.forEach(x => {
+    //     x.forEach(y => {
+    //         damages.push(y.damage);
+    //     });
+    // });
+
+    const result = JSON.stringify(json) + "\n";
+    const constructedFullAttack = displayFullAttack(json.melee_attacks);
+    if (constructedFullAttack == json.melee) {
+        return {result: result, success: true, id: json.name};
+    } else {
+        console.log("FAIL", constructedFullAttack, json.melee);
+        return {result: result, success: false, id: [constructedFullAttack + " vs "  + json.melee]};
+    }
+}
+
+export const parseRangedAttackToHitAndDamage = (line) => {
+    const json = JSON.parse(line);
+    const monsterName = json.name;
+    const attacks = json.ranged_attacks;
+    if (attacks) {
+        for (let i = 0; i < attacks.length; i++) {
+            const attackSeq = attacks[i];
+            for (let j = 0; j < attackSeq.length; j++) {
+                const attack = attackSeq[j];
+                parseAndSetAttackToHitAndAttackCount(monsterName, attack);
+                parseAndSetDamageDetails(monsterName, attack);
+            }
+        }
+    }
+
+    const result = JSON.stringify(json) + "\n";
+    return {result: result, success: true, id: json.name};
+}
+
+const parseAndSetAttackToHitAndAttackCount = (monsterName, attack) => {
+    if (attack.attackBonus === '') return;
+    attack.toHit = parseInt(attack.attackBonus);
+    const slashesInAttackBonus = attack.attackBonus.match(/\//g)||[];
+    const startsWithNumber = attack.attackText.match(/^\d+/);
+    if (startsWithNumber && slashesInAttackBonus.length === 0) {
+        //Asura, Adhukait +15/+10 2 mwk kukris is an example of a creature that lists 2 weapons but that is already accounted for in the attackBonus.
+        attack.attackCount = parseInt(startsWithNumber[0]);
+    } else {
+        attack.attackCount = (slashesInAttackBonus).length + 1;
+    }
+    if (slashesInAttackBonus.length > 0) {
+        attack.weaponBased = true;
+        const toHits = attack.attackBonus.split("/").map(x => parseInt(x) - attack.toHit);
+        attack.toHitAdjustments = toHits; //toHitAdjustments is the numeric diff from the first to the next...so +14/+14/+9/+9/+4 would be 0/0/-5/-5/-10
+    }
+    console.log(monsterName, attack.toHit, attack.attackCount, attack.attackBonus, attack.attackText);
+}
+
+const parseAndSetDamageDetails = (monsterName, attack) => {
+    console.log(monsterName, attack);
+    const dmg = attack.damage;
+    //try this to just get damageDescriptor without trying to parse specifics (may still want to strip an ending "plus " from the descriptor)
+    const damageAmountsRegex = /\(?(\d+d\d+[+-]?\d*)?\/?(\d\d[-–]\d\d)?\/?([x×]\d)?(.*)\)?/gm;
+    //const damageAmountsRegex = /(\d+d\d+[\+\-]*\d*|(?<!DC )(?<!DC \d)\d+)*\/?(\d*-\d*\/[×x][234]|\d*-\d*|[x×][234])* ?([\[a-zA-Z\s,-\/';]+)*/gm;
+   //const damageAmountsRegex = /(\d+d\d+[\+\-]*\d*|(?<!DC )(?<!DC \d)\d+)\/?(\d*-\d*\/[×x][234]|\d*-\d*|[x×][234])* ?([\[a-zA-Z\s,-\/';]+)*/gm;
+    //const damageAmountsRegex = /(\d+d\d+[\+\-]*\d*|(?<!DC )(?<!DC \d)\d+)\/?(\d*-\d*\/[×x][234]|\d*-\d*|[x×][234])* ?(cold|bleed|acid|electricity|fire|negative energy|energy|sonic|Strength|Dexterity|Constitution|Wisdom|Intelligence|Charisma|Str|Dex|Con|Int|Wis|Cha)* ?(damage|drain)*/gm;
+    const allMatches = getCaptureGroups(damageAmountsRegex, dmg)
+    const matches = allMatches.filter(x => x[0] !== "");
+    const damageDetails = matches.map(x => {
+        const dice = parseDiceNotation(x[1]);
+        if (dice.numOfDice === 0 && dice.numOfSides === 0 && !dice.adjustment) return;
+        return {
+            dice: dice,
+            critRange: x[2],
+            critMultiplier: x[3],
+            damageType: x[4].trim().replace(/\)$/, '')
+        };
+    });
+    attack.damage_details = damageDetails;
+    console.log(monsterName, JSON.stringify(attack.damage_details));
+}
+
+const parseDiceNotation = (diceNotation) => {
+    if (diceNotation === undefined || diceNotation.indexOf("d") === -1) {
+        //just a straight number...no dice to roll.
+        console.log("Found no dice notation", diceNotation);
+        return [{numOfDice: 0, numOfSides: 0, adjustment: diceNotation}];
+    } else {
+        //https://regex101.com/r/FD7Z9L/1
+        const diceRegex = /((\d*)d(\d*))([\+\-]?\d*)/gm;
+        const matches = getCaptureGroups(diceRegex, diceNotation);
+        return matches.map(x => {
+            return {
+                numOfDice: parseInt(x[2]) || 0,
+                numOfSides: parseInt(x[3]) || 0,
+                adjustment: parseInt(x[4]) || 0
+            }
+        });
+    }
+}
+
 const cleanHtml = (str) => {
     const strWithoutPStart = str.replace('<p class="stat-block-2">', '');
     const cleanStr = strWithoutPStart.replace('</p>', '');
     return cleanStr;
-}
-
-const displayFullAttack = (fullAttacks) => {
-    const attackSequencesAsText = fullAttacks.map(attackSequences => {
-        //console.log(attackSequences);
-        const attacksAsText = attackSequences.map(attack => {
-            return displayAttack(attack);
-        });
-        return attacksAsText.join(", ");
-    });
-    return attackSequencesAsText.join(" or ");
-}
-
-const displayAttack = (x) => {
-    const attackType = (x.attackType) ? x.attackType + ' ' : '';
-    const attackBonus = (x.attackBonus) ? x.attackBonus + " " : '';
-    return  `${x.attackText}${attackBonus}${attackType}${x.damage}`;
 }
 
 const getEditDistance = function(a, b){
@@ -171,5 +326,3 @@ const getEditDistance = function(a, b){
   
     return matrix[b.length][a.length];
   };
-
-export default parseRangedAttacks;

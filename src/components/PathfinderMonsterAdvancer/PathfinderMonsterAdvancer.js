@@ -21,18 +21,23 @@ export default class PathfinderMonsterAdvancer extends Component {
         //     //size: 'Colossal'
         // }
         const advancement = this.props.advancement;
-        const advancedMonsterChanges = advanceMonster(monster.statBlock, advancement);
-        const newMonster = {
-            ...monster.statBlock,
-            ...advancedMonsterChanges,
-            ...opts
-        };
+        if (advancement) {
+            console.log("ADVANCING CREATURE", advancement)
+            const advancedMonsterChanges = advanceMonster(monster.statBlock, advancement);
+            const newMonster = {
+                ...monster.statBlock,
+                ...advancedMonsterChanges,
+                ...opts
+            };
 
-        const statblockVersion = 2;
-        const convertedMonster = {
-            ...monster,
-            statBlock: convertToMonsterForDisplay(newMonster, statblockVersion)
-        };
-        return <MonsterDisplay monster={convertedMonster}/>
+            const statblockVersion = 2;
+            const convertedMonster = {
+                ...monster,
+                statBlock: convertToMonsterForDisplay(newMonster, statblockVersion)
+            };
+            return <MonsterDisplay monster={convertedMonster}/>
+        } else {
+            return <MonsterDisplay monster={monster}/>
+        }
     }
 }

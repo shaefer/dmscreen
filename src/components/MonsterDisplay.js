@@ -36,7 +36,8 @@ const spaceAndReach = (m) => {
 }
 
 const characterClassSection = (section) => {
-    const raceSections = section.sections;
+    let raceSections = section.sections;
+    if (!raceSections) raceSections = []; //TODO: Werewolf Hybrid form is the only entry currently requiring this check! Fix the data!
     return (
         <span key={"ccSection"}>
         <StatBlockLine><B>{section.name} Characters</B> <div><span className="sbRaceSection sbDescription" dangerouslySetInnerHTML={{__html: section.body}} ></span></div></StatBlockLine>
@@ -150,9 +151,64 @@ const displayConstitution = (con, showStatBonus, statBonus) => {
     return (con === 0) ? '-' : `${con}${statBonusDisplay}`;
 }
 
+export const displayFullAttack = (fullAttacks) => {
+    if (!fullAttacks) return;
+    const attackSequencesAsText = fullAttacks.map(attackSequences => {
+        //console.log(attackSequences);
+        const attacksAsText = attackSequences.map(attack => {
+            return displayAttack(attack);
+        });
+        return attacksAsText.join(", ");
+    });
+    return attackSequencesAsText.join(" or ");
+}
+
+const displayToHitForMultipleAttacks = (attackBonusText, toHit, toHitAdjustments) => {
+    if (!toHitAdjustments || toHitAdjustments.length == 1) {
+        return (attackBonusText) ? withPlus(toHit) + " " : '';
+    } else {
+        return toHitAdjustments.map(x => withPlus(x + toHit)).join("/") + " ";
+    }
+}
+
+const displayAttack = (x) => {
+    const attackType = (x.attackType) ? x.attackType + ' ' : '';
+    const attackBonus = displayToHitForMultipleAttacks(x.attackBonus, x.toHit, x.toHitAdjustments);
+    const originalAttackDisplay = `${x.attackText}${attackBonus}${attackType}${x.damage}`;
+    const damage = displayDamage(x.damage_details);
+    const newAttackDisplay = `${x.attackText}${attackBonus}${attackType}(${damage})`;
+    return newAttackDisplay;
+}
+
+const damageDice = (adjustment => {
+    if (adjustment === 0) return "";
+    return withPlus(adjustment);
+});
+
+const displayDamage = (damageDetails => {
+    return damageDetails.map(detail => {
+        const newDice = detail.dice.map(dice => {
+            return (dice.numOfDice === 0) ? dice.adjustment : `${dice.numOfDice}d${dice.numOfSides}${damageDice(dice.adjustment)}`
+        });
+        //3 options
+        //no dice just damageType
+        //someDice no damageType
+        //someDice and damageType
+        const hasNoDiceNotation = !newDice[0]; //rewrite as filter of detail.dice?
+        const damageType = (hasNoDiceNotation) ? detail.damageType : (detail.damageType) ? " " + detail.damageType : "";
+
+        //build critRange and critMultiplier
+        const critRange = (detail.critRange) ? "/" + detail.critRange : "";
+        const critMult = (detail.critMultiplier) ? "/" + detail.critMultiplier : "";
+        const diceAndCrit = (critRange || critMult) ? newDice + critRange + critMult : newDice;
+        return diceAndCrit + damageType;
+
+    }).join(" plus ");
+});
+
 const MonsterDisplay = ({monster}) => {
     const m = monster.statBlock;
-
+    console.log(m.name)
     if (!m.name)
         return <div>No Monster Currently Selected</div>;
     if (!monster.success) {
@@ -177,6 +233,7 @@ const MonsterDisplay = ({monster}) => {
     const abilityScoreDisplay = (opts.showStatBonuses) ? abilityScoresWithBonuses : abilityScores;
     const crDisplay = (opts.showCrChanges && m.crCalculation.crDiff) ? `${m.crCalculation.crAdjusted} (original CR ${m.cr})` : `${m.cr}`
     const featCountStr = (m.featCount && opts.showFeatCount) ? ` (${m.featCount})` : ""; 
+    const meleeAttackDisplay = (m.melee) ? displayFullAttack(m.melee_attacks) : m.melee;
     return (
         <div className="monsterDisplay">
             <div className="sbLine sbName">
@@ -196,7 +253,7 @@ const MonsterDisplay = ({monster}) => {
 
             <StatSectionHeader>offense</StatSectionHeader>
             <StatBlockLine><B>Speed</B> {m.speed}</StatBlockLine>
-            <StatBlockLine data={m.melee} required><B>Melee</B> {m.melee}</StatBlockLine>
+            <StatBlockLine data={meleeAttackDisplay} required><B>Melee</B> {meleeAttackDisplay}</StatBlockLine>
             <StatBlockLine data={m.ranged} required><B>Ranged</B> {m.ranged}</StatBlockLine>
             {spaceAndReach(m)}
             <StatBlockLine data={m.special_attacks} required><B>Special Attacks</B> {m.special_attacks}</StatBlockLine>

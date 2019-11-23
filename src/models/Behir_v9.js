@@ -1,6 +1,37 @@
 const Behir = {
+  "ability_scores": {
+    "str": 23,
+    "dex": 12,
+    "con": 21,
+    "int": 7,
+    "wis": 14,
+    "cha": 12
+  },
   "acAsInt": 21,
   "alignment": "N",
+  "armor_class": {
+    "ac": {
+      "standard": 21,
+      "flat_footed": 20,
+      "touch": 9
+    },
+    "ac_details": "21, touch 9, flat-footed 20 (+1 Dex, +12 natural, -2 size)",
+    "ac_modifiers": [
+      {
+        "mod": 1,
+        "type": "Dex"
+      },
+      {
+        "mod": 12,
+        "type": "natural"
+      },
+      {
+        "mod": -2,
+        "type": "size"
+      }
+    ],
+    "ac_modifiers_details": "+1 Dex, +12 natural, -2 size"
+  },
   "base_attack": 10,
   "cmb": 18,
   "cmb_details": "+18 (+22 grapple)",
@@ -21,10 +52,37 @@ const Behir = {
   "init": 1,
   "languages": "Common",
   "melee": "bite +15 (2d6+9 plus grab)",
+  "melee_attacks": [
+    [
+      {
+        "attackText": "bite ",
+        "attackBonus": "+15",
+        "damage": "(2d6+9 plus grab)",
+        "toHit": 15,
+        "attackCount": 1,
+        "damage_details": [
+          {
+            "dice": [
+              {
+                "numOfDice": 2,
+                "numOfSides": 6,
+                "adjustment": 9
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  ],
   "name": "Behir",
   "organization": "solitary or pair",
   "reach": 10,
   "reach_details": "10 ft.",
+  "saving_throws": {
+    "fort": 12,
+    "ref": 8,
+    "will": 5
+  },
   "sections": [
     {
       "body": "<p>Temperamental and avaricious, the behir spends most of its time slithering through the sandy hills and desert cliffs that make up its territory, preying upon all creatures who dare to enter its hunting grounds. The creature's six pairs of powerful, clawed legs remain folded against its sides most of the time, only extending in combat to grapple foes or carry the behir forward in a terrifying, low-slung gallop, or else when climbing the sheer cliff faces common to behir lairs.</p>",
@@ -49,6 +107,7 @@ const Behir = {
   ],
   "senses": "darkvision 60 ft., low-light vision; Perception +6",
   "size": "Huge",
+  "skill_details": "Climb +14, Perception +8, Stealth +5",
   "skills": [
     {
       "name": "Climb ",
@@ -66,49 +125,6 @@ const Behir = {
   "source": "Bestiary",
   "space": 15,
   "space_details": "15 ft.",
-  "special_attacks": "breath weapon (20-foot line, 7d6 electricity damage, Reflex DC 20 for half, usable every 1d4 rounds), constrict (2d6+9), rake (6 claws +14, 1d4+6), swallow whole (2d8+9 bludgeoning damage, AC 16, 10 hp)",
-  "speed": "40 ft., climb 20 ft.",
-  "strengthInt": 23,
-  "treasure": "double",
-  "type": "creature",
-  "url": "pfsrd://Bestiary/Monsters/Behir",
-  "xp": "4,800",
-  "ability_scores": {
-    "str": 23,
-    "dex": 12,
-    "con": 21,
-    "int": 7,
-    "wis": 14,
-    "cha": 12
-  },
-  "saving_throws": {
-    "fort": 12,
-    "ref": 8,
-    "will": 5
-  },
-  "armor_class": {
-    "ac": {
-      "standard": 21,
-      "flat_footed": 20,
-      "touch": 9
-    },
-    "ac_details": "21, touch 9, flat-footed 20 (+1 Dex, +12 natural, -2 size)",
-    "ac_modifiers": [
-      {
-        "mod": 1,
-        "type": "Dex"
-      },
-      {
-        "mod": 12,
-        "type": "natural"
-      },
-      {
-        "mod": -2,
-        "type": "size"
-      }
-    ],
-    "ac_modifiers_details": "+1 Dex, +12 natural, -2 size"
-  },
   "special_abilities": [
     {
       "name": "Grab",
@@ -119,16 +135,13 @@ const Behir = {
       "type": "Extraordinary"
     }
   ],
-  "skill_details": "Climb +14, Perception +8, Stealth +5",
-  "melee_attacks": [
-    [
-      {
-        "attackText": "bite ",
-        "attackBonus": "+15",
-        "damage": "(2d6+9 plus grab)"
-      }
-    ]
-  ]
+  "special_attacks": "breath weapon (20-foot line, 7d6 electricity damage, Reflex DC 20 for half, usable every 1d4 rounds), constrict (2d6+9), rake (6 claws +14, 1d4+6), swallow whole (2d8+9 bludgeoning damage, AC 16, 10 hp)",
+  "speed": "40 ft., climb 20 ft.",
+  "strengthInt": 23,
+  "treasure": "double",
+  "type": "creature",
+  "url": "pfsrd://Bestiary/Monsters/Behir",
+  "xp": "4,800"
 }
 
   export default Behir;

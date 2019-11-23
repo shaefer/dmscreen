@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import fs from 'fs';
 import readline from 'readline';
 import stream from 'stream';
@@ -10,34 +11,61 @@ import examineField from './lineParsers/FieldExaminer' //examineField("fieldName
 import convertFieldsToInt from './lineParsers/FieldsAsInt'
 import condenseAbilityScores from './lineParsers/AbilityScores'
 import parseSkills from './lineParsers/Skills'
-import parseAttacks from './lineParsers/Attacks'
+import {parseMeleeAttacks, parseRangedAttacks, parseMeleeAttackToHitAndDamage, parseRangedAttackToHitAndDamage} from './lineParsers/Attacks'
+import excludedCreatures from './excludedCreatures'
 
-const processFile = (fileNameAndPath, outputPath, alterLineFunc) => {
+
+const processFile = (fileNameAndPath, outputPath, outputFileName, alterLineFunc) => {
 
     var instream = fs.createReadStream(fileNameAndPath);
     var outstream = new stream;
     var rl = readline.createInterface(instream, outstream);
     
     //the current output path assumed an output folder inside the file folder...if one of the parent folders don't exist this will error.
-    var writeStream = fs.createWriteStream(outputPath, {flags:'a+'});
+    ensureDirSync(outputPath);
+    console.log("Wrote dirs");
+    const outputFileAndPath = outputPath+"/"+outputFileName;
+    console.log("")
+    var writeStream = fs.createWriteStream(outputFileAndPath, {flags:'a+'});
     console.log("About to write lines");
     let lncnt = 0;
     let failures = [];
     let successes = [];
     rl.on('line', function(line) {
         lncnt++;
-        const lineOutput = alterLineFunc(line);
-        //console.log("Line " + lncnt + " creature: " + lineOutput.id + " Success:" + lineOutput.success);
-        lineOutput.success ? successes.push(lineOutput.id) : failures.push(lineOutput.id);
-        writeStream.write(lineOutput.result);
+        const json = JSON.parse(line);
+        if (excludedCreatures.indexOf(json.name) !== -1 || excludedCreatures.length ===  0) {
+          try {
+          const lineOutput = alterLineFunc(line);
+          //console.log("Line " + lncnt + " creature: " + lineOutput.id + " Success:" + lineOutput.success);
+          if (lineOutput.success) {
+            successes.push(lineOutput.id) 
+          } else {
+            if (lineOutput.id)
+              lineOutput.id.forEach(x => failures.push(x));
+          }
+          writeStream.write(lineOutput.result);
+          } catch (ex) {
+            failures.push(`${json.name}: ${ex}`);
+          }
+        }
     });
     
     rl.on('close', function() {
-      console.log(`Finished. Wrote file ${outputPath}`);
-      console.log("Failures: " + failures.length + " " + failures.join("|"))
-      console.log("Successes: " + successes.length) + " " + successes.join("|")
+      console.log(`Finished. Wrote file ${outputFileAndPath}`);
+      console.log("\n\n\nAll Failures: " + failures);
+      console.log("\n\n\nFailures: " + failures.length + " " + failures.join("\n"))
+      console.log("\n\n\nSuccesses: " + successes.length) + " " + successes.join("|")
     });
 }
+
+function ensureDirSync (dirpath) {
+    try {
+      fs.mkdirSync(dirpath, { recursive: true })
+    } catch (err) {
+      if (err.code !== 'EEXIST') throw err
+    }
+  }
 
 const sortByKeys = (line) => {
     const json = JSON.parse(line);
@@ -50,14 +78,14 @@ const sortByKeys = (line) => {
 }
 
 const optionDefinitions = [
-    { name: 'src', type: String, defaultOption: true, defaultValue: "files/test.txt" }
+    { name: 'src', type: String, defaultOption: true, defaultValue: "./files/creature_sample.json" }
 ];
 const options = commandLineArgs(optionDefinitions);
 
 const now = new Date();
-const dateString = now.toLocaleDateString()+"_"+now.getHours()+"-" + now.getMinutes() + "-" + now.getSeconds();
+const dateString = now.getFullYear()+"_"+(now.getMonth()+1)+"_" +now.getDate() + "_" +now.getHours()+"-" + now.getMinutes() + "-" + now.getSeconds();
 console.log("About to process file");
-processFile(options.src, "files/output/allCreatures_"+dateString+".json", sortByKeys);
+processFile(options.src, "./files/output", "allCreatures_"+dateString+".json", parseMeleeAttackToHitAndDamage);
 
 //v2 is what is currently deployed.
 //v3 is all int based fields converted to ints. 
@@ -70,6 +98,8 @@ processFile(options.src, "files/output/allCreatures_"+dateString+".json", sortBy
 //v10-11 cleanup
 //v12 parsed melee attacks
 //v13 parsed ranged attacks
+//v14 parsed dice for damage, crit, and toHit from attacks.
+//v16 parsed attacks to better capture damage types and extra post damage descriptors
 
 //DONE parse all stats into fields containing just the ints
 //DONE parse ac into individual fields and mods
@@ -80,6 +110,19 @@ processFile(options.src, "files/output/allCreatures_"+dateString+".json", sortBy
 //DONE: condense armorClass into an object
 //DONE: Make special abilities section for parsed special abilities
 //DONE: parse skills into array and objects
+
+//DONE: parse melee attacks into damage, toHit, and numberOfAttacks and crit parts
+//DONE: parse ranged attacks into damage, toHit, and numberOfAttacks and crit parts
+
+//https://www.d20pfsrd.com/bestiary/rules-for-monsters/universal-monster-rules/
+//https://dev.to/adnanrahic/building-a-serverless-contact-form-with-aws-lambda-and-aws-ses-4jm0
+
+//TODO: parse melee attacks into numeric crit range and multiplier
+//TODO: parse melee attacks into primary, secondary, weapon-based, and full-attacks.
+
+
+//TODO: parse ranged attacks into numeric crit range and multiplier
+//TODO: parse ranged attacks into primary, secondary, weapon-based, and full-attacks.
 
 //TODO: parse regeneration and fast healing from hp field
 //TODO: parse speed

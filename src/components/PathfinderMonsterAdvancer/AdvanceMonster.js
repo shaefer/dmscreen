@@ -6,6 +6,7 @@ import { statBonusFromAbilityScore, racialFeatCount, withPlus,
 import { calculateCR, roundDecimal } from './AdvancementTools/ChallengeRatingCalculator'
 import {MonsterSizes, MonsterSizeChanges, sumSizeChanges} from './AdvancementTools/MonsterSizes'
 import Skills from './AdvancementTools/Skills'
+import { getBaseAttackBonusByHitDiceAndCreatureType } from '../../monsteradvancer/BaseAttackBonusCalculator'
 
 //There are a few fields we add as we go such as advancements that each stage might add to. If we could start with the assupmtion that that field is initialized properly the spread operator could be used with less coersion. 
 //We probably should just do an initial spread that initializes fields that aren't always present that we would like to count on for advancement.
@@ -27,7 +28,7 @@ export const advanceMonster = (statblock, advancement) => {
         if (advancement.int) statAdvancementsMerged.int = advancement.int - statblock.ability_scores.int;
         if (advancement.wis) statAdvancementsMerged.wis = advancement.wis - statblock.ability_scores.wis;
         if (advancement.cha) statAdvancementsMerged.cha = advancement.cha - statblock.ability_scores.cha;
-        
+        console.log("Advancing by ability scores", statAdvancementsMerged);
         const advancesFromAbilityScores = advanceByAbilityScores(advancedCreature, [statAdvancementsMerged]);
         advancedCreature = {
             ...advancedCreature,
@@ -113,6 +114,35 @@ const acFieldsFromMods = (acMods) => {
             }
         }
     }
+}
+
+//currently this is really melee attack changes
+const attackChanges = (origAttacks, statBonusChange, baseAttackBonusChange) => {
+    //console.log("attack changes", origAttacks)
+    if (!origAttacks) return origAttacks;
+    //const strBonusChange = statBonusDiffs.str;
+    return origAttacks.map(attackSeq => {
+        return attackSeq.map(attack => {
+            //console.log(attack, attack.toHit, statBonusChange, baseAttackBonusChange);
+            const newDamageDetails = attack.damage_details.map(dmg  => {
+                const newDice = dmg.dice.map(dice => {
+                    return {
+                        ...dice,
+                        adjustment: dice.adjustment + statBonusChange
+                    }
+                });
+                return {
+                    ...dmg,
+                    dice: newDice
+                };
+            });
+            return {
+                ...attack,
+                toHit: attack.toHit + statBonusChange + baseAttackBonusChange,
+                damage_details: newDamageDetails
+            };
+        });
+    });
 }
 
 const acChanges = (origAcMods, statBonusDiffs) => {
@@ -210,7 +240,8 @@ export const advanceByAbilityScores = (statblock, abilityScoreChanges, chainedAd
     //eventually figure out how to not even include change sets that are basically blank - zeroes for all 3 saving throws
 
     const statBonusDiffs = getStatBonusDifference(statblock.ability_scores, newAbilityScores);
-
+    //console.debug("Advancing ability scores", statblock.name)
+    const attacks = attackChanges(statblock.melee_attacks, statBonusDiffs.str, 0);
     const acFields = acChanges(statblock.armor_class.ac_modifiers.slice(0), statBonusDiffs);
     const hpFields = hpChanges(newHitDice, statblock.hdType, statblock.creature_type, statBonusFromAbilityScore(newAbilityScores.con), statBonusFromAbilityScore(newAbilityScores.cha), statblock.size);
     const existingAdvancements = (statblock.advancements) ? statblock.advancements : [];
@@ -220,7 +251,7 @@ export const advanceByAbilityScores = (statblock, abilityScoreChanges, chainedAd
     const newSkills = statblock.skills.map(x => {
         const skillName = x.name.trim();
         const skillInfo = Skills.find(x => x.name === skillName);
-        if (!skillInfo) throw new Error(`Did not find ${skillName}`)
+        if (!skillInfo) throw new Error(`Did not find skill named: ${skillName} on creature ${statblock.name}`)
         const skillStat = skillInfo.abilityScore;
         if (skillStat === 'Str') return {name: skillName, value: x.value + statBonusDiffs.str}
         if (skillStat === 'Dex') return {name: skillName, value: x.value + statBonusDiffs.dex}
@@ -239,6 +270,7 @@ export const advanceByAbilityScores = (statblock, abilityScoreChanges, chainedAd
         ...hpFields,
         ...acFields,
         ...combatManeuverFields,
+        melee_attacks: attacks,
         skills: newSkills,
         skill_details: newSkills.map(x => x.name + ' ' + withPlus(x.value)).join(', '),
         init: statblock.init + statBonusDiffs.dex,
@@ -261,10 +293,14 @@ export const advanceByHitDice = (statblock, hdChange) => {
     const statPointsPer4HitDiceAdded = Math.floor(hdChange/4);
     const abilityScoreChange = assignAbilityScoreChangeToHighestStat(statblock.ability_scores, statPointsPer4HitDiceAdded, `Advanced Creature ${hdChange} Hit Dice`);
     const savingThrowChange =  getSavingThrowChangesFromHitDice(statblock, newHitDice);
+    const newBaseAttack =  getBaseAttackBonusByHitDiceAndCreatureType(newHitDice, statblock.creature_type);
+    //console.log("BAB: " + statblock.base_attack, "BABNEW: " + newBaseAttack)
+    const attacks = attackChanges(statblock.melee_attacks, 0, newBaseAttack - statblock.base_attack);
     const hpFields = hpChanges(newHitDice, statblock.hdType, statblock.creature_type, statBonusFromAbilityScore(statblock.ability_scores.con), statBonusFromAbilityScore(statblock.ability_scores.con), statblock.size);
     const hitDiceAdvancements = {
         advancements: [`Advanced ${hdChange} Hit Dice`],
         ...hpFields,
+        melee_attacks: attacks,
         saving_throws: applyChangesToSavingThrows(statblock.saving_throws, [savingThrowChange]),
         featCount: racialFeatCount(newHitDice),
     }

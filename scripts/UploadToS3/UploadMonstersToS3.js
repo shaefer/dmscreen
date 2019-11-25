@@ -51,8 +51,8 @@ const getMonsterFromS3 = (monsterName, bucket='cleverorc', path='pathfinder/v2/m
 }
 
 //writeS3JsonFileForMonster(Monsters.find(x => x.name === 'Aasimar'))
-//writeAllMonstersToS3();
-getMonsterFromS3('Aasimar')
+writeAllMonstersToS3();
+//getMonsterFromS3('Aasimar')
 
 const writeS3DataToFile = (err, data, fileName) => {
     if (err) { console.log(err, err.stack); return; }

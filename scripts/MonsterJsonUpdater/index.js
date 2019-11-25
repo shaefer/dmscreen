@@ -85,7 +85,7 @@ const options = commandLineArgs(optionDefinitions);
 const now = new Date();
 const dateString = now.getFullYear()+"_"+(now.getMonth()+1)+"_" +now.getDate() + "_" +now.getHours()+"-" + now.getMinutes() + "-" + now.getSeconds();
 console.log("About to process file");
-processFile(options.src, "./files/output", "allCreatures_"+dateString+".json", parseMeleeAttackToHitAndDamage);
+processFile(options.src, "./files/output", "allCreatures_"+dateString+".json", parseRangedAttackToHitAndDamage);
 
 //v2 is what is currently deployed.
 //v3 is all int based fields converted to ints. 

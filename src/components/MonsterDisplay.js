@@ -237,6 +237,7 @@ const MonsterDisplay = ({monster}) => {
     const crDisplay = (opts.showCrChanges && m.crCalculation.crDiff) ? `${m.crCalculation.crAdjusted} (original CR ${m.cr})` : `${m.cr}`
     const featCountStr = (m.featCount && opts.showFeatCount) ? ` (${m.featCount})` : ""; 
     const meleeAttackDisplay = (m.melee) ? displayFullAttack(m.melee_attacks) : m.melee;
+    const rangedAttackDisplay = (m.ranged) ? displayFullAttack(m.ranged_attacks) : m.ranged;
     return (
         <div className="monsterDisplay">
             <div className="sbLine sbName">
@@ -257,7 +258,7 @@ const MonsterDisplay = ({monster}) => {
             <StatSectionHeader>offense</StatSectionHeader>
             <StatBlockLine><B>Speed</B> {m.speed}</StatBlockLine>
             <StatBlockLine data={meleeAttackDisplay} required><B>Melee</B> {meleeAttackDisplay}</StatBlockLine>
-            <StatBlockLine data={m.ranged} required><B>Ranged</B> {m.ranged}</StatBlockLine>
+            <StatBlockLine data={rangedAttackDisplay} required><B>Ranged</B> {rangedAttackDisplay}</StatBlockLine>
             {spaceAndReach(m)}
             <StatBlockLine data={m.special_attacks} required><B>Special Attacks</B> {m.special_attacks}</StatBlockLine>
             {spells(m)}

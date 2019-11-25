@@ -222,7 +222,13 @@ export const parseRangedAttackToHitAndDamage = (line) => {
     }
 
     const result = JSON.stringify(json) + "\n";
-    return {result: result, success: true, id: json.name};
+    const constructedFullAttack = displayFullAttack(json.ranged_attacks);
+    if (constructedFullAttack == json.ranged) {
+        return {result: result, success: true, id: json.name};
+    } else {
+        console.log("FAIL", constructedFullAttack, json.ranged);
+        return {result: result, success: false, id: [constructedFullAttack + " vs "  + json.ranged]};
+    }
 }
 
 const parseAndSetAttackToHitAndAttackCount = (monsterName, attack) => {

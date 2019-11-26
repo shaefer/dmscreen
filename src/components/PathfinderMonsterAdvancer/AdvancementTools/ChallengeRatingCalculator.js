@@ -12,6 +12,7 @@ const sum = (someArray) => {
 }
 
 export const calculateCR = (monster) => {
+    console.log("CALCULATE CR", monster.name)
     const totalHitPoints = calcAvgHitPoints(monster.hitDice, monster.hdType) + monster.hitPointAdjustment;
 
     let calculatedCrs = [];
@@ -82,25 +83,23 @@ export const calculateAttackCr = (attacks) => {
     return calculateStatCr('highAttack', firstAttackBonusOfMainAttack);
 }
 
+export const avgDiceRoll = (dieType) => {
+    return dieType / 2 + 0.5;
+}
+
 export const calculateDamageFromAttackSequence = (attackSequence) => {
     let sumOfDmg = 0;
     for (let i = 0; i<attackSequence.length; i++) {
-        const dmg = attackSequence[i].damage;
-        const damageAmountsRegex = /(\d+d\d+[\+\-]*\d*|(?<!DC )(?<!DC \d)\d+)\/?(\d*-\d*\/[×x][234]|\d*-\d*|[x×][234])* ?(cold|bleed|acid|electricity|fire|negative energy|energy|sonic|Strength|Dexterity|Constitution|Wisdom|Intelligence|Charisma|Str|Dex|Con|Int|Wis|Cha)* ?(damage|drain)*/gm;
-        const matches = getCaptureGroups(damageAmountsRegex, dmg)
-        for(let i = 0;i<matches.length;i++) {
-            const match = matches[i];
-            const dice = match[1];
-            //const critRangeAndMultiplier = match[2];
-            const dmgType = match[3];
-            //const statDmgOrDrain = match[4];
-            
-            const avgDmg = diceAverage(dice);
-            //console.log("match", i, dice, avgDmg)
-            sumOfDmg += avgDmg;
+        if (attackSequence[i].damage_details) {
+            const dmgDice = attackSequence[i].damage_details.map(x => x.dice);
+            if (dmgDice) {
+                dmgDice.forEach(dice => {
+                    dice.forEach(x => {
+                        sumOfDmg += (x.numOfDice * avgDiceRoll(x.numOfSides)) + x.adjustment;
+                    })
+                });
+            }
         }
-        //first just dice part of damage string: \d+d\d+[\+\-]*\d*
-        //https://regex101.com/r/X8yCC3/1/
     }
     return sumOfDmg;
 }

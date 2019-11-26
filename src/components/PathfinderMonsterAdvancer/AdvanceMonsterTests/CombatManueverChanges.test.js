@@ -5,7 +5,7 @@ import Behir from '../../../models/Behir_v9'
 it('cmb adjusted for changes', () => {
     const result = combatManeuverChanges(Aasimar, 5);
     expect(result.cmb).toBe(4)
-    expect(result.cmb_details).toBe("")
+    expect(result.cmb_details).toBe("+4")
 });
 
 it('cmb adjusted for changes', () => {

@@ -238,6 +238,9 @@ const MonsterDisplay = ({monster}) => {
     const featCountStr = (m.featCount && opts.showFeatCount) ? ` (${m.featCount})` : ""; 
     const meleeAttackDisplay = (m.melee) ? displayFullAttack(m.melee_attacks) : m.melee;
     const rangedAttackDisplay = (m.ranged) ? displayFullAttack(m.ranged_attacks) : m.ranged;
+    const perceptionSkill = m.skills.find(x => x.name.trim() === 'Perception');
+    const perceptionDisplay = (perceptionSkill) ? perceptionSkill.name + ' '  + withPlus(perceptionSkill.value) : '';
+    const senses = (m.senses) ? m.senses.replace(/Perception \+\d+/, perceptionDisplay) : m.senses;
     return (
         <div className="monsterDisplay">
             <div className="sbLine sbName">
@@ -246,7 +249,7 @@ const MonsterDisplay = ({monster}) => {
             </div>
             <StatBlockLine><B>XP</B> {m.xp}</StatBlockLine>
             <StatBlockLine>{m.alignment} {m.size} <span style={{textTransform: "lowercase"}}>{m.creature_type}</span> {creatureSubType(m)}</StatBlockLine>
-            <StatBlockLine><B>Init</B> {m.init}; <B>Senses</B> {m.senses}</StatBlockLine>
+            <StatBlockLine><B>Init</B> {m.init}; <B>Senses</B> {senses}</StatBlockLine>
             <StatBlockLine data={m.aura} required><B>Aura</B> {m.aura}</StatBlockLine>
 
             <StatSectionHeader>defense</StatSectionHeader>
@@ -268,7 +271,7 @@ const MonsterDisplay = ({monster}) => {
             {abilityScoreChanges}
             <StatBlockLine><B>Base Atk</B> {m.base_attack}; <B>CMB</B> {m.cmb}; <B>CMD</B> {m.cmd}</StatBlockLine>
             <StatBlockLine><B>Feats</B>{featCountStr} {m.feats}</StatBlockLine>
-            <StatBlockLine><B>Skills</B> {m.skills}</StatBlockLine>
+            <StatBlockLine><B>Skills</B> {m.skill_details}</StatBlockLine>
             <StatBlockLine><B>Languages</B> {m.languages}</StatBlockLine>
             <StatBlockLine data={m.special_qualities} required><B>SQ</B> {m.special_qualities}</StatBlockLine>
 

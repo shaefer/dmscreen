@@ -25,7 +25,6 @@ const convertVersion2 = (m) => {
         fortitude: withPlus(m.saving_throws.fort),
         reflex: withPlus(m.saving_throws.ref),
         will: withPlus(m.saving_throws.will),
-        skills: m.skill_details,
         base_attack: withPlus(m.base_attack),
         cmb: (m.cmb_details) ? m.cmb_details : withPlus(m.cmb),
         cmd: (m.cmd_details) ? m.cmd_details : m.cmd,

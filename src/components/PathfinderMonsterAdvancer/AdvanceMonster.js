@@ -7,6 +7,8 @@ import { calculateCR, roundDecimal } from './AdvancementTools/ChallengeRatingCal
 import {MonsterSizes, MonsterSizeChanges, sumSizeChanges} from './AdvancementTools/MonsterSizes'
 import Skills from './AdvancementTools/Skills'
 import { getBaseAttackBonusByHitDiceAndCreatureType } from '../../monsteradvancer/BaseAttackBonusCalculator'
+import getCaptureGroups from '../../utils/RegexHelper'
+import { parse } from '@babel/parser'
 
 //There are a few fields we add as we go such as advancements that each stage might add to. If we could start with the assupmtion that that field is initialized properly the spread operator could be used with less coersion. 
 //We probably should just do an initial spread that initializes fields that aren't always present that we would like to count on for advancement.
@@ -154,18 +156,20 @@ const acChanges = (origAcMods, statBonusDiffs) => {
 
 export const combatManeuverChanges = (statblock, cmbChange, cmdChange) => {
     const newCmb = statblock.cmb + cmbChange;
-    const cmbSpecial = (statblock.special_abilities && statblock.special_abilities.find(x => x.name === 'Grab')) ? ` (${withPlus(newCmb + 4)} grapple)` : '';
-    const cmbDisplay = withPlus(newCmb) + cmbSpecial;
+    const newCmbDetails = (statblock.cmb_details) ? statblock.cmb_details.replace(/\d+/gm, (x) => {
+        return parseInt(x) + cmbChange;
+    }) : '';
 
     const newCmd = statblock.cmd + cmdChange; //all touch ac mods http://www.tenebraemush.net/index.php/Understanding_CMB_and_CMD
-    const cmdSpecial = (statblock.cmd_details && statblock.cmd_details.indexOf('can\'t be tripped') !== -1) ? ' (can\'t be tripped)' : ''
-    const cmdDisplay = newCmd + cmdSpecial;
+    const newCmdDetails = (statblock.cmd_details) ? statblock.cmd_details.replace(/\d+/gm, (x) => {
+        return parseInt(x) + cmdChange;
+    }) : '';
 
     const result = {
         cmb: newCmb,
-        cmb_details: cmbDisplay,
+        cmb_details: newCmbDetails,
         cmd: newCmd,
-        cmd_details: cmdDisplay,
+        cmd_details: newCmdDetails,
     };
     return result;
 }
@@ -297,9 +301,12 @@ export const advanceByHitDice = (statblock, hdChange) => {
     const abilityScoreChange = assignAbilityScoreChangeToHighestStat(statblock.ability_scores, statPointsPer4HitDiceAdded, `Advanced Creature ${hdChange} Hit Dice`);
     const savingThrowChange =  getSavingThrowChangesFromHitDice(statblock, newHitDice);
     const newBaseAttack =  getBaseAttackBonusByHitDiceAndCreatureType(newHitDice, statblock.creature_type);
+    const baseAttackDiff = newBaseAttack - statblock.base_attack;
     //console.log("BAB: " + statblock.base_attack, "BABNEW: " + newBaseAttack)
-    const meleeAttacks = attackChanges(statblock.melee_attacks, 0, newBaseAttack - statblock.base_attack);
-    const rangedAttacks = attackChanges(statblock.ranged_attacks, 0, newBaseAttack - statblock.base_attack, false);
+    const meleeAttacks = attackChanges(statblock.melee_attacks, 0, baseAttackDiff);
+    const rangedAttacks = attackChanges(statblock.ranged_attacks, 0, baseAttackDiff, false);
+    const newCombatFields = combatManeuverChanges(statblock, baseAttackDiff, baseAttackDiff);
+
     const hpFields = hpChanges(newHitDice, statblock.hdType, statblock.creature_type, statBonusFromAbilityScore(statblock.ability_scores.con), statBonusFromAbilityScore(statblock.ability_scores.con), statblock.size);
     const hitDiceAdvancements = {
         advancements: [`Advanced ${hdChange} Hit Dice`],
@@ -308,6 +315,8 @@ export const advanceByHitDice = (statblock, hdChange) => {
         ranged_attacks: rangedAttacks,
         saving_throws: applyChangesToSavingThrows(statblock.saving_throws, [savingThrowChange]),
         featCount: racialFeatCount(newHitDice),
+        base_attack: newBaseAttack,
+        ...newCombatFields
     }
 
     const hitDiceAdvancedCreature = {

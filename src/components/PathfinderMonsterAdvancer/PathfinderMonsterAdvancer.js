@@ -29,7 +29,6 @@ export default class PathfinderMonsterAdvancer extends Component {
                 ...advancedMonsterChanges,
                 ...opts
             };
-
             const statblockVersion = 2;
             const convertedMonster = {
                 ...monster,

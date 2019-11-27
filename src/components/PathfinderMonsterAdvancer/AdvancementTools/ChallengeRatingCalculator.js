@@ -79,7 +79,7 @@ export const calculateAcCr = (ac) => {
 
 export const calculateAttackCr = (attacks) => {
     if (!attacks) return 0;
-    const firstAttackBonusOfMainAttack = parseInt(attacks[0][0].attackBonus);
+    const firstAttackBonusOfMainAttack = attacks[0][0].toHit;
     return calculateStatCr('highAttack', firstAttackBonusOfMainAttack);
 }
 

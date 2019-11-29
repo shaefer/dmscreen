@@ -174,6 +174,95 @@ export const combatManeuverChanges = (statblock, cmbChange, cmdChange) => {
     return result;
 }
 
+export const advanceAttacksBySize = (origAttacks, startSizeIndex, endSizeIndex) => {
+    if (!origAttacks) return origAttacks;
+    return origAttacks.map(attackSeq => {
+        return attackSeq.map(attack => {
+            const newDamageDetails = attack.damage_details.map(dmg  => {
+                const newDice = dmg.dice.map(dice => {
+                    const newDmgDice = getNewDamageDice(dice, startSizeIndex, endSizeIndex);
+                    return {
+                        ...dice,
+                        numOfDice: newDmgDice.numOfDice,
+                        numOfSides: newDmgDice.numOfSides
+                    }
+                });
+                return {
+                    ...dmg,
+                    dice: newDice
+                };
+            });
+            return {
+                ...attack,
+                damage_details: newDamageDetails
+            };
+        });
+    });
+}
+
+const startingDmgProgressionEquivalent = {"3d4":"2d6", "1d12":"2d6", "2d10":"3d8", "2d4":"1d8", "3d10":"4d8", "4d10":"6d8", "5d6":"4d8", "5d10":"6d8", "7d6":"6d8"}; //dmg amounts not on chart  equated to one that  is on the chart.
+//const completeDmgProgression = ["1", "1d2", "1d3", "1d4", "1d6", "1d8", "2d6", "2d8", "4d6", "4d8", "6d6", "6d8", "8d6", "8d8", "10d6", "10d8", "12d6", "12d8"];
+const paizoProgression = ["1d1", "1d2", "1d3", "1d4", "1d6", "1d8", "1d10", "2d6", "2d8", "3d6", "3d8", "4d6", "4d8", "6d6", "6d8", "8d6", "8d8", "12d6", "12d8", "16d6", "16d8", "20d6", "20d8"];
+const smallIndex = 3;
+const mediumIndex = 4;
+const d6DamageIndex = 4;
+const d8DamageIndex = 5;
+//https://paizo.com/paizo/faq/v5748nruor1fm#v5748eaic9t3f
+export const getNewDamageDice = (attackDice, startSizeIndex, endSizeIndex) => {
+    const startingDmg = `${attackDice.numOfDice}d${attackDice.numOfSides}`
+    //convert if non-standard dice
+    const dmgProgression = (startingDmgProgressionEquivalent[startingDmg]) ? startingDmgProgressionEquivalent[startingDmg] : startingDmg;
+    const startingDmgIndex = paizoProgression.indexOf(dmgProgression);
+    if (startingDmgIndex === -1) {
+        console.warn("Found a dice sequene")
+    }
+    const IsUp = startSizeIndex < endSizeIndex;
+    //loop for each step
+    let dmgIndexChange = 0;
+    const stepCnt = Math.abs(endSizeIndex -  startSizeIndex);
+    for (let i = 0; i<stepCnt; i++) {
+        const sizeIndex  = startSizeIndex + i;
+        if (IsUp) {
+            if (sizeIndex <= smallIndex || startingDmgIndex + dmgIndexChange <= d6DamageIndex) {
+                dmgIndexChange++;
+            } else {
+                dmgIndexChange = dmgIndexChange + 2;
+            }
+        } else {
+            if (sizeIndex <= mediumIndex || startingDmgIndex + dmgIndexChange <= d8DamageIndex) {
+                dmgIndexChange = dmgIndexChange - 1;
+            } else {
+                dmgIndexChange = dmgIndexChange - 2;
+            }
+        }
+    }
+    const newDmgIndex = Math.max(startingDmgIndex + dmgIndexChange, 0);
+    console.log(`CHANGE DAMAGE DICE FROM ${paizoProgression[startingDmgIndex]}(${startingDmg})  TO ${paizoProgression[newDmgIndex]}`)
+    //if we would go off the chart low leave index at 0...we'll have to check going off the top of the chart eventually too.
+    const newDamage = paizoProgression[newDmgIndex];
+    const dmgParts = newDamage.split("d");
+    return {
+        ...attackDice,
+        numOfDice: dmgParts[0], 
+        numOfSides: dmgParts[1]
+    };
+    
+    
+    //{numOfDice: dmgParts[0], numOfSides: dmgParts[1]};
+    //parseDamageEntry (or make table preparsed) and return an object with {numOfDice:1, numOfSides:4}
+
+    //D,  F,   T,   S,   M,   L,  H    G   C
+    //to handle shrinking damage
+    //Everything that is smaller than this will use the bottom progression but set a min of 1 regardless of size --we'll have to track if this happens to keep stacking working properly.
+    //For normal progressions
+    // 1   1d2  1d3  1d4  1d6  1d8 2d6  3d6 4d6
+    // 1d2 1d3  1d4  1d6  1d8  2d6 3d6  4d6 6d6 //same as first
+    // 1d3 1d4  1d6  1d8  1d10 2d8 3d8  4d8 6d8 //d10 to 2d8
+    // 1d4 1d6  1d8  1d10 2d6  3d6 4d6  6d6 8d6 //d10 to 2d6
+    // 1d6 1d8  1d10 2d6  2d8  3d8 4d8  6d8 8d8 //2d6 to 2d8
+    // 1d8 1d10 2d6  2d8  3d6  4d6 6d6  8d6 12d6 //2d8 to 3d6
+}
+
 export const advanceBySize = (statblock, sizeChange) => {
     const startSize = statblock.size;
     const endSize = sizeChange;
@@ -198,6 +287,12 @@ export const advanceBySize = (statblock, sizeChange) => {
     const acSizeMod = {mod: (totalChanges.ac) ? totalChanges.ac : 0, type: 'size'};
     const acMods = changeAcMods(statblock.armor_class.ac_modifiers, [acNaturalArmorMod, acSizeMod]);
 
+    
+    //loop through all attacks and call
+    const newMeleeAttacks = advanceAttacksBySize(statblock.melee_attacks, startSizeIndex, endSizeIndex);
+    const newRangedAttacks = advanceAttacksBySize(statblock.ranged_attacks, startSizeIndex, endSizeIndex);
+    
+
     const newSkills = statblock.skills.map(x => {
         const skillName = x.name.trim();
         if (skillName === 'Stealth') return {name: skillName, value: x.value + totalChanges.stealth};
@@ -215,6 +310,8 @@ export const advanceBySize = (statblock, sizeChange) => {
         ...combatManeuverFields,
         size: sizeChange,
         ...acFieldsFromMods(acMods),
+        melee_attacks: newMeleeAttacks,
+        ranged_attacks: newRangedAttacks,
         advancements: [...advancements, `${advancementDirection} size from ${startSize} to ${endSize}`]
     }
 

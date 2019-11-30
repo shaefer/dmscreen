@@ -20,7 +20,7 @@ it('calculateCR works for monster', () => {
 
 it('calculateCR works after advancement', () => {
     const advancement = {
-        con: 23 //added 2 con for 10 extra hit points (105->115) raises the hpcr from 8->9
+        con: 2 //added 2 con for 10 extra hit points (105->115) raises the hpcr from 8->9
     };
     const advancedBehirChanges = advanceMonster(Behir, advancement);
     const advancedBehir = {

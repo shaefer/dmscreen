@@ -32,30 +32,31 @@ const styles = theme => ({
         }}
   });
 
+const withPositivePlus = (stat) => {
+    return (stat > 0) ? `+${stat}` : stat;
+}
+
 class AbilityScoreAdvancementSelectMaterial extends React.Component {
     state = {
         stat: '',
         score: 0,
-        creatureOriginalScore: '',
         labelWidth: 0,
       };
     
       componentDidMount() {
-        const initialValue =  (this.props.selectedValue) ? this.props.selectedValue : this.props.originalValue;
+        const initialValue =  (this.props.selectedValue) ? this.props.selectedValue : 0;
         this.setState({
           labelWidth: ReactDOM.findDOMNode(this.InputLabelRef).offsetWidth,
           stat: this.props.abilityScore,
           score: initialValue,
-          creatureOriginalScore: this.props.originalValue
         });
       }
 
       componentWillReceiveProps(nextProps) {
-        const initialValue =  (nextProps.selectedValue) ? nextProps.selectedValue : nextProps.originalValue;
+        const initialValue =  (nextProps.selectedValue) ? nextProps.selectedValue : 0;
           this.setState({
               labelWidth: ReactDOM.findDOMNode(this.InputLabelRef).offsetWidth,
               score: initialValue,
-              creatureOriginalScore: nextProps.originalValue
           });
       }
     
@@ -66,7 +67,7 @@ class AbilityScoreAdvancementSelectMaterial extends React.Component {
 
     render() {
         const { classes } = this.props;
-        const abilityScoreItems = [...Array(100).keys()];
+        const abilityScoreItems = [...Array(101).keys()].map(x => x - 50);
         const fieldId = `outlined-${this.state.stat}-native-simple`
         return (<FormControl variant="outlined" className={classes.formControl}>
             <InputLabel ref={ref => {this.InputLabelRef = ref;}} htmlFor={fieldId}>
@@ -84,7 +85,7 @@ class AbilityScoreAdvancementSelectMaterial extends React.Component {
                     />
                 }
             >
-                {abilityScoreItems.map(x => (<option value={x} key={`select${this.state.stat}${x}`}>{(x === this.state.creatureOriginalScore) ? `${x}*` : x}</option>))}
+                {abilityScoreItems.map(x => (<option value={x} key={`select${this.state.stat}${x}`}>{withPositivePlus(x)}</option>))}
             </Select>
         </FormControl>);
     }

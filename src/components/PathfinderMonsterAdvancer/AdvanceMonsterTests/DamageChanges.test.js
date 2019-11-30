@@ -8,7 +8,7 @@ it('damage data should change on str change and get appropriate multiplier for t
     expect(Behir.melee_attacks[0][0].damage_details[0].dice[0].adjustment).toBe(9);
     expect(Behir.ability_scores.str).toBe(23);
     expect(statBonusFromAbilityScore(Behir.ability_scores.str)).toBe(6);
-    const advancedBehir = advanceMonster(Behir, {str:26});
+    const advancedBehir = advanceMonster(Behir, {str:3});
     expect(advancedBehir.ability_scores.str).toBe(26);
     expect(statBonusFromAbilityScore(advancedBehir.ability_scores.str)).toBe(8);
     //Data needs update to manage str multipliers for natural attacks.

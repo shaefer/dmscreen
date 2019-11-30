@@ -164,7 +164,7 @@ export const displayFullAttack = (fullAttacks) => {
 }
 
 const displayToHitForMultipleAttacks = (attackBonusText, toHit, toHitAdjustments) => {
-    if (!toHitAdjustments || toHitAdjustments.length == 1) {
+    if (!toHitAdjustments || toHitAdjustments.length === 1) {
         return (attackBonusText) ? withPlus(toHit) + " " : '';
     } else {
         return toHitAdjustments.map(x => withPlus(x + toHit)).join("/") + " ";

@@ -4,11 +4,13 @@ import Aasimar from '../../models/AasimarV2'
 import Monsters from '../../models/Monsters'
 import PathfinderMonsterAdvancer from '../PathfinderMonsterAdvancer/PathfinderMonsterAdvancer';
 import { calculateCR } from '../PathfinderMonsterAdvancer/AdvancementTools/ChallengeRatingCalculator';
+import MonsterDisplay from '../MonsterDisplay';
 
 it('renders without crashing', () => {
   const div = document.createElement('div');
   const monster = {statBlock:Aasimar}
-  ReactDOM.render(<PathfinderMonsterAdvancer monster={monster} advancement={{}}/>, div);
+  const advancedMonster = PathfinderMonsterAdvancer(monster, {});
+  ReactDOM.render(<MonsterDisplay monster={advancedMonster}/>, div);
   ReactDOM.unmountComponentAtNode(div);
 });
 
@@ -16,7 +18,8 @@ Monsters.forEach(monsterStats => {
   it(`Render ${monsterStats.name}`, () => {
     const div = document.createElement('div');
     const monster = {statBlock:monsterStats, success: true}
-    ReactDOM.render(<PathfinderMonsterAdvancer monster={monster} advancement={{hd: monsterStats.hitDice + 1}}/>, div);
+    const advancedMonster = PathfinderMonsterAdvancer(monster, {hd: monsterStats.hitDice + 1});
+    ReactDOM.render(<MonsterDisplay monster={advancedMonster}/>, div);
     ReactDOM.unmountComponentAtNode(div);
   });
 });

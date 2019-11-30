@@ -20,8 +20,14 @@ export const calculateCR = (monster) => {
     calculatedCrs.push(hpCr);
     const acCr = calculateAcCr(monster.armor_class.ac.standard);
     calculatedCrs.push(acCr);
-    const attackCr = (monster.melee) ? calculateAttackCr(monster.melee_attacks) : calculateAttackCr(monster.ranged_attacks);
-    const dmgCr = (monster.melee) ? calculateDamageCr(monster.melee_attacks) : calculateDamageCr(monster.ranged_attacks);
+    const meleeCr = (monster.melee) ? calculateAttackCr(monster.melee_attacks) : 0;
+    const rangedCr = (monster.ranged) ? calculateAttackCr(monster.ranged_attacks) : 0;
+    const attackCr = Math.max(meleeCr, rangedCr);
+    //const attackCr = (monster.melee) ? calculateAttackCr(monster.melee_attacks) : calculateAttackCr(monster.ranged_attacks);
+    const meleeDmgCr = (monster.melee) ? calculateDamageCr(monster.melee_attacks) : 0;
+    const rangedDmgCr = (monster.ranged) ? calculateDamageCr(monster.ranged_attacks) : 0;
+    const dmgCr = Math.max(meleeDmgCr, rangedDmgCr);
+    //const dmgCr = (monster.melee) ? calculateDamageCr(monster.melee_attacks) : calculateDamageCr(monster.ranged_attacks);
     if (monster.melee || monster.ranged) {
         calculatedCrs.push(attackCr);
         calculatedCrs.push(dmgCr);
@@ -91,11 +97,12 @@ export const calculateDamageFromAttackSequence = (attackSequence) => {
     let sumOfDmg = 0;
     for (let i = 0; i<attackSequence.length; i++) {
         if (attackSequence[i].damage_details) {
+            const numOfAttacks = attackSequence[i].attackCount || 1;
             const dmgDice = attackSequence[i].damage_details.map(x => x.dice);
             if (dmgDice) {
                 dmgDice.forEach(dice => {
                     dice.forEach(x => {
-                        sumOfDmg += (x.numOfDice * avgDiceRoll(x.numOfSides)) + x.adjustment;
+                        sumOfDmg += numOfAttacks * ((x.numOfDice * avgDiceRoll(x.numOfSides)) + x.adjustment);
                     })
                 });
             }

@@ -137,6 +137,8 @@ const chooseMonster = (monsters, searchParamsAsHtmlParams, numOfMonsters, search
                     return data;
                 })
                 .then(data => {
+                    const monster = {statBlock: data, success: true};
+                    const advancedMonster = PathfinderMonsterAdvancer(monster, {});
                     const result = (
                         <section className="monsterDisplayResult">
                             <Accordion>
@@ -147,7 +149,7 @@ const chooseMonster = (monsters, searchParamsAsHtmlParams, numOfMonsters, search
                                         </div>
                                     </AccordionItemTitle>
                                     <AccordionItemBody>
-                                        <PathfinderMonsterAdvancer monster={{statBlock: data, success: true}} advancement={{}}/>
+                                        <MonsterDisplay monster={advancedMonster} />
                                     </AccordionItemBody>
                                 </AccordionItem>
                             </Accordion>

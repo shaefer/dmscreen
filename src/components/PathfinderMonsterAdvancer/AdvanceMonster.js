@@ -23,13 +23,10 @@ export const advanceMonster = (statblock, advancement) => {
     }
     if (advancement.str || advancement.dex || advancement.con || advancement.int || advancement.wis || advancement.cha) {
         //abilityScores: [{str: 2, dex: 4, reason: "Custom Ability Score Adjustments"}],
-        const statAdvancementsMerged = {reason: 'User Customized Ability Scores'};
-        if (advancement.str) statAdvancementsMerged.str = advancement.str - statblock.ability_scores.str;
-        if (advancement.dex) statAdvancementsMerged.dex = advancement.dex - statblock.ability_scores.dex;
-        if (advancement.con) statAdvancementsMerged.con = advancement.con - statblock.ability_scores.con;
-        if (advancement.int) statAdvancementsMerged.int = advancement.int - statblock.ability_scores.int;
-        if (advancement.wis) statAdvancementsMerged.wis = advancement.wis - statblock.ability_scores.wis;
-        if (advancement.cha) statAdvancementsMerged.cha = advancement.cha - statblock.ability_scores.cha;
+        const statAdvancementsMerged = {
+            ...advancement,
+            reason: 'User Customized Ability Scores'
+        };
         console.log("Advancing by ability scores", statAdvancementsMerged);
         const advancesFromAbilityScores = advanceByAbilityScores(advancedCreature, [statAdvancementsMerged]);
         advancedCreature = {

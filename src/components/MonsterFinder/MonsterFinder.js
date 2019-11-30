@@ -17,6 +17,7 @@ import SizeAdvancementSelectMaterial from './subcomponents/SizeAdvancementSelect
 import AbilityScoreAdvancementSelectMaterial from './subcomponents/AbilityScoreAdvancementSelectMaterial';
 
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
+import MonsterDisplay from '../MonsterDisplay';
 
 export class MonsterFinder extends Component {
   constructor(props) {
@@ -87,23 +88,25 @@ export class MonsterFinder extends Component {
       },
     });
     monster = (monster.success) ? monster : { success: true, statBlock: Aasimar};
+    const advancedMonster = PathfinderMonsterAdvancer(monster, advancement)
+    
     return (
       <MuiThemeProvider theme={theme}>
       <div className="flex-container">
         <div className="flex-item">
-          <PathfinderMonsterAdvancer monster={monster} advancement={advancement}/>
+          <MonsterDisplay monster={advancedMonster}/>
         </div>
         <div className="flex-item">
           <div className="flexSelect" style={{backgroundColor: 'white'}}>
             <MonsterSelect listItems={MonsterOptions.map(op => op.props.children)} onSelect={this.handleMonsterSelectChange}/>
             <HitDiceAdvancementSelectMaterial originalHitDice={monster.statBlock.hitDice} selectedHitDice={advancement.hd} onSelect={this.handleHitDiceSelectChange}/>
             <SizeAdvancementSelectMaterial originalSize={monster.statBlock.size} selectedSize={advancement.size} onSelect={this.handleSizeSelectChange} />
-            <AbilityScoreAdvancementSelectMaterial originalValue={monster.statBlock.ability_scores.str} selectedValue={advancement.str} abilityScore={"Str"} onSelect={this.handleAbilityScoreSelectChange}/>
-            <AbilityScoreAdvancementSelectMaterial originalValue={monster.statBlock.ability_scores.dex} selectedValue={advancement.dex} abilityScore={"Dex"} onSelect={this.handleAbilityScoreSelectChange}/>
-            <AbilityScoreAdvancementSelectMaterial originalValue={monster.statBlock.ability_scores.con} selectedValue={advancement.con} abilityScore={"Con"} onSelect={this.handleAbilityScoreSelectChange}/>
-            <AbilityScoreAdvancementSelectMaterial originalValue={monster.statBlock.ability_scores.int} selectedValue={advancement.int} abilityScore={"Int"} onSelect={this.handleAbilityScoreSelectChange}/>
-            <AbilityScoreAdvancementSelectMaterial originalValue={monster.statBlock.ability_scores.wis} selectedValue={advancement.wis} abilityScore={"Wis"} onSelect={this.handleAbilityScoreSelectChange}/>
-            <AbilityScoreAdvancementSelectMaterial originalValue={monster.statBlock.ability_scores.cha} selectedValue={advancement.cha} abilityScore={"Cha"} onSelect={this.handleAbilityScoreSelectChange}/>
+            <AbilityScoreAdvancementSelectMaterial selectedValue={advancement.str} abilityScore={"Str"} onSelect={this.handleAbilityScoreSelectChange}/>
+            <AbilityScoreAdvancementSelectMaterial selectedValue={advancement.dex} abilityScore={"Dex"} onSelect={this.handleAbilityScoreSelectChange}/>
+            <AbilityScoreAdvancementSelectMaterial selectedValue={advancement.con} abilityScore={"Con"} onSelect={this.handleAbilityScoreSelectChange}/>
+            <AbilityScoreAdvancementSelectMaterial selectedValue={advancement.int} abilityScore={"Int"} onSelect={this.handleAbilityScoreSelectChange}/>
+            <AbilityScoreAdvancementSelectMaterial selectedValue={advancement.wis} abilityScore={"Wis"} onSelect={this.handleAbilityScoreSelectChange}/>
+            <AbilityScoreAdvancementSelectMaterial selectedValue={advancement.cha} abilityScore={"Cha"} onSelect={this.handleAbilityScoreSelectChange}/>
           </div>
         </div>
     </div>

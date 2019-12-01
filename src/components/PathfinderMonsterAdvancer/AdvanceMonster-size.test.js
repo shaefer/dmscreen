@@ -20,12 +20,12 @@ it('advance by size to a smaller size changes ac', () => {
 
 it('advance by size creates a special name', () => {
     const result = advanceBySize(Behir, 'Medium');
-    expect(result.advancements[0]).toBe('Decreased size from Huge to Medium');
+    expect(result.advancements[0]).toBe('Medium');
 });
 
 it('advance by size changes main size', () => {
     const result = advanceBySize(Behir, 'Colossal');
-    expect(result.advancements[0]).toBe('Increased size from Huge to Colossal');
+    expect(result.advancements[0]).toBe('Colossal');
 });
 
 it('advance by size changes cmb and cmd', () => {

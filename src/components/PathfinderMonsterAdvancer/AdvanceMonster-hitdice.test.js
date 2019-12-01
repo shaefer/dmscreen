@@ -37,7 +37,7 @@ it('advance by hit dice creates featCount', () => {
 
 it('advance by hit dice creates advancename field', () => {
     const behirPlus4Hd = advanceByHitDice(Behir, 4);
-    expect(behirPlus4Hd.advancements[0]).toBe("Advanced 4 Hit Dice");
+    expect(behirPlus4Hd.advancements[0]).toBe("+4 Hit Dice");
 });
 
 //TODO: Should each advancement provide a calculated change to CR? That might be awesome.

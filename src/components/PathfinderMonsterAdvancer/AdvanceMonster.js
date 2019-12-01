@@ -299,7 +299,7 @@ export const advanceBySize = (statblock, sizeChange) => {
 
     const combatManeuverFields = combatManeuverChanges(statblock, totalChanges.cmb, totalChanges.cmd);
 
-    const advancementDirection = (IsUp) ? "Increased" : "Decreased";
+    const advancementDirection = (IsUp) ? "↑" : "↓";
     const advancements = (statblock.advancements) ? statblock.advancements : [];
     const advancementsFromSize = {
         skills: newSkills,
@@ -309,7 +309,7 @@ export const advanceBySize = (statblock, sizeChange) => {
         ...acFieldsFromMods(acMods),
         melee_attacks: newMeleeAttacks,
         ranged_attacks: newRangedAttacks,
-        advancements: [...advancements, `${advancementDirection} size from ${startSize} to ${endSize}`]
+        advancements: [...advancements, `${endSize}`]
     }
 
     const sizeAdvancedCreature = {
@@ -332,6 +332,17 @@ export const advanceBySize = (statblock, sizeChange) => {
     //int -> skill points, int-based skills, int-based saves for special abilities
     //wis -> will save, wis skills, wis-based saves for special abilities
     //cha -> maybe deflection ac, cha skills, cha-based saves for special abilities
+const abilityScoreList = ['str', 'dex', 'con', 'wis', 'int', 'cha'];
+const abilityScoreChangesToString = (abilityScoreChanges) => {
+    const scores = [];
+    Object.keys(abilityScoreChanges).forEach(x => {
+        if (abilityScoreList.indexOf(x) !== -1 && abilityScoreChanges[x]) {
+            scores.push(`${x} ${withPlus(abilityScoreChanges[x])}`);
+        }
+    });
+    return scores.join(', ');
+}
+
 export const advanceByAbilityScores = (statblock, abilityScoreChanges, chainedAdvancement = false) => {
     const newHitDice = statblock.hitDice;
     const newAbilityScores = applyAbilityScoreChanges(statblock.ability_scores, abilityScoreChanges);
@@ -345,7 +356,10 @@ export const advanceByAbilityScores = (statblock, abilityScoreChanges, chainedAd
     const acFields = acChanges(statblock.armor_class.ac_modifiers.slice(0), statBonusDiffs);
     const hpFields = hpChanges(newHitDice, statblock.hdType, statblock.creature_type, statBonusFromAbilityScore(newAbilityScores.con), statBonusFromAbilityScore(newAbilityScores.cha), statblock.size);
     const existingAdvancements = (statblock.advancements) ? statblock.advancements : [];
-    const advancements = (chainedAdvancement) ? {} : {advancements: [...existingAdvancements, `Stats Altered`]};
+    //On some options change which name version --Pass options through
+    const detailedStatsInNameOpt = false;
+    const advancementDesc = (detailedStatsInNameOpt) ? `${abilityScoreChangesToString(abilityScoreChanges[0])}` : 'Stats Altered';
+    const advancements = (chainedAdvancement) ? {} : {advancements: [...existingAdvancements, advancementDesc]};
     const existingAbilityScoreChanges = (statblock.abilityScoreChanges) ? statblock.abilityScoreChanges : [];
 
     const newSkills = statblock.skills.map(x => {
@@ -403,7 +417,7 @@ export const advanceByHitDice = (statblock, hdChange) => {
 
     const hpFields = hpChanges(newHitDice, statblock.hdType, statblock.creature_type, statBonusFromAbilityScore(statblock.ability_scores.con), statBonusFromAbilityScore(statblock.ability_scores.con), statblock.size);
     const hitDiceAdvancements = {
-        advancements: [`Advanced ${hdChange} Hit Dice`],
+        advancements: [`${withPlus(hdChange)} Hit Dice`],
         ...hpFields,
         melee_attacks: meleeAttacks,
         ranged_attacks: rangedAttacks,

@@ -74,9 +74,11 @@ export class MonsterFinder extends Component {
       this.props.abilityScoreAdvancementAction(parseInt(searchParams.get("cha")), 'cha');
 
       const sizeToParse = searchParams.get("size");
-      const size = MonsterSizes.find(x => x.abbr === sizeToParse.toUpperCase() || x.size.toLowerCase() === sizeToParse.toLowerCase());
-      if (size)
-        this.props.sizeAdvancementAction(size.size);
+      if (sizeToParse) {
+        const size = MonsterSizes.find(x => x.abbr === sizeToParse.toUpperCase() || x.size.toLowerCase() === sizeToParse.toLowerCase());
+        if (size)
+          this.props.sizeAdvancementAction(size.size);
+      }
       this.props.hitDiceAdvancementAction(parseInt(searchParams.get("hd")));
     }
 

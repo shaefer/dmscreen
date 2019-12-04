@@ -41,6 +41,13 @@ export const advanceMonster = (statblock, advancement) => {
             ...advancedFromSize
         }
     }
+    if (advancement.template) {
+        const advancedFromTemplate = advanceByTemplate(advancedCreature, advancement.template);
+        advancedCreature = {
+            ...advancedCreature,
+            ...advancedFromTemplate
+        }
+    }
 
     const originalCr = calculateCR(statblock);
     const advancedCr = calculateCR(advancedCreature);
@@ -436,6 +443,13 @@ export const advanceByHitDice = (statblock, hdChange) => {
     return {
         ...hitDiceAdvancements,
         ...statAdvancements
+    }
+}
+
+export const advanceByTemplate = (statblock, template) => {
+    return {
+        ...statblock,
+        ...template(statblock)
     }
 }
 

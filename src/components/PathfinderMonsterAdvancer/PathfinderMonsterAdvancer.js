@@ -13,7 +13,7 @@ const PathfinderMonsterAdvancer = (monster, advancement, options) => {
         }
     }
     if (advancement) {
-        console.log("ADVANCING CREATURE", advancement)
+        //console.log("ADVANCING CREATURE", advancement)
         const advancedMonsterChanges = advanceMonster(monster.statBlock, advancement);
         const newMonster = {
             ...monster.statBlock,

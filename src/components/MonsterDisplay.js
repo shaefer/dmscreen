@@ -211,7 +211,6 @@ const displayDamage = (damageDetails => {
 
 const MonsterDisplay = ({monster}) => {
     const m = monster.statBlock;
-    console.log(m.name)
     if (!m.name)
         return <div>No Monster Currently Selected</div>;
     if (!monster.success) {

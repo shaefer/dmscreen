@@ -27,7 +27,7 @@ export const advanceMonster = (statblock, advancement) => {
             ...advancement,
             reason: 'User Customized Ability Scores'
         };
-        console.log("Advancing by ability scores", statAdvancementsMerged);
+        //console.log("Advancing by ability scores", statAdvancementsMerged);
         const advancesFromAbilityScores = advanceByAbilityScores(advancedCreature, [statAdvancementsMerged]);
         advancedCreature = {
             ...advancedCreature,
@@ -241,7 +241,7 @@ export const getNewDamageDice = (attackDice, startSizeIndex, endSizeIndex) => {
         }
     }
     const newDmgIndex = Math.max(startingDmgIndex + dmgIndexChange, 0);
-    console.log(`CHANGE DAMAGE DICE FROM ${paizoProgression[startingDmgIndex]}(${startingDmg})  TO ${paizoProgression[newDmgIndex]}`)
+    //console.log(`CHANGE DAMAGE DICE FROM ${paizoProgression[startingDmgIndex]}(${startingDmg})  TO ${paizoProgression[newDmgIndex]}`)
     //if we would go off the chart low leave index at 0...we'll have to check going off the top of the chart eventually too.
     const newDamage = paizoProgression[newDmgIndex];
     const dmgParts = newDamage.split("d");

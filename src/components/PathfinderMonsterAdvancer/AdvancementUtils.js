@@ -103,7 +103,7 @@ export const IsWillSaveGood = (creatureTypeInfo) => {
 
 export const getCreatureTypeInfo = (creatureType) => {
     if (!creatureType) {
-        console.warn("Creature type was not found. Returning Dragon Type as default.");
+        //console.warn("Creature type was not found. Returning Dragon Type as default.");
         return creatureStatsByType.find(x => x.creature_type === 'Dragon');
     }
     return creatureStatsByType.find(x => x.creature_type.toLowerCase() === creatureType.toLowerCase());

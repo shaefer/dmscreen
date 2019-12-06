@@ -53,9 +53,11 @@ export const advanceMonster = (statblock, advancement) => {
     const advancedCr = calculateCR(advancedCreature);
     const crDiff = roundDecimal(advancedCr.total - originalCr.total);
     const crAdjusted = roundDecimal(originalCr.original + crDiff);
+    const advancedNamePrefixes = (advancedCreature.advancedNamePrefixes) ? advancedCreature.advancedNamePrefixes : [];
+    const namePrefix = (advancedNamePrefixes.length > 0) ? (advancedNamePrefixes.sort().join(", ") + " ") : '';
     return {
         ...advancedCreature,
-        advancedName: `${advancedCreature.name}${displayName(advancedCreature.advancements)}`,
+        advancedName: `${namePrefix}${advancedCreature.name}${displayName(advancedCreature.advancements)}`,
         crCalculation: {
             originalCr,
             advancedCr,

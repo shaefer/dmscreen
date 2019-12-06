@@ -93,7 +93,6 @@ const specialAbilitiesAndDescription = (m) => {
         if (!section.subtype) {
             return <span key={"descSec" + index} className="sbLine sbDescription" dangerouslySetInnerHTML={{__html: section.body}} ></span>;
         }
-        console.log(s1);
         return "Parsing Error";
     }); 
     if (m.special_abilities) {

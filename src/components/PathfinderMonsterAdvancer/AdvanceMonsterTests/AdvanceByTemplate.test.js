@@ -43,3 +43,9 @@ it ('add Darkvision when not exists', () => {
     const advancedCreature = advanceMonster(Allosaurus, {template:Fiendish});
     expect(advancedCreature.senses).toBe('darkvision 60 ft., low-light vision, scent; Perception +28');
 });
+
+it ('changes displayName', () => {
+    expect(Allosaurus.name).toBe('Dinosaur, Allosaurus');
+    const advancedCreature = advanceMonster(Allosaurus, {template:Fiendish});
+    expect(advancedCreature.advancedName).toBe('Fiendish Dinosaur, Allosaurus');
+});

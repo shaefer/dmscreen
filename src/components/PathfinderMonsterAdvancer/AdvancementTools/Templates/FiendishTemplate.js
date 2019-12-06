@@ -96,7 +96,7 @@ const Fiendish = (statblock) => {
 
 
     //darkvision is usually 60ft. the only creatures with a shorter range havae 30ft. SO replacing the 30ft. and adding if no darkvision is present.
-
+    const advancedNamePrefixes = (statblock.advancedNamePrefixes) ? statblock.advancedNamePrefixes : [];
 
     return {
         ...statblock,
@@ -107,7 +107,8 @@ const Fiendish = (statblock) => {
         crAdjustments : [
             ...existingAdjustments,
             {source: 'Fiendish Template', val: crAdjustment}
-        ]
+        ],
+        advancedNamePrefixes: advancedNamePrefixes.concat(['Fiendish'])
     }
 };
 

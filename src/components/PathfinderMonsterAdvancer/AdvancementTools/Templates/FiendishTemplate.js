@@ -1,3 +1,5 @@
+import { statBonusFromAbilityScore, withPlus } from "../../AdvancementUtils";
+
 // Fiendish Creature (CR +0 or +1)
 // Creatures with the fiendish template live in the Lower Planes, such as the Abyss and Hell, but can be summoned using spells such as summon monster and planar ally. A fiendish creature's CR increases by +1 only if the base creature has 5 or more HD. A fiendish creature's quick and rebuild rules are the same.
 
@@ -94,7 +96,8 @@ const Fiendish = (statblock) => {
         return (sr) ? {sr: Math.max(sr, cr + 5)} : {sr: cr + 5};
     }
 
-
+    const smiteGood = (monster) => `smite good 1/day as a swift action (adds ${withPlus(statBonusFromAbilityScore(monster.ability_scores.cha))}(CHA) bonus to attack rolls and damage bonus equal to ${withPlus(monster.hitDice)}(HD) against good foes; smite persists until target is dead or the fiendish creature rests).`
+    const specialAttacksAcquired = (statblock.specialAttacksAcquired) ? statblock.specialAttacksAcquired : [{sourceName: 'Fiendish Template', displayFn: smiteGood}];
     //darkvision is usually 60ft. the only creatures with a shorter range havae 30ft. SO replacing the 30ft. and adding if no darkvision is present.
     const advancedNamePrefixes = (statblock.advancedNamePrefixes) ? statblock.advancedNamePrefixes : [];
 
@@ -108,7 +111,8 @@ const Fiendish = (statblock) => {
             ...existingAdjustments,
             {source: 'Fiendish Template', val: crAdjustment}
         ],
-        advancedNamePrefixes: advancedNamePrefixes.concat(['Fiendish'])
+        advancedNamePrefixes: advancedNamePrefixes.concat(['Fiendish']),
+        specialAttacksAcquired: specialAttacksAcquired
     }
 };
 

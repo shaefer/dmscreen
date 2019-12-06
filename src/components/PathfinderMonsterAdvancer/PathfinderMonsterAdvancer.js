@@ -13,6 +13,10 @@ const PathfinderMonsterAdvancer = (monster, advancement, options) => {
             showCrChanges: true
         }
     }
+    // advancement = {
+    //     ...advancement,
+    //     templates: [Fiendish]
+    // }
     if (advancement) {
         //console.log("ADVANCING CREATURE", advancement)
         const advancedMonsterChanges = advanceMonster(monster.statBlock, advancement);

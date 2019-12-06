@@ -57,13 +57,22 @@ export const advanceMonster = (statblock, advancement) => {
         }
     }
 
-    if (advancement.template) {
-        const advancedFromTemplate = advanceByTemplate(advancedCreature, advancement.template);
-        advancedCreature = {
-            ...advancedCreature,
-            ...advancedFromTemplate
-        }
+    if (advancement.templates) {
+        //loop through each template provided.
+        advancement.templates.forEach(template => {
+            const advancedFromTemplate = advanceByTemplate(advancedCreature, template);
+            advancedCreature = {
+                ...advancedCreature,
+                ...advancedFromTemplate
+            }
+        })
     }
+    const additionalSpecialAttacks = (advancedCreature.specialAttacksAcquired) ? advancedCreature.specialAttacksAcquired : [];
+    advancedCreature = {
+        ...advancedCreature,
+        specialAttacksAcquired: additionalSpecialAttacks.map(x => x.displayFn(advancedCreature)).sort().join(', ')
+    }
+    //TODO: resolve all function displays (we will have displays that rely on final data from the creature after all advancements. Such as special attacks that add damage based on total HD.)
     
     const advancedNamePrefixes = (advancedCreature.advancedNamePrefixes) ? advancedCreature.advancedNamePrefixes : [];
     const namePrefix = (advancedNamePrefixes.length > 0) ? (advancedNamePrefixes.sort().join(", ") + " ") : '';

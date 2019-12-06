@@ -9,6 +9,7 @@ import Skills from './AdvancementTools/Skills'
 import { getBaseAttackBonusByHitDiceAndCreatureType } from '../../monsteradvancer/BaseAttackBonusCalculator'
 import getCaptureGroups from '../../utils/RegexHelper'
 import { parse } from '@babel/parser'
+import { ADVANCE_HIT_DICE } from '../../actions'
 
 //There are a few fields we add as we go such as advancements that each stage might add to. If we could start with the assupmtion that that field is initialized properly the spread operator could be used with less coersion. 
 //We probably should just do an initial spread that initializes fields that aren't always present that we would like to count on for advancement.
@@ -41,6 +42,21 @@ export const advanceMonster = (statblock, advancement) => {
             ...advancedFromSize
         }
     }
+
+    const originalCr = calculateCR(statblock);
+    const advancedCr = calculateCR(advancedCreature);
+    const crDiff = roundDecimal(advancedCr.total - originalCr.total);
+    const crAdjusted = roundDecimal(originalCr.original + crDiff);
+    advancedCreature = {
+        ...advancedCreature,
+        crCalculation: {
+            originalCr,
+            advancedCr,
+            crDiff,
+            crAdjusted
+        }
+    }
+
     if (advancement.template) {
         const advancedFromTemplate = advanceByTemplate(advancedCreature, advancement.template);
         advancedCreature = {
@@ -48,22 +64,12 @@ export const advanceMonster = (statblock, advancement) => {
             ...advancedFromTemplate
         }
     }
-
-    const originalCr = calculateCR(statblock);
-    const advancedCr = calculateCR(advancedCreature);
-    const crDiff = roundDecimal(advancedCr.total - originalCr.total);
-    const crAdjusted = roundDecimal(originalCr.original + crDiff);
+    
     const advancedNamePrefixes = (advancedCreature.advancedNamePrefixes) ? advancedCreature.advancedNamePrefixes : [];
     const namePrefix = (advancedNamePrefixes.length > 0) ? (advancedNamePrefixes.sort().join(", ") + " ") : '';
     return {
         ...advancedCreature,
         advancedName: `${namePrefix}${advancedCreature.name}${displayName(advancedCreature.advancements)}`,
-        crCalculation: {
-            originalCr,
-            advancedCr,
-            crDiff,
-            crAdjusted
-        }
     };
 }
 

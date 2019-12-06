@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import MonsterDisplay from '../MonsterDisplay'
 import {convertToMonsterForDisplay} from '../MonsterDisplayConverter/MonsterDisplayConverter'
 import {advanceMonster} from './AdvanceMonster'
+import { Fiendish } from './AdvancementTools/Templates';
 
 const PathfinderMonsterAdvancer = (monster, advancement, options) => {
     const opts = {

@@ -232,7 +232,10 @@ const MonsterDisplay = ({monster}) => {
     const abilityScores = <span><B>Str</B> {m.strength}, <B>Dex</B> {m.dexterity}, <B>Con</B> {displayConstitution(m.constitution, opts.showStatBonuses)}, <B>Int</B> {m.intelligence}, <B>Wis</B> {m.wisdom}, <B>Cha</B> {m.charisma}</span>
     const abilityScoresWithBonuses = <span><B>Str</B> {m.strength}({withPlus(statBonusFromAbilityScore(m.strength))}), <B>Dex</B> {m.dexterity}({withPlus(statBonusFromAbilityScore(m.dexterity))}), <B>Con</B> {displayConstitution(m.constitution,  opts.showStatBonuses, withPlus(statBonusFromAbilityScore(m.constitution)))}, <B>Int</B> {m.intelligence}({withPlus(statBonusFromAbilityScore(m.intelligence))}), <B>Wis</B> {m.wisdom}({withPlus(statBonusFromAbilityScore(m.wisdom))}), <B>Cha</B> {m.charisma}({withPlus(statBonusFromAbilityScore(m.charisma))})</span>
     const abilityScoreDisplay = (opts.showStatBonuses) ? abilityScoresWithBonuses : abilityScores;
-    const crDisplay = (opts.showCrChanges && m.crCalculation.crDiff) ? `${m.crCalculation.crAdjusted} (original CR ${m.cr})` : `${m.cr}`
+    const existingAdjustments = (m.crAdjustments) ? m.crAdjustments : [];
+    const crAdjustmentsVal = (existingAdjustments.length > 0) ? existingAdjustments.map(x => x.val).reduce((agg, x) => agg + x) : 0;
+    const crAdjustmentsText = (existingAdjustments.length > 0) ? <StatBlockLine><B>CR Adjustments</B> {existingAdjustments.map(x => `${x.source} ${withPlus(x.val)}`).join(", ")}</StatBlockLine> : '';
+    const crDisplay = (opts.showCrChanges && (m.crCalculation.crDiff || crAdjustmentsVal > 0)) ? `${m.crCalculation.crAdjusted + crAdjustmentsVal} (original CR ${m.cr})` : `${m.cr}`
     
     const origCr = m.crCalculation.originalCr;
     const originalCrDetails = `HP CR: ${origCr.hp}, AC CR: ${origCr.ac}, Attack CR: ${origCr.attack}, Damage CR: ${origCr.damage}, Saves CR: ${origCr.saves}`;
@@ -246,9 +249,10 @@ const MonsterDisplay = ({monster}) => {
         <StatBlockLine><B>Advanced Calculated CR</B> {newCr.total} <B>CR Details: </B>({advancedCrDetails})</StatBlockLine>
         <StatBlockLine><B>CR Difference</B> {m.crCalculation.crDiff}</StatBlockLine>
         <StatBlockLine><B>New Estimated CR</B> {m.crCalculation.crAdjusted}</StatBlockLine>
+        {crAdjustmentsText}
         </section>
     );
-    const crSectionDisplay = (opts.showCrChanges && m.crCalculation.crDiff) ? crSection : '';
+    const crSectionDisplay = (opts.showCrChanges && (m.crCalculation.crDiff || crAdjustmentsVal > 0)) ? crSection : '';
     const featCountStr = (m.featCount && opts.showFeatCount) ? ` (${m.featCount})` : ""; 
     const meleeAttackDisplay = (m.melee) ? displayFullAttack(m.melee_attacks) : m.melee;
     const rangedAttackDisplay = (m.ranged) ? displayFullAttack(m.ranged_attacks) : m.ranged;

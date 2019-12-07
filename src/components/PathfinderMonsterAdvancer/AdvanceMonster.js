@@ -10,6 +10,7 @@ import { getBaseAttackBonusByHitDiceAndCreatureType } from '../../monsteradvance
 import getCaptureGroups from '../../utils/RegexHelper'
 import { parse } from '@babel/parser'
 import { ADVANCE_HIT_DICE } from '../../actions'
+import { TemplatesMap } from './AdvancementTools/Templates'
 
 //There are a few fields we add as we go such as advancements that each stage might add to. If we could start with the assupmtion that that field is initialized properly the spread operator could be used with less coersion. 
 //We probably should just do an initial spread that initializes fields that aren't always present that we would like to count on for advancement.
@@ -59,11 +60,14 @@ export const advanceMonster = (statblock, advancement) => {
 
     if (advancement.templates) {
         //loop through each template provided.
-        advancement.templates.forEach(template => {
-            const advancedFromTemplate = advanceByTemplate(advancedCreature, template);
-            advancedCreature = {
-                ...advancedCreature,
-                ...advancedFromTemplate
+        advancement.templates.forEach(templateName => {
+            const template = TemplatesMap[templateName];
+            if (template) {
+                const advancedFromTemplate = advanceByTemplate(advancedCreature, template);
+                advancedCreature = {
+                    ...advancedCreature,
+                    ...advancedFromTemplate
+                }
             }
         })
     }

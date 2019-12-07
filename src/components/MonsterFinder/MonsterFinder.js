@@ -5,7 +5,7 @@ import './MonsterFinder.css';
 import '../../css/ReactSelectCustom.css';
 
 import { connect } from 'react-redux'
-import {keyPressHandler, monsterSelectedHandler, hitDiceAdvancementAction, sizeAdvancementAction, abilityScoreAdvancementAction} from '../../action-creators'
+import {keyPressHandler, monsterSelectedHandler, hitDiceAdvancementAction, sizeAdvancementAction, abilityScoreAdvancementAction, templateAdvancementAction} from '../../action-creators'
 import PathfinderMonsterAdvancer from '../PathfinderMonsterAdvancer/PathfinderMonsterAdvancer'
 import MonsterOptions from '../MonsterOptions'
 import MonsterSelect from './MonsterSelect'
@@ -30,6 +30,7 @@ export class MonsterFinder extends Component {
     this.handleHitDiceSelectChange = this.handleHitDiceSelectChange.bind(this);
     this.handleSizeSelectChange = this.handleSizeSelectChange.bind(this);
     this.handleAbilityScoreSelectChange = this.handleAbilityScoreSelectChange.bind(this);
+    this.handleTemplateChange = this.handleTemplateChange.bind(this);
   }
 
   handleKeyPress(e) {
@@ -41,6 +42,7 @@ export class MonsterFinder extends Component {
     this.props.hitDiceAdvancementAction('reset');
     this.props.sizeAdvancementAction('reset');
     this.props.abilityScoreAdvancementAction('resetall');
+    this.props.templateAdvancementAction('reset');
   }
 
   handleHitDiceSelectChange(e) {
@@ -50,6 +52,10 @@ export class MonsterFinder extends Component {
   handleSizeSelectChange(e) {
     this.props.sizeAdvancementAction(e.target.value);
   } 
+
+  handleTemplateChange(selectedValues) {
+    this.props.templateAdvancementAction(selectedValues);
+  }
 
   handleAbilityScoreSelectChange(e, abilityScore) {
     //where abilityScore is the identifier like 'Str'
@@ -110,8 +116,8 @@ export class MonsterFinder extends Component {
     });
     monster = (monster.success) ? monster : { success: true, statBlock: Aasimar};
     const advancedMonster = PathfinderMonsterAdvancer(monster, advancement)
-    const templatesOption = false;
-    const templateSelect = (templatesOption) ? <TemplateSelect /> : '';
+    const templatesOption = true;
+    const templateSelect = (templatesOption) ? <TemplateSelect selectedTemplates={advancement.templates} onSelect={this.handleTemplateChange}/> : '';
     return (
       <MuiThemeProvider theme={theme}>
       <div className="flex-container">
@@ -141,4 +147,4 @@ export class MonsterFinder extends Component {
 const mapStateToProps = state => state;
 
 
-export default connect(mapStateToProps, {keyPressHandler, monsterSelectedHandler, hitDiceAdvancementAction, sizeAdvancementAction, abilityScoreAdvancementAction})(MonsterFinder)
+export default connect(mapStateToProps, {keyPressHandler, monsterSelectedHandler, hitDiceAdvancementAction, sizeAdvancementAction, abilityScoreAdvancementAction, templateAdvancementAction})(MonsterFinder)

@@ -1,6 +1,6 @@
 import Fiendish from './Templates/FiendishTemplate'
 
-const Templates = [Fiendish];
+const TemplatesMap = {"Fiendish" : Fiendish};
 
 export {Fiendish};
-export {Templates};
+export {TemplatesMap};

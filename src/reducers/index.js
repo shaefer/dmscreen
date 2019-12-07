@@ -3,6 +3,7 @@ import { reducer as formReducer } from 'redux-form'
 import * as Actions from '../actions'
 import Aasimar from '../models/AasimarV2'
 import dmScreen from './DMScreenReducer'
+import { statement } from '@babel/template'
 
 const config = (state = { initialState: "basicConfig"}, action) => {
   switch (action.type) {
@@ -79,6 +80,11 @@ const advancement = (state = {}, action) => {
         ...state,
         size: action.size
       }
+    case Actions.ADVANCE_TEMPLATES:
+      return {
+        ...state,
+        templates: action.templates
+      }
     case Actions.ADVANCE_ABILITY_SCORE:
       const newAbilityScores = {
         ...state.ability_scores,
@@ -100,6 +106,12 @@ const advancement = (state = {}, action) => {
       };
       delete newSizeState['size'];
       return newSizeState;
+    case Actions.RESET_TEMPLATE_ADVANCEMENT:
+      const newTemplateState = {
+        ...statement
+      };
+      delete newTemplateState['templates'];
+      return newTemplateState;
     case Actions.RESET_ABILITY_SCORE_ADVANCEMENT:
       const newAbilityScoreState = {
         ...state

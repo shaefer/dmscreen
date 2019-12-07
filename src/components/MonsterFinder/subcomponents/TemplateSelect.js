@@ -7,6 +7,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core';
+import { template } from '@babel/core';
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
@@ -37,6 +38,22 @@ const theme = createMuiTheme({
 class TemplateSelect extends React.Component {
     constructor(props) {
         super(props)
+        //this.props.onSelect -> wire this through the built in change events.
+    }
+    state = {
+        templates: [],
+    };
+    componentDidMount() {
+        const initialValue =  (this.props.selectedTemplates) ? this.props.selectedTemplates : '';
+        this.setState({
+          templates: initialValue,
+        });
+    }
+    componentWillReceiveProps(nextProps) {
+        const initialValue =  (nextProps.selectedTemplates) ? nextProps.selectedTemplates : '';
+        this.setState({
+          templates: initialValue,
+        });
     }
     render() {
         return (
@@ -44,11 +61,18 @@ class TemplateSelect extends React.Component {
             <Autocomplete
               multiple
               id="monster_template_selection"
+              defaultValue={this.state.templates}
               options={templates}
               disableCloseOnSelect
               getOptionLabel={option => option.name}
-              renderOption={(option, { selected }) => (
-                <React.Fragment>
+              onChange={(event, val) => {
+                console.log("ONCHANGE", val)
+                this.props.onSelect(val.map(x => x.value));
+              }}
+              renderOption={(option, state) => {
+                console.log("TEMPLATE SELECT", option, state)
+                const selected = state.selected;
+                return (<React.Fragment>
                   <Checkbox
                     icon={icon}
                     checkedIcon={checkedIcon}
@@ -57,7 +81,7 @@ class TemplateSelect extends React.Component {
                   />
                   {option.name}
                 </React.Fragment>
-              )}
+              )}}
               style={{ }}
               renderInput={params => (
                 <TextField
@@ -77,8 +101,8 @@ class TemplateSelect extends React.Component {
 
 // Top 100 films as rated by IMDb users. http://www.imdb.com/chart/top
 const templates = [
-  { name: 'Fiendish'},
-  //{ name: 'Celestial'}
+  { name: 'Fiendish', value: 'Fiendish'},
+  //{ name: 'Celestial', value: 'Celestial'}
 ];
 
 export default TemplateSelect;

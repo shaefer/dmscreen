@@ -19,6 +19,8 @@ import AbilityScoreAdvancementSelectMaterial from './subcomponents/AbilityScoreA
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import MonsterDisplay from '../MonsterDisplay';
 import { MonsterSizes } from '../PathfinderMonsterAdvancer/AdvancementTools/MonsterSizes';
+import TemplateSelect from './subcomponents/TemplateSelect';
+import { template } from '@babel/core';
 
 export class MonsterFinder extends Component {
   constructor(props) {
@@ -61,7 +63,6 @@ export class MonsterFinder extends Component {
     document.title = title;
 
     if (this.props.match && this.props.match.params && this.props.match.params.monsterName) {
-      console.log("Found monsterName param", this.props.match.params.monsterName)
       this.props.monsterSelectedHandler(this.props.match.params.monsterName);
     }
     if (this.props.location.search) {
@@ -109,7 +110,8 @@ export class MonsterFinder extends Component {
     });
     monster = (monster.success) ? monster : { success: true, statBlock: Aasimar};
     const advancedMonster = PathfinderMonsterAdvancer(monster, advancement)
-
+    const templatesOption = false;
+    const templateSelect = (templatesOption) ? <TemplateSelect /> : '';
     return (
       <MuiThemeProvider theme={theme}>
       <div className="flex-container">
@@ -127,7 +129,7 @@ export class MonsterFinder extends Component {
             <AbilityScoreAdvancementSelectMaterial selectedValue={advancement.int} abilityScore={"Int"} onSelect={this.handleAbilityScoreSelectChange}/>
             <AbilityScoreAdvancementSelectMaterial selectedValue={advancement.wis} abilityScore={"Wis"} onSelect={this.handleAbilityScoreSelectChange}/>
             <AbilityScoreAdvancementSelectMaterial selectedValue={advancement.cha} abilityScore={"Cha"} onSelect={this.handleAbilityScoreSelectChange}/>
-            
+            {templateSelect}
           </div>
         </div>
     </div>

@@ -65,3 +65,14 @@ export const RESET_ABILITY_SCORE_ADVANCEMENT = 'RESET_ABILITY_SCORE_ADVANCEMENT'
 export const resetAbilityScores = () => ({
     type: RESET_ABILITY_SCORE_ADVANCEMENT
 });
+
+export const ADVANCE_TEMPLATES = 'ADVANCE_TEMPLATES'
+export const advancedByTemplates = (templates) => ({
+    type: ADVANCE_TEMPLATES,
+    templates
+});
+
+export const RESET_TEMPLATE_ADVANCEMENT = 'RESET_TEMPLATE_ADVANCEMENT'
+export const resetTemplates = () => ({
+    type: RESET_TEMPLATE_ADVANCEMENT
+});

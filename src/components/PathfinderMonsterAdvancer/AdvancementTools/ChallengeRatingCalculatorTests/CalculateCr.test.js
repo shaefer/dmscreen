@@ -14,7 +14,7 @@ it('calculateCR works for monster', () => {
     expect(crs.damage).toBe(4);
     expect(crs.ac).toBe(8);
     expect(crs.original).toBe(8);
-    console.log(crs)
+    //console.log(crs)
     expect(crs.total).toBe(6.93);
 });
 

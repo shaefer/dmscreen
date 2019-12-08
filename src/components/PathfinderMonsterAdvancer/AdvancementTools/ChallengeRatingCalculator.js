@@ -12,7 +12,6 @@ const sum = (someArray) => {
 }
 
 export const calculateCR = (monster) => {
-    console.log("CALCULATE CR", monster.name)
     const totalHitPoints = calcAvgHitPoints(monster.hitDice, monster.hdType) + monster.hitPointAdjustment;
 
     let calculatedCrs = [];

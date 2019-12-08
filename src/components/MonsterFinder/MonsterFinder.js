@@ -5,7 +5,7 @@ import './MonsterFinder.css';
 import '../../css/ReactSelectCustom.css';
 
 import { connect } from 'react-redux'
-import {keyPressHandler, monsterSelectedHandler, hitDiceAdvancementAction, sizeAdvancementAction, abilityScoreAdvancementAction} from '../../action-creators'
+import {keyPressHandler, monsterSelectedHandler, hitDiceAdvancementAction, sizeAdvancementAction, abilityScoreAdvancementAction, templateAdvancementAction} from '../../action-creators'
 import PathfinderMonsterAdvancer from '../PathfinderMonsterAdvancer/PathfinderMonsterAdvancer'
 import MonsterOptions from '../MonsterOptions'
 import MonsterSelect from './MonsterSelect'
@@ -19,6 +19,8 @@ import AbilityScoreAdvancementSelectMaterial from './subcomponents/AbilityScoreA
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import MonsterDisplay from '../MonsterDisplay';
 import { MonsterSizes } from '../PathfinderMonsterAdvancer/AdvancementTools/MonsterSizes';
+import TemplateSelect from './subcomponents/TemplateSelect';
+import { template } from '@babel/core';
 
 export class MonsterFinder extends Component {
   constructor(props) {
@@ -28,6 +30,7 @@ export class MonsterFinder extends Component {
     this.handleHitDiceSelectChange = this.handleHitDiceSelectChange.bind(this);
     this.handleSizeSelectChange = this.handleSizeSelectChange.bind(this);
     this.handleAbilityScoreSelectChange = this.handleAbilityScoreSelectChange.bind(this);
+    this.handleTemplateChange = this.handleTemplateChange.bind(this);
   }
 
   handleKeyPress(e) {
@@ -39,6 +42,7 @@ export class MonsterFinder extends Component {
     this.props.hitDiceAdvancementAction('reset');
     this.props.sizeAdvancementAction('reset');
     this.props.abilityScoreAdvancementAction('resetall');
+    this.props.templateAdvancementAction('reset');
   }
 
   handleHitDiceSelectChange(e) {
@@ -48,6 +52,10 @@ export class MonsterFinder extends Component {
   handleSizeSelectChange(e) {
     this.props.sizeAdvancementAction(e.target.value);
   } 
+
+  handleTemplateChange(selectedValues) {
+    this.props.templateAdvancementAction(selectedValues);
+  }
 
   handleAbilityScoreSelectChange(e, abilityScore) {
     //where abilityScore is the identifier like 'Str'
@@ -61,7 +69,6 @@ export class MonsterFinder extends Component {
     document.title = title;
 
     if (this.props.match && this.props.match.params && this.props.match.params.monsterName) {
-      console.log("Found monsterName param", this.props.match.params.monsterName)
       this.props.monsterSelectedHandler(this.props.match.params.monsterName);
     }
     if (this.props.location.search) {
@@ -80,6 +87,10 @@ export class MonsterFinder extends Component {
           this.props.sizeAdvancementAction(size.size);
       }
       this.props.hitDiceAdvancementAction(parseInt(searchParams.get("hd")));
+      const templatesToParse = searchParams.get('templates');
+      if (templatesToParse) {
+        this.props.templateAdvancementAction(templatesToParse.split(","));
+      }
     }
 
     PageViewRecorder.recordPageView(window.location.pathname + window.location.search, undefined, title);
@@ -109,7 +120,8 @@ export class MonsterFinder extends Component {
     });
     monster = (monster.success) ? monster : { success: true, statBlock: Aasimar};
     const advancedMonster = PathfinderMonsterAdvancer(monster, advancement)
-
+    const templatesOption = true;
+    const templateSelect = (templatesOption) ? <TemplateSelect selectedTemplates={advancement.templates} onSelect={this.handleTemplateChange}/> : '';
     return (
       <MuiThemeProvider theme={theme}>
       <div className="flex-container">
@@ -127,7 +139,7 @@ export class MonsterFinder extends Component {
             <AbilityScoreAdvancementSelectMaterial selectedValue={advancement.int} abilityScore={"Int"} onSelect={this.handleAbilityScoreSelectChange}/>
             <AbilityScoreAdvancementSelectMaterial selectedValue={advancement.wis} abilityScore={"Wis"} onSelect={this.handleAbilityScoreSelectChange}/>
             <AbilityScoreAdvancementSelectMaterial selectedValue={advancement.cha} abilityScore={"Cha"} onSelect={this.handleAbilityScoreSelectChange}/>
-            
+            {templateSelect}
           </div>
         </div>
     </div>
@@ -139,4 +151,4 @@ export class MonsterFinder extends Component {
 const mapStateToProps = state => state;
 
 
-export default connect(mapStateToProps, {keyPressHandler, monsterSelectedHandler, hitDiceAdvancementAction, sizeAdvancementAction, abilityScoreAdvancementAction})(MonsterFinder)
+export default connect(mapStateToProps, {keyPressHandler, monsterSelectedHandler, hitDiceAdvancementAction, sizeAdvancementAction, abilityScoreAdvancementAction, templateAdvancementAction})(MonsterFinder)

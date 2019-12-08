@@ -9,6 +9,8 @@ import Skills from './AdvancementTools/Skills'
 import { getBaseAttackBonusByHitDiceAndCreatureType } from '../../monsteradvancer/BaseAttackBonusCalculator'
 import getCaptureGroups from '../../utils/RegexHelper'
 import { parse } from '@babel/parser'
+import { ADVANCE_HIT_DICE } from '../../actions'
+import { TemplatesMap } from './AdvancementTools/Templates'
 
 //There are a few fields we add as we go such as advancements that each stage might add to. If we could start with the assupmtion that that field is initialized properly the spread operator could be used with less coersion. 
 //We probably should just do an initial spread that initializes fields that aren't always present that we would like to count on for advancement.
@@ -27,7 +29,7 @@ export const advanceMonster = (statblock, advancement) => {
             ...advancement,
             reason: 'User Customized Ability Scores'
         };
-        console.log("Advancing by ability scores", statAdvancementsMerged);
+        //console.log("Advancing by ability scores", statAdvancementsMerged);
         const advancesFromAbilityScores = advanceByAbilityScores(advancedCreature, [statAdvancementsMerged]);
         advancedCreature = {
             ...advancedCreature,
@@ -46,15 +48,41 @@ export const advanceMonster = (statblock, advancement) => {
     const advancedCr = calculateCR(advancedCreature);
     const crDiff = roundDecimal(advancedCr.total - originalCr.total);
     const crAdjusted = roundDecimal(originalCr.original + crDiff);
-    return {
+    advancedCreature = {
         ...advancedCreature,
-        advancedName: `${advancedCreature.name}${displayName(advancedCreature.advancements)}`,
         crCalculation: {
             originalCr,
             advancedCr,
             crDiff,
             crAdjusted
         }
+    }
+
+    if (advancement.templates) {
+        //loop through each template provided.
+        advancement.templates.forEach(templateName => {
+            const template = TemplatesMap[templateName];
+            if (template) {
+                const advancedFromTemplate = advanceByTemplate(advancedCreature, template);
+                advancedCreature = {
+                    ...advancedCreature,
+                    ...advancedFromTemplate
+                }
+            }
+        })
+    }
+    const additionalSpecialAttacks = (advancedCreature.specialAttacksAcquired) ? advancedCreature.specialAttacksAcquired : [];
+    advancedCreature = {
+        ...advancedCreature,
+        specialAttacksAcquired: additionalSpecialAttacks.map(x => x.displayFn(advancedCreature)).sort().join(', ')
+    }
+    //TODO: resolve all function displays (we will have displays that rely on final data from the creature after all advancements. Such as special attacks that add damage based on total HD.)
+    
+    const advancedNamePrefixes = (advancedCreature.advancedNamePrefixes) ? advancedCreature.advancedNamePrefixes : [];
+    const namePrefix = (advancedNamePrefixes.length > 0) ? (advancedNamePrefixes.sort().join(", ") + " ") : '';
+    return {
+        ...advancedCreature,
+        advancedName: `${namePrefix}${advancedCreature.name}${displayName(advancedCreature.advancements)}`,
     };
 }
 
@@ -234,7 +262,7 @@ export const getNewDamageDice = (attackDice, startSizeIndex, endSizeIndex) => {
         }
     }
     const newDmgIndex = Math.max(startingDmgIndex + dmgIndexChange, 0);
-    console.log(`CHANGE DAMAGE DICE FROM ${paizoProgression[startingDmgIndex]}(${startingDmg})  TO ${paizoProgression[newDmgIndex]}`)
+    //console.log(`CHANGE DAMAGE DICE FROM ${paizoProgression[startingDmgIndex]}(${startingDmg})  TO ${paizoProgression[newDmgIndex]}`)
     //if we would go off the chart low leave index at 0...we'll have to check going off the top of the chart eventually too.
     const newDamage = paizoProgression[newDmgIndex];
     const dmgParts = newDamage.split("d");
@@ -436,6 +464,13 @@ export const advanceByHitDice = (statblock, hdChange) => {
     return {
         ...hitDiceAdvancements,
         ...statAdvancements
+    }
+}
+
+export const advanceByTemplate = (statblock, template) => {
+    return {
+        ...statblock,
+        ...template(statblock)
     }
 }
 

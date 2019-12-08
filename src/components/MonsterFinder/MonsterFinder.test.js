@@ -15,6 +15,7 @@ it('renders without crashing', () => {
 });
 
 Monsters.forEach(monsterStats => {
+  //console.log(monsterStats.name, monsterStats.senses)
   it(`Render ${monsterStats.name}`, () => {
     const div = document.createElement('div');
     const monster = {statBlock:monsterStats, success: true}

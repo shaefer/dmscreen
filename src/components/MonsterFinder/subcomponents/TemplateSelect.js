@@ -57,6 +57,10 @@ class TemplateSelect extends React.Component {
             this.setState({
                 templates: mappedTemplates,
             });
+        } else {
+            this.setState({
+                templates: [],
+            });
         }
     }
     render() {
@@ -92,6 +96,7 @@ class TemplateSelect extends React.Component {
                   label="Templates"
                   placeholder="Choose templates..."
                   fullWidth
+                  readOnly
                 />
                 
               )}

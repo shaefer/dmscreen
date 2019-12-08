@@ -87,6 +87,10 @@ export class MonsterFinder extends Component {
           this.props.sizeAdvancementAction(size.size);
       }
       this.props.hitDiceAdvancementAction(parseInt(searchParams.get("hd")));
+      const templatesToParse = searchParams.get('templates');
+      if (templatesToParse) {
+        this.props.templateAdvancementAction(templatesToParse.split(","));
+      }
     }
 
     PageViewRecorder.recordPageView(window.location.pathname + window.location.search, undefined, title);

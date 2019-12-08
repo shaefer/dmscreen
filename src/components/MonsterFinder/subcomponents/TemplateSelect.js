@@ -38,22 +38,26 @@ const theme = createMuiTheme({
 class TemplateSelect extends React.Component {
     constructor(props) {
         super(props)
-        //this.props.onSelect -> wire this through the built in change events.
+        this.state = {
+            templates: []
+        }
     }
-    state = {
-        templates: [],
-    };
-    componentDidMount() {
-        const initialValue =  (this.props.selectedTemplates) ? this.props.selectedTemplates : '';
-        this.setState({
-          templates: initialValue,
-        });
-    }
+    // componentDidMount() {
+    //     const initialValue =  (this.props.selectedTemplates) ? this.props.selectedTemplates : '';
+    //     if  (initialValue) {
+    //         this.setState({
+    //             templates: initialValue.map(template => templates.find(x => x.value === template)),
+    //         });
+    //     }
+    // }
     componentWillReceiveProps(nextProps) {
         const initialValue =  (nextProps.selectedTemplates) ? nextProps.selectedTemplates : '';
-        this.setState({
-          templates: initialValue,
-        });
+        if  (initialValue) {
+            const mappedTemplates = initialValue.map(template => templates.find(x => x.value === template));
+            this.setState({
+                templates: mappedTemplates,
+            });
+        }
     }
     render() {
         return (
@@ -61,23 +65,21 @@ class TemplateSelect extends React.Component {
             <Autocomplete
               multiple
               id="monster_template_selection"
-              defaultValue={this.state.templates}
+              value={this.state.templates}
               options={templates}
               disableCloseOnSelect
               getOptionLabel={option => option.name}
               onChange={(event, val) => {
-                console.log("ONCHANGE", val)
                 this.props.onSelect(val.map(x => x.value));
               }}
               renderOption={(option, state) => {
-                console.log("TEMPLATE SELECT", option, state)
                 const selected = state.selected;
                 return (<React.Fragment>
                   <Checkbox
                     icon={icon}
                     checkedIcon={checkedIcon}
                     style={{ marginRight: 8, marginTop: 0, marginLeft: 0 }}
-                    checked={selected}
+                    checked={selected||Boolean(this.state.templates.find(x => x.value === option.value))}
                   />
                   {option.name}
                 </React.Fragment>
@@ -99,7 +101,6 @@ class TemplateSelect extends React.Component {
     }
 }
 
-// Top 100 films as rated by IMDb users. http://www.imdb.com/chart/top
 const templates = [
   { name: 'Fiendish', value: 'Fiendish'},
   //{ name: 'Celestial', value: 'Celestial'}

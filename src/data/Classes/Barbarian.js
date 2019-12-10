@@ -1,5 +1,4 @@
 import creatureStatsByType from "../../components/PathfinderMonsterAdvancer/AdvancementTools/creatureStatsByType";
-import { exception } from "react-ga";
 //creatureStatsByType gives a lot of this information in a fixed format...we'll have to match things up eventually.
 const barbarian = {
     alignment: 'non-lawful',
@@ -10,12 +9,109 @@ const barbarian = {
     "good_saving_throws": ["Fort"], //might like a different format  for the key but this matches creatureStatsByType
     levels: [
         {
-            level: 1, 
-            classAbilities: ['Fast Movement', 'Rage', 'Weapon and Armor Proficiency'],
+          level: 1, 
+          classAbilities: ['Fast Movement', 'Rage', 'Weapon and Armor Proficiency'],
+        },
+        {
+          level: 2,
+          classAbilities: ['Rage Powers', 'Uncanny Dodge']
+        },
+        {
+          level: 3,
+          classAbilities: ['Trap Sense']
+        },
+        {
+          level: 4,
+          classAbilities: ['Rage Powers']
+        },
+        {
+          level: 5,
+          classAbilities: ['Improved Uncanny Dodge']
+        },
+        {
+          level: 6,
+          classAbilities: ['Rage Powers'] //also trap sense +2...but I am thinking we can make trap sense handle progression on its own
+        },
+        {
+          level: 7,
+          classAbilities: ['Damage Reduction'] //like trap sense this levels up a predetermined interval of barbarian levels
+        },
+        {
+          level: 8,
+          classAbilities: ['Rage Powers']
+        },
+        {
+          level: 9,
+          classAbilities: [] //trap sense + 3
+        },
+        {
+          level: 10,
+          classAbilities: ['Rage Powers'] //Damage Reduction 2/-
+        },
+        {
+          level: 11,
+          classAbilities: ['Greater Rage']
+        },
+        {
+          level: 12,
+          classAbilities: ['Rage Powers'] //trap sense +4
+        },
+        {
+          level: 13,
+          classAbilities: [] //DR 3/-
+        },
+        {
+          level: 14,
+          classAbilities: ['Indomitable Will', 'Rage Powers']
+        },
+        {
+          level: 15,
+          classAbilities: [] //trap sense +5
+        },
+        {
+          level: 16,
+          classAbilities: ['Rage Powers'] //DR 4/-
+        },
+        {
+          level: 17,
+          classAbilities: ['Tireless Rage']
+        },
+        {
+          level: 18,
+          classAbilities: ['Rage Powers'] //trap sense +6
+        },
+        {
+          level: 19,
+          classAbilities: [] //DR 5/-
+        },
+        {
+          level: 20,
+          classAbilities: ['Mighty Rage', 'Rage Powers']
         }
     ]
 };
-
+/**
+1st	+1	+2	+0	+0	Fast movement, rage
+2nd	+2	+3	+0	+0	Rage power, uncanny dodge
+3rd	+3	+3	+1	+1	Trap sense +1
+4th	+4	+4	+1	+1	Rage power
+5th	+5	+4	+1	+1	Improved uncanny dodge
+6th	+6/+1	+5	+2	+2	Rage power, Trap sense +2
+7th	+7/+2	+5	+2	+2	Damage reduction 1/—
+8th	+8/+3	+6	+2	+2	Rage power
+9th	+9/+4	+6	+3	+3	Trap sense +3
+10th	+10/+5	+7	+3	+3	Damage reduction 2/—, Rage power
+11th	+11/+6/+1	+7	+3	+3	Greater rage
+12th	+12/+7/+2	+8	+4	+4	Rage power, Trap sense +4
+13th	+13/+8/+3	+8	+4	+4	Damage reduction 3/—
+14th	+14/+9/+4	+9	+4	+4	Indomitable will, Rage power
+15th	+15/+10/+5	+9	+5	+5	Trap sense +5
+16th	+16/+11/+6/+1	+10	+5	+5	Damage reduction 4/—, Rage power
+17th	+17/+12/+7/+2	+10	+5	+5	Tireless rage
+18th	+18/+13/+8/+3	+11	+6	+6	Rage power, Trap sense +6
+19th	+19/+14/+9/+4	+11	+6	+6	Damage reduction 5/—
+20th	+20/+15/+10/+5	+12	+6	+6	Mighty rage, Rage power
+ */
 const barbarianRagePowers = [ 
     { 
       "name":"Animal Fury",

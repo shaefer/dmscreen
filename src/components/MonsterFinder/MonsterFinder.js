@@ -21,6 +21,7 @@ import MonsterDisplay from '../MonsterDisplay';
 import { MonsterSizes } from '../PathfinderMonsterAdvancer/AdvancementTools/MonsterSizes';
 import TemplateSelect from './subcomponents/TemplateSelect';
 import { template } from '@babel/core';
+import ClassLevelSelect from '../CleverSelect/ClassLevelSelect';
 
 export class MonsterFinder extends Component {
   constructor(props) {
@@ -62,6 +63,12 @@ export class MonsterFinder extends Component {
     console.log(e.target.value, abilityScore);
     this.props.abilityScoreAdvancementAction(parseInt(e.target.value), abilityScore);
   }
+
+  classLevelsChanged(classLevels) {
+    if (!classLevels || classLevels.length <= 0) return;
+    const mappedClassLevels = classLevels.map(x => x.className+x.level)
+    console.log("CLASS LEVELS CHANGED", classLevels)
+}
 
   componentDidMount() {
     document.addEventListener('keydown', this.handleKeyPress);
@@ -140,6 +147,7 @@ export class MonsterFinder extends Component {
             <AbilityScoreAdvancementSelectMaterial selectedValue={advancement.wis} abilityScore={"Wis"} onSelect={this.handleAbilityScoreSelectChange}/>
             <AbilityScoreAdvancementSelectMaterial selectedValue={advancement.cha} abilityScore={"Cha"} onSelect={this.handleAbilityScoreSelectChange}/>
             {templateSelect}
+            <ClassLevelSelect hideLabel onChange={(e) => this.classLevelsChanged(e)}/>
           </div>
         </div>
     </div>

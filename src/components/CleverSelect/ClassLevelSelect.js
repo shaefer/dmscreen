@@ -27,7 +27,7 @@ class ClassLevelSelect extends Component {
             ...this.state,
             classLevels: currentClassLevels
         })
-        widget.clear();
+        //widget.clear();
         console.log(this)
     }
     setClassForLevel(e, className) {
@@ -130,16 +130,19 @@ class ClassLevelSelect extends Component {
 
         //Remove classOptions that are already in use.
         console.log(this.props)
+        const selectLabel = (this.props.hideLabel) ? '' : <label>Add Class</label>;
+        const placeholder = (this.props.placeholder) ? this.props.plceholder : 'Classes'
         return (
             <div className="classLevelSelect">
                 {renderClassLevels}
                 <div className="classLevelSelection">
-                    <label>Add Class</label>
+                    {selectLabel}
                     <Select 
                         styles={customStyles(200)} 
                         options={classOptions}
                         onChange={(e) => this.selectClass(e, this)} //this is one where we need to build the special widget (or activate one already built with https://www.npmjs.com/package/react-responsive-modal)
                         value={null}
+                        placeholder={placeholder}
                     />
                     <input onChange={(e) => this.setUndeterminedLevel(e)} value={this.state.undeterminedLevel}  className="co-awesome"  type="number" max="99" min="0" pattern="\d*"/>
                 </div>

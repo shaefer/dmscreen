@@ -1,16 +1,49 @@
 import React, {Component} from 'react'
 
-import Select from 'react-select'
-
 import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import SelectMU from '@material-ui/core/Select';
+import { withStyles } from '@material-ui/core/styles';
 
 import './ClassLevelSelect.css'
+import { red } from '@material-ui/core/colors';
+import { createMuiTheme, MuiThemeProvider } from '@material-ui/core';
+
+const theme = createMuiTheme({
+    spacing: factor => `${0.25 * factor}rem`, // (Bootstrap strategy)
+    overrides: {
+        MuiAutocomplete: {
+        root: {
+            marginTop: '.5em',
+            padding: 0,
+            paddingTop: 0,
+            paddingBottom: 0
+        },
+        listbox: {
+            padding: 0
+        },
+        option: {
+
+        },
+        popper: {
+            margin: 0,
+            //transform3d property is what is pulling that down and away from edge
+        },
+      },
+      MuiOutlinedInput: {
+          input: {
+              padding: 0,
+              paddingTop: 0,
+              paddingBottom: 0
+          }
+      }
+
+
+    }
+  });
 
 class ClassLevelSelect extends Component {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             classLevels: {},
             undeterminedLevel:1
@@ -50,7 +83,7 @@ class ClassLevelSelect extends Component {
         })
     }
     setClassForLevel(e, className) {
-        console.log("setClassForLevel", e, className);
+        //console.log("setClassForLevel", e, className);
         const currentClassLevels = this.state.classLevels;
         const level = currentClassLevels[className].level
         currentClassLevels[e.value] = {className:e.value, level:level}
@@ -59,10 +92,9 @@ class ClassLevelSelect extends Component {
             ...this.state,
             classLevels: currentClassLevels
         })
-        console.log(this)
     }
     setLevelForClass(e, className, level) {
-        console.log("setLevelForClass", e, className);
+        //console.log("setLevelForClass", e, className);
         const currentClassLevels = this.state.classLevels;
         //const valAsInt = parseInt(e.target.value, 10);
         if (level <= 0) {
@@ -78,7 +110,7 @@ class ClassLevelSelect extends Component {
     }
     setUndeterminedLevel(e) {
         const val = parseInt(e.target.value);
-        console.log("setUndeterminedLevel", e, e.target.value);
+        //console.log("setUndeterminedLevel", e, e.target.value);
         this.setState({
             ...this.state,
             undeterminedLevel: val
@@ -92,7 +124,7 @@ class ClassLevelSelect extends Component {
     } 
 
     render() {
-        console.log("RENDER", this.state.classLevels)
+        //console.log("RENDER", this.state.classLevels)
         if (this.props.onChange) {
             const classLevelsArray = Object.keys(this.state.classLevels).sort().map(x => {
                 return this.state.classLevels[x];
@@ -155,7 +187,7 @@ class ClassLevelSelect extends Component {
                     />
                     <select onChange={(e, level) => this.setLevelForClass(e, obj.className, e.target.value)} 
                         value={obj.level} 
-                        style={{display:'inline-block', height: 54, width: '20%'}}
+                        style={{display:'inline-block', height: 54, width: '20%', marginTop: '.5em'}}
                     >
                     {levelNumbers}
                     </select>
@@ -167,9 +199,11 @@ class ClassLevelSelect extends Component {
         const selectLabel = (this.props.hideLabel) ? '' : <label>Add Class</label>;
         const placeholder = (this.props.placeholder) ? this.props.placeholder : 'Classes'
         return (
-            <div className="classLevelSelect">
+            <div className="classLevelSelect" id="classLevelSectionContainer">
+                <MuiThemeProvider theme={theme}>
                 {renderClassLevels}
                 <div className="classLevelSelection">
+                    
                     {selectLabel}
                     <Autocomplete
                         id={"class_level_base"}
@@ -181,14 +215,16 @@ class ClassLevelSelect extends Component {
                         renderInput={params => (
                             <TextField {...params} label={placeholder} variant="outlined" fullWidth />
                         )}
+                        size={'small'}
                     />
                     <select onChange={(e, arg2) => this.setUndeterminedLevel(e, arg2)} 
                         value={this.state.undeterminedLevel} 
-                        style={{display:'inline-block', height: 54, width: '20%'}}
+                        style={{display:'inline-block', height: 54, width: '20%',marginTop: '.5em',}}
                     >
                     {levelNumbers}
                     </select>
                 </div>
+                </MuiThemeProvider>
             </div>
         );
     }

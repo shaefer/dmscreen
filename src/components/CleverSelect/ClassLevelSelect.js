@@ -2,6 +2,10 @@ import React, {Component} from 'react'
 
 import Select from 'react-select'
 
+import TextField from '@material-ui/core/TextField';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import SelectMU from '@material-ui/core/Select';
+
 import './ClassLevelSelect.css'
 
 class ClassLevelSelect extends Component {
@@ -19,16 +23,31 @@ class ClassLevelSelect extends Component {
         this.selectClass.bind(this);
     }
 
-    selectClass(e, widget) {
-        console.log("selectClass", e.value, widget);
+    selectClass(e, selectedOption, className) {
+        //console.log("SELECTED ARGS", selectedOption, className);
+        //console.log("STATE", this.state.classLevels)
+        if (!selectedOption && !className) return; //clear on the base select
+        if (!selectedOption && className) {
+            //clear on classname
+            const currentClassLevels = this.state.classLevels;
+            delete currentClassLevels[className];
+            this.setState({
+                ...this.state,
+                classLevels: currentClassLevels
+            });
+            return;
+        }
+        if (selectedOption.value !== className) {
+            //console.log(`SHOULD SWAP ${className} ENTRY FOR ${selectedOption.value}`)
+            const currentClassLevels = this.state.classLevels;
+            delete currentClassLevels[className];
+        }
         const currentClassLevels = this.state.classLevels;
-        currentClassLevels[e.value] = {className:e.value, level: this.state.undeterminedLevel}
+        currentClassLevels[selectedOption.value] = {className:selectedOption.value, level: this.state.undeterminedLevel}
         this.setState({
             ...this.state,
             classLevels: currentClassLevels
         })
-        //widget.clear();
-        console.log(this)
     }
     setClassForLevel(e, className) {
         console.log("setClassForLevel", e, className);
@@ -42,14 +61,14 @@ class ClassLevelSelect extends Component {
         })
         console.log(this)
     }
-    setLevelForClass(e, className) {
+    setLevelForClass(e, className, level) {
         console.log("setLevelForClass", e, className);
         const currentClassLevels = this.state.classLevels;
-        const valAsInt = parseInt(e.target.value, 10);
-        if (!valAsInt) {
+        //const valAsInt = parseInt(e.target.value, 10);
+        if (level <= 0) {
             delete currentClassLevels[className];
         } else {
-            currentClassLevels[className] = {className:className, level:e.target.value}
+            currentClassLevels[className] = {className:className, level:parseInt(level)}
         }
         this.setState({
             ...this.state,
@@ -58,10 +77,11 @@ class ClassLevelSelect extends Component {
         console.log(this)
     }
     setUndeterminedLevel(e) {
-        console.log("setUndeterminedLevel", e.target.value);
+        const val = parseInt(e.target.value);
+        console.log("setUndeterminedLevel", e, e.target.value);
         this.setState({
             ...this.state,
-            undeterminedLevel: e.target.value
+            undeterminedLevel: val
         });
         console.log(this)
         //no class level to change yet...just store until we set one.
@@ -72,7 +92,7 @@ class ClassLevelSelect extends Component {
     } 
 
     render() {
-        console.log("RENDER", this.state)
+        console.log("RENDER", this.state.classLevels)
         if (this.props.onChange) {
             const classLevelsArray = Object.keys(this.state.classLevels).sort().map(x => {
                 return this.state.classLevels[x];
@@ -102,49 +122,72 @@ class ClassLevelSelect extends Component {
             }
         };
         const classes = ["Barbarian", "Bard", "Cleric", "Druid", "Fighter", "Monk", "Paladin", "Rogue", "Sorcerer", "Wizard", "Adept", "Aristocrat", "Expert", "Warrior"];
-
+        const allClassOptions = classes.map(x => {return {value: x, label: x}});
+        //console.log("ALL CLASS OPTIONS", allClassOptions)
         const diff = (a1, a2) => {
             return a1.concat(a2).filter(function(val, index, arr){
                 return arr.indexOf(val) === arr.lastIndexOf(val);
             });
         }
         const classesSelected = (!this.state.classLevels) ? [] : Object.keys(this.state.classLevels);
-        const classOptions = diff(classes, classesSelected).map(x => {return {value: x, label: x}});
+        const classesLeftToChoose = diff(classes, classesSelected);
+        const remainingClassOptions = allClassOptions.filter(x => classesLeftToChoose.indexOf(x.value) !== -1); //This ensures that our options are always the same referened objects allowing the autocomplete component to work better.
 
         //Sort just makes the order obvious and consistent. Having the order not change at all once present might be less jarring. If the user changes one of the classes once they are up there...leave that order by sotring the classLevels in the order they were added regardless of the key itself.
+        const levelNumbers = [...Array(20).keys()].map(x => <option value={x+1}>{x+1}</option>)
         const renderClassLevels = (!this.state.classLevels) ? "" : Object.keys(this.state.classLevels).sort().map(x => {
             const obj = this.state.classLevels[x];
+            const optionToSet = allClassOptions.find(x => x.value === obj.className);
+            //console.log(`BUILD for ${obj.className}`, optionToSet, remainingClassOptions)
+                    const levelNumbers = [...Array(20).keys()].map(x => <option value={x+1}>{x+1}</option>)
             return (
-                <div className="classLevelSelection">
-                    <Select
-                        styles={customStyles(250)}
-                        options={classOptions}
-                        onChange={(e) => this.setClassForLevel(e, obj.className)}
-                        value={{value: obj.className, label: obj.className}}
+                <div className="classLevelSelection" key={`class_level_${obj.className}`}>
+                    <Autocomplete
+                        id={`class_level_${obj.className}`}
+                        options={remainingClassOptions}
+                        getOptionLabel={option => option.label}
+                        onChange={(e, arg2) => this.selectClass(e, arg2, obj.className)} //this is one where we need to build the special widget (or activate one already built with https://www.npmjs.com/package/react-responsive-modal)
+                        style={{ width: '80%', display: 'inline-block' }}
+                        value={optionToSet}
+                        renderInput={params => (
+                            <TextField {...params} label={obj.className} variant="outlined" fullWidth />
+                        )}
                     />
-                    <input value={obj.level} onChange={(e) => this.setLevelForClass(e, obj.className)}  className="co-awesome"  type="number" max="99" min="0" pattern="\d*"/>
+                    <select onChange={(e, level) => this.setLevelForClass(e, obj.className, e.target.value)} 
+                        value={obj.level} 
+                        style={{display:'inline-block', height: 54, width: '20%'}}
+                    >
+                    {levelNumbers}
+                    </select>
                 </div>
             );
         });
 
-
-        //Remove classOptions that are already in use.
-        console.log(this.props)
+        //console.log(this.props)
         const selectLabel = (this.props.hideLabel) ? '' : <label>Add Class</label>;
-        const placeholder = (this.props.placeholder) ? this.props.plceholder : 'Classes'
+        const placeholder = (this.props.placeholder) ? this.props.placeholder : 'Classes'
         return (
             <div className="classLevelSelect">
                 {renderClassLevels}
                 <div className="classLevelSelection">
                     {selectLabel}
-                    <Select 
-                        styles={customStyles(200)} 
-                        options={classOptions}
-                        onChange={(e) => this.selectClass(e, this)} //this is one where we need to build the special widget (or activate one already built with https://www.npmjs.com/package/react-responsive-modal)
-                        value={null}
-                        placeholder={placeholder}
+                    <Autocomplete
+                        id={"class_level_base"}
+                        options={remainingClassOptions}
+                        getOptionLabel={option => option.label}
+                        onChange={(e, val) => this.selectClass(e, val)} //this is one where we need to build the special widget (or activate one already built with https://www.npmjs.com/package/react-responsive-modal)
+                        style={{ width: '80%', display: 'inline-block', height: '100%' }}
+                        value={{ value: "", label: ""}}
+                        renderInput={params => (
+                            <TextField {...params} label={placeholder} variant="outlined" fullWidth />
+                        )}
                     />
-                    <input onChange={(e) => this.setUndeterminedLevel(e)} value={this.state.undeterminedLevel}  className="co-awesome"  type="number" max="99" min="0" pattern="\d*"/>
+                    <select onChange={(e, arg2) => this.setUndeterminedLevel(e, arg2)} 
+                        value={this.state.undeterminedLevel} 
+                        style={{display:'inline-block', height: 54, width: '20%'}}
+                    >
+                    {levelNumbers}
+                    </select>
                 </div>
             </div>
         );

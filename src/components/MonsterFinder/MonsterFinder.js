@@ -5,7 +5,10 @@ import './MonsterFinder.css';
 import '../../css/ReactSelectCustom.css';
 
 import { connect } from 'react-redux'
-import {keyPressHandler, monsterSelectedHandler, hitDiceAdvancementAction, sizeAdvancementAction, abilityScoreAdvancementAction, templateAdvancementAction} from '../../action-creators'
+import {
+  keyPressHandler, 
+  monsterSelectedHandler, hitDiceAdvancementAction, sizeAdvancementAction, abilityScoreAdvancementAction, 
+  templateAdvancementAction, classLevelAdvancementAction} from '../../action-creators'
 import PathfinderMonsterAdvancer from '../PathfinderMonsterAdvancer/PathfinderMonsterAdvancer'
 import MonsterOptions from '../MonsterOptions'
 import MonsterSelect from './MonsterSelect'
@@ -32,6 +35,7 @@ export class MonsterFinder extends Component {
     this.handleSizeSelectChange = this.handleSizeSelectChange.bind(this);
     this.handleAbilityScoreSelectChange = this.handleAbilityScoreSelectChange.bind(this);
     this.handleTemplateChange = this.handleTemplateChange.bind(this);
+    this.classLevelsChanged = this.classLevelsChanged.bind(this);
   }
 
   handleKeyPress(e) {
@@ -44,6 +48,7 @@ export class MonsterFinder extends Component {
     this.props.sizeAdvancementAction('reset');
     this.props.abilityScoreAdvancementAction('resetall');
     this.props.templateAdvancementAction('reset');
+    this.props.classLevelAdvancementAction('reset');
   }
 
   handleHitDiceSelectChange(e) {
@@ -65,9 +70,10 @@ export class MonsterFinder extends Component {
   }
 
   classLevelsChanged(classLevels) {
-    if (!classLevels || classLevels.length <= 0) return;
-    const mappedClassLevels = classLevels.map(x => x.className+x.level)
-    console.log("CLASS LEVELS CHANGED", classLevels)
+    console.log("MonsterFinder.classLevelsChanged", classLevels)
+    //if (!classLevels || classLevels.length <= 0) return;
+    //const mappedClassLevels = classLevels.map(x => x.className+x.level)
+    this.props.classLevelAdvancementAction(classLevels);
 }
 
   componentDidMount() {
@@ -159,4 +165,4 @@ export class MonsterFinder extends Component {
 const mapStateToProps = state => state;
 
 
-export default connect(mapStateToProps, {keyPressHandler, monsterSelectedHandler, hitDiceAdvancementAction, sizeAdvancementAction, abilityScoreAdvancementAction, templateAdvancementAction})(MonsterFinder)
+export default connect(mapStateToProps, {keyPressHandler, monsterSelectedHandler, hitDiceAdvancementAction, sizeAdvancementAction, abilityScoreAdvancementAction, templateAdvancementAction, classLevelAdvancementAction})(MonsterFinder)

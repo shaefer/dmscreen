@@ -4,7 +4,7 @@ import { showMonster, selectMonsterOption, showS3SelectResult, display35Monster,
     advanceByHitDice, resetHitDiceAdvancement, resetSizeAdvancement, advanceBySize, resetAbilityScores,
     advanceByAbilityScore, 
     resetTemplates,
-    advancedByTemplates} from '../actions'
+    advancedByTemplates, advancedByClassLevels, resetClassLevels} from '../actions'
 import MonstersApi from '../apiClients/MonsterApi'
 import rollTimeString from '../utils/ResultTimestamp'
 import PageViewRecorder from '../components/PageViewRecorder'
@@ -49,6 +49,12 @@ export const templateAdvancementAction = (value) => (dispatch) => {
     (value === 'reset')
         ? dispatch(resetTemplates())
         : dispatch(advancedByTemplates(value))
+}
+
+export const classLevelAdvancementAction = (value) => (dispatch) => {
+    (value === 'reset')
+        ? dispatch(resetClassLevels())
+        : dispatch(advancedByClassLevels(value))
 }
 
 export const abilityScoreAdvancementAction = (value, abilityScore) => (dispatch) => {

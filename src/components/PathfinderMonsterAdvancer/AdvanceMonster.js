@@ -9,7 +9,7 @@ import Skills from './AdvancementTools/Skills'
 import { getBaseAttackBonusByHitDiceAndCreatureType } from '../../monsteradvancer/BaseAttackBonusCalculator'
 import getCaptureGroups from '../../utils/RegexHelper'
 import { parse } from '@babel/parser'
-import { ADVANCE_HIT_DICE } from '../../actions'
+import { ADVANCE_HIT_DICE, advancedByClassLevels } from '../../actions'
 import { TemplatesMap } from './AdvancementTools/Templates'
 
 //There are a few fields we add as we go such as advancements that each stage might add to. If we could start with the assupmtion that that field is initialized properly the spread operator could be used with less coersion. 
@@ -70,6 +70,15 @@ export const advanceMonster = (statblock, advancement) => {
                 }
             }
         })
+    }
+    if (advancement.classLevels && advancement.classLevels.length > 0) {
+        advancement.classLevels.forEach(classLevel => {
+            const advancedFromClassLevel = advanceByClassLevel(advancedCreature, classLevel);
+            advancedCreature = {
+                ...advancedCreature,
+                ...advancedFromClassLevel
+            }
+        });
     }
     const additionalSpecialAttacks = (advancedCreature.specialAttacksAcquired) ? advancedCreature.specialAttacksAcquired : [];
     advancedCreature = {
@@ -471,6 +480,20 @@ export const advanceByTemplate = (statblock, template) => {
     return {
         ...statblock,
         ...template(statblock)
+    }
+}
+
+export const advanceByClassLevel = (statblock, classLevel) => {
+    //add the class
+        //update the name
+        //add hd and hp
+        //add saves
+        //add level powers
+        //update ability scores per hd (auto?)
+    console.log("advancing by classlevel", statblock)
+    return {
+        ...statblock,
+        advancements: [...statblock.advancements||[], `${classLevel.className} ${classLevel.level}`]
     }
 }
 

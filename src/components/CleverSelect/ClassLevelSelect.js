@@ -1,45 +1,6 @@
 import React, {Component} from 'react'
-
-import TextField from '@material-ui/core/TextField';
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import { withStyles } from '@material-ui/core/styles';
-
-import './ClassLevelSelect.css'
-import { red } from '@material-ui/core/colors';
-import { createMuiTheme, MuiThemeProvider } from '@material-ui/core';
-
-const theme = createMuiTheme({
-    spacing: factor => `${0.25 * factor}rem`, // (Bootstrap strategy)
-    overrides: {
-        MuiAutocomplete: {
-        root: {
-            marginTop: '.5em',
-            padding: 0,
-            paddingTop: 0,
-            paddingBottom: 0
-        },
-        listbox: {
-            padding: 0
-        },
-        option: {
-
-        },
-        popper: {
-            margin: 0,
-            //transform3d property is what is pulling that down and away from edge
-        },
-      },
-      MuiOutlinedInput: {
-          input: {
-              padding: 0,
-              paddingTop: 0,
-              paddingBottom: 0
-          }
-      }
-
-
-    }
-  });
+import SimpleSelect from 'react-simple-styleable-select'
+import './SimpleSelectCustomStyle.css'
 
 class ClassLevelSelect extends Component {
     constructor(props) {
@@ -49,38 +10,33 @@ class ClassLevelSelect extends Component {
             undeterminedLevel:1
         }
 
-        this.onChange.bind(this);
-        this.setUndeterminedLevel.bind(this);
-        this.setClassForLevel.bind(this);
-        this.setLevelForClass.bind(this);
-        this.selectClass.bind(this);
+        this.onChange = this.onChange.bind(this);
+        this.setUndeterminedLevel = this.setUndeterminedLevel.bind(this);
+        this.setClassForLevel = this.setClassForLevel.bind(this);
+        this.setLevelForClass = this.setLevelForClass.bind(this);
+        this.selectClass = this.selectClass.bind(this);
     }
 
+    removeClass(className) {
+        const currentClassLevels = this.state.classLevels;
+        delete currentClassLevels[className];
+        this.setState({
+            ...this.state,
+            classLevels: currentClassLevels
+        });
+        this.onChange(currentClassLevels);
+    }
     selectClass(e, selectedOption, className) {
         //console.log("SELECTED ARGS", selectedOption, className);
         //console.log("STATE", this.state.classLevels)
         if (!selectedOption && !className) return; //clear on the base select
-        if (!selectedOption && className) {
-            //clear on classname
-            const currentClassLevels = this.state.classLevels;
-            delete currentClassLevels[className];
-            this.setState({
-                ...this.state,
-                classLevels: currentClassLevels
-            });
-            return;
-        }
-        if (selectedOption.value !== className) {
-            //console.log(`SHOULD SWAP ${className} ENTRY FOR ${selectedOption.value}`)
-            const currentClassLevels = this.state.classLevels;
-            delete currentClassLevels[className];
-        }
         const currentClassLevels = this.state.classLevels;
         currentClassLevels[selectedOption.value] = {className:selectedOption.value, level: this.state.undeterminedLevel}
         this.setState({
             ...this.state,
             classLevels: currentClassLevels
         })
+        this.onChange(currentClassLevels);
     }
     setClassForLevel(e, className) {
         //console.log("setClassForLevel", e, className);
@@ -92,6 +48,7 @@ class ClassLevelSelect extends Component {
             ...this.state,
             classLevels: currentClassLevels
         })
+        this.onChange(currentClassLevels);
     }
     setLevelForClass(e, className, level) {
         //console.log("setLevelForClass", e, className);
@@ -106,10 +63,9 @@ class ClassLevelSelect extends Component {
             ...this.state,
             classLevels: currentClassLevels
         })
-        console.log(this)
+        this.onChange(currentClassLevels);
     }
-    setUndeterminedLevel(e) {
-        const val = parseInt(e.target.value);
+    setUndeterminedLevel(val) {
         //console.log("setUndeterminedLevel", e, e.target.value);
         this.setState({
             ...this.state,
@@ -119,43 +75,21 @@ class ClassLevelSelect extends Component {
         //no class level to change yet...just store until we set one.
     }
 
-    onChange(e) {
-        console.log("onChange fired", e);
+    onChange(currentClassLevels) {
+        if (this.props.onChange) {
+            const classLevelsArray = Object.keys(currentClassLevels).sort().map(x => {
+                return currentClassLevels[x];
+            });
+            console.log("NEW fire ClassLevelSelect.onChange", classLevelsArray)
+            this.props.onChange(classLevelsArray);
+        }
     } 
 
     render() {
-        //console.log("RENDER", this.state.classLevels)
-        if (this.props.onChange) {
-            const classLevelsArray = Object.keys(this.state.classLevels).sort().map(x => {
-                return this.state.classLevels[x];
-            });
-            this.props.onChange(classLevelsArray);
-        }
-        //if we chain in onChange prop but still fire the built in...which should occur first?
-        const customStyles = (width = 250, height = 38) => {
-            return {
-                menu: (base, state) => ({
-                ...base,
-                marginTop: 0, //eliminates gap between selections and the control.
-                }),
-                option: (base) => ({
-                ...base,
-                padding: 4 //adjust for desktop vs how small on mobile makes it hard to select...
-                }),
-                container: (base) => ({
-                    ...base,
-                    display:'inline-block',
-                    width: width,
-                }),
-                valueContainer: (base) => ({
-                    ...base,
-                    minHeight: height,
-                })
-            }
-        };
+        console.log("RENDER ClassLevelSelect", this.state.classLevels)
         const classes = ["Barbarian", "Bard", "Cleric", "Druid", "Fighter", "Monk", "Paladin", "Rogue", "Sorcerer", "Wizard", "Adept", "Aristocrat", "Expert", "Warrior"];
         const allClassOptions = classes.map(x => {return {value: x, label: x}});
-        //console.log("ALL CLASS OPTIONS", allClassOptions)
+
         const diff = (a1, a2) => {
             return a1.concat(a2).filter(function(val, index, arr){
                 return arr.indexOf(val) === arr.lastIndexOf(val);
@@ -164,67 +98,64 @@ class ClassLevelSelect extends Component {
         const classesSelected = (!this.state.classLevels) ? [] : Object.keys(this.state.classLevels);
         const classesLeftToChoose = diff(classes, classesSelected);
         const remainingClassOptions = allClassOptions.filter(x => classesLeftToChoose.indexOf(x.value) !== -1); //This ensures that our options are always the same referened objects allowing the autocomplete component to work better.
-
-        //Sort just makes the order obvious and consistent. Having the order not change at all once present might be less jarring. If the user changes one of the classes once they are up there...leave that order by sotring the classLevels in the order they were added regardless of the key itself.
-        const levelNumbers = [...Array(20).keys()].map(x => <option value={x+1}>{x+1}</option>)
-        const renderClassLevels = (!this.state.classLevels) ? "" : Object.keys(this.state.classLevels).sort().map(x => {
+    
+        const levelNumbers = [...Array(20).keys()].map(x => {return {value:x+1, label:x+1}});
+        const renderClassLevels = (!this.state.classLevels) ? "" : Object.keys(this.state.classLevels).sort().map((x, cidx) => {
             const obj = this.state.classLevels[x];
-            const optionToSet = allClassOptions.find(x => x.value === obj.className);
-            //console.log(`BUILD for ${obj.className}`, optionToSet, remainingClassOptions)
-                    const levelNumbers = [...Array(20).keys()].map(x => <option value={x+1}>{x+1}</option>)
+            const selectedClassObj = {value:obj.className, label: obj.className};
+            const onChangeRemoveOnly = (e, val) => {
+                if (!val) this.removeClass(obj.className);
+            };
+            const levelChange = (e, val, fullOpt) => {
+                this.setLevelForClass(e, obj.className, val);
+            }
             return (
                 <div className="classLevelSelection" key={`class_level_${obj.className}`}>
-                    <Autocomplete
-                        id={`class_level_${obj.className}`}
-                        options={remainingClassOptions}
-                        getOptionLabel={option => option.label}
-                        onChange={(e, arg2) => this.selectClass(e, arg2, obj.className)} //this is one where we need to build the special widget (or activate one already built with https://www.npmjs.com/package/react-responsive-modal)
-                        style={{ width: '80%', display: 'inline-block' }}
-                        value={optionToSet}
-                        renderInput={params => (
-                            <TextField {...params} label={obj.className} variant="outlined" fullWidth />
-                        )}
+                    <SimpleSelect
+                        options={[selectedClassObj]}
+                        defaultValue={selectedClassObj.value}
+                        onChange={onChangeRemoveOnly}
+                        inline
+                        width="70%"
                     />
-                    <select onChange={(e, level) => this.setLevelForClass(e, obj.className, e.target.value)} 
-                        value={obj.level} 
-                        style={{display:'inline-block', height: 54, width: '20%', marginTop: '.5em'}}
-                    >
-                    {levelNumbers}
-                    </select>
+                    <SimpleSelect 
+                        options={levelNumbers} 
+                        onChange={levelChange}
+                        defaultValue={obj.level}
+                        nonCancelable
+                        width="50px"
+                        inline
+                    />
                 </div>
             );
         });
 
         //console.log(this.props)
-        const selectLabel = (this.props.hideLabel) ? '' : <label>Add Class</label>;
-        const placeholder = (this.props.placeholder) ? this.props.placeholder : 'Classes'
+        const selectLabel = (this.props.hideLabel) ? '' : 'Select A Class...';
         return (
             <div className="classLevelSelect" id="classLevelSectionContainer">
-                <MuiThemeProvider theme={theme}>
-                {renderClassLevels}
                 <div className="classLevelSelection">
-                    
-                    {selectLabel}
-                    <Autocomplete
-                        id={"class_level_base"}
-                        options={remainingClassOptions}
-                        getOptionLabel={option => option.label}
-                        onChange={(e, val) => this.selectClass(e, val)} //this is one where we need to build the special widget (or activate one already built with https://www.npmjs.com/package/react-responsive-modal)
-                        style={{ width: '80%', display: 'inline-block', height: '100%' }}
-                        value={{ value: "", label: ""}}
-                        renderInput={params => (
-                            <TextField {...params} label={placeholder} variant="outlined" fullWidth />
-                        )}
-                        size={'small'}
+                    <SimpleSelect 
+                        key={`class_level_base_${remainingClassOptions.map(x => x.value).join("_")}`}
+                        id={`class_level_base`}
+                        options={remainingClassOptions} 
+                        onChange={(e, val, fullOption) => this.selectClass(e, fullOption, val)}
+                        legendLabel={'Class'}
+                        defaultValue=""
+                        width="70%"
+                        inline
                     />
-                    <select onChange={(e, arg2) => this.setUndeterminedLevel(e, arg2)} 
-                        value={this.state.undeterminedLevel} 
-                        style={{display:'inline-block', height: 54, width: '20%',marginTop: '.5em',}}
-                    >
-                    {levelNumbers}
-                    </select>
+                    <SimpleSelect 
+                        options={levelNumbers} 
+                        onChange={(e, val, fullOpt) => this.setUndeterminedLevel(val)}
+                        defaultValue={this.state.undeterminedLevel}
+                        nonCancelable
+                        legendLabel="Level"
+                        width="50px"
+                        inline
+                    />
+                    {renderClassLevels}
                 </div>
-                </MuiThemeProvider>
             </div>
         );
     }

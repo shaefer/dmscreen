@@ -40,6 +40,7 @@ class MonsterAdvancer extends Component {
     }
 
     classLevelsChanged(classLevels) {
+        console.log("Class Levels Changed", classLevels);
         if (!classLevels || classLevels.length <= 0) return;
         this.monsterFields.levels = classLevels.map(x => x.className+x.level)
     }
@@ -209,7 +210,10 @@ class MonsterAdvancer extends Component {
                                 />
                             </div>
                             <div className="co-select-container">
-                                <ClassLevelSelect onChange={(e) => this.classLevelsChanged(e)}/>
+                                <ClassLevelSelect onChange={(e) => {
+                                    console.log("ClassLevelSelect onChangeProp", e);
+                                    this.classLevelsChanged(e)
+                                }}/>
                             </div>
                         </div>
                     </div>

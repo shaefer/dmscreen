@@ -1,13 +1,13 @@
 import creatureStatsByType from './AdvancementTools/creatureStatsByType';
-import {calculateGoodSaveChange, calculateBadSaveChange} from './AdvancementTools/BaseSaveCalculator';
+import {calculateGoodSaveChange, calculateBadSaveChange, calculateGoodSave, calculateBadSave} from './AdvancementTools/BaseSaveCalculator';
 
 export const calcAvgHitPoints = (hd, hdType) => {
     return Math.floor(hd * avgHitPoints(hdType));
 }
 
-export const hpDisplay = (hd, hdType, bonusHp) => {
+export const hdDisplay = (hd, hdType, bonusHp, source) => {
     const bonusHpStr = (bonusHp >= 0) ? "+"+bonusHp : bonusHp;
-    return calcAvgHitPoints(hd, hdType) + bonusHp + " (" + hd + "d" + hdType + bonusHpStr + ")";
+    return hd + "d" + hdType + bonusHpStr + `[${source}]`;
 }
 
 export const avgHitPoints = (hdType) => {
@@ -123,6 +123,24 @@ export const getSavingThrowChangesFromHitDice = (statblock, newHitDice) => {
         ref: refChange,
         will: willChange
     };
+}
+
+export const getSavingThrowChangesFromClass = (newHitDice, goodSavingThrows) => {
+    const goodSaveChange = calculateGoodSave(newHitDice);
+    const badSaveChange = calculateBadSave(newHitDice);
+
+    console.log(goodSavingThrows, goodSaveChange, badSaveChange, goodSavingThrows.indexOf("Fort") !== -1)
+
+    const fortChange =  goodSavingThrows.indexOf("Fort") !== -1 ? goodSaveChange : badSaveChange;
+    const refChange = goodSavingThrows.indexOf("Ref") !== -1 ? goodSaveChange : badSaveChange;
+    const willChange = goodSavingThrows.indexOf("Will") !== -1 ? goodSaveChange : badSaveChange;
+    const newSaves = {
+        fort: fortChange,
+        ref: refChange,
+        will: willChange
+    };
+    console.log("CLASS SAVES", newSaves)
+    return newSaves;
 }
 
 export const getConstructBonusHitPoints = (size) => {

@@ -1,12 +1,16 @@
 import creatureStatsByType from "../../components/PathfinderMonsterAdvancer/AdvancementTools/creatureStatsByType";
 //creatureStatsByType gives a lot of this information in a fixed format...we'll have to match things up eventually.
 const barbarian = {
+    name: 'barbarian',
+    abbreviation: 'bbn',
     alignment: 'non-lawful',
     hitDieType: 12,
     classSkills: [ "Acrobatics", "Climb", "Craft", "Handle Animal", "Intimidate", "Knowledge (nature)", "Perception", "Ride", "Survival", "Swim"],
     skillRanksPerLevel: 4,
     "base_attack_bonus": "fast",  //might like a different format  for the key but this matches creatureStatsByType
     "good_saving_throws": ["Fort"], //might like a different format  for the key but this matches creatureStatsByType
+    barbarianRagePowers: barbarianRagePowers,
+    barbarianSpecialAbilities: barbarianSpecialAbilities,
     levels: [
         {
           level: 1, 

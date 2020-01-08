@@ -3,6 +3,7 @@ import { displayFullAttack } from '../../MonsterDisplay'
 import Behir from '../../../models/Behir_v9'
 
 it('attack data should change on advancement', () => {
+    Behir.hpEntries = [];
     expect(Behir.melee_attacks[0][0].toHit).toBe(15);
     expect(Behir.hitDice).toBe(10);
     const advancedBehir = advanceMonster(Behir, {hd:12});
@@ -10,7 +11,7 @@ it('attack data should change on advancement', () => {
 
 
     expect(advancedBehir.hitDice).toBe(12);
-    expect(advancedBehir.hitPoints).toBe(126);
+    expect(advancedBehir.hpEntries.map(x => x.avgHitPoints).reduce((agg, cur) => agg + cur)).toBe(126);
     expect(advancedBehir.melee_attacks[0][0].toHit).toBe(17);
 });
 

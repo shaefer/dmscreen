@@ -109,7 +109,6 @@ const displayName = (advancements) => {
 }
 
 const calculateBonusHp = (hitDice, hdType, creatureType, conBonus, chaBonus, size) => {
-    console.log("CREATURE TYPE DURING BONUS HP", creatureType, chaBonus, conBonus, hitDice)
     const statBonus = (creatureType === 'Undead') ? chaBonus : conBonus;
     return (creatureType !== 'Construct') ? statBonus * hitDice : getConstructBonusHitPoints(size);
 }
@@ -408,16 +407,14 @@ export const advanceByAbilityScores = (statblock, abilityScoreChanges, chainedAd
     const rangedAttacks = attackChanges(statblock.ranged_attacks, statBonusDiffs.dex, 0, false);
     const acFields = acChanges(statblock.armor_class.ac_modifiers.slice(0), statBonusDiffs);
 
-    //TODO: Recalculate existing hpEntries don't create a new one.
-    console.log("ADVANCE BY ABILITY SCORES", statblock.hpEntries)
-    const hpEntries = statblock.hpEntries.map(hpe => {
+    const currentHpEntries = statblock.hpEntries||[[hpChanges("racial", statblock.hitDice, statblock.hdType, statblock.creature_type, statBonusFromAbilityScore(statblock.ability_scores.con), statBonusFromAbilityScore(statblock.ability_scores.con), statblock.size)]];
+    const hpEntries = currentHpEntries.map(hpe => {
         return hpChanges(hpe.source, hpe.hitDice, hpe.hdType, hpe.creatureType, statBonusFromAbilityScore(newAbilityScores.con), statBonusFromAbilityScore(newAbilityScores.cha), statblock.size);
     });
-    console.log("AFTER ABILITY SCORE TRANSFORM", hpEntries)
     const hpFields = {
         hp: hpEntriesDisplay(hpEntries) || statblock.hp,
         hpEntries: hpEntries,
-        totalHitDice: calculateTotalHitDice(statblock.hpEntries)
+        totalHitDice: calculateTotalHitDice(currentHpEntries)
     }
     const existingAdvancements = (statblock.advancements) ? statblock.advancements : [];
     //On some options change which name version --Pass options through
@@ -478,19 +475,21 @@ export const advanceByHitDice = (statblock, hdChange) => {
     const savingThrowChange =  getSavingThrowChangesFromHitDice(statblock, newHitDice);
     const newBaseAttack =  getBaseAttackBonusByHitDiceAndCreatureType(newHitDice, statblock.creature_type);
     const baseAttackDiff = newBaseAttack - statblock.base_attack;
-    console.log("HD BAB: " + statblock.base_attack, "BABNEW: " + newBaseAttack)
     const meleeAttacks = attackChanges(statblock.melee_attacks, 0, baseAttackDiff);
     const rangedAttacks = attackChanges(statblock.ranged_attacks, 0, baseAttackDiff, false);
     const newCombatFields = combatManeuverChanges(statblock, baseAttackDiff, baseAttackDiff);
 
+    
     const hpEntry = hpChanges("racial", newHitDice, statblock.hdType, statblock.creature_type, statBonusFromAbilityScore(statblock.ability_scores.con), statBonusFromAbilityScore(statblock.ability_scores.con), statblock.size);
-    const racialHpEntryIndex = statblock.hpEntries.findIndex(x => x.source === 'racial');
-    statblock.hpEntries[racialHpEntryIndex] = hpEntry;
+    const currentHpEntries = statblock.hpEntries||[hpEntry]
+    const racialHpEntryIndex = currentHpEntries.findIndex(x => x.source === 'racial');
+    if (racialHpEntryIndex !== -1) currentHpEntries[racialHpEntryIndex] = hpEntry;
+
     const hpFields = {
-        hp: hpEntriesDisplay(statblock.hpEntries),
+        hp: hpEntriesDisplay(currentHpEntries),
         hitDice: newHitDice,
-        hpEntries: statblock.hpEntries,
-        totalHitDice: calculateTotalHitDice(statblock.hpEntries)
+        hpEntries: currentHpEntries,
+        totalHitDice: calculateTotalHitDice(currentHpEntries)
     }
     const hitDiceAdvancements = {
         advancements: [`${withPlus(hdChange)} Hit Dice`],
@@ -548,7 +547,6 @@ export const advanceByClassLevel = (statblock, classLevel) => {
         totalHitDice: calculateTotalHitDice(statblock.hpEntries)
     }
 
-    const savingThrowChange =  getSavingThrowChangesFromHitDice(statblock, newHitDice);
     const goodSavingThrows = classInfo.good_saving_throws;
     const savingThrowBonusesFromClass = getSavingThrowChangesFromClass(newHitDice, goodSavingThrows);
     //const newBaseAttack =  getBaseAttackBonusByHitDiceAndCreatureType(newHitDice, statblock.creature_type);

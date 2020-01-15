@@ -53,7 +53,9 @@ const barbarianRagePowers = [
     "minLevel":8,
     "multipleSelection":true,
     "specialAbilityType":"ex",
-    "description":"The barbarian's damage reduction increases by 1/—. This increase is always active while the barbarian is raging. A barbarian can select this rage power up to three times. Its effects stack. A barbarian must be at least 8th level before selecting this rage power."
+    "description":"The barbarian's damage reduction increases by 1/—. This increase is always active while the barbarian is raging. A barbarian can select this rage power up to three times. Its effects stack. A barbarian must be at least 8th level before selecting this rage power.",
+    statSection: StatSections.DEFENSIVE_ABILITIES,
+    fieldToUpdate: 'dr'
   },
   { 
     "name":"Internal Fortitude",

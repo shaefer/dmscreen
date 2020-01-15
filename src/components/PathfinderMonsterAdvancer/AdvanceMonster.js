@@ -575,7 +575,7 @@ export const advanceByClassLevel = (statblock, classLevel) => {
                 return {
                     ...selectedAbility,
                     level: classLevel.level,
-                    name: `${selectedAbility.name}(${fullAbility.name}-${classInfo.abbreviation}${classLevel.level})`
+                    displayName: `${selectedAbility.name}(${fullAbility.name}-${classInfo.abbreviation}${classLevel.level})`
                 }
             } else {
                 return {
@@ -599,7 +599,7 @@ export const advanceByClassLevel = (statblock, classLevel) => {
     classAbilitiesWithAlterations.forEach(ca => {
         const classAdvancementFn = classAdvancement[ca.name];
         if (classAdvancementFn) {
-            const field = classAdvancementFn(statblock, classLevel.level);
+            const field = classAdvancementFn(classAbilityAdvancements, classLevel.level, classAbilitiesWithAlterations);
             classAbilityAdvancements[ca.fieldToUpdate] = field;
         }
     });

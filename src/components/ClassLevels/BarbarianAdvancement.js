@@ -32,6 +32,16 @@ const replaceDr = (details, type, newAmount) => {
         details.push(`${newAmount}/${type}`);
     }
 }
+const addDrDetails = (detailsOrig, type, newAmount, suffix) => {
+    const details = detailsOrig.slice(0);
+    const idx = details.findIndex(x => x.endsWith(type));
+    if (idx !== -1) {
+        const detailStr = details[idx];
+        const amount = parseInt(detailStr.match(/\d+/));
+        details[idx] = detailStr + ` (${(newAmount + amount)}/${type} ${suffix})`
+    }
+    return details
+}
 const damageReduction = (monster, barbarianLevel) => {
     const drFromBarbarianLevels = Math.min(5, Math.floor((barbarianLevel - 4) / 3)); //bbnLevel - 4 / 3
     const dr = monster.dr;
@@ -46,10 +56,20 @@ const damageReduction = (monster, barbarianLevel) => {
     return newDr;
 }
 
+const increasedDamageReduction = (monster, barbarianLevel, classAbilities) => {
+    const increasedDrCount = classAbilities.filter(x => x.name === 'Increased Damage Reduction').length
+    const dr = monster.dr;
+    const drDetails = (dr) ? dr.split(', ') : [];
+    const newDrWithDetails = addDrDetails(drDetails, "-", increasedDrCount, "while raging");
+    return newDrWithDetails.join(", ");
+}
+
 const BarbarianAdvancement = {
     fastMovement,
     'Fast Movement': fastMovement,
     damageReduction,
-    'Damage Reduction': damageReduction
+    'Damage Reduction': damageReduction,
+    increasedDamageReduction,
+    'Increased Damage Reduction': increasedDamageReduction,
 }
 export default BarbarianAdvancement;

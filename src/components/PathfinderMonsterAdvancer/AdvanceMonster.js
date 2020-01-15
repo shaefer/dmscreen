@@ -561,7 +561,6 @@ export const advanceByClassLevel = (statblock, classLevel) => {
                 return sa.name === x;
             });
             if (fullAbility.selection) {
-                console.log(fullAbility.name, "SELECTION NEEDED", classLevel.level)
                 const validForLevelAbilities = classInfo[fullAbility.selection].filter(x => classLevel.level >= x.minLevel);
                 const validAbilities = validForLevelAbilities.filter(x => !selectedAbilities.map(x => x.name).includes(x.name) || (x.multipleSelection))
                 const preferredAbilities = (classLevel.level >= 8) ? validAbilities.filter(x => x.minLevel >= 8) : validAbilities; //basic preference for high level powers at 8th or above

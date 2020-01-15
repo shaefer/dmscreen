@@ -18,6 +18,7 @@ export const advanceMonster = (statblock, advancement) => {
     advancedCreature = {
         ...advancedCreature,
         advancements: [],
+        totalHitDice: statblock.hitDice,
         hpEntries: [hpChanges("racial", statblock.hitDice, statblock.hdType, statblock.creature_type, statBonusFromAbilityScore(statblock.ability_scores.con), statBonusFromAbilityScore(statblock.ability_scores.con), statblock.size)],
     }
     if (advancement.hd) {
@@ -72,7 +73,6 @@ export const advanceMonster = (statblock, advancement) => {
             }
         });
     }
-
     if (advancement.templates) {
         //loop through each template provided.
         advancement.templates.forEach(templateName => {
@@ -603,9 +603,7 @@ export const advanceByClassLevel = (statblock, classLevel) => {
             classAbilityAdvancements[ca.fieldToUpdate] = field;
         }
     });
-
-
-
+    const existingAdjustments = (statblock.crAdjustments) ? statblock.crAdjustments : [];
 
     //TODO: CR Recalc
     const classAdvancements = {
@@ -617,7 +615,11 @@ export const advanceByClassLevel = (statblock, classLevel) => {
         saving_throws: applyChangesToSavingThrows(classAbilityAdvancements.saving_throws, [savingThrowBonusesFromClass]),
         featCount: racialFeatCount(classAbilityAdvancements.hd + newHitDice), //this calculation is basically an aggregate of other advancements...we can recalculate each time however without a lot of cost.
         ...newCombatFields,
-        classLevelAbilities: [...(classAbilityAdvancements.classLevelAbilities||[]), classAbilitiesToAdd]
+        classLevelAbilities: [...(classAbilityAdvancements.classLevelAbilities||[]), classAbilitiesToAdd],
+        crAdjustments : [
+            ...existingAdjustments,
+            {source: classDisplayName, val: classLevel.level}
+        ],
     }
 
     const classAdvancedCreature = {
@@ -632,13 +634,5 @@ export const advanceByClassLevel = (statblock, classLevel) => {
         ...classAdvancedCreature,
         ...statAdvancements
     }
-
-
-    //add the class
-        //update the name
-        //add hd and hp
-        //add saves
-        //add level powers
-        //update ability scores per hd (auto?)
 }
 

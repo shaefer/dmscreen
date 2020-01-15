@@ -36,6 +36,7 @@ const replaceResistance = (resistDetails, type, newAmount) => {
     }
 }
 const replaceDr = (details, type, newAmount) => {  
+    if (newAmount <= 0) return;
     const idx = details.findIndex(x => x.endsWith(type));
     if (idx !== -1) {
         const detailStr = details[idx];

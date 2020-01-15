@@ -605,7 +605,6 @@ export const advanceByClassLevel = (statblock, classLevel) => {
     });
     const existingAdjustments = (statblock.crAdjustments) ? statblock.crAdjustments : [];
 
-    //TODO: CR Recalc
     const classAdvancements = {
         advancements: [...classAbilityAdvancements.advancements, classDisplayName],
         ...hpFields,
@@ -618,7 +617,7 @@ export const advanceByClassLevel = (statblock, classLevel) => {
         classLevelAbilities: [...(classAbilityAdvancements.classLevelAbilities||[]), classAbilitiesToAdd],
         crAdjustments : [
             ...existingAdjustments,
-            {source: classDisplayName, val: classLevel.level}
+            {source: classDisplayName, val: classLevel.level} //TODO: Adjust CR adjustment based on creature role.
         ],
     }
 

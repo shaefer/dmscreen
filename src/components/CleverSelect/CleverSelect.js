@@ -26,7 +26,6 @@ class CleverSelect extends Component {
     }
 
     render() {
-        console.log(this.props)
         //if we chain in onChange prop but still fire the built in...which should occur first?
         return (
             <select onChange={this.onChange}>

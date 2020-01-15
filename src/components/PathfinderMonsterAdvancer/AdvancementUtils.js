@@ -129,7 +129,7 @@ export const getSavingThrowChangesFromClass = (newHitDice, goodSavingThrows) => 
     const goodSaveChange = calculateGoodSave(newHitDice);
     const badSaveChange = calculateBadSave(newHitDice);
 
-    console.log(goodSavingThrows, goodSaveChange, badSaveChange, goodSavingThrows.indexOf("Fort") !== -1)
+    //console.log(goodSavingThrows, goodSaveChange, badSaveChange, goodSavingThrows.indexOf("Fort") !== -1)
 
     const fortChange =  goodSavingThrows.indexOf("Fort") !== -1 ? goodSaveChange : badSaveChange;
     const refChange = goodSavingThrows.indexOf("Ref") !== -1 ? goodSaveChange : badSaveChange;
@@ -139,7 +139,7 @@ export const getSavingThrowChangesFromClass = (newHitDice, goodSavingThrows) => 
         ref: refChange,
         will: willChange
     };
-    console.log("CLASS SAVES", newSaves)
+    //console.log("CLASS SAVES", newSaves)
     return newSaves;
 }
 

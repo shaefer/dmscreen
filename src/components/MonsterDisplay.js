@@ -210,7 +210,7 @@ const displayDamage = (damageDetails => {
 
 const renderClassLevelAbility = (ca) => {
     return (
-        <StatBlockLine>
+        <StatBlockLine key={ca.name}>
             <B>{ca.name} (<span style={{textTransform: 'capitalize'}}>{ca.specialAbilityType}</span>): </B>
             {ca.description}
         </StatBlockLine>
@@ -220,7 +220,7 @@ const renderClassLevelAbility = (ca) => {
 const renderClassLevelAbilities = (cas) => {
     const sas = cas.specialAbilities.map(x => renderClassLevelAbility(x));
     return (
-        <React.Fragment>
+        <React.Fragment key={cas.source}>
             <StatSectionHeader>{cas.source} ABILITIES</StatSectionHeader>
             {sas}
         </React.Fragment>

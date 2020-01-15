@@ -71,7 +71,6 @@ class ClassLevelSelect extends Component {
             ...this.state,
             undeterminedLevel: val
         });
-        console.log(this)
         //no class level to change yet...just store until we set one.
     }
 
@@ -80,13 +79,11 @@ class ClassLevelSelect extends Component {
             const classLevelsArray = Object.keys(currentClassLevels).sort().map(x => {
                 return currentClassLevels[x];
             });
-            console.log("NEW fire ClassLevelSelect.onChange", classLevelsArray)
             this.props.onChange(classLevelsArray);
         }
     } 
 
     render() {
-        console.log("RENDER ClassLevelSelect", this.state.classLevels)
         const classes = ["Barbarian", "Bard", "Cleric", "Druid", "Fighter", "Monk", "Paladin", "Rogue", "Sorcerer", "Wizard", "Adept", "Aristocrat", "Expert", "Warrior"];
         const allClassOptions = classes.map(x => {return {value: x, label: x}});
 

@@ -39,7 +39,7 @@ class DMScreen extends Component {
     }
 
     createAButton(values) {
-        console.log("Trying to create a button: ", values)
+        //console.log("Trying to create a button: ", values)
         let buttonData;
         if (values.type === 'diceButton') {
             if (values.diceButtonNumOfDice > 1000) {
@@ -71,7 +71,7 @@ class DMScreen extends Component {
             }
             buttonData = {crStart:values.crStart, crEnd:values.crEnd, numOfMonsters:values.numOfMonstersRange, type: 'crRangeButton'}
         }
-        console.log("Adding custom button with buttonData: ", buttonData)
+        //console.log("Adding custom button with buttonData: ", buttonData)
         this.props.addCustomButtonAction(buttonData);
     }
 

@@ -23,8 +23,8 @@ class App extends Component {
     }
 
     componentDidMount() {
-        console.log("Main APP Mounted");
-        console.log(process.env.NODE_ENV);
+        //console.log("Main APP Mounted");
+        //console.log(process.env.NODE_ENV);
         const env = process.env.NODE_ENV;
         if (env === 'production')
             ReactGA.initialize('UA-122019115-2');

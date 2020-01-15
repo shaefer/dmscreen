@@ -65,12 +65,12 @@ export class MonsterFinder extends Component {
 
   handleAbilityScoreSelectChange(e, abilityScore) {
     //where abilityScore is the identifier like 'Str'
-    console.log(e.target.value, abilityScore);
+    //console.log(e.target.value, abilityScore);
     this.props.abilityScoreAdvancementAction(parseInt(e.target.value), abilityScore);
   }
 
   classLevelsChanged(classLevels) {
-    console.log("MonsterFinder.classLevelsChanged", classLevels)
+    //console.log("MonsterFinder.classLevelsChanged", classLevels)
     //if (!classLevels || classLevels.length <= 0) return;
     //const mappedClassLevels = classLevels.map(x => x.className+x.level)
     this.props.classLevelAdvancementAction(classLevels);

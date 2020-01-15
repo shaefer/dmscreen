@@ -1,4 +1,5 @@
 import creatureStatsByType from "../../components/PathfinderMonsterAdvancer/AdvancementTools/creatureStatsByType";
+import * as StatSections from '../GeneralRules/StatSections';
 //creatureStatsByType gives a lot of this information in a fixed format...we'll have to match things up eventually.
 /**
 1st	+1	+2	+0	+0	Fast movement, rage
@@ -185,6 +186,7 @@ const barbarianRagePowers = [
   { 
     "name":"Terrifying Howl",
     "minLevel":8,
+    "prerequisite": "Intimidating Glare",
     "specialAbilityType":"ex",
     "description":"The barbarian unleashes a terrifying howl as a standard action. All shaken enemies within 30 feet must make a Will save (DC equal to 10 + 1/2 the barbarian's level + the barbarian's Strength modifier) or be panicked for 1d4+1 rounds. Once an enemy has made a save versus terrifying howl (successful or not), it is immune to this power for 24 hours. A barbarian must have the intimidating glare rage power to select this rage power. A barbarian must be at least 8th level before selecting this power."
   },
@@ -205,7 +207,9 @@ const barbarianSpecialAbilities = [
   {
       name: 'Fast Movement',
       specialAbilityType: 'ex',
-      description: "A barbarian's land speed is faster than the norm for her race by +10 feet. This benefit applies only when she is wearing no armor, light armor, or medium armor, and not carrying a heavy load. Apply this bonus before modifying the barbarian's speed because of any load carried or armor worn. This bonus stacks with any other bonuses to the barbarian's land speed."
+      description: "A barbarian's land speed is faster than the norm for her race by +10 feet. This benefit applies only when she is wearing no armor, light armor, or medium armor, and not carrying a heavy load. Apply this bonus before modifying the barbarian's speed because of any load carried or armor worn. This bonus stacks with any other bonuses to the barbarian's land speed.",
+      statSection: StatSections.SPEED,
+      fieldToUpdate: 'speed'
   },
   {
       name: 'Rage',
@@ -219,6 +223,7 @@ const barbarianSpecialAbilities = [
   {
       name: 'Rage Powers',
       specialAbilityType: 'ex',
+      selection: 'ragePowers',
       description: "As a barbarian gains levels, she learns to use her rage in new ways. Starting at 2nd level, a barbarian gains a rage power. She gains another rage power for every two levels of barbarian attained after 2nd level. A barbarian gains the benefits of rage powers only while raging, and some of these powers require the barbarian to take an action first. Unless otherwise noted, a barbarian cannot select an individual power more than once."
   },
   { 
@@ -239,7 +244,9 @@ const barbarianSpecialAbilities = [
   { 
       "name":"Damage Reduction",
       "specialAbilityType":"ex",
-      "description":"At 7th level, a barbarian gains damage reduction. Subtract 1 from the damage the barbarian takes each time she is dealt damage from a weapon or a natural attack. At 10th level, and every three barbarian levels thereafter (13th, 16th, and 19th level), this damage reduction rises by 1 point. Damage reduction can reduce damage to 0 but not below 0."
+      "description":"At 7th level, a barbarian gains damage reduction. Subtract 1 from the damage the barbarian takes each time she is dealt damage from a weapon or a natural attack. At 10th level, and every three barbarian levels thereafter (13th, 16th, and 19th level), this damage reduction rises by 1 point. Damage reduction can reduce damage to 0 but not below 0.",
+      statSection: StatSections.DEFENSIVE_ABILITIES,
+      fieldToUpdate: 'dr'
   },
   { 
       "name":"Greater Rage",
@@ -249,7 +256,9 @@ const barbarianSpecialAbilities = [
   { 
       "name":"Indomitable Will",
       "specialAbilityType":"ex",
-      "description":"While in rage, a barbarian of 14th level or higher gains a +4 bonus on Will saves to resist enchantment spells. This bonus stacks with all other modifiers, including the morale bonus on Will saves she also receives during her rage."
+      "description":"While in rage, a barbarian of 14th level or higher gains a +4 bonus on Will saves to resist enchantment spells. This bonus stacks with all other modifiers, including the morale bonus on Will saves she also receives during her rage.",
+      statSection: StatSections.WILLSAVE,
+      fieldToUpdate: 'will'
   },
   { 
       "name":"Tireless Rage",
@@ -271,8 +280,8 @@ const barbarian = {
     skillRanksPerLevel: 4,
     "base_attack_bonus": "fast",  //might like a different format  for the key but this matches creatureStatsByType
     "good_saving_throws": ["Fort"], //might like a different format  for the key but this matches creatureStatsByType
-    barbarianRagePowers: barbarianRagePowers,
-    barbarianSpecialAbilities: barbarianSpecialAbilities,
+    ragePowers: barbarianRagePowers,
+    specialAbilities: barbarianSpecialAbilities,
     levels: [
         {
           level: 1, 
@@ -284,7 +293,7 @@ const barbarian = {
         },
         {
           level: 3,
-          classAbilities: ['Trap Sense']
+          classAbilities: ['Trap Sense'] // +1 per 3 levels
         },
         {
           level: 4,
@@ -300,7 +309,7 @@ const barbarian = {
         },
         {
           level: 7,
-          classAbilities: ['Damage Reduction'] //like trap sense this levels up a predetermined interval of barbarian levels
+          classAbilities: ['Damage Reduction'] //+1 per 3 levels 7,10,13,16,19like trap sense this levels up a predetermined interval of barbarian levels
         },
         {
           level: 8,

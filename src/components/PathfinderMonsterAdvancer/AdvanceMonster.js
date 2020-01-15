@@ -7,11 +7,9 @@ import { calculateCR, roundDecimal } from './AdvancementTools/ChallengeRatingCal
 import {MonsterSizes, MonsterSizeChanges, sumSizeChanges} from './AdvancementTools/MonsterSizes'
 import Skills from './AdvancementTools/Skills'
 import { getBaseAttackBonusByHitDiceAndCreatureType, calculateBaseAttackBonus } from '../../monsteradvancer/BaseAttackBonusCalculator'
-import getCaptureGroups from '../../utils/RegexHelper'
-import { parse } from '@babel/parser'
-import { ADVANCE_HIT_DICE, advancedByClassLevels } from '../../actions'
 import { TemplatesMap } from './AdvancementTools/Templates'
 import barbarian from '../../data/Classes/Barbarian'
+import BarbarianAdvancement from '../ClassLevels/BarbarianAdvancement'
 
 //There are a few fields we add as we go such as advancements that each stage might add to. If we could start with the assupmtion that that field is initialized properly the spread operator could be used with less coersion. 
 //We probably should just do an initial spread that initializes fields that aren't always present that we would like to count on for advancement.
@@ -555,30 +553,84 @@ export const advanceByClassLevel = (statblock, classLevel) => {
     const meleeAttacks = attackChanges(statblock.melee_attacks, 0, baseAttackDiff);
     const rangedAttacks = attackChanges(statblock.ranged_attacks, 0, baseAttackDiff, false);
     const newCombatFields = combatManeuverChanges(statblock, baseAttackDiff, baseAttackDiff);
+    const classLevelsToApply = classInfo.levels.filter(x => x.level <= classLevel.level);
+    const selectedAbilities = [];
+    const classAbilities = classLevelsToApply.map(classLevel => {
+        const abilitiesForThisLevel = classLevel.classAbilities.map(x => {
+            const fullAbility = classInfo.specialAbilities.find(sa => {
+                return sa.name === x;
+            });
+            if (fullAbility.selection) {
+                console.log(fullAbility.name, "SELECTION NEEDED", classLevel.level)
+                const validForLevelAbilities = classInfo[fullAbility.selection].filter(x => classLevel.level >= x.minLevel);
+                const validAbilities = validForLevelAbilities.filter(x => !selectedAbilities.map(x => x.name).includes(x.name) || (x.multipleSelection))
+                const preferredAbilities = (classLevel.level >= 8) ? validAbilities.filter(x => x.minLevel >= 8) : validAbilities; //basic preference for high level powers at 8th or above
+                let selectedAbility = preferredAbilities[Math.floor(Math.random() * preferredAbilities.length)];
+                
+                //The prereq for Night Vision is LowLight vision rage power or racial low light...this is not checking for racial as well...
+                if (selectedAbility.prerequisite && (!selectedAbilities.map(x => x.name).includes(selectedAbility.prerequisite))) {
+                    //has a prereq and we don't have it yet....so instead of this selection assign the prereq.
+                    selectedAbility = validAbilities.find(x => x.name === selectedAbility.prerequisite);
+                }
+                selectedAbilities.push(selectedAbility);
+                return {
+                    ...selectedAbility,
+                    level: classLevel.level,
+                    name: `${selectedAbility.name}(${fullAbility.name}-${classInfo.abbreviation}${classLevel.level})`
+                }
+            } else {
+                return {
+                    ...fullAbility,
+                    level: classLevel.level
+                }
+            }
+        });
+        return abilitiesForThisLevel;
+    });
+    const classAbilitiesToAdd = {
+        source: classLevel.className,
+        specialAbilities: classAbilities.flat()
+    }
+
+    const classAbilitiesWithAlterations = classAbilitiesToAdd.specialAbilities.filter(x => x.fieldToUpdate);
+    let classAbilityAdvancements = {
+        ...statblock
+    };
+    const classAdvancement = BarbarianAdvancement;
+    classAbilitiesWithAlterations.forEach(ca => {
+        const classAdvancementFn = classAdvancement[ca.name];
+        if (classAdvancementFn) {
+            const field = classAdvancementFn(statblock, classLevel.level);
+            classAbilityAdvancements[ca.fieldToUpdate] = field;
+        }
+    });
+
+
+
 
     //TODO: CR Recalc
-    const hitDiceAdvancements = {
-        advancements: [...statblock.advancements, classDisplayName],
+    const classAdvancements = {
+        advancements: [...classAbilityAdvancements.advancements, classDisplayName],
         ...hpFields,
         base_attack: newBaseAttack,
         melee_attacks: meleeAttacks,
         ranged_attacks: rangedAttacks,
-        saving_throws: applyChangesToSavingThrows(statblock.saving_throws, [savingThrowBonusesFromClass]),
-        featCount: racialFeatCount(statblock.hd + newHitDice), //this calculation is basically an aggregate of other advancements...we can recalculate each time however without a lot of cost.
-        //base_attack: newBaseAttack,
-        ...newCombatFields
+        saving_throws: applyChangesToSavingThrows(classAbilityAdvancements.saving_throws, [savingThrowBonusesFromClass]),
+        featCount: racialFeatCount(classAbilityAdvancements.hd + newHitDice), //this calculation is basically an aggregate of other advancements...we can recalculate each time however without a lot of cost.
+        ...newCombatFields,
+        classLevelAbilities: [...(classAbilityAdvancements.classLevelAbilities||[]), classAbilitiesToAdd]
     }
 
-    const hitDiceAdvancedCreature = {
-        ...statblock,
-        ...hitDiceAdvancements,
+    const classAdvancedCreature = {
+        ...classAbilityAdvancements,
+        ...classAdvancements,
     }
 
     const statPointsPer4HitDiceAdded = Math.floor(newHitDice/4);
-    const abilityScoreChange = assignAbilityScoreChangeToHighestStat(statblock.ability_scores, statPointsPer4HitDiceAdded, `${classLevel.className} ${classLevel.level}`);
-    const statAdvancements = advanceByAbilityScores(hitDiceAdvancedCreature, [abilityScoreChange], true);
+    const abilityScoreChange = assignAbilityScoreChangeToHighestStat(classAbilityAdvancements.ability_scores, statPointsPer4HitDiceAdded, `${classLevel.className} ${classLevel.level}`);
+    const statAdvancements = advanceByAbilityScores(classAdvancedCreature, [abilityScoreChange], true);
     return {
-        ...hitDiceAdvancements,
+        ...classAdvancedCreature,
         ...statAdvancements
     }
 
@@ -589,31 +641,5 @@ export const advanceByClassLevel = (statblock, classLevel) => {
         //add saves
         //add level powers
         //update ability scores per hd (auto?)
-
-        // const statPointsPer4HitDiceAdded = Math.floor(hdChange/4);
-        // const abilityScoreChange = assignAbilityScoreChangeToHighestStat(statblock.ability_scores, statPointsPer4HitDiceAdded, `Advanced Creature ${hdChange} Hit Dice`);
-        // const savingThrowChange =  getSavingThrowChangesFromHitDice(statblock, newHitDice);
-        // const newBaseAttack =  getBaseAttackBonusByHitDiceAndCreatureType(newHitDice, statblock.creature_type);
-        // const baseAttackDiff = newBaseAttack - statblock.base_attack;
-        // //console.log("BAB: " + statblock.base_attack, "BABNEW: " + newBaseAttack)
-        // const meleeAttacks = attackChanges(statblock.melee_attacks, 0, baseAttackDiff);
-        // const rangedAttacks = attackChanges(statblock.ranged_attacks, 0, baseAttackDiff, false);
-        // const newCombatFields = combatManeuverChanges(statblock, baseAttackDiff, baseAttackDiff);
-    
-        // const hpFields = hpChanges(newHitDice, statblock.hdType, statblock.creature_type, statBonusFromAbilityScore(statblock.ability_scores.con), statBonusFromAbilityScore(statblock.ability_scores.con), statblock.size);
-        // const hitDiceAdvancements = {
-        //     advancements: [`${withPlus(hdChange)} Hit Dice`],
-        //     ...hpFields,
-        //     melee_attacks: meleeAttacks,
-        //     ranged_attacks: rangedAttacks,
-        //     saving_throws: applyChangesToSavingThrows(statblock.saving_throws, [savingThrowChange]),
-        //     featCount: racialFeatCount(newHitDice),
-        //     base_attack: newBaseAttack,
-        //     ...newCombatFields
-    console.log("advancing by classlevel", statblock)
-    return {
-        ...statblock,
-        advancements: [...statblock.advancements, classDisplayName]
-    }
 }
 

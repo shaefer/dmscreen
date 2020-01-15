@@ -208,6 +208,36 @@ const displayDamage = (damageDetails => {
     }).join(" plus ");
 });
 
+const renderClassLevelAbility = (ca) => {
+    return (
+        <StatBlockLine>
+            <B>{ca.name} (<span style={{textTransform: 'capitalize'}}>{ca.specialAbilityType}</span>): </B>
+            {ca.description}
+        </StatBlockLine>
+    );
+}
+
+const renderClassLevelAbilities = (cas) => {
+    const sas = cas.specialAbilities.map(x => renderClassLevelAbility(x));
+    return (
+        <React.Fragment>
+            <StatSectionHeader>{cas.source} ABILITIES</StatSectionHeader>
+            {sas}
+        </React.Fragment>
+    )
+}
+
+const classLevelAbilitiesSection = (m) => {
+    if (m.classLevelAbilities && m.classLevelAbilities.length > 0) { 
+        return (
+            <React.Fragment>
+                
+                {m.classLevelAbilities.map(ca => renderClassLevelAbilities(ca))}
+            </React.Fragment>
+        );
+    }
+}
+
 const MonsterDisplay = ({monster}) => {
     const m = monster.statBlock;
     if (!m.name)
@@ -301,6 +331,7 @@ const MonsterDisplay = ({monster}) => {
 
             <StatSectionHeader>special abilities</StatSectionHeader>
             {specialAbilitiesAndDescription(m)}
+            {classLevelAbilitiesSection(m)}
             {crSectionDisplay}
         </div>
     );

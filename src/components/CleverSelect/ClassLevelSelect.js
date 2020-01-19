@@ -15,6 +15,8 @@ class ClassLevelSelect extends Component {
         this.setClassForLevel = this.setClassForLevel.bind(this);
         this.setLevelForClass = this.setLevelForClass.bind(this);
         this.selectClass = this.selectClass.bind(this);
+        console.log("CLASSLEVELSELECT", props.classes)
+        this.classes = props.classes ? props.classes : ["Barbarian", "Bard", "Cleric", "Druid", "Fighter", "Monk", "Paladin", "Rogue", "Sorcerer", "Wizard", "Adept", "Aristocrat", "Expert", "Warrior"];
     }
 
     removeClass(className) {
@@ -84,7 +86,7 @@ class ClassLevelSelect extends Component {
     } 
 
     render() {
-        const classes = ["Barbarian", "Bard", "Cleric", "Druid", "Fighter", "Monk", "Paladin", "Rogue", "Sorcerer", "Wizard", "Adept", "Aristocrat", "Expert", "Warrior"];
+        const classes = this.classes;
         const allClassOptions = classes.map(x => {return {value: x, label: x}});
 
         const diff = (a1, a2) => {
@@ -129,28 +131,34 @@ class ClassLevelSelect extends Component {
 
         //console.log(this.props)
         const selectLabel = (this.props.hideLabel) ? '' : 'Select A Class...';
+        const baseSelect = (
+            <React.Fragment>
+            <SimpleSelect 
+                key={`class_level_base_${remainingClassOptions.map(x => x.value).join("_")}`}
+                id={`class_level_base`}
+                options={remainingClassOptions} 
+                onChange={(e, val, fullOption) => this.selectClass(e, fullOption, val)}
+                legendLabel={'Class'}
+                defaultValue=""
+                width="70%"
+                inline
+            />
+            <SimpleSelect 
+                options={levelNumbers} 
+                onChange={(e, val, fullOpt) => this.setUndeterminedLevel(val)}
+                defaultValue={this.state.undeterminedLevel}
+                nonCancelable
+                legendLabel="Level"
+                width="50px"
+                inline
+            />
+            </React.Fragment>
+        );
+        const baseSelectOrUsedAllClasses = remainingClassOptions.length > 0 ? baseSelect : ''; //We have to handle all classes have been used and there are no more choices. So we shouldn't display the base at all.
         return (
             <div className="classLevelSelect" id="classLevelSectionContainer">
                 <div className="classLevelSelection">
-                    <SimpleSelect 
-                        key={`class_level_base_${remainingClassOptions.map(x => x.value).join("_")}`}
-                        id={`class_level_base`}
-                        options={remainingClassOptions} 
-                        onChange={(e, val, fullOption) => this.selectClass(e, fullOption, val)}
-                        legendLabel={'Class'}
-                        defaultValue=""
-                        width="70%"
-                        inline
-                    />
-                    <SimpleSelect 
-                        options={levelNumbers} 
-                        onChange={(e, val, fullOpt) => this.setUndeterminedLevel(val)}
-                        defaultValue={this.state.undeterminedLevel}
-                        nonCancelable
-                        legendLabel="Level"
-                        width="50px"
-                        inline
-                    />
+                    {baseSelectOrUsedAllClasses}
                     {renderClassLevels}
                 </div>
             </div>

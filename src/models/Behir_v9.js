@@ -138,6 +138,7 @@ const Behir = {
   "special_attacks": "breath weapon (20-foot line, 7d6 electricity damage, Reflex DC 20 for half, usable every 1d4 rounds), constrict (2d6+9), rake (6 claws +14, 1d4+6), swallow whole (2d8+9 bludgeoning damage, AC 16, 10 hp)",
   "speed": "40 ft., climb 20 ft.",
   "strengthInt": 23,
+  "totalHitDice": 10,
   "treasure": "double",
   "type": "creature",
   "url": "pfsrd://Bestiary/Monsters/Behir",

@@ -5,7 +5,10 @@ import './MonsterFinder.css';
 import '../../css/ReactSelectCustom.css';
 
 import { connect } from 'react-redux'
-import {keyPressHandler, monsterSelectedHandler, hitDiceAdvancementAction, sizeAdvancementAction, abilityScoreAdvancementAction, templateAdvancementAction} from '../../action-creators'
+import {
+  keyPressHandler, 
+  monsterSelectedHandler, hitDiceAdvancementAction, sizeAdvancementAction, abilityScoreAdvancementAction, 
+  templateAdvancementAction, classLevelAdvancementAction} from '../../action-creators'
 import PathfinderMonsterAdvancer from '../PathfinderMonsterAdvancer/PathfinderMonsterAdvancer'
 import MonsterOptions from '../MonsterOptions'
 import MonsterSelect from './MonsterSelect'
@@ -21,6 +24,7 @@ import MonsterDisplay from '../MonsterDisplay';
 import { MonsterSizes } from '../PathfinderMonsterAdvancer/AdvancementTools/MonsterSizes';
 import TemplateSelect from './subcomponents/TemplateSelect';
 import { template } from '@babel/core';
+import ClassLevelSelect from '../CleverSelect/ClassLevelSelect';
 
 export class MonsterFinder extends Component {
   constructor(props) {
@@ -31,6 +35,7 @@ export class MonsterFinder extends Component {
     this.handleSizeSelectChange = this.handleSizeSelectChange.bind(this);
     this.handleAbilityScoreSelectChange = this.handleAbilityScoreSelectChange.bind(this);
     this.handleTemplateChange = this.handleTemplateChange.bind(this);
+    this.classLevelsChanged = this.classLevelsChanged.bind(this);
   }
 
   handleKeyPress(e) {
@@ -43,6 +48,7 @@ export class MonsterFinder extends Component {
     this.props.sizeAdvancementAction('reset');
     this.props.abilityScoreAdvancementAction('resetall');
     this.props.templateAdvancementAction('reset');
+    this.props.classLevelAdvancementAction('reset');
   }
 
   handleHitDiceSelectChange(e) {
@@ -59,9 +65,16 @@ export class MonsterFinder extends Component {
 
   handleAbilityScoreSelectChange(e, abilityScore) {
     //where abilityScore is the identifier like 'Str'
-    console.log(e.target.value, abilityScore);
+    //console.log(e.target.value, abilityScore);
     this.props.abilityScoreAdvancementAction(parseInt(e.target.value), abilityScore);
   }
+
+  classLevelsChanged(classLevels) {
+    //console.log("MonsterFinder.classLevelsChanged", classLevels)
+    //if (!classLevels || classLevels.length <= 0) return;
+    //const mappedClassLevels = classLevels.map(x => x.className+x.level)
+    this.props.classLevelAdvancementAction(classLevels);
+}
 
   componentDidMount() {
     document.addEventListener('keydown', this.handleKeyPress);
@@ -140,6 +153,7 @@ export class MonsterFinder extends Component {
             <AbilityScoreAdvancementSelectMaterial selectedValue={advancement.wis} abilityScore={"Wis"} onSelect={this.handleAbilityScoreSelectChange}/>
             <AbilityScoreAdvancementSelectMaterial selectedValue={advancement.cha} abilityScore={"Cha"} onSelect={this.handleAbilityScoreSelectChange}/>
             {templateSelect}
+            <ClassLevelSelect hideLabel classes={["Barbarian"]} onChange={(e) => this.classLevelsChanged(e)}/>
           </div>
         </div>
     </div>
@@ -151,4 +165,4 @@ export class MonsterFinder extends Component {
 const mapStateToProps = state => state;
 
 
-export default connect(mapStateToProps, {keyPressHandler, monsterSelectedHandler, hitDiceAdvancementAction, sizeAdvancementAction, abilityScoreAdvancementAction, templateAdvancementAction})(MonsterFinder)
+export default connect(mapStateToProps, {keyPressHandler, monsterSelectedHandler, hitDiceAdvancementAction, sizeAdvancementAction, abilityScoreAdvancementAction, templateAdvancementAction, classLevelAdvancementAction})(MonsterFinder)

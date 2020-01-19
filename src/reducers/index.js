@@ -70,7 +70,6 @@ const monsterAdvancer = (state = { monster:{} }, action) => {
 const advancement = (state = {}, action) => {
   switch (action.type) {
     case Actions.ADVANCE_HIT_DICE:
-      console.log(`Reduce to advance by hit dice ${action.hitDice}`)
       return {
         ...state,
         hd: action.hitDice
@@ -84,6 +83,11 @@ const advancement = (state = {}, action) => {
       return {
         ...state,
         templates: action.templates
+      }
+    case Actions.ADVANCE_CLASSLEVELS:
+      return {
+        ...state,
+        classLevels: action.classLevels
       }
     case Actions.ADVANCE_ABILITY_SCORE:
       const newAbilityScores = {
@@ -108,10 +112,16 @@ const advancement = (state = {}, action) => {
       return newSizeState;
     case Actions.RESET_TEMPLATE_ADVANCEMENT:
       const newTemplateState = {
-        ...statement
+        ...state
       };
       delete newTemplateState['templates'];
       return newTemplateState;
+    case Actions.RESET_CLASSLEVEL_ADVANCEMENT:
+      const newClassLevelsState = {
+        ...state
+      };
+      delete newClassLevelsState['classLevels'];
+      return newClassLevelsState;
     case Actions.RESET_ABILITY_SCORE_ADVANCEMENT:
       const newAbilityScoreState = {
         ...state

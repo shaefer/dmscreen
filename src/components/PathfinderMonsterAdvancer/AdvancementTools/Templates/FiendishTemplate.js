@@ -36,6 +36,7 @@ const replaceResistance = (resistDetails, type, newAmount) => {
     }
 }
 const replaceDr = (details, type, newAmount) => {  
+    if (newAmount <= 0) return;
     const idx = details.findIndex(x => x.endsWith(type));
     if (idx !== -1) {
         const detailStr = details[idx];
@@ -87,7 +88,8 @@ const Fiendish = (statblock) => {
         const newDr = sortedDetails.join(', ');
         return {dr: newDr};
     }
-    const crAdjustment = (statblock.hitDice >= 5) ? 1 : 0;
+    const totalHitDice = statblock.totalHitDice;
+    const crAdjustment = (totalHitDice >= 5) ? 1 : 0;
     const baseCr = (statblock.crCalculation && statblock.crCalculation.crDiff) ? Math.round(statblock.crCalculation.crAdjusted) : Math.round(parseFloat(statblock.cr));
     const existingAdjustments = (statblock.crAdjustments) ? statblock.crAdjustments : [];
     const crAdjustments = (existingAdjustments.length > 0) ? existingAdjustments.map(x => x.val).reduce((agg, x) => agg + x) : 0;
@@ -96,15 +98,15 @@ const Fiendish = (statblock) => {
         return (sr) ? {sr: Math.max(sr, cr + 5)} : {sr: cr + 5};
     }
 
-    const smiteGood = (monster) => `smite good 1/day as a swift action (adds ${withPlus(statBonusFromAbilityScore(monster.ability_scores.cha))}(CHA) bonus to attack rolls and damage bonus equal to ${withPlus(monster.hitDice)}(HD) against good foes; smite persists until target is dead or the fiendish creature rests).`
+    const smiteGood = (monster) => `smite good 1/day as a swift action (adds ${withPlus(statBonusFromAbilityScore(monster.ability_scores.cha))}(CHA) bonus to attack rolls and damage bonus equal to ${withPlus(monster.totalHitDice)}(HD) against good foes; smite persists until target is dead or the fiendish creature rests).`
     const specialAttacksAcquired = (statblock.specialAttacksAcquired) ? statblock.specialAttacksAcquired : [{sourceName: 'Fiendish Template', displayFn: smiteGood}];
     //darkvision is usually 60ft. the only creatures with a shorter range havae 30ft. SO replacing the 30ft. and adding if no darkvision is present.
     const advancedNamePrefixes = (statblock.advancedNamePrefixes) ? statblock.advancedNamePrefixes : [];
 
     return {
         ...statblock,
-        ...resist(statblock.resist, statblock.hitDice),
-        ...dr(statblock.dr, statblock.hitDice),
+        ...resist(statblock.resist, totalHitDice),
+        ...dr(statblock.dr, totalHitDice),
         ...sr(statblock.sr, cr),
         ...addOrUpdateDarkvision(statblock.senses),
         crAdjustments : [

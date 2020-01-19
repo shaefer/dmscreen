@@ -1,25 +1,30 @@
 import { statBonusFromAbilityScore, racialFeatCount, withPlus, 
     assignAbilityScoreChangeToHighestStat, applyAbilityScoreChanges,
-    getSavingThrowChangesFromHitDice, applyChangesToSavingThrows, hpDisplay,
+    getSavingThrowChangesFromHitDice, applyChangesToSavingThrows, hdDisplay,
     getSavingThrowChangesFromStatChanges, getStatBonusDifference, displayArmorClass,
-    calcTotalAc, calcFlatFootedAc, calcTouchAc, calcAvgHitPoints, getConstructBonusHitPoints } from './AdvancementUtils'
+    calcTotalAc, calcFlatFootedAc, calcTouchAc, calcAvgHitPoints, getConstructBonusHitPoints, getSavingThrowChangesFromClass } from './AdvancementUtils'
 import { calculateCR, roundDecimal } from './AdvancementTools/ChallengeRatingCalculator'
 import {MonsterSizes, MonsterSizeChanges, sumSizeChanges} from './AdvancementTools/MonsterSizes'
 import Skills from './AdvancementTools/Skills'
-import { getBaseAttackBonusByHitDiceAndCreatureType } from '../../monsteradvancer/BaseAttackBonusCalculator'
-import getCaptureGroups from '../../utils/RegexHelper'
-import { parse } from '@babel/parser'
-import { ADVANCE_HIT_DICE } from '../../actions'
+import { getBaseAttackBonusByHitDiceAndCreatureType, calculateBaseAttackBonus } from '../../monsteradvancer/BaseAttackBonusCalculator'
 import { TemplatesMap } from './AdvancementTools/Templates'
+import barbarian from '../../data/Classes/Barbarian'
+import BarbarianAdvancement from '../ClassLevels/BarbarianAdvancement'
 
 //There are a few fields we add as we go such as advancements that each stage might add to. If we could start with the assupmtion that that field is initialized properly the spread operator could be used with less coersion. 
 //We probably should just do an initial spread that initializes fields that aren't always present that we would like to count on for advancement.
 export const advanceMonster = (statblock, advancement) => {
     let advancedCreature = statblock;
+    advancedCreature = {
+        ...advancedCreature,
+        advancements: [],
+        totalHitDice: statblock.hitDice,
+        hpEntries: [hpChanges("racial", statblock.hitDice, statblock.hdType, statblock.creature_type, statBonusFromAbilityScore(statblock.ability_scores.con), statBonusFromAbilityScore(statblock.ability_scores.con), statblock.size)],
+    }
     if (advancement.hd) {
-        const advancesFromHitDice = advanceByHitDice(statblock, advancement.hd - statblock.hitDice);
+        const advancesFromHitDice = advanceByHitDice(advancedCreature, advancement.hd - advancedCreature.hitDice);
         advancedCreature = {
-            ...statblock,
+            ...advancedCreature,
             ...advancesFromHitDice
         };
     }
@@ -58,6 +63,16 @@ export const advanceMonster = (statblock, advancement) => {
         }
     }
 
+
+    if (advancement.classLevels && advancement.classLevels.length > 0) {
+        advancement.classLevels.forEach(classLevel => {
+            const advancedFromClassLevel = advanceByClassLevel(advancedCreature, classLevel);
+            advancedCreature = {
+                ...advancedCreature,
+                ...advancedFromClassLevel
+            }
+        });
+    }
     if (advancement.templates) {
         //loop through each template provided.
         advancement.templates.forEach(templateName => {
@@ -71,6 +86,7 @@ export const advanceMonster = (statblock, advancement) => {
             }
         })
     }
+
     const additionalSpecialAttacks = (advancedCreature.specialAttacksAcquired) ? advancedCreature.specialAttacksAcquired : [];
     advancedCreature = {
         ...advancedCreature,
@@ -87,18 +103,24 @@ export const advanceMonster = (statblock, advancement) => {
 }
 
 const displayName = (advancements) => {
-    return (advancements) ? ` (${advancements.join(", ")})` : '';
+    return (advancements && advancements.length > 0) ? ` (${advancements.join(", ")})` : '';
 }
 
-const hpChanges = (hitDice, hdType, creatureType, conBonus, chaBonus, size) => {
+const calculateBonusHp = (hitDice, hdType, creatureType, conBonus, chaBonus, size) => {
     const statBonus = (creatureType === 'Undead') ? chaBonus : conBonus;
+    return (creatureType !== 'Construct') ? statBonus * hitDice : getConstructBonusHitPoints(size);
+}
 
-    const newHitPointsAdjustment = (creatureType !== 'Construct') ? statBonus * hitDice : getConstructBonusHitPoints(size);
+const hpChanges = (source, hitDice, hdType, creatureType, conBonus, chaBonus, size) => {
+    const hpBonus = calculateBonusHp(hitDice, hdType, creatureType, conBonus, chaBonus, size);
     return {
-        hp: hpDisplay(hitDice, hdType, newHitPointsAdjustment),
+        source, source,
+        hdDisplay: hdDisplay(hitDice, hdType, hpBonus, source),
         hitDice: hitDice,
-        hitPointAdjustment: newHitPointsAdjustment,
-        hitPoints: calcAvgHitPoints(hitDice, hdType) + newHitPointsAdjustment
+        hdType: hdType,
+        creatureType: creatureType,
+        hitPointAdjustment: hpBonus,
+        avgHitPoints: calcAvgHitPoints(hitDice, hdType) + hpBonus
     }
 }
 
@@ -382,7 +404,16 @@ export const advanceByAbilityScores = (statblock, abilityScoreChanges, chainedAd
     const meleeAttacks = attackChanges(statblock.melee_attacks, statBonusDiffs.str, 0);
     const rangedAttacks = attackChanges(statblock.ranged_attacks, statBonusDiffs.dex, 0, false);
     const acFields = acChanges(statblock.armor_class.ac_modifiers.slice(0), statBonusDiffs);
-    const hpFields = hpChanges(newHitDice, statblock.hdType, statblock.creature_type, statBonusFromAbilityScore(newAbilityScores.con), statBonusFromAbilityScore(newAbilityScores.cha), statblock.size);
+
+    const currentHpEntries = statblock.hpEntries||[[hpChanges("racial", statblock.hitDice, statblock.hdType, statblock.creature_type, statBonusFromAbilityScore(statblock.ability_scores.con), statBonusFromAbilityScore(statblock.ability_scores.con), statblock.size)]];
+    const hpEntries = currentHpEntries.map(hpe => {
+        return hpChanges(hpe.source, hpe.hitDice, hpe.hdType, hpe.creatureType, statBonusFromAbilityScore(newAbilityScores.con), statBonusFromAbilityScore(newAbilityScores.cha), statblock.size);
+    });
+    const hpFields = {
+        hp: hpEntriesDisplay(hpEntries) || statblock.hp,
+        hpEntries: hpEntries,
+        totalHitDice: calculateTotalHitDice(currentHpEntries)
+    }
     const existingAdvancements = (statblock.advancements) ? statblock.advancements : [];
     //On some options change which name version --Pass options through
     const detailedStatsInNameOpt = false;
@@ -423,6 +454,10 @@ export const advanceByAbilityScores = (statblock, abilityScoreChanges, chainedAd
     };
 }
 
+const calculateTotalHitDice = (hpEntries) => {
+    return hpEntries.map(x => x.hitDice).reduce((acc, cur) => acc + cur);
+}
+
 /** Since we are just returning a list of alterations to the main creature we can chain our advancements
  * We advance by hit dice and get those changes and then merge those with the original creature before doing
  * the abilityScore advancements that we are chaining together and then just merging the resulting field changes
@@ -438,12 +473,22 @@ export const advanceByHitDice = (statblock, hdChange) => {
     const savingThrowChange =  getSavingThrowChangesFromHitDice(statblock, newHitDice);
     const newBaseAttack =  getBaseAttackBonusByHitDiceAndCreatureType(newHitDice, statblock.creature_type);
     const baseAttackDiff = newBaseAttack - statblock.base_attack;
-    //console.log("BAB: " + statblock.base_attack, "BABNEW: " + newBaseAttack)
     const meleeAttacks = attackChanges(statblock.melee_attacks, 0, baseAttackDiff);
     const rangedAttacks = attackChanges(statblock.ranged_attacks, 0, baseAttackDiff, false);
     const newCombatFields = combatManeuverChanges(statblock, baseAttackDiff, baseAttackDiff);
 
-    const hpFields = hpChanges(newHitDice, statblock.hdType, statblock.creature_type, statBonusFromAbilityScore(statblock.ability_scores.con), statBonusFromAbilityScore(statblock.ability_scores.con), statblock.size);
+    
+    const hpEntry = hpChanges("racial", newHitDice, statblock.hdType, statblock.creature_type, statBonusFromAbilityScore(statblock.ability_scores.con), statBonusFromAbilityScore(statblock.ability_scores.con), statblock.size);
+    const currentHpEntries = statblock.hpEntries||[hpEntry]
+    const racialHpEntryIndex = currentHpEntries.findIndex(x => x.source === 'racial');
+    if (racialHpEntryIndex !== -1) currentHpEntries[racialHpEntryIndex] = hpEntry;
+
+    const hpFields = {
+        hp: hpEntriesDisplay(currentHpEntries),
+        hitDice: newHitDice,
+        hpEntries: currentHpEntries,
+        totalHitDice: calculateTotalHitDice(currentHpEntries)
+    }
     const hitDiceAdvancements = {
         advancements: [`${withPlus(hdChange)} Hit Dice`],
         ...hpFields,
@@ -460,7 +505,7 @@ export const advanceByHitDice = (statblock, hdChange) => {
         ...hitDiceAdvancements,
     }
 
-    const statAdvancements = advanceByAbilityScores(hitDiceAdvancedCreature, [abilityScoreChange], true);
+    const statAdvancements = (statPointsPer4HitDiceAdded) ? advanceByAbilityScores(hitDiceAdvancedCreature, [abilityScoreChange], true) : {};
     return {
         ...hitDiceAdvancements,
         ...statAdvancements
@@ -471,6 +516,122 @@ export const advanceByTemplate = (statblock, template) => {
     return {
         ...statblock,
         ...template(statblock)
+    }
+}
+
+const getClass = (className) => {
+    return barbarian;
+}
+
+const hpEntriesDisplay = (hpEntries) => {
+    if (hpEntries.length === 0) return "";
+    // array of hpDisplay, hitDice, hitPointAdjustment, avgHitPoints
+    const totalAvgHp = hpEntries.map(x => x.avgHitPoints).reduce((agg, cur) => agg + cur);
+    return `${totalAvgHp} (${hpEntries.map(x => x.hdDisplay).join(", ")})`;
+}
+
+export const advanceByClassLevel = (statblock, classLevel) => {
+    const classDisplayName = `${classLevel.className} ${classLevel.level}`;
+    const newHitDice = classLevel.level;
+
+    const classInfo = getClass(classLevel.className);
+
+    //hp changes are additive with classes. 
+    const hpEntry = hpChanges(classDisplayName, newHitDice, classInfo.hitDieType, classLevel.className, statBonusFromAbilityScore(statblock.ability_scores.con), statBonusFromAbilityScore(statblock.ability_scores.con), statblock.size);
+    const hpEntries = [...statblock.hpEntries, hpEntry];
+    const hpFields = {
+        hp: hpEntriesDisplay(hpEntries),
+        hpEntries: hpEntries,
+        totalHitDice: calculateTotalHitDice(statblock.hpEntries)
+    }
+
+    const goodSavingThrows = classInfo.good_saving_throws;
+    const savingThrowBonusesFromClass = getSavingThrowChangesFromClass(newHitDice, goodSavingThrows);
+    //const newBaseAttack =  getBaseAttackBonusByHitDiceAndCreatureType(newHitDice, statblock.creature_type);
+    const newBaseAttack = calculateBaseAttackBonus(newHitDice, classInfo.base_attack_bonus);
+    const baseAttackDiff = newBaseAttack;
+    const meleeAttacks = attackChanges(statblock.melee_attacks, 0, baseAttackDiff);
+    const rangedAttacks = attackChanges(statblock.ranged_attacks, 0, baseAttackDiff, false);
+    const newCombatFields = combatManeuverChanges(statblock, baseAttackDiff, baseAttackDiff);
+    const classLevelsToApply = classInfo.levels.filter(x => x.level <= classLevel.level);
+    const selectedAbilities = [];
+    const classAbilities = classLevelsToApply.map(classLevel => {
+        const abilitiesForThisLevel = classLevel.classAbilities.map(x => {
+            const fullAbility = classInfo.specialAbilities.find(sa => {
+                return sa.name === x;
+            });
+            if (fullAbility.selection) {
+                const validForLevelAbilities = classInfo[fullAbility.selection].filter(x => classLevel.level >= x.minLevel);
+                const validAbilities = validForLevelAbilities.filter(x => !selectedAbilities.map(x => x.name).includes(x.name) || (x.multipleSelection))
+                const preferredAbilities = (classLevel.level >= 8) ? validAbilities.filter(x => x.minLevel >= 8) : validAbilities; //basic preference for high level powers at 8th or above
+                let selectedAbility = preferredAbilities[Math.floor(Math.random() * preferredAbilities.length)];
+                
+                //The prereq for Night Vision is LowLight vision rage power or racial low light...this is not checking for racial as well...
+                if (selectedAbility.prerequisite && (!selectedAbilities.map(x => x.name).includes(selectedAbility.prerequisite))) {
+                    //has a prereq and we don't have it yet....so instead of this selection assign the prereq.
+                    selectedAbility = validAbilities.find(x => x.name === selectedAbility.prerequisite);
+                }
+                selectedAbilities.push(selectedAbility);
+                return {
+                    ...selectedAbility,
+                    level: classLevel.level,
+                    displayName: `${selectedAbility.name}(${fullAbility.name}-${classInfo.abbreviation}${classLevel.level})`
+                }
+            } else {
+                return {
+                    ...fullAbility,
+                    level: classLevel.level
+                }
+            }
+        });
+        return abilitiesForThisLevel;
+    });
+    const classAbilitiesToAdd = {
+        source: classLevel.className,
+        specialAbilities: classAbilities.flat()
+    }
+
+    const classAbilitiesWithAlterations = classAbilitiesToAdd.specialAbilities.filter(x => x.fieldToUpdate);
+    let classAbilityAdvancements = {
+        ...statblock
+    };
+    const classAdvancement = BarbarianAdvancement;
+    classAbilitiesWithAlterations.forEach(ca => {
+        const classAdvancementFn = classAdvancement[ca.name];
+        if (classAdvancementFn) {
+            const field = classAdvancementFn(classAbilityAdvancements, classLevel.level, classAbilitiesWithAlterations);
+            classAbilityAdvancements[ca.fieldToUpdate] = field;
+        }
+    });
+    const existingAdjustments = (statblock.crAdjustments) ? statblock.crAdjustments : [];
+
+    const classAdvancements = {
+        advancements: [...classAbilityAdvancements.advancements, classDisplayName],
+        ...hpFields,
+        base_attack: newBaseAttack,
+        melee_attacks: meleeAttacks,
+        ranged_attacks: rangedAttacks,
+        saving_throws: applyChangesToSavingThrows(classAbilityAdvancements.saving_throws, [savingThrowBonusesFromClass]),
+        featCount: racialFeatCount(classAbilityAdvancements.hd + newHitDice), //this calculation is basically an aggregate of other advancements...we can recalculate each time however without a lot of cost.
+        ...newCombatFields,
+        classLevelAbilities: [...(classAbilityAdvancements.classLevelAbilities||[]), classAbilitiesToAdd],
+        crAdjustments : [
+            ...existingAdjustments,
+            {source: classDisplayName, val: classLevel.level} //TODO: Adjust CR adjustment based on creature role.
+        ],
+    }
+
+    const classAdvancedCreature = {
+        ...classAbilityAdvancements,
+        ...classAdvancements,
+    }
+
+    const statPointsPer4HitDiceAdded = Math.floor(newHitDice/4);
+    const abilityScoreChange = assignAbilityScoreChangeToHighestStat(classAbilityAdvancements.ability_scores, statPointsPer4HitDiceAdded, `${classLevel.className} ${classLevel.level}`);
+    const statAdvancements = advanceByAbilityScores(classAdvancedCreature, [abilityScoreChange], true);
+    return {
+        ...classAdvancedCreature,
+        ...statAdvancements
     }
 }
 

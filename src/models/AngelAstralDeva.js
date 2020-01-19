@@ -201,6 +201,7 @@ const AngelAstralDeva ={
     ],
     "sr":25,
     "strengthInt":26,
+    "totalHitDice":15,
     "treasure":"double (+2 disrupting warhammer)",
     "type":"creature",
     "url":"pfsrd://Bestiary/Monsters/Angel/Astral Deva",

@@ -40,6 +40,7 @@ class MonsterAdvancer extends Component {
     }
 
     classLevelsChanged(classLevels) {
+        //console.log("Class Levels Changed", classLevels);
         if (!classLevels || classLevels.length <= 0) return;
         this.monsterFields.levels = classLevels.map(x => x.className+x.level)
     }
@@ -49,11 +50,11 @@ class MonsterAdvancer extends Component {
     }
 
     getValuesButton() {
-        console.log(this.monsterFields);
+        //console.log(this.monsterFields);
         const monsterFields = this.monsterFields;
         //rather than refs we could use the onchange event of each to set a local property on this component.
         if (!this.monsterFields.monsterName) return;
-        console.log(this.refs.hd.state.value, this.refs.monsterName.state.value, this.refs.size.state.value);
+        //console.log(this.refs.hd.state.value, this.refs.monsterName.state.value, this.refs.size.state.value);
         let fields = [];
         this.pushField(fields, monsterFields, "hd");
         this.pushField(fields, monsterFields, "size");
@@ -70,7 +71,7 @@ class MonsterAdvancer extends Component {
 
     changeField(e, fieldName) {
         const value = (e.value) ? e.value : e.target.value;
-        console.log("changeField", fieldName, value, this);
+        //console.log("changeField", fieldName, value, this);
         this.monsterFields[fieldName] = value;
     }
 
@@ -209,7 +210,10 @@ class MonsterAdvancer extends Component {
                                 />
                             </div>
                             <div className="co-select-container">
-                                <ClassLevelSelect onChange={(e) => this.classLevelsChanged(e)}/>
+                                <ClassLevelSelect onChange={(e) => {
+                                    //console.log("ClassLevelSelect onChangeProp", e);
+                                    this.classLevelsChanged(e)
+                                }}/>
                             </div>
                         </div>
                     </div>

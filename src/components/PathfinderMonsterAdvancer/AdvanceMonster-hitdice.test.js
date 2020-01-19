@@ -2,9 +2,9 @@ import {advanceByHitDice} from './AdvanceMonster'
 import Behir from '../../models/Behir_v9';
 it('advance by hit dice sets hp fields', () => {
     const behirPlus4Hd = advanceByHitDice(Behir, 4);
-    expect(behirPlus4Hd.hp).toBe("147 (14d10+70)")
+    expect(behirPlus4Hd.hp).toBe("147 (14d10+70[racial])")
     expect(behirPlus4Hd.hitDice).toBe(14);
-    expect(behirPlus4Hd.hitPointAdjustment).toBe(70);
+    expect(behirPlus4Hd.hpEntries[0].hitPointAdjustment).toBe(70);
 });
 
 it('advance by hit dice creates abilityScore changes', () => {

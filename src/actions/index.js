@@ -76,3 +76,14 @@ export const RESET_TEMPLATE_ADVANCEMENT = 'RESET_TEMPLATE_ADVANCEMENT'
 export const resetTemplates = () => ({
     type: RESET_TEMPLATE_ADVANCEMENT
 });
+
+export const ADVANCE_CLASSLEVELS = 'ADVANCE_CLASSLEVELS'
+export const advancedByClassLevels = (classLevels) => ({
+    type: ADVANCE_CLASSLEVELS,
+    classLevels
+});
+
+export const RESET_CLASSLEVEL_ADVANCEMENT = 'RESET_CLASSLEVEL_ADVANCEMENT'
+export const resetClassLevels = () => ({
+    type: RESET_CLASSLEVEL_ADVANCEMENT
+});

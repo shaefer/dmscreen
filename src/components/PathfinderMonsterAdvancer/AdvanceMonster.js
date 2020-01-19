@@ -9,6 +9,7 @@ import Skills from './AdvancementTools/Skills'
 import { getBaseAttackBonusByHitDiceAndCreatureType, calculateBaseAttackBonus } from '../../monsteradvancer/BaseAttackBonusCalculator'
 import { TemplatesMap } from './AdvancementTools/Templates'
 import barbarian from '../../data/Classes/Barbarian'
+import bard from '../../data/Classes/Bard'
 import BarbarianAdvancement from '../ClassLevels/BarbarianAdvancement'
 
 //There are a few fields we add as we go such as advancements that each stage might add to. If we could start with the assupmtion that that field is initialized properly the spread operator could be used with less coersion. 
@@ -520,7 +521,9 @@ export const advanceByTemplate = (statblock, template) => {
 }
 
 const getClass = (className) => {
-    return barbarian;
+    if (className === 'Barbarian')
+        return barbarian;
+    else return bard;
 }
 
 const hpEntriesDisplay = (hpEntries) => {
@@ -560,6 +563,8 @@ export const advanceByClassLevel = (statblock, classLevel) => {
             const fullAbility = classInfo.specialAbilities.find(sa => {
                 return sa.name === x;
             });
+            if (!fullAbility)
+                console.error("FULL ABILITY MISSING", x)
             if (fullAbility.selection) {
                 const validForLevelAbilities = classInfo[fullAbility.selection].filter(x => classLevel.level >= x.minLevel);
                 const validAbilities = validForLevelAbilities.filter(x => !selectedAbilities.map(x => x.name).includes(x.name) || (x.multipleSelection))

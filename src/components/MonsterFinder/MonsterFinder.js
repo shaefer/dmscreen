@@ -153,7 +153,7 @@ export class MonsterFinder extends Component {
             <AbilityScoreAdvancementSelectMaterial selectedValue={advancement.wis} abilityScore={"Wis"} onSelect={this.handleAbilityScoreSelectChange}/>
             <AbilityScoreAdvancementSelectMaterial selectedValue={advancement.cha} abilityScore={"Cha"} onSelect={this.handleAbilityScoreSelectChange}/>
             {templateSelect}
-            <ClassLevelSelect hideLabel classes={["Barbarian"]} onChange={(e) => this.classLevelsChanged(e)}/>
+            <ClassLevelSelect hideLabel classes={["Barbarian", "Bard"]} onChange={(e) => this.classLevelsChanged(e)}/>
           </div>
         </div>
     </div>

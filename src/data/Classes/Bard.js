@@ -72,7 +72,7 @@ const specialAbilities = [
         "type": "ability"
     }, 
     {
-        "description": "A bard of 6th level or higher can use his performance to make a <i>suggestion</i> (as per the spell) to a creature he has already fascinated (see above). Using this ability does not disrupt the fascinate effect, but it does require a standard action to activate (in addition to the free action to continue the fascinate effect). A bard can use this ability more than once against an individual creature during an individual performance.Making a <i>suggestion</i> does not count against a bard's daily use of bardic performance. A Will saving throw (DC 10 + 1/2 the bard's level + the bard's Cha modifier) negates the effect. This ability affects only a single creature. <i>Suggestion</i> is an enchantment (compulsion), mind-affecting, language-dependent ability and relies on audible components.", 
+        "description": "A bard of 6th level or higher can use his performance to make a suggestion (as per the spell) to a creature he has already fascinated (see above). Using this ability does not disrupt the fascinate effect, but it does require a standard action to activate (in addition to the free action to continue the fascinate effect). A bard can use this ability more than once against an individual creature during an individual performance.Making a suggestion does not count against a bard's daily use of bardic performance. A Will saving throw (DC 10 + 1/2 the bard's level + the bard's Cha modifier) negates the effect. This ability affects only a single creature. Suggestion is an enchantment (compulsion), mind-affecting, language-dependent ability and relies on audible components.", 
         "name": "Suggestion", 
         "source": "Core Rulebook", 
         "url": "pfsrd://Core Rulebook/Classes/Bard/Class Features/Bardic Performance/Suggestion", 
@@ -99,7 +99,7 @@ const specialAbilities = [
         "type": "ability"
     }, 
     {
-        "description": " <i></i>A bard of 12th level or higher can use his performance to create an effect equivalent to a <i>mass cure serious wounds</i>, using the bard's level as the caster level. In addition, this performance removes the fatigued, sickened, and shaken conditions from all those affected. Using this ability requires 4 rounds of continuous performance, and the targets must be able to see and hear the bard throughout the performance. Soothing performance affects all targets that remain within 30 feet throughout the performance. Soothing performance relies on audible and visual components.", 
+        "description": " A bard of 12th level or higher can use his performance to create an effect equivalent to a mass cure serious wounds, using the bard's level as the caster level. In addition, this performance removes the fatigued, sickened, and shaken conditions from all those affected. Using this ability requires 4 rounds of continuous performance, and the targets must be able to see and hear the bard throughout the performance. Soothing performance affects all targets that remain within 30 feet throughout the performance. Soothing performance relies on audible and visual components.", 
         "name": "Soothing Performance", 
         "source": "Core Rulebook", 
         "url": "pfsrd://Core Rulebook/Classes/Bard/Class Features/Bardic Performance/Soothing Performance", 
@@ -117,7 +117,7 @@ const specialAbilities = [
         "type": "ability"
     }, 
     {
-        "description": " <i></i>A bard of 15th level or higher can inspire tremendous heroism in himself or a single ally within 30 feet. For every three bard levels the character attains beyond 15th, he can inspire heroics in an additional creature. To inspire heroics, all of the targets must be able to see and hear the bard. Inspired creatures gain a +4 morale bonus on saving throws and a +4 dodge bonus to AC. This effect lasts for as long as the targets are able to witness the performance. Inspire heroics is a mind-affecting ability that relies on audible and visual components.", 
+        "description": " A bard of 15th level or higher can inspire tremendous heroism in himself or a single ally within 30 feet. For every three bard levels the character attains beyond 15th, he can inspire heroics in an additional creature. To inspire heroics, all of the targets must be able to see and hear the bard. Inspired creatures gain a +4 morale bonus on saving throws and a +4 dodge bonus to AC. This effect lasts for as long as the targets are able to witness the performance. Inspire heroics is a mind-affecting ability that relies on audible and visual components.", 
         "name": "Inspire Heroics", 
         "source": "Core Rulebook", 
         "url": "pfsrd://Core Rulebook/Classes/Bard/Class Features/Bardic Performance/Inspire Heroics", 
@@ -126,7 +126,7 @@ const specialAbilities = [
         "type": "ability"
     }, 
     {
-        "description": "This ability functions just like <i>suggestion</i>, but allows a bard of 18th level or higher to make a <i>suggestion</i> simultaneously to any number of creatures that he has already fascinated. <i>Mass suggestion</i> is an  enchantment (compulsion), mind-affecting, language-dependent ability that relies on audible components.", 
+        "description": "This ability functions just like suggestion, but allows a bard of 18th level or higher to make a suggestion simultaneously to any number of creatures that he has already fascinated. Mass suggestion is an  enchantment (compulsion), mind-affecting, language-dependent ability that relies on audible components.", 
         "name": "Mass Suggestion", 
         "source": "Core Rulebook", 
         "url": "pfsrd://Core Rulebook/Classes/Bard/Class Features/Bardic Performance/Mass Suggestion", 

@@ -76,7 +76,7 @@ const specialAbilities = [
         "name": "Suggestion", 
         "source": "Core Rulebook", 
         "url": "pfsrd://Core Rulebook/Classes/Bard/Class Features/Bardic Performance/Suggestion", 
-        "specialAbilityType": "sl",
+        "specialAbilityType": "sp",
         "subtype": "bardic_performance", 
         "type": "ability"
     }, 
@@ -130,7 +130,7 @@ const specialAbilities = [
         "name": "Mass Suggestion", 
         "source": "Core Rulebook", 
         "url": "pfsrd://Core Rulebook/Classes/Bard/Class Features/Bardic Performance/Mass Suggestion", 
-        "specialAbilityType": "sl",
+        "specialAbilityType": "sp",
         "subtype": "bardic_performance", 
         "type": "ability"
     }, 

@@ -290,6 +290,12 @@ const MonsterDisplay = ({monster}) => {
     const perceptionSkill = m.skills.find(x => x.name.trim() === 'Perception');
     const perceptionDisplay = (perceptionSkill) ? perceptionSkill.name + ' '  + withPlus(perceptionSkill.value) : '';
     const senses = (m.senses) ? m.senses.replace(/Perception \+\d+/, perceptionDisplay) : m.senses;
+    const acquiredSpecialAttacksBySource = (acquired) => {
+        console.log(acquired);
+        if (!acquired || !acquired.length === 0) return '';
+        return acquired.map(x => <StatBlockLine key={x.source} data={x} required><B>Special Attacks from {x.source}</B> {x.display}</StatBlockLine>)
+    }
+    //<StatBlockLine data={m.specialAttacksAcquired} required><B>Additional Special Attacks</B> {m.specialAttacksAcquired}</StatBlockLine>
     return (
         <div className="monsterDisplay">
             <div className="sbLine sbName">
@@ -313,7 +319,7 @@ const MonsterDisplay = ({monster}) => {
             <StatBlockLine data={rangedAttackDisplay} required><B>Ranged</B> {rangedAttackDisplay}</StatBlockLine>
             {spaceAndReach(m)}
             <StatBlockLine data={m.special_attacks} required><B>Special Attacks</B> {m.special_attacks}</StatBlockLine>
-            <StatBlockLine data={m.specialAttacksAcquired} required><B>Additional Special Attacks</B> {m.specialAttacksAcquired}</StatBlockLine>
+            {acquiredSpecialAttacksBySource(m.specialAttacksAcquired)}
             {spells(m)}
 
             <StatSectionHeader>statistics</StatSectionHeader>

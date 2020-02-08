@@ -11,10 +11,13 @@ import { TemplatesMap } from './AdvancementTools/Templates'
 import barbarian from '../../data/Classes/Barbarian'
 import bard from '../../data/Classes/Bard'
 
+import seedrandom from 'seedrandom';
+
 
 //There are a few fields we add as we go such as advancements that each stage might add to. If we could start with the assupmtion that that field is initialized properly the spread operator could be used with less coersion. 
 //We probably should just do an initial spread that initializes fields that aren't always present that we would like to count on for advancement.
-export const advanceMonster = (statblock, advancement) => {
+//TOOD: Decide if we want to have a single generator for everything for a set of generators for each section to make it easier to randomly generate but customize without saving.
+export const advanceMonster = (statblock, advancement, generator = new seedrandom("baseSeed")) => {
     let advancedCreature = statblock;
     advancedCreature = {
         ...advancedCreature,
@@ -91,7 +94,8 @@ export const advanceMonster = (statblock, advancement) => {
     const additionalSpecialAttacks = (advancedCreature.specialAttacksAcquired) ? advancedCreature.specialAttacksAcquired : [];
     advancedCreature = {
         ...advancedCreature,
-        specialAttacksAcquired: additionalSpecialAttacks.map(x => x.displayFn(advancedCreature)).sort().join(', ')
+        //specialAttacksAcquired: additionalSpecialAttacks.map(x => x.displayFn(advancedCreature)).sort().join(', ')
+        specialAttacksAcquired: acquiredSpecialAttacks(advancedCreature, additionalSpecialAttacks)
     }
     //TODO: resolve all function displays (we will have displays that rely on final data from the creature after all advancements. Such as special attacks that add damage based on total HD.)
     
@@ -101,6 +105,25 @@ export const advanceMonster = (statblock, advancement) => {
         ...advancedCreature,
         advancedName: `${namePrefix}${advancedCreature.name}${displayName(advancedCreature.advancements)}`,
     };
+}
+
+const groupBy = (xs, key) => {
+    return xs.reduce((rv, x) => {
+        (rv[x[key]] = rv[x[key]] || []).push(x);
+        return rv;
+    }, {});
+};
+const acquiredSpecialAttacks = (monster, acquired) => {
+    if (!acquired || acquired.length === 0) return '';
+    const groupedBySource = groupBy(acquired, 'sourceName');
+    const sourceKeys = Object.keys(groupedBySource);
+    const specialAttacksBySource = sourceKeys.map(key => {
+        return {
+            source: key, 
+            display: groupedBySource[key].map(x => x.displayFn(monster)).sort().join(', ')
+        };
+    });
+    return specialAttacksBySource;
 }
 
 const displayName = (advancements) => {
@@ -608,7 +631,7 @@ export const advanceByClassLevel = (statblock, classLevel) => {
             const field = classAdvancementFn(classAbilityAdvancements, classLevel.level, classAbilitiesWithAlterations);
             if (ca.fieldToUpdate === 'acquiredSpecialAttacks') {
                 //Currently class abilities that add special attacks add them to a new property acquiredSpecialAttacks (like a template) instead of trying to alter special_attacks field. This is due to special attacks being a string rather than an array of special attack objects. Using this approach we expect the output of the classAbilityFunction to be a display Function that will be resolved near the end of advancement
-                const newSpecialAttack = [{sourceName: classLevel.className + ' ' + ca.level, displayFn: field}];
+                const newSpecialAttack = [{sourceName: classLevel.className + " Class", displayFn: field}];
                 const specialAttacksAcquired = (classAbilityAdvancements.specialAttacksAcquired) ? classAbilityAdvancements.specialAttacksAcquired.concat(newSpecialAttack) : newSpecialAttack;
                 classAbilityAdvancements.specialAttacksAcquired = specialAttacksAcquired;
             } else {

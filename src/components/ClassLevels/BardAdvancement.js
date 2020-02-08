@@ -1,7 +1,8 @@
 const inspireCourage = (monster, bardLevel) => {
     //1->1, 5->2, 9->3, 13->4, 17->5
     const bonus = Math.floor((bardLevel - 1) / 4) + 1;
-    return "inspire courage +" + bonus;
+    const displayFn = () => "inspire courage +" + bonus;
+    return displayFn;
 }
 
 const inspireCompetence = (monster, bardLevel) => {
@@ -10,7 +11,8 @@ const inspireCompetence = (monster, bardLevel) => {
     if (bardLevel < 3)
         return '';
     const bonus = Math.floor((bardLevel + 1) / 4) + 1;
-    return "inspire competence +" + bonus;
+    const displayFn = () => "inspire competence +" + bonus;
+    return displayFn;
 }
 
 const BardAdvancement = {

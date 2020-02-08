@@ -10,7 +10,7 @@ import { getBaseAttackBonusByHitDiceAndCreatureType, calculateBaseAttackBonus } 
 import { TemplatesMap } from './AdvancementTools/Templates'
 import barbarian from '../../data/Classes/Barbarian'
 import bard from '../../data/Classes/Bard'
-import BarbarianAdvancement from '../ClassLevels/BarbarianAdvancement'
+
 
 //There are a few fields we add as we go such as advancements that each stage might add to. If we could start with the assupmtion that that field is initialized properly the spread operator could be used with less coersion. 
 //We probably should just do an initial spread that initializes fields that aren't always present that we would like to count on for advancement.
@@ -533,6 +533,7 @@ const hpEntriesDisplay = (hpEntries) => {
     return `${totalAvgHp} (${hpEntries.map(x => x.hdDisplay).join(", ")})`;
 }
 
+
 export const advanceByClassLevel = (statblock, classLevel) => {
     const classDisplayName = `${classLevel.className} ${classLevel.level}`;
     const newHitDice = classLevel.level;
@@ -600,12 +601,19 @@ export const advanceByClassLevel = (statblock, classLevel) => {
     let classAbilityAdvancements = {
         ...statblock
     };
-    const classAdvancement = BarbarianAdvancement;
+    const classAdvancement = classInfo.advancement;
     classAbilitiesWithAlterations.forEach(ca => {
         const classAdvancementFn = classAdvancement[ca.name];
         if (classAdvancementFn) {
             const field = classAdvancementFn(classAbilityAdvancements, classLevel.level, classAbilitiesWithAlterations);
-            classAbilityAdvancements[ca.fieldToUpdate] = field;
+            if (ca.fieldToUpdate === 'acquiredSpecialAttacks') {
+                //Currently class abilities that add special attacks add them to a new property acquiredSpecialAttacks (like a template) instead of trying to alter special_attacks field. This is due to special attacks being a string rather than an array of special attack objects. Using this approach we expect the output of the classAbilityFunction to be a display Function that will be resolved near the end of advancement
+                const newSpecialAttack = [{sourceName: classLevel.className + ' ' + ca.level, displayFn: field}];
+                const specialAttacksAcquired = (classAbilityAdvancements.specialAttacksAcquired) ? classAbilityAdvancements.specialAttacksAcquired.concat(newSpecialAttack) : newSpecialAttack;
+                classAbilityAdvancements.specialAttacksAcquired = specialAttacksAcquired;
+            } else {
+                classAbilityAdvancements[ca.fieldToUpdate] = field;
+            }
         }
     });
     const existingAdjustments = (statblock.crAdjustments) ? statblock.crAdjustments : [];

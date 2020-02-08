@@ -1,5 +1,6 @@
 import creatureStatsByType from "../../components/PathfinderMonsterAdvancer/AdvancementTools/creatureStatsByType";
 import * as StatSections from '../GeneralRules/StatSections';
+import barbarianAdvancement from '../../components/ClassLevels/BarbarianAdvancement';
 //creatureStatsByType gives a lot of this information in a fixed format...we'll have to match things up eventually.
 /**
 1st	+1	+2	+0	+0	Fast movement, rage
@@ -284,6 +285,7 @@ const barbarian = {
     "good_saving_throws": ["Fort"], //might like a different format  for the key but this matches creatureStatsByType
     ragePowers: barbarianRagePowers,
     specialAbilities: barbarianSpecialAbilities,
+    advancement: barbarianAdvancement,
     levels: [
         {
           level: 1, 

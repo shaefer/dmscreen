@@ -1,4 +1,5 @@
 import * as StatSections from '../GeneralRules/StatSections';
+import bardAdvancement from '../../components/ClassLevels/BardAdvancement';
 const specialAbilities = [
     {
         "description": "A bard is proficient with all simple weapons, plus the longsword, rapier, sap, short sword, shortbow, and whip. Bards are also proficient with light armor and shields (except tower shields). A bard can cast bard spells while wearing light armor and use a shield without incurring the normal arcane spell failure chance. Like any other arcane spellcaster, a bard wearing medium or heavy armor incurs a chance of arcane spell failure if the spell in question has a somatic component. A multiclass bard still incurs the normal arcane spell failure chance for arcane spells received from other classes.", 
@@ -63,7 +64,7 @@ const specialAbilities = [
         "subtype": "bardic_performance", 
         "type": "ability",
         statSection: StatSections.SPECIAL_ATTACKS,
-        fieldToUpdate: 'specialAttacks'
+        fieldToUpdate: 'acquiredSpecialAttacks'
     }, 
     {
         "description": "A bard of 3rd level or higher can use his performance to help an ally succeed at a task. That ally must be within 30 feet and be able to hear the bard. The ally gets a +2 competence bonus on skill checks with a particular skill as long as she continues to hear the bard's performance. This bonus increases by +1 for every four levels the bard has attained beyond 3rd (+3 at 7th, +4 at 11th, +5 at 15th, and +6 at 19th). Certain uses of this ability are infeasible, such as Stealth, and may be disallowed at the GM's discretion. A bard can't inspire competence in himself. Inspire competence relies on audible components.", 
@@ -74,7 +75,7 @@ const specialAbilities = [
         "subtype": "bardic_performance", 
         "type": "ability",
         statSection: StatSections.SPECIAL_ATTACKS,
-        fieldToUpdate: 'specialAttacks'
+        fieldToUpdate: 'acquiredSpecialAttacks'
     }, 
     {
         "description": "A bard of 6th level or higher can use his performance to make a suggestion (as per the spell) to a creature he has already fascinated (see above). Using this ability does not disrupt the fascinate effect, but it does require a standard action to activate (in addition to the free action to continue the fascinate effect). A bard can use this ability more than once against an individual creature during an individual performance.Making a suggestion does not count against a bard's daily use of bardic performance. A Will saving throw (DC 10 + 1/2 the bard's level + the bard's Cha modifier) negates the effect. This ability affects only a single creature. Suggestion is an enchantment (compulsion), mind-affecting, language-dependent ability and relies on audible components.", 
@@ -218,6 +219,7 @@ const bard = {
     "base_attack_bonus": "medium",  //might like a different format  for the key but this matches creatureStatsByType
     "good_saving_throws": ["Ref", "Will"], //might like a different format  for the key but this matches creatureStatsByType
     specialAbilities: specialAbilities,
+    advancement: bardAdvancement,
     levels: [
         {
           level: 1, 

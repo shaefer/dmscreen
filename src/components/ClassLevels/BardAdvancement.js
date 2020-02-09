@@ -9,7 +9,7 @@ const inspireCompetence = (monster, bardLevel) => {
     //1,3,7,11,15,19
     //0,2,3,4 ,5 ,6
     if (bardLevel < 3)
-        return '';
+        return () => {return ''};
     const bonus = Math.floor((bardLevel + 1) / 4) + 1;
     const displayFn = () => "inspire competence +" + bonus;
     return displayFn;

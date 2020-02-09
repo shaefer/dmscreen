@@ -580,6 +580,37 @@ export const advanceByClassLevel = (statblock, classLevel) => {
     const meleeAttacks = attackChanges(statblock.melee_attacks, 0, baseAttackDiff);
     const rangedAttacks = attackChanges(statblock.ranged_attacks, 0, baseAttackDiff, false);
     const newCombatFields = combatManeuverChanges(statblock, baseAttackDiff, baseAttackDiff);
+
+    if (classInfo.isCaster && classInfo.prepareSpells) {
+        //create prepared Spells info for Prepared Spells Section
+    }
+    if (classInfo.isCaster && !classInfo.prepareSpells) {
+        //create known spells section...these are bards and sorcerers who have spells known and how many per day they can cast of that group.
+        // Spells Known (CL 4th; concentration +9)
+        //     2nd (2/day)— glitterdust (DC 17), sound burst (DC 17)
+        //     1st (4/day)— cure light wounds, disguise self (DC 16), silent image (DC 16), unseen servant
+        //     0 (6/day)— dancing lights, detect magic, ghost sound (DC 15), mage hand, prestidigitation, read magic
+        const spellCastingStatModifier = 4; //TODO: Look this up.
+        const classLevelInfo = classInfo.levels.filter(x => x.level === classLevel.level);
+        const spellsKnownCountArray = classLevelInfo.spellsKnown;
+        const spellsKnownPerLevel = [];
+        spellsKnownCountArray.forEach((x, idx) => {
+            if (x === 0) return;
+            const spellsKnownLevelSection = {
+                level: idx,
+                spellsPerDay: (idx === 0) ? 'infinite' : classLevelInfo.spellsPerDay[idx - 1],
+                saveDc: 10 + idx + spellCastingStatModifier,
+                spells: [] //select x spells.
+            }
+            spellsKnownPerLevel.push(spellsKnownLevelSection);
+        });
+        const spellsKnownSectionWrapper = {
+            casterLevel: classLevel.level,
+            concentration: classLevel.level + abilityScore, //TODO: 10 + CL + AbilityScoreMod
+            spellsKnownPerLevel: [] //above spellsKnownPerLevel Items...one per spellsKnown entry > 0. 
+        }
+    }
+
     const classLevelsToApply = classInfo.levels.filter(x => x.level <= classLevel.level);
     const selectedAbilities = [];
     const classAbilities = classLevelsToApply.map(classLevel => {
@@ -663,6 +694,7 @@ export const advanceByClassLevel = (statblock, classLevel) => {
     }
 
     const statPointsPer4HitDiceAdded = Math.floor(newHitDice/4);
+    //TODO: for class level ability score changes we should probably assign to specific class stat.
     const abilityScoreChange = assignAbilityScoreChangeToHighestStat(classAbilityAdvancements.ability_scores, statPointsPer4HitDiceAdded, `${classLevel.className} ${classLevel.level}`);
     const statAdvancements = advanceByAbilityScores(classAdvancedCreature, [abilityScoreChange], true);
     return {

@@ -39,45 +39,45 @@ it('inspire courage improves based on level', () => {
 
 it('inspire competence improves based on level', () => {
     const inspireCompetence = BardAdvancement.inspireCompetence(Behir, 1);
-    expect(inspireCompetence).toEqual("")
+    expect(inspireCompetence()).toEqual("")
 });
 
 it('inspire competence improves based on level', () => {
     const inspireCompetence = BardAdvancement.inspireCompetence(Behir, 2);
-    expect(inspireCompetence).toEqual("")
+    expect(inspireCompetence()).toEqual("")
 });
 
 it('inspire competence improves based on level', () => {
     const inspireCompetence = BardAdvancement.inspireCompetence(Behir, 3);
-    expect(inspireCompetence).toEqual("inspire competence +2")
+    expect(inspireCompetence()).toEqual("inspire competence +2")
 });
 
 it('inspire competence improves based on level', () => {
     const inspireCompetence = BardAdvancement.inspireCompetence(Behir, 4);
-    expect(inspireCompetence).toEqual("inspire competence +2")
+    expect(inspireCompetence()).toEqual("inspire competence +2")
 });
 
 it('inspire competence improves based on level', () => {
     const inspireCompetence = BardAdvancement.inspireCompetence(Behir, 7);
-    expect(inspireCompetence).toEqual("inspire competence +3")
+    expect(inspireCompetence()).toEqual("inspire competence +3")
 });
 
 it('inspire competence improves based on level', () => {
     const inspireCompetence = BardAdvancement.inspireCompetence(Behir, 11);
-    expect(inspireCompetence).toEqual("inspire competence +4")
+    expect(inspireCompetence()).toEqual("inspire competence +4")
 });
 
 it('inspire competence improves based on level', () => {
     const inspireCompetence = BardAdvancement.inspireCompetence(Behir, 17);
-    expect(inspireCompetence).toEqual("inspire competence +5")
+    expect(inspireCompetence()).toEqual("inspire competence +5")
 });
 
 it('inspire competence improves based on level', () => {
     const inspireCompetence = BardAdvancement.inspireCompetence(Behir, 17);
-    expect(inspireCompetence).toEqual("inspire competence +5")
+    expect(inspireCompetence()).toEqual("inspire competence +5")
 });
 
 it('inspire competence improves based on level', () => {
     const inspireCompetence = BardAdvancement.inspireCompetence(Behir, 19);
-    expect(inspireCompetence).toEqual("inspire competence +6")
+    expect(inspireCompetence()).toEqual("inspire competence +6")
 });

@@ -221,7 +221,9 @@ const bard = {
     "good_saving_throws": ["Ref", "Will"], //might like a different format  for the key but this matches creatureStatsByType
     specialAbilities: specialAbilities,
     advancement: bardAdvancement,
-    bardSpellsByLevel: [bardSpells.filter(x => x.bard === 0), bardSpells.filter(x => x.bard === 1), bardSpells.filter(x => x.bard === 2), bardSpells.filter(x => x.bard === 3), bardSpells.filter(x => x.bard === 4), bardSpells.filter(x => x.bard === 5), bardSpells.filter(x => x.bard === 6)],
+    isCaster: true,
+    prepareSpells: false,
+    spellsByLevel: [bardSpells.filter(x => x.bard === 0), bardSpells.filter(x => x.bard === 1), bardSpells.filter(x => x.bard === 2), bardSpells.filter(x => x.bard === 3), bardSpells.filter(x => x.bard === 4), bardSpells.filter(x => x.bard === 5), bardSpells.filter(x => x.bard === 6)],
     levels: [
         {
           level: 1, 

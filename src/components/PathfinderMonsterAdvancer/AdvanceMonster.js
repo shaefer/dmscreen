@@ -10,6 +10,7 @@ import { getBaseAttackBonusByHitDiceAndCreatureType, calculateBaseAttackBonus } 
 import { TemplatesMap } from './AdvancementTools/Templates'
 import barbarian from '../../data/Classes/Barbarian'
 import bard from '../../data/Classes/Bard'
+import {rollDice} from '../../utils/DiceBag'
 
 import seedrandom from 'seedrandom';
 
@@ -70,7 +71,7 @@ export const advanceMonster = (statblock, advancement, generator = new seedrando
 
     if (advancement.classLevels && advancement.classLevels.length > 0) {
         advancement.classLevels.forEach(classLevel => {
-            const advancedFromClassLevel = advanceByClassLevel(advancedCreature, classLevel);
+            const advancedFromClassLevel = advanceByClassLevel(advancedCreature, classLevel, generator);
             advancedCreature = {
                 ...advancedCreature,
                 ...advancedFromClassLevel
@@ -556,8 +557,19 @@ const hpEntriesDisplay = (hpEntries) => {
     return `${totalAvgHp} (${hpEntries.map(x => x.hdDisplay).join(", ")})`;
 }
 
+const selectItems = (itemList, amount, generator, allowDuplicates = false) => {
+    const selectableItems = itemList.slice(0);
+    const selectedItems = new Set();
+    for(let i = 0; i<amount; i++) {
+        const index = rollDice(1, selectableItems.length, generator).total - 1;
+        const item = selectableItems[index];
+        selectedItems.add(item);
+        selectableItems.splice(index, 1);
+    }
+    return selectedItems;
+}
 
-export const advanceByClassLevel = (statblock, classLevel) => {
+export const advanceByClassLevel = (statblock, classLevel, generator) => {
     const classDisplayName = `${classLevel.className} ${classLevel.level}`;
     const newHitDice = classLevel.level;
 
@@ -590,25 +602,27 @@ export const advanceByClassLevel = (statblock, classLevel) => {
         //     2nd (2/day)— glitterdust (DC 17), sound burst (DC 17)
         //     1st (4/day)— cure light wounds, disguise self (DC 16), silent image (DC 16), unseen servant
         //     0 (6/day)— dancing lights, detect magic, ghost sound (DC 15), mage hand, prestidigitation, read magic
-        const spellCastingStatModifier = 4; //TODO: Look this up.
-        const classLevelInfo = classInfo.levels.filter(x => x.level === classLevel.level);
+        const spellCastingStatModifier = statBonusFromAbilityScore(statblock.ability_scores[classInfo.primaryAbilityScore]); //TODO: Look this up.
+        const classLevelInfo = classInfo.levels.find(x => x.level === classLevel.level);
         const spellsKnownCountArray = classLevelInfo.spellsKnown;
+        const spellsByLevel = classInfo.spellsByLevel;
         const spellsKnownPerLevel = [];
-        spellsKnownCountArray.forEach((x, idx) => {
-            if (x === 0) return;
+        spellsKnownCountArray.filter(x => x > 0).forEach((amountOfSpellsKnown, spellLevel) => {
+            if (amountOfSpellsKnown === 0) return;
             const spellsKnownLevelSection = {
-                level: idx,
-                spellsPerDay: (idx === 0) ? 'infinite' : classLevelInfo.spellsPerDay[idx - 1],
-                saveDc: 10 + idx + spellCastingStatModifier,
-                spells: [] //select x spells.
+                level: spellLevel,
+                spellsPerDay: (spellLevel === 0) ? 'infinite' : classLevelInfo.spellsPerDay[spellLevel - 1],
+                saveDc: 10 + spellLevel + spellCastingStatModifier,
+                spells: selectItems(spellsByLevel[spellLevel], amountOfSpellsKnown, generator) //select x spells.
             }
             spellsKnownPerLevel.push(spellsKnownLevelSection);
         });
         const spellsKnownSectionWrapper = {
             casterLevel: classLevel.level,
-            concentration: classLevel.level + abilityScore, //TODO: 10 + CL + AbilityScoreMod
-            spellsKnownPerLevel: [] //above spellsKnownPerLevel Items...one per spellsKnown entry > 0. 
+            concentration: classLevel.level + spellCastingStatModifier, //TODO: 10 + CL + AbilityScoreMod
+            spellsKnownPerLevel //above spellsKnownPerLevel Items...one per spellsKnown entry > 0. 
         }
+        console.log(spellsKnownSectionWrapper);
     }
 
     const classLevelsToApply = classInfo.levels.filter(x => x.level <= classLevel.level);

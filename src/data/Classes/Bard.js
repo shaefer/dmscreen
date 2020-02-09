@@ -223,6 +223,7 @@ const bard = {
     advancement: bardAdvancement,
     isCaster: true,
     prepareSpells: false,
+    primaryAbilityScore: 'cha',
     spellsByLevel: [bardSpells.filter(x => x.bard === 0), bardSpells.filter(x => x.bard === 1), bardSpells.filter(x => x.bard === 2), bardSpells.filter(x => x.bard === 3), bardSpells.filter(x => x.bard === 4), bardSpells.filter(x => x.bard === 5), bardSpells.filter(x => x.bard === 6)],
     levels: [
         {

@@ -171,8 +171,8 @@ const spellsKnown = (spellsKnownSections) => {
         const spellLevelSection = spellsByLevel.map(sl => {
             console.log("SPELLS!!!!!!!!!", sl.spells)
             const prefix = `${asOrdinal(sl.level)} ${perDay(sl.spellsPerDay)}-`;
-            const spellString = sl.spells.map(s => s.name).join(', '); //Add in SPell DC where applicable
-            return <div>{prefix + spellString}</div>;
+            const spellString = sl.spells.map(s => <span style={{fontStyle:'italic'}}>{s.name.toLowerCase()}</span>).reduce((prev, curr) => [prev, ', ', curr]); //Add in SPell DC where applicable
+            return <div>{prefix}{spellString}</div>;
         });
         return (
         <React.Fragment>

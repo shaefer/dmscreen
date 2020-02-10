@@ -165,13 +165,16 @@ const spellsKnown = (spellsKnownSections) => {
         //     spells: selectItems(spellsByLevel[spellLevel], amountOfSpellsKnown, generator)
         // }
         const perDay = (val) => {
-            if (val === 'infinite') return '';
+            if (val === 'infinite') return '(at will)';
             return `(${val}/day)`;
         }
         const spellLevelSection = spellsByLevel.map(sl => {
-            console.log("SPELLS!!!!!!!!!", sl.spells)
+            
             const prefix = `${asOrdinal(sl.level)} ${perDay(sl.spellsPerDay)}-`;
-            const spellString = sl.spells.map(s => <span style={{fontStyle:'italic'}}>{s.name.toLowerCase()}</span>).reduce((prev, curr) => [prev, ', ', curr]); //Add in SPell DC where applicable
+            const spellString = sl.spells.map(s => {
+                const savingThrow = (s.saving_throw.startsWith('none')) ? '' : ` (DC ${sl.saveDc})`;
+            return <span><span style={{fontStyle:'italic'}}>{s.name.toLowerCase()}</span>{savingThrow}</span>
+            }).reduce((prev, curr) => [prev, ', ', curr]); 
             return <div>{prefix}{spellString}</div>;
         });
         return (

@@ -130,6 +130,59 @@ const spells = (m) => {
     });
 }
 
+const asOrdinal = (i) => {
+    var j = i % 10,
+        k = i % 100;
+    if (j == 1 && k != 11) {
+        return i + "st";
+    }
+    if (j == 2 && k != 12) {
+        return i + "nd";
+    }
+    if (j == 3 && k != 13) {
+        return i + "rd";
+    }
+    return i + "th";
+}
+const spellsKnown = (spellsKnownSections) => {
+    if (!spellsKnownSections || spellsKnownSections.length === 0) return '';
+    // const spellsKnownSectionWrapper = {
+    //     source: classInfo.name,
+    //     casterLevel: level,
+    //     concentration: level + spellCastingStatModifier,
+    //     spellsKnownPerLevel //above spellsKnownPerLevel Items...one per spellsKnown entry > 0. 
+    // }
+    return spellsKnownSections.map(spellsKnown => {
+        // Spells Known (CL 4th; concentration +9)
+        //     2nd (2/day)— glitterdust (DC 17), sound burst (DC 17)
+        //     1st (4/day)— cure light wounds, disguise self (DC 16), silent image (DC 16), unseen servant
+        //     0 (6/day)— dancing lights, detect magic, ghost sound (DC 15), mage hand, prestidigitation, read magic
+        const spellsByLevel = spellsKnown.spellsKnownPerLevel.reverse();
+        // const spellsKnownLevelSection = {
+        //     level: spellLevel,
+        //     spellsPerDay: (spellLevel === 0) ? 'infinite' : classLevelInfo.spellsPerDay[spellLevel - 1],
+        //     saveDc: 10 + spellLevel + spellCastingStatModifier,
+        //     spells: selectItems(spellsByLevel[spellLevel], amountOfSpellsKnown, generator)
+        // }
+        const perDay = (val) => {
+            if (val === 'infinite') return '';
+            return `(${val}/day)`;
+        }
+        const spellLevelSection = spellsByLevel.map(sl => {
+            console.log("SPELLS!!!!!!!!!", sl.spells)
+            const prefix = `${asOrdinal(sl.level)} ${perDay(sl.spellsPerDay)}-`;
+            const spellString = sl.spells.map(s => s.name).join(', '); //Add in SPell DC where applicable
+            return <div>{prefix + spellString}</div>;
+        });
+        return (
+        <React.Fragment>
+            <StatBlockLine inline required data={spellsKnown}><B>{`${spellsKnown.source} Spells Known`}</B> {`(CL ${asOrdinal(spellsKnown.casterLevel)}; concentration ${withPlus(spellsKnown.concentration)})`}</StatBlockLine>
+            <div style={{marginLeft:'1em'}}>{spellLevelSection}</div>
+        </React.Fragment>
+        );
+    });
+}
+
 const reason = (reason) => (reason) ? `${reason} = ` : ''
 const displayStatChanges = (statChanges) => {
     if (!statChanges) return [];
@@ -321,6 +374,7 @@ const MonsterDisplay = ({monster}) => {
             <StatBlockLine data={m.special_attacks} required><B>Special Attacks</B> {m.special_attacks}</StatBlockLine>
             {acquiredSpecialAttacksBySource(m.specialAttacksAcquired)}
             {spells(m)}
+            {spellsKnown(m.spellsKnown)}
 
             <StatSectionHeader>statistics</StatSectionHeader>
             <StatBlockLine>{abilityScoreDisplay}</StatBlockLine>

@@ -108,12 +108,14 @@ export const advanceMonster = (statblock, advancement, generator = new seedrando
     };
 }
 
+//https://gist.github.com/robmathers/1830ce09695f759bf2c4df15c29dd22d
 const groupBy = (xs, key) => {
     return xs.reduce((rv, x) => {
         (rv[x[key]] = rv[x[key]] || []).push(x);
         return rv;
     }, {});
 };
+
 const acquiredSpecialAttacks = (monster, acquired) => {
     if (!acquired || acquired.length === 0) return '';
     const groupedBySource = groupBy(acquired, 'sourceName');
@@ -566,66 +568,11 @@ const selectItems = (itemList, amount, generator, allowDuplicates = false) => {
         selectedItems.add(item);
         selectableItems.splice(index, 1);
     }
-    return selectedItems;
+    return Array.from(selectedItems);
 }
 
-export const advanceByClassLevel = (statblock, classLevel, generator) => {
-    const classDisplayName = `${classLevel.className} ${classLevel.level}`;
-    const newHitDice = classLevel.level;
-
-    const classInfo = getClass(classLevel.className);
-
-    //hp changes are additive with classes. 
-    const hpEntry = hpChanges(classDisplayName, newHitDice, classInfo.hitDieType, classLevel.className, statBonusFromAbilityScore(statblock.ability_scores.con), statBonusFromAbilityScore(statblock.ability_scores.con), statblock.size);
-    const hpEntries = [...statblock.hpEntries, hpEntry];
-    const hpFields = {
-        hp: hpEntriesDisplay(hpEntries),
-        hpEntries: hpEntries,
-        totalHitDice: calculateTotalHitDice(statblock.hpEntries)
-    }
-
-    const goodSavingThrows = classInfo.good_saving_throws;
-    const savingThrowBonusesFromClass = getSavingThrowChangesFromClass(newHitDice, goodSavingThrows);
-    //const newBaseAttack =  getBaseAttackBonusByHitDiceAndCreatureType(newHitDice, statblock.creature_type);
-    const newBaseAttack = calculateBaseAttackBonus(newHitDice, classInfo.base_attack_bonus);
-    const baseAttackDiff = newBaseAttack;
-    const meleeAttacks = attackChanges(statblock.melee_attacks, 0, baseAttackDiff);
-    const rangedAttacks = attackChanges(statblock.ranged_attacks, 0, baseAttackDiff, false);
-    const newCombatFields = combatManeuverChanges(statblock, baseAttackDiff, baseAttackDiff);
-
-    if (classInfo.isCaster && classInfo.prepareSpells) {
-        //create prepared Spells info for Prepared Spells Section
-    }
-    if (classInfo.isCaster && !classInfo.prepareSpells) {
-        //create known spells section...these are bards and sorcerers who have spells known and how many per day they can cast of that group.
-        // Spells Known (CL 4th; concentration +9)
-        //     2nd (2/day)— glitterdust (DC 17), sound burst (DC 17)
-        //     1st (4/day)— cure light wounds, disguise self (DC 16), silent image (DC 16), unseen servant
-        //     0 (6/day)— dancing lights, detect magic, ghost sound (DC 15), mage hand, prestidigitation, read magic
-        const spellCastingStatModifier = statBonusFromAbilityScore(statblock.ability_scores[classInfo.primaryAbilityScore]); //TODO: Look this up.
-        const classLevelInfo = classInfo.levels.find(x => x.level === classLevel.level);
-        const spellsKnownCountArray = classLevelInfo.spellsKnown;
-        const spellsByLevel = classInfo.spellsByLevel;
-        const spellsKnownPerLevel = [];
-        spellsKnownCountArray.filter(x => x > 0).forEach((amountOfSpellsKnown, spellLevel) => {
-            if (amountOfSpellsKnown === 0) return;
-            const spellsKnownLevelSection = {
-                level: spellLevel,
-                spellsPerDay: (spellLevel === 0) ? 'infinite' : classLevelInfo.spellsPerDay[spellLevel - 1],
-                saveDc: 10 + spellLevel + spellCastingStatModifier,
-                spells: selectItems(spellsByLevel[spellLevel], amountOfSpellsKnown, generator) //select x spells.
-            }
-            spellsKnownPerLevel.push(spellsKnownLevelSection);
-        });
-        const spellsKnownSectionWrapper = {
-            casterLevel: classLevel.level,
-            concentration: classLevel.level + spellCastingStatModifier, //TODO: 10 + CL + AbilityScoreMod
-            spellsKnownPerLevel //above spellsKnownPerLevel Items...one per spellsKnown entry > 0. 
-        }
-        console.log(spellsKnownSectionWrapper);
-    }
-
-    const classLevelsToApply = classInfo.levels.filter(x => x.level <= classLevel.level);
+const buildClassAbilitiesForLevel = (classInfo, level) => {
+    const classLevelsToApply = classInfo.levels.filter(x => x.level <= level);
     const selectedAbilities = [];
     const classAbilities = classLevelsToApply.map(classLevel => {
         const abilitiesForThisLevel = classLevel.classAbilities.map(x => {
@@ -660,14 +607,88 @@ export const advanceByClassLevel = (statblock, classLevel, generator) => {
         });
         return abilitiesForThisLevel;
     });
+    return classAbilities.flat();
+}
+
+const buildSpellsPreparedSection = (statblock, classInfo, classLevel, generator) => {
+    if (!classInfo.isCaster || !classInfo.prepareSpells) return;
+    //create prepared Spells info for Prepared Spells Section
+    const spellsPrepared = (statblock.spellsPrepared) ? spellsPrepared : [];
+}
+
+const buildSpellsKnownSection = (statblock, classInfo, classLevel, generator) => {
+    if (!classInfo.isCaster || classInfo.prepareSpells) return;
+    const level = classLevel.level;
+    const className = classLevel.className;
+    //create known spells section...these are bards and sorcerers who have spells known and how many per day they can cast of that group.
+    // Spells Known (CL 4th; concentration +9)
+    //     2nd (2/day)— glitterdust (DC 17), sound burst (DC 17)
+    //     1st (4/day)— cure light wounds, disguise self (DC 16), silent image (DC 16), unseen servant
+    //     0 (6/day)— dancing lights, detect magic, ghost sound (DC 15), mage hand, prestidigitation, read magic
+    const spellCastingStatModifier = statBonusFromAbilityScore(statblock.ability_scores[classInfo.primaryAbilityScore]);
+    const classLevelInfo = classInfo.levels.find(x => x.level === level);
+    const spellsKnownCountArray = classLevelInfo.spellsKnown;
+    const spellsByLevel = classInfo.spellsByLevel;
+    const spellsKnownPerLevel = [];
+    spellsKnownCountArray.filter(x => x > 0).forEach((amountOfSpellsKnown, spellLevel) => {
+        if (amountOfSpellsKnown === 0) return;
+        const spellsKnownLevelSection = {
+            level: spellLevel,
+            spellsPerDay: (spellLevel === 0) ? 'infinite' : classLevelInfo.spellsPerDay[spellLevel - 1],
+            saveDc: 10 + spellLevel + spellCastingStatModifier,
+            spells: selectItems(spellsByLevel[spellLevel], amountOfSpellsKnown, generator)
+        }
+        spellsKnownPerLevel.push(spellsKnownLevelSection);
+    });
+    const spellsKnownSectionWrapper = {
+        source: className,
+        casterLevel: level,
+        concentration: level + spellCastingStatModifier,
+        spellsKnownPerLevel //above spellsKnownPerLevel Items...one per spellsKnown entry > 0. 
+    }
+    console.log(spellsKnownSectionWrapper);
+    const spellsKnown = (statblock.spellsKnown) ? spellsKnown.push(spellsKnownSectionWrapper) : [spellsKnownSectionWrapper];
+    return {
+        spellsKnown,
+    }
+}
+
+export const advanceByClassLevel = (statblock, classLevel, generator) => {
+    const classDisplayName = `${classLevel.className} ${classLevel.level}`;
+    const newHitDice = classLevel.level;
+
+    const classInfo = getClass(classLevel.className);
+
+    //hp changes are additive with classes. 
+    const hpEntry = hpChanges(classDisplayName, newHitDice, classInfo.hitDieType, classLevel.className, statBonusFromAbilityScore(statblock.ability_scores.con), statBonusFromAbilityScore(statblock.ability_scores.con), statblock.size);
+    const hpEntries = [...statblock.hpEntries, hpEntry];
+    const hpFields = {
+        hp: hpEntriesDisplay(hpEntries),
+        hpEntries: hpEntries,
+        totalHitDice: calculateTotalHitDice(statblock.hpEntries)
+    }
+
+    const goodSavingThrows = classInfo.good_saving_throws;
+    const savingThrowBonusesFromClass = getSavingThrowChangesFromClass(newHitDice, goodSavingThrows);
+    //const newBaseAttack =  getBaseAttackBonusByHitDiceAndCreatureType(newHitDice, statblock.creature_type);
+    const newBaseAttack = calculateBaseAttackBonus(newHitDice, classInfo.base_attack_bonus);
+    const baseAttackDiff = newBaseAttack;
+    const meleeAttacks = attackChanges(statblock.melee_attacks, 0, baseAttackDiff);
+    const rangedAttacks = attackChanges(statblock.ranged_attacks, 0, baseAttackDiff, false);
+    const newCombatFields = combatManeuverChanges(statblock, baseAttackDiff, baseAttackDiff);
+
+
+    const classAbilities = buildClassAbilitiesForLevel(classInfo, classLevel.level);
     const classAbilitiesToAdd = {
         source: classLevel.className,
-        specialAbilities: classAbilities.flat()
+        specialAbilities: classAbilities
     }
 
     const classAbilitiesWithAlterations = classAbilitiesToAdd.specialAbilities.filter(x => x.fieldToUpdate);
     let classAbilityAdvancements = {
-        ...statblock
+        ...statblock,
+        ...buildSpellsKnownSection(statblock, classInfo, classLevel, generator),
+        ...buildSpellsPreparedSection(statblock, classInfo, classLevel, generator),
     };
     const classAdvancement = classInfo.advancement;
     classAbilitiesWithAlterations.forEach(ca => {
@@ -684,7 +705,7 @@ export const advanceByClassLevel = (statblock, classLevel, generator) => {
             }
         }
     });
-    const existingAdjustments = (statblock.crAdjustments) ? statblock.crAdjustments : [];
+    const existingAdjustments = (classAbilityAdvancements.crAdjustments) ? classAbilityAdvancements.crAdjustments : [];
 
     const classAdvancements = {
         advancements: [...classAbilityAdvancements.advancements, classDisplayName],

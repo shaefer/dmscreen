@@ -36,6 +36,7 @@ export class MonsterFinder extends Component {
     this.handleAbilityScoreSelectChange = this.handleAbilityScoreSelectChange.bind(this);
     this.handleTemplateChange = this.handleTemplateChange.bind(this);
     this.classLevelsChanged = this.classLevelsChanged.bind(this);
+    this.classLevelSelectRef = React.createRef();
   }
 
   handleKeyPress(e) {
@@ -49,6 +50,7 @@ export class MonsterFinder extends Component {
     this.props.abilityScoreAdvancementAction('resetall');
     this.props.templateAdvancementAction('reset');
     this.props.classLevelAdvancementAction('reset');
+    this.classLevelSelectRef.current.reset();
   }
 
   handleHitDiceSelectChange(e) {
@@ -153,7 +155,7 @@ export class MonsterFinder extends Component {
             <AbilityScoreAdvancementSelectMaterial selectedValue={advancement.wis} abilityScore={"Wis"} onSelect={this.handleAbilityScoreSelectChange}/>
             <AbilityScoreAdvancementSelectMaterial selectedValue={advancement.cha} abilityScore={"Cha"} onSelect={this.handleAbilityScoreSelectChange}/>
             {templateSelect}
-            <ClassLevelSelect hideLabel classes={["Barbarian", "Bard"]} onChange={(e) => this.classLevelsChanged(e)}/>
+            <ClassLevelSelect hideLabel classes={["Barbarian", "Bard"]} onChange={(e) => this.classLevelsChanged(e)} ref={this.classLevelSelectRef}/>
           </div>
         </div>
     </div>

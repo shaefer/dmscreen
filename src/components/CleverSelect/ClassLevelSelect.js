@@ -10,6 +10,7 @@ class ClassLevelSelect extends Component {
             undeterminedLevel:1
         }
 
+        this.reset = this.reset.bind(this);
         this.onChange = this.onChange.bind(this);
         this.setUndeterminedLevel = this.setUndeterminedLevel.bind(this);
         this.setClassForLevel = this.setClassForLevel.bind(this);
@@ -17,6 +18,13 @@ class ClassLevelSelect extends Component {
         this.selectClass = this.selectClass.bind(this);
         console.log("CLASSLEVELSELECT", props.classes)
         this.classes = props.classes ? props.classes : ["Barbarian", "Bard", "Cleric", "Druid", "Fighter", "Monk", "Paladin", "Rogue", "Sorcerer", "Wizard", "Adept", "Aristocrat", "Expert", "Warrior"];
+    }
+
+    reset() {
+        this.setState({
+            classLevels: {},
+            undeterminedLevel:1
+        });
     }
 
     removeClass(className) {

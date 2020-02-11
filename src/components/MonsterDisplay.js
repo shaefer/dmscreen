@@ -52,7 +52,7 @@ const characterClassSection = (section) => {
 const animalCompanionSection = (section) => {
     const advancements = (section.sections) ? section.sections : [];
     return (
-    <span>
+    <span key={'animalCompanionSection'}>
         <StatBlockLine><B>{section.name} Companions</B></StatBlockLine>
         <StatBlockLine><B>Starting Statistics: </B> 
             <StatBlockLine inline required data={section.size}><B>Size</B> {section.size}; </StatBlockLine>
@@ -346,7 +346,6 @@ const MonsterDisplay = ({monster}) => {
     const perceptionDisplay = (perceptionSkill) ? perceptionSkill.name + ' '  + withPlus(perceptionSkill.value) : '';
     const senses = (m.senses) ? m.senses.replace(/Perception \+\d+/, perceptionDisplay) : m.senses;
     const acquiredSpecialAttacksBySource = (acquired) => {
-        console.log(acquired);
         if (!acquired || !acquired.length === 0) return '';
         return acquired.map(x => <StatBlockLine key={x.source} data={x} required><B>Special Attacks from {x.source}</B> {x.display}</StatBlockLine>)
     }

@@ -99,7 +99,8 @@ const Fiendish = (statblock) => {
     }
 
     const smiteGood = (monster) => `smite good 1/day as a swift action (adds ${withPlus(statBonusFromAbilityScore(monster.ability_scores.cha))}(CHA) bonus to attack rolls and damage bonus equal to ${withPlus(monster.totalHitDice)}(HD) against good foes; smite persists until target is dead or the fiendish creature rests).`
-    const specialAttacksAcquired = (statblock.specialAttacksAcquired) ? statblock.specialAttacksAcquired : [{sourceName: 'Fiendish Template', displayFn: smiteGood}];
+    const newSpecialAttacks = [{sourceName: 'Fiendish Template', displayFn: smiteGood}];
+    const specialAttacksAcquired = (statblock.specialAttacksAcquired) ? statblock.specialAttacksAcquired.concat(newSpecialAttacks) : newSpecialAttacks;
     //darkvision is usually 60ft. the only creatures with a shorter range havae 30ft. SO replacing the 30ft. and adding if no darkvision is present.
     const advancedNamePrefixes = (statblock.advancedNamePrefixes) ? statblock.advancedNamePrefixes : [];
 

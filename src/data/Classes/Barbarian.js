@@ -1,5 +1,6 @@
 import creatureStatsByType from "../../components/PathfinderMonsterAdvancer/AdvancementTools/creatureStatsByType";
 import * as StatSections from '../GeneralRules/StatSections';
+import barbarianAdvancement from '../../components/ClassLevels/BarbarianAdvancement';
 //creatureStatsByType gives a lot of this information in a fixed format...we'll have to match things up eventually.
 /**
 1st	+1	+2	+0	+0	Fast movement, rage
@@ -226,6 +227,7 @@ const barbarianSpecialAbilities = [
       name: 'Rage Powers',
       specialAbilityType: 'ex',
       selection: 'ragePowers',
+      selectionLevelRestrictions: true,
       description: "As a barbarian gains levels, she learns to use her rage in new ways. Starting at 2nd level, a barbarian gains a rage power. She gains another rage power for every two levels of barbarian attained after 2nd level. A barbarian gains the benefits of rage powers only while raging, and some of these powers require the barbarian to take an action first. Unless otherwise noted, a barbarian cannot select an individual power more than once."
   },
   { 
@@ -284,6 +286,7 @@ const barbarian = {
     "good_saving_throws": ["Fort"], //might like a different format  for the key but this matches creatureStatsByType
     ragePowers: barbarianRagePowers,
     specialAbilities: barbarianSpecialAbilities,
+    advancement: barbarianAdvancement,
     levels: [
         {
           level: 1, 

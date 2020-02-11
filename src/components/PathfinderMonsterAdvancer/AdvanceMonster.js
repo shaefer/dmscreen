@@ -9,11 +9,16 @@ import Skills from './AdvancementTools/Skills'
 import { getBaseAttackBonusByHitDiceAndCreatureType, calculateBaseAttackBonus } from '../../monsteradvancer/BaseAttackBonusCalculator'
 import { TemplatesMap } from './AdvancementTools/Templates'
 import barbarian from '../../data/Classes/Barbarian'
-import BarbarianAdvancement from '../ClassLevels/BarbarianAdvancement'
+import bard from '../../data/Classes/Bard'
+import {rollDice} from '../../utils/DiceBag'
+
+import seedrandom from 'seedrandom';
+
 
 //There are a few fields we add as we go such as advancements that each stage might add to. If we could start with the assupmtion that that field is initialized properly the spread operator could be used with less coersion. 
 //We probably should just do an initial spread that initializes fields that aren't always present that we would like to count on for advancement.
-export const advanceMonster = (statblock, advancement) => {
+//TOOD: Decide if we want to have a single generator for everything for a set of generators for each section to make it easier to randomly generate but customize without saving.
+export const advanceMonster = (statblock, advancement, generator = new seedrandom("baseSeed")) => {
     let advancedCreature = statblock;
     advancedCreature = {
         ...advancedCreature,
@@ -66,7 +71,7 @@ export const advanceMonster = (statblock, advancement) => {
 
     if (advancement.classLevels && advancement.classLevels.length > 0) {
         advancement.classLevels.forEach(classLevel => {
-            const advancedFromClassLevel = advanceByClassLevel(advancedCreature, classLevel);
+            const advancedFromClassLevel = advanceByClassLevel(advancedCreature, classLevel, generator);
             advancedCreature = {
                 ...advancedCreature,
                 ...advancedFromClassLevel
@@ -90,7 +95,8 @@ export const advanceMonster = (statblock, advancement) => {
     const additionalSpecialAttacks = (advancedCreature.specialAttacksAcquired) ? advancedCreature.specialAttacksAcquired : [];
     advancedCreature = {
         ...advancedCreature,
-        specialAttacksAcquired: additionalSpecialAttacks.map(x => x.displayFn(advancedCreature)).sort().join(', ')
+        //specialAttacksAcquired: additionalSpecialAttacks.map(x => x.displayFn(advancedCreature)).sort().join(', ')
+        specialAttacksAcquired: acquiredSpecialAttacks(advancedCreature, additionalSpecialAttacks)
     }
     //TODO: resolve all function displays (we will have displays that rely on final data from the creature after all advancements. Such as special attacks that add damage based on total HD.)
     
@@ -100,6 +106,27 @@ export const advanceMonster = (statblock, advancement) => {
         ...advancedCreature,
         advancedName: `${namePrefix}${advancedCreature.name}${displayName(advancedCreature.advancements)}`,
     };
+}
+
+//https://gist.github.com/robmathers/1830ce09695f759bf2c4df15c29dd22d
+const groupBy = (xs, key) => {
+    return xs.reduce((rv, x) => {
+        (rv[x[key]] = rv[x[key]] || []).push(x);
+        return rv;
+    }, {});
+};
+
+const acquiredSpecialAttacks = (monster, acquired) => {
+    if (!acquired || acquired.length === 0) return '';
+    const groupedBySource = groupBy(acquired, 'sourceName');
+    const sourceKeys = Object.keys(groupedBySource);
+    const specialAttacksBySource = sourceKeys.map(key => {
+        return {
+            source: key, 
+            display: groupedBySource[key].map(x => x.displayFn(monster)).sort().join(', ')
+        };
+    });
+    return specialAttacksBySource;
 }
 
 const displayName = (advancements) => {
@@ -520,7 +547,9 @@ export const advanceByTemplate = (statblock, template) => {
 }
 
 const getClass = (className) => {
-    return barbarian;
+    if (className === 'Barbarian')
+        return barbarian;
+    else return bard;
 }
 
 const hpEntriesDisplay = (hpEntries) => {
@@ -530,7 +559,102 @@ const hpEntriesDisplay = (hpEntries) => {
     return `${totalAvgHp} (${hpEntries.map(x => x.hdDisplay).join(", ")})`;
 }
 
-export const advanceByClassLevel = (statblock, classLevel) => {
+const selectItems = (itemList, amount, generator, allowDuplicates = false) => {
+    const selectableItems = itemList.slice(0);
+    const selectedItems = [];
+    for(let i = 1; i <= amount; i++) {
+        const index = rollDice(1, selectableItems.length, generator).total - 1;
+        const item = selectableItems[index];
+        selectedItems.push(item);
+        selectableItems.splice(index, 1);
+    }
+    return selectedItems;
+}
+
+const buildClassAbilitiesForLevel = (classInfo, level) => {
+    const classLevelsToApply = classInfo.levels.filter(x => x.level <= level);
+    const selectedAbilities = [];
+    const classAbilities = classLevelsToApply.map(classLevel => {
+        const abilitiesForThisLevel = classLevel.classAbilities.map(x => {
+            const fullAbility = classInfo.specialAbilities.find(sa => {
+                return sa.name === x;
+            });
+            if (!fullAbility)
+                console.error("FULL ABILITY MISSING", x)
+            if (fullAbility.selection) {
+                const validForLevelAbilities = (fullAbility.selectionLevelRestrictions) ? classInfo[fullAbility.selection].filter(x => classLevel.level >= x.minLevel) : classInfo[fullAbility.selection];
+                const validAbilities = validForLevelAbilities.filter(x => !selectedAbilities.map(x => x.name).includes(x.name) || (x.multipleSelection))
+                const preferredAbilities = (fullAbility.selectionLevelRestrictions && classLevel.level >= 8) ? validAbilities.filter(x => x.minLevel >= 8) : validAbilities; //basic preference for high level powers at 8th or above
+                let selectedAbility = preferredAbilities[Math.floor(Math.random() * preferredAbilities.length)];
+                
+                //The prereq for Night Vision is LowLight vision rage power or racial low light...this is not checking for racial as well...
+                if (selectedAbility.prerequisite && (!selectedAbilities.map(x => x.name).includes(selectedAbility.prerequisite))) {
+                    //has a prereq and we don't have it yet....so instead of this selection assign the prereq.
+                    selectedAbility = validAbilities.find(x => x.name === selectedAbility.prerequisite);
+                }
+                selectedAbilities.push(selectedAbility);
+                return {
+                    ...fullAbility,
+                    ...selectedAbility,
+                    level: classLevel.level,
+                    name: `${fullAbility.name} - ${selectedAbility.name}`
+                }
+            } else {
+                return {
+                    ...fullAbility,
+                    level: classLevel.level
+                }
+            }
+        });
+        return abilitiesForThisLevel;
+    });
+    return classAbilities.flat();
+}
+
+const buildSpellsPreparedSection = (statblock, classInfo, classLevel, generator) => {
+    if (!classInfo.isCaster || !classInfo.prepareSpells) return;
+    //create prepared Spells info for Prepared Spells Section
+    const spellsPrepared = (statblock.spellsPrepared) ? spellsPrepared : [];
+}
+
+const buildSpellsKnownSection = (statblock, classInfo, classLevel, generator) => {
+    if (!classInfo.isCaster || classInfo.prepareSpells) return;
+    const level = classLevel.level;
+    const className = classLevel.className;
+    //create known spells section...these are bards and sorcerers who have spells known and how many per day they can cast of that group.
+    // Spells Known (CL 4th; concentration +9)
+    //     2nd (2/day)— glitterdust (DC 17), sound burst (DC 17)
+    //     1st (4/day)— cure light wounds, disguise self (DC 16), silent image (DC 16), unseen servant
+    //     0 (6/day)— dancing lights, detect magic, ghost sound (DC 15), mage hand, prestidigitation, read magic
+    const spellCastingStatModifier = statBonusFromAbilityScore(statblock.ability_scores[classInfo.primaryAbilityScore]);
+    const classLevelInfo = classInfo.levels.find(x => x.level === level);
+    const spellsKnownCountArray = classLevelInfo.spellsKnown;
+    const spellsByLevel = classInfo.spellsByLevel;
+    const spellsKnownPerLevel = [];
+    spellsKnownCountArray.filter(x => x > 0).forEach((amountOfSpellsKnown, spellLevel) => {
+        if (amountOfSpellsKnown === 0) return;
+        const spellsKnownLevelSection = {
+            level: spellLevel,
+            spellsPerDay: (spellLevel === 0) ? 'infinite' : classLevelInfo.spellsPerDay[spellLevel - 1],
+            saveDc: 10 + spellLevel + spellCastingStatModifier,
+            spells: selectItems(spellsByLevel[spellLevel], amountOfSpellsKnown, generator)
+        }
+        spellsKnownPerLevel.push(spellsKnownLevelSection);
+    });
+    const spellsKnownSectionWrapper = {
+        source: className,
+        casterLevel: level,
+        concentration: level + spellCastingStatModifier,
+        spellsKnownPerLevel //above spellsKnownPerLevel Items...one per spellsKnown entry > 0. 
+    }
+    console.log(spellsKnownSectionWrapper);
+    const spellsKnown = (statblock.spellsKnown) ? spellsKnown.push(spellsKnownSectionWrapper) : [spellsKnownSectionWrapper];
+    return {
+        spellsKnown,
+    }
+}
+
+export const advanceByClassLevel = (statblock, classLevel, generator) => {
     const classDisplayName = `${classLevel.className} ${classLevel.level}`;
     const newHitDice = classLevel.level;
 
@@ -553,57 +677,36 @@ export const advanceByClassLevel = (statblock, classLevel) => {
     const meleeAttacks = attackChanges(statblock.melee_attacks, 0, baseAttackDiff);
     const rangedAttacks = attackChanges(statblock.ranged_attacks, 0, baseAttackDiff, false);
     const newCombatFields = combatManeuverChanges(statblock, baseAttackDiff, baseAttackDiff);
-    const classLevelsToApply = classInfo.levels.filter(x => x.level <= classLevel.level);
-    const selectedAbilities = [];
-    const classAbilities = classLevelsToApply.map(classLevel => {
-        const abilitiesForThisLevel = classLevel.classAbilities.map(x => {
-            const fullAbility = classInfo.specialAbilities.find(sa => {
-                return sa.name === x;
-            });
-            if (fullAbility.selection) {
-                const validForLevelAbilities = classInfo[fullAbility.selection].filter(x => classLevel.level >= x.minLevel);
-                const validAbilities = validForLevelAbilities.filter(x => !selectedAbilities.map(x => x.name).includes(x.name) || (x.multipleSelection))
-                const preferredAbilities = (classLevel.level >= 8) ? validAbilities.filter(x => x.minLevel >= 8) : validAbilities; //basic preference for high level powers at 8th or above
-                let selectedAbility = preferredAbilities[Math.floor(Math.random() * preferredAbilities.length)];
-                
-                //The prereq for Night Vision is LowLight vision rage power or racial low light...this is not checking for racial as well...
-                if (selectedAbility.prerequisite && (!selectedAbilities.map(x => x.name).includes(selectedAbility.prerequisite))) {
-                    //has a prereq and we don't have it yet....so instead of this selection assign the prereq.
-                    selectedAbility = validAbilities.find(x => x.name === selectedAbility.prerequisite);
-                }
-                selectedAbilities.push(selectedAbility);
-                return {
-                    ...selectedAbility,
-                    level: classLevel.level,
-                    displayName: `${selectedAbility.name}(${fullAbility.name}-${classInfo.abbreviation}${classLevel.level})`
-                }
-            } else {
-                return {
-                    ...fullAbility,
-                    level: classLevel.level
-                }
-            }
-        });
-        return abilitiesForThisLevel;
-    });
+
+
+    const classAbilities = buildClassAbilitiesForLevel(classInfo, classLevel.level);
     const classAbilitiesToAdd = {
         source: classLevel.className,
-        specialAbilities: classAbilities.flat()
+        specialAbilities: classAbilities
     }
 
     const classAbilitiesWithAlterations = classAbilitiesToAdd.specialAbilities.filter(x => x.fieldToUpdate);
     let classAbilityAdvancements = {
-        ...statblock
+        ...statblock,
+        ...buildSpellsKnownSection(statblock, classInfo, classLevel, generator),
+        ...buildSpellsPreparedSection(statblock, classInfo, classLevel, generator),
     };
-    const classAdvancement = BarbarianAdvancement;
+    const classAdvancement = classInfo.advancement;
     classAbilitiesWithAlterations.forEach(ca => {
         const classAdvancementFn = classAdvancement[ca.name];
         if (classAdvancementFn) {
             const field = classAdvancementFn(classAbilityAdvancements, classLevel.level, classAbilitiesWithAlterations);
-            classAbilityAdvancements[ca.fieldToUpdate] = field;
+            if (ca.fieldToUpdate === 'acquiredSpecialAttacks') {
+                //Currently class abilities that add special attacks add them to a new property acquiredSpecialAttacks (like a template) instead of trying to alter special_attacks field. This is due to special attacks being a string rather than an array of special attack objects. Using this approach we expect the output of the classAbilityFunction to be a display Function that will be resolved near the end of advancement
+                const newSpecialAttack = [{sourceName: classLevel.className + " Class", displayFn: field}];
+                const specialAttacksAcquired = (classAbilityAdvancements.specialAttacksAcquired) ? classAbilityAdvancements.specialAttacksAcquired.concat(newSpecialAttack) : newSpecialAttack;
+                classAbilityAdvancements.specialAttacksAcquired = specialAttacksAcquired;
+            } else {
+                classAbilityAdvancements[ca.fieldToUpdate] = field;
+            }
         }
     });
-    const existingAdjustments = (statblock.crAdjustments) ? statblock.crAdjustments : [];
+    const existingAdjustments = (classAbilityAdvancements.crAdjustments) ? classAbilityAdvancements.crAdjustments : [];
 
     const classAdvancements = {
         advancements: [...classAbilityAdvancements.advancements, classDisplayName],
@@ -627,6 +730,7 @@ export const advanceByClassLevel = (statblock, classLevel) => {
     }
 
     const statPointsPer4HitDiceAdded = Math.floor(newHitDice/4);
+    //TODO: for class level ability score changes we should probably assign to specific class stat.
     const abilityScoreChange = assignAbilityScoreChangeToHighestStat(classAbilityAdvancements.ability_scores, statPointsPer4HitDiceAdded, `${classLevel.className} ${classLevel.level}`);
     const statAdvancements = advanceByAbilityScores(classAdvancedCreature, [abilityScoreChange], true);
     return {

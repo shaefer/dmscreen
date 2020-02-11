@@ -52,7 +52,7 @@ const characterClassSection = (section) => {
 const animalCompanionSection = (section) => {
     const advancements = (section.sections) ? section.sections : [];
     return (
-    <span>
+    <span key={'animalCompanionSection'}>
         <StatBlockLine><B>{section.name} Companions</B></StatBlockLine>
         <StatBlockLine><B>Starting Statistics: </B> 
             <StatBlockLine inline required data={section.size}><B>Size</B> {section.size}; </StatBlockLine>
@@ -127,6 +127,61 @@ const spells = (m) => {
             console.error("Couldn't map m.spells some assumption about the data setup is incorrect.", m.spells);
             return "";
         }
+    });
+}
+
+const asOrdinal = (i) => {
+    var j = i % 10,
+        k = i % 100;
+    if (j == 1 && k != 11) {
+        return i + "st";
+    }
+    if (j == 2 && k != 12) {
+        return i + "nd";
+    }
+    if (j == 3 && k != 13) {
+        return i + "rd";
+    }
+    return i + "th";
+}
+const spellsKnown = (spellsKnownSections) => {
+    if (!spellsKnownSections || spellsKnownSections.length === 0) return '';
+    // const spellsKnownSectionWrapper = {
+    //     source: classInfo.name,
+    //     casterLevel: level,
+    //     concentration: level + spellCastingStatModifier,
+    //     spellsKnownPerLevel //above spellsKnownPerLevel Items...one per spellsKnown entry > 0. 
+    // }
+    return spellsKnownSections.map(spellsKnown => {
+        // Spells Known (CL 4th; concentration +9)
+        //     2nd (2/day)— glitterdust (DC 17), sound burst (DC 17)
+        //     1st (4/day)— cure light wounds, disguise self (DC 16), silent image (DC 16), unseen servant
+        //     0 (6/day)— dancing lights, detect magic, ghost sound (DC 15), mage hand, prestidigitation, read magic
+        const spellsByLevel = spellsKnown.spellsKnownPerLevel.reverse();
+        // const spellsKnownLevelSection = {
+        //     level: spellLevel,
+        //     spellsPerDay: (spellLevel === 0) ? 'infinite' : classLevelInfo.spellsPerDay[spellLevel - 1],
+        //     saveDc: 10 + spellLevel + spellCastingStatModifier,
+        //     spells: selectItems(spellsByLevel[spellLevel], amountOfSpellsKnown, generator)
+        // }
+        const perDay = (val) => {
+            if (val === 'infinite') return '(at will)';
+            return `(${val}/day)`;
+        }
+        const spellLevelSection = spellsByLevel.map(sl => {
+            const prefix = `${asOrdinal(sl.level)} ${perDay(sl.spellsPerDay)}-`;
+            const spellString = sl.spells.map(s => {
+                const savingThrow = (s.saving_throw.startsWith('none')) ? '' : ` (DC ${sl.saveDc})`;
+                return <span key={s.name}><span style={{fontStyle:'italic'}}>{s.name.toLowerCase()}</span>{savingThrow}</span>
+            }).reduce((prev, curr) => [prev, ', ', curr]); 
+            return <div key={prefix}>{prefix}{spellString}</div>;
+        });
+        return (
+        <React.Fragment key={spellsKnown.source+spellsKnown.casterLevel}>
+            <StatBlockLine inline required data={spellsKnown}><B>{`${spellsKnown.source} Spells Known`}</B> {`(CL ${asOrdinal(spellsKnown.casterLevel)}; concentration ${withPlus(spellsKnown.concentration)})`}</StatBlockLine>
+            <div style={{marginLeft:'1em'}}>{spellLevelSection}</div>
+        </React.Fragment>
+        );
     });
 }
 
@@ -290,6 +345,11 @@ const MonsterDisplay = ({monster}) => {
     const perceptionSkill = m.skills.find(x => x.name.trim() === 'Perception');
     const perceptionDisplay = (perceptionSkill) ? perceptionSkill.name + ' '  + withPlus(perceptionSkill.value) : '';
     const senses = (m.senses) ? m.senses.replace(/Perception \+\d+/, perceptionDisplay) : m.senses;
+    const acquiredSpecialAttacksBySource = (acquired) => {
+        if (!acquired || !acquired.length === 0) return '';
+        return acquired.map(x => <StatBlockLine key={x.source} data={x} required><B>Special Attacks from {x.source}</B> {x.display}</StatBlockLine>)
+    }
+    //<StatBlockLine data={m.specialAttacksAcquired} required><B>Additional Special Attacks</B> {m.specialAttacksAcquired}</StatBlockLine>
     return (
         <div className="monsterDisplay">
             <div className="sbLine sbName">
@@ -313,8 +373,9 @@ const MonsterDisplay = ({monster}) => {
             <StatBlockLine data={rangedAttackDisplay} required><B>Ranged</B> {rangedAttackDisplay}</StatBlockLine>
             {spaceAndReach(m)}
             <StatBlockLine data={m.special_attacks} required><B>Special Attacks</B> {m.special_attacks}</StatBlockLine>
-            <StatBlockLine data={m.specialAttacksAcquired} required><B>Additional Special Attacks</B> {m.specialAttacksAcquired}</StatBlockLine>
+            {acquiredSpecialAttacksBySource(m.specialAttacksAcquired)}
             {spells(m)}
+            {spellsKnown(m.spellsKnown)}
 
             <StatSectionHeader>statistics</StatSectionHeader>
             <StatBlockLine>{abilityScoreDisplay}</StatBlockLine>

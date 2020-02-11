@@ -1,6 +1,17 @@
 import * as StatSections from '../GeneralRules/StatSections';
 import bardAdvancement from '../../components/ClassLevels/BardAdvancement';
 import {bardSpells} from './BardSpells';
+const bardPerformSkills = [
+  {name:'Act', perform: 'Act', replace: ['Bluff', 'Disguise']},
+  {name:'Comedy', perform: 'Comedy', replace: ['Bluff', 'Intimidate']},
+  {name:'Dance', perform: 'Dance', replace: ['Acrobatics', 'Fly']},
+  {name:'Keyboard Instruments', perform: 'Keyboard Instruments', replace: ['Diplomacy', 'Intimidate']},
+  {name:'Oratory', perform: 'Oratory', replace: ['Diplomacy', 'Sense Motive']},
+  {name:'Percussion', perform: 'Percussion', replace: ['Handle Animal', 'Intimidate']},
+  {name:'Sing', perform: 'Sing', replace: ['Bluff', 'Sense Motive']},
+  {name:'String', perform: 'String', replace: ['Bluff', 'Diplomacy']},
+  {name:'Wind', perform: 'Wind', replace: ['Diplomacy', 'Handle Animal']}
+];
 const specialAbilities = [
     {
         "description": "A bard is proficient with all simple weapons, plus the longsword, rapier, sap, short sword, shortbow, and whip. Bards are also proficient with light armor and shields (except tower shields). A bard can cast bard spells while wearing light armor and use a shield without incurring the normal arcane spell failure chance. Like any other arcane spellcaster, a bard wearing medium or heavy armor incurs a chance of arcane spell failure if the spell in question has a somatic component. A multiclass bard still incurs the normal arcane spell failure chance for arcane spells received from other classes.", 
@@ -163,7 +174,8 @@ const specialAbilities = [
         "url": "pfsrd://Core Rulebook/Classes/Bard/Class Features/Versatile Performance", 
         "specialAbilityType": "ex",
         "source": "Core Rulebook", 
-        "type": "ability"
+        "type": "ability",
+        selection: 'bardPerformSkills'
     }, 
     {
         "description": "At 2nd level, the bard becomes resistant to the bardic performance of others, and to sonic effects in general. The bard gains a +4 bonus on saving throws made against bardic performance, sonic, and language-dependent effects. ", 
@@ -220,6 +232,7 @@ const bard = {
     "base_attack_bonus": "medium",  //might like a different format  for the key but this matches creatureStatsByType
     "good_saving_throws": ["Ref", "Will"], //might like a different format  for the key but this matches creatureStatsByType
     specialAbilities: specialAbilities,
+    bardPerformSkills: bardPerformSkills,
     advancement: bardAdvancement,
     isCaster: true,
     prepareSpells: false,

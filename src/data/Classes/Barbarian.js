@@ -227,6 +227,7 @@ const barbarianSpecialAbilities = [
       name: 'Rage Powers',
       specialAbilityType: 'ex',
       selection: 'ragePowers',
+      selectionLevelRestrictions: true,
       description: "As a barbarian gains levels, she learns to use her rage in new ways. Starting at 2nd level, a barbarian gains a rage power. She gains another rage power for every two levels of barbarian attained after 2nd level. A barbarian gains the benefits of rage powers only while raging, and some of these powers require the barbarian to take an action first. Unless otherwise noted, a barbarian cannot select an individual power more than once."
   },
   { 

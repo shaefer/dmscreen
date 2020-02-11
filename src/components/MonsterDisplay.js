@@ -169,16 +169,15 @@ const spellsKnown = (spellsKnownSections) => {
             return `(${val}/day)`;
         }
         const spellLevelSection = spellsByLevel.map(sl => {
-            
             const prefix = `${asOrdinal(sl.level)} ${perDay(sl.spellsPerDay)}-`;
             const spellString = sl.spells.map(s => {
                 const savingThrow = (s.saving_throw.startsWith('none')) ? '' : ` (DC ${sl.saveDc})`;
-            return <span><span style={{fontStyle:'italic'}}>{s.name.toLowerCase()}</span>{savingThrow}</span>
+                return <span key={s.name}><span style={{fontStyle:'italic'}}>{s.name.toLowerCase()}</span>{savingThrow}</span>
             }).reduce((prev, curr) => [prev, ', ', curr]); 
-            return <div>{prefix}{spellString}</div>;
+            return <div key={prefix}>{prefix}{spellString}</div>;
         });
         return (
-        <React.Fragment>
+        <React.Fragment key={spellsKnown.source+spellsKnown.casterLevel}>
             <StatBlockLine inline required data={spellsKnown}><B>{`${spellsKnown.source} Spells Known`}</B> {`(CL ${asOrdinal(spellsKnown.casterLevel)}; concentration ${withPlus(spellsKnown.concentration)})`}</StatBlockLine>
             <div style={{marginLeft:'1em'}}>{spellLevelSection}</div>
         </React.Fragment>

@@ -561,14 +561,14 @@ const hpEntriesDisplay = (hpEntries) => {
 
 const selectItems = (itemList, amount, generator, allowDuplicates = false) => {
     const selectableItems = itemList.slice(0);
-    const selectedItems = new Set();
-    for(let i = 0; i<amount; i++) {
+    const selectedItems = [];
+    for(let i = 1; i <= amount; i++) {
         const index = rollDice(1, selectableItems.length, generator).total - 1;
         const item = selectableItems[index];
-        selectedItems.add(item);
+        selectedItems.push(item);
         selectableItems.splice(index, 1);
     }
-    return Array.from(selectedItems);
+    return selectedItems;
 }
 
 const buildClassAbilitiesForLevel = (classInfo, level) => {
@@ -582,9 +582,9 @@ const buildClassAbilitiesForLevel = (classInfo, level) => {
             if (!fullAbility)
                 console.error("FULL ABILITY MISSING", x)
             if (fullAbility.selection) {
-                const validForLevelAbilities = classInfo[fullAbility.selection].filter(x => classLevel.level >= x.minLevel);
+                const validForLevelAbilities = (fullAbility.selectionLevelRestrictions) ? classInfo[fullAbility.selection].filter(x => classLevel.level >= x.minLevel) : classInfo[fullAbility.selection];
                 const validAbilities = validForLevelAbilities.filter(x => !selectedAbilities.map(x => x.name).includes(x.name) || (x.multipleSelection))
-                const preferredAbilities = (classLevel.level >= 8) ? validAbilities.filter(x => x.minLevel >= 8) : validAbilities; //basic preference for high level powers at 8th or above
+                const preferredAbilities = (fullAbility.selectionLevelRestrictions && classLevel.level >= 8) ? validAbilities.filter(x => x.minLevel >= 8) : validAbilities; //basic preference for high level powers at 8th or above
                 let selectedAbility = preferredAbilities[Math.floor(Math.random() * preferredAbilities.length)];
                 
                 //The prereq for Night Vision is LowLight vision rage power or racial low light...this is not checking for racial as well...
@@ -594,9 +594,10 @@ const buildClassAbilitiesForLevel = (classInfo, level) => {
                 }
                 selectedAbilities.push(selectedAbility);
                 return {
+                    ...fullAbility,
                     ...selectedAbility,
                     level: classLevel.level,
-                    displayName: `${selectedAbility.name}(${fullAbility.name}-${classInfo.abbreviation}${classLevel.level})`
+                    name: `${fullAbility.name} - ${selectedAbility.name}`
                 }
             } else {
                 return {

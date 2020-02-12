@@ -2,7 +2,8 @@ import { statBonusFromAbilityScore, racialFeatCount, withPlus,
     assignAbilityScoreChangeToHighestStat, applyAbilityScoreChanges,
     getSavingThrowChangesFromHitDice, applyChangesToSavingThrows, hdDisplay,
     getSavingThrowChangesFromStatChanges, getStatBonusDifference, displayArmorClass,
-    calcTotalAc, calcFlatFootedAc, calcTouchAc, calcAvgHitPoints, getConstructBonusHitPoints, getSavingThrowChangesFromClass } from './AdvancementUtils'
+    calcTotalAc, calcFlatFootedAc, calcTouchAc, calcAvgHitPoints, getConstructBonusHitPoints, getSavingThrowChangesFromClass,
+    assignAbilityScoreChangeToStat, getStatByKey } from './AdvancementUtils'
 import { calculateCR, roundDecimal } from './AdvancementTools/ChallengeRatingCalculator'
 import {MonsterSizes, MonsterSizeChanges, sumSizeChanges} from './AdvancementTools/MonsterSizes'
 import Skills from './AdvancementTools/Skills'
@@ -730,8 +731,9 @@ export const advanceByClassLevel = (statblock, classLevel, generator) => {
     }
 
     const statPointsPer4HitDiceAdded = Math.floor(newHitDice/4);
-    //TODO: for class level ability score changes we should probably assign to specific class stat.
-    const abilityScoreChange = assignAbilityScoreChangeToHighestStat(classAbilityAdvancements.ability_scores, statPointsPer4HitDiceAdded, `${classLevel.className} ${classLevel.level}`);
+    const primaryAbilityScoreEntry = getStatByKey(classAdvancedCreature.ability_scores, classInfo.primaryAbilityScore);
+    const abilityScoreChange = assignAbilityScoreChangeToStat(primaryAbilityScoreEntry, statPointsPer4HitDiceAdded, `${classLevel.className} ${classLevel.level}`);
+    console.log("ABILITY SCORE CHANGE", classInfo.primaryAbilityScore, abilityScoreChange);
     const statAdvancements = advanceByAbilityScores(classAdvancedCreature, [abilityScoreChange], true);
     return {
         ...classAdvancedCreature,

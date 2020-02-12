@@ -284,6 +284,7 @@ const barbarian = {
     skillRanksPerLevel: 4,
     "base_attack_bonus": "fast",  //might like a different format  for the key but this matches creatureStatsByType
     "good_saving_throws": ["Fort"], //might like a different format  for the key but this matches creatureStatsByType
+    primaryAbilityScore: 'str',
     ragePowers: barbarianRagePowers,
     specialAbilities: barbarianSpecialAbilities,
     advancement: barbarianAdvancement,

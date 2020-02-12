@@ -32,6 +32,11 @@ const getHighestStat = (abilityScores) => {
     return highestStat;
 }
 
+export const getStatByKey = (abilityScores, key) => {
+    const stats = Object.keys(abilityScores);
+    return [key, abilityScores[key]];
+}
+
 export const increaseHighestStat = (abilityScores, statChange, reason) => {
     //TODO: Ensure we have polyfilled Object.entries for getHighestStat.
     const highestStat = getHighestStat(abilityScores);
@@ -48,7 +53,11 @@ export const increaseHighestStat = (abilityScores, statChange, reason) => {
 export const assignAbilityScoreChangeToHighestStat = (abilityScores, statChange, reason) => {
     //TODO: Ensure we have polyfilled.
     const highestStat = getHighestStat(abilityScores);
-    const newAbilityScore = {[highestStat[0]]: statChange}
+    return assignAbilityScoreChangeToStat(highestStat, statChange, reason);
+}
+
+export const assignAbilityScoreChangeToStat = (statToChange, statChange, reason) => {
+    const newAbilityScore = {[statToChange[0]]: statChange}
     const emptyAbilityScores = {
         str:0,dex:0,con:0,int:0,wis:0,cha:0,
         reason

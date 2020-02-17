@@ -144,26 +144,12 @@ const asOrdinal = (i) => {
     }
     return i + "th";
 }
-const spellsKnown = (spellsKnownSections) => {
-    if (!spellsKnownSections || spellsKnownSections.length === 0) return '';
-    // const spellsKnownSectionWrapper = {
-    //     source: classInfo.name,
-    //     casterLevel: level,
-    //     concentration: level + spellCastingStatModifier,
-    //     spellsKnownPerLevel //above spellsKnownPerLevel Items...one per spellsKnown entry > 0. 
-    // }
-    return spellsKnownSections.map(spellsKnown => {
-        // Spells Known (CL 4th; concentration +9)
-        //     2nd (2/day)— glitterdust (DC 17), sound burst (DC 17)
-        //     1st (4/day)— cure light wounds, disguise self (DC 16), silent image (DC 16), unseen servant
-        //     0 (6/day)— dancing lights, detect magic, ghost sound (DC 15), mage hand, prestidigitation, read magic
-        const spellsByLevel = spellsKnown.spellsKnownPerLevel.reverse();
-        // const spellsKnownLevelSection = {
-        //     level: spellLevel,
-        //     spellsPerDay: (spellLevel === 0) ? 'infinite' : classLevelInfo.spellsPerDay[spellLevel - 1],
-        //     saveDc: 10 + spellLevel + spellCastingStatModifier,
-        //     spells: selectItems(spellsByLevel[spellLevel], amountOfSpellsKnown, generator)
-        // }
+
+const spellsKnownOrPrepared = (spellsSections, spellsPrepared = true) => {
+    const spellsByLevelField = (spellsPrepared) ? 'spellsPreparedPerLevel' : 'spellsKnownPerLevel';
+    if (!spellsSections || spellsSections.length === 0) return '';
+    return spellsSections.map(spells => {
+        const spellsByLevel = spells[spellsByLevelField].reverse();
         const perDay = (val) => {
             if (val === 'infinite') return '(at will)';
             return `(${val}/day)`;
@@ -176,9 +162,10 @@ const spellsKnown = (spellsKnownSections) => {
             }).reduce((prev, curr) => [prev, ', ', curr]); 
             return <div key={prefix}>{prefix}{spellString}</div>;
         });
+        const title = (spellsPrepared) ? 'Prepared' : 'Known'
         return (
-        <React.Fragment key={spellsKnown.source+spellsKnown.casterLevel}>
-            <StatBlockLine inline required data={spellsKnown}><B>{`${spellsKnown.source} Spells Known`}</B> {`(CL ${asOrdinal(spellsKnown.casterLevel)}; concentration ${withPlus(spellsKnown.concentration)})`}</StatBlockLine>
+        <React.Fragment key={spells.source+spells.casterLevel}>
+            <StatBlockLine inline required data={spells}><B>{`${spells.source} Spells ${title}`}</B> {`(CL ${asOrdinal(spells.casterLevel)}; concentration ${withPlus(spells.concentration)})`}</StatBlockLine>
             <div style={{marginLeft:'1em'}}>{spellLevelSection}</div>
         </React.Fragment>
         );
@@ -264,9 +251,10 @@ const displayDamage = (damageDetails => {
 });
 
 const renderClassLevelAbility = (ca) => {
+    const saType = (ca.specialAbilityType) ? <span> (<span style={{textTransform: 'capitalize'}}>{ca.specialAbilityType}</span>)</span> : '';
     return (
         <StatBlockLine key={ca.name}>
-            <B>{ca.name} (<span style={{textTransform: 'capitalize'}}>{ca.specialAbilityType}</span>): </B>
+            <B>{ca.name}{saType}: </B>
             {ca.description}
         </StatBlockLine>
     );
@@ -375,7 +363,8 @@ const MonsterDisplay = ({monster}) => {
             <StatBlockLine data={m.special_attacks} required><B>Special Attacks</B> {m.special_attacks}</StatBlockLine>
             {acquiredSpecialAttacksBySource(m.specialAttacksAcquired)}
             {spells(m)}
-            {spellsKnown(m.spellsKnown)}
+            {spellsKnownOrPrepared(m.spellsKnown, false)}
+            {spellsKnownOrPrepared(m.spellsPrepared, true)}
 
             <StatSectionHeader>statistics</StatSectionHeader>
             <StatBlockLine>{abilityScoreDisplay}</StatBlockLine>

@@ -11,6 +11,7 @@ import { getBaseAttackBonusByHitDiceAndCreatureType, calculateBaseAttackBonus } 
 import { TemplatesMap } from './AdvancementTools/Templates'
 import barbarian from '../../data/Classes/Barbarian'
 import bard from '../../data/Classes/Bard'
+import cleric from '../../data/Classes/Cleric'
 import {rollDice} from '../../utils/DiceBag'
 
 import seedrandom from 'seedrandom';
@@ -550,7 +551,10 @@ export const advanceByTemplate = (statblock, template) => {
 const getClass = (className) => {
     if (className === 'Barbarian')
         return barbarian;
-    else return bard;
+    if (className === 'Bard')
+        return bard;
+    if (className === 'Cleric')
+        return cleric;
 }
 
 const hpEntriesDisplay = (hpEntries) => {
@@ -612,47 +616,40 @@ const buildClassAbilitiesForLevel = (classInfo, level) => {
     return classAbilities.flat();
 }
 
-const buildSpellsPreparedSection = (statblock, classInfo, classLevel, generator) => {
-    if (!classInfo.isCaster || !classInfo.prepareSpells) return;
+const buildSpellsKnownOrPreparedSection = (statblock, classInfo, classLevel, generator) => {
+    if (!classInfo.isCaster) return;
     //create prepared Spells info for Prepared Spells Section
-    const spellsPrepared = (statblock.spellsPrepared) ? spellsPrepared : [];
-}
-
-const buildSpellsKnownSection = (statblock, classInfo, classLevel, generator) => {
-    if (!classInfo.isCaster || classInfo.prepareSpells) return;
+    const spellsField = (classInfo.prepareSpells) ? 'spellsPerDay' : 'spellsKnown';
+    const spellsFieldName = (classInfo.prepareSpells) ? 'spellsPreparedPerLevel': 'spellsKnownPerLevel';
     const level = classLevel.level;
     const className = classLevel.className;
-    //create known spells section...these are bards and sorcerers who have spells known and how many per day they can cast of that group.
-    // Spells Known (CL 4th; concentration +9)
-    //     2nd (2/day)— glitterdust (DC 17), sound burst (DC 17)
-    //     1st (4/day)— cure light wounds, disguise self (DC 16), silent image (DC 16), unseen servant
-    //     0 (6/day)— dancing lights, detect magic, ghost sound (DC 15), mage hand, prestidigitation, read magic
     const spellCastingStatModifier = statBonusFromAbilityScore(statblock.ability_scores[classInfo.primaryAbilityScore]);
     const classLevelInfo = classInfo.levels.find(x => x.level === level);
-    const spellsKnownCountArray = classLevelInfo.spellsKnown;
+    const spellsCountArray = classLevelInfo[spellsField];
     const spellsByLevel = classInfo.spellsByLevel;
-    const spellsKnownPerLevel = [];
-    spellsKnownCountArray.filter(x => x > 0).forEach((amountOfSpellsKnown, spellLevel) => {
-        if (amountOfSpellsKnown === 0) return;
-        const spellsKnownLevelSection = {
+    const spellsPerLevel = [];
+    spellsCountArray.filter(x => x > 0).forEach((amountOfSpells, spellLevel) => {
+        if (amountOfSpells === 0) return;
+        const spellsPerDayPerLevelSection = {
             level: spellLevel,
-            spellsPerDay: (spellLevel === 0) ? 'infinite' : classLevelInfo.spellsPerDay[spellLevel - 1],
+            spellsPerDay: (spellLevel === 0) ? 'infinite' : classLevelInfo[spellsField][spellLevel - 1],
             saveDc: 10 + spellLevel + spellCastingStatModifier,
-            spells: selectItems(spellsByLevel[spellLevel], amountOfSpellsKnown, generator)
+            spells: selectItems(spellsByLevel[spellLevel], amountOfSpells, generator)
         }
-        spellsKnownPerLevel.push(spellsKnownLevelSection);
+        spellsPerLevel.push(spellsPerDayPerLevelSection);
     });
-    const spellsKnownSectionWrapper = {
+    const spellsPerDaySectionWrapper = {
         source: className,
         casterLevel: level,
         concentration: level + spellCastingStatModifier,
-        spellsKnownPerLevel //above spellsKnownPerLevel Items...one per spellsKnown entry > 0. 
+        [spellsFieldName]: spellsPerLevel
     }
-    console.log(spellsKnownSectionWrapper);
-    const spellsKnown = (statblock.spellsKnown) ? spellsKnown.push(spellsKnownSectionWrapper) : [spellsKnownSectionWrapper];
+
+    const spellsKnownOrPrepared = (classInfo.prepareSpells) ? 'spellsPrepared' : 'spellsKnown';
+    const spellsSection = (statblock.spellsPrepared) ? statblock.spellsPrepared.push(spellsPerDaySectionWrapper) : [spellsPerDaySectionWrapper];
     return {
-        spellsKnown,
-    }
+        [spellsKnownOrPrepared]: spellsSection
+    };
 }
 
 export const advanceByClassLevel = (statblock, classLevel, generator) => {
@@ -673,7 +670,7 @@ export const advanceByClassLevel = (statblock, classLevel, generator) => {
     const goodSavingThrows = classInfo.good_saving_throws;
     const savingThrowBonusesFromClass = getSavingThrowChangesFromClass(newHitDice, goodSavingThrows);
     //const newBaseAttack =  getBaseAttackBonusByHitDiceAndCreatureType(newHitDice, statblock.creature_type);
-    const newBaseAttack = calculateBaseAttackBonus(newHitDice, classInfo.base_attack_bonus);
+    const newBaseAttack = calculateBaseAttackBonus(newHitDice, classInfo.base_attack_bonus) + statblock.base_attack;
     const baseAttackDiff = newBaseAttack;
     const meleeAttacks = attackChanges(statblock.melee_attacks, 0, baseAttackDiff);
     const rangedAttacks = attackChanges(statblock.ranged_attacks, 0, baseAttackDiff, false);
@@ -689,8 +686,7 @@ export const advanceByClassLevel = (statblock, classLevel, generator) => {
     const classAbilitiesWithAlterations = classAbilitiesToAdd.specialAbilities.filter(x => x.fieldToUpdate);
     let classAbilityAdvancements = {
         ...statblock,
-        ...buildSpellsKnownSection(statblock, classInfo, classLevel, generator),
-        ...buildSpellsPreparedSection(statblock, classInfo, classLevel, generator),
+        ...buildSpellsKnownOrPreparedSection(statblock, classInfo, classLevel, generator),
     };
     const classAdvancement = classInfo.advancement;
     classAbilitiesWithAlterations.forEach(ca => {

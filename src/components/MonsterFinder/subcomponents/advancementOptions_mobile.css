@@ -1,0 +1,17 @@
+.advancement_overlay {
+    display:none;    
+}
+
+@media screen and (max-width:640px) {
+    .advancement_overlay {
+        display: block;
+        z-index: 100;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        background-color: white;
+        padding: 1em;
+        padding-top: 3em;
+    }
+}

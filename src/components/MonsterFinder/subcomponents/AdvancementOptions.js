@@ -97,7 +97,6 @@ class AdvancementOptions extends React.Component {
         const templatesOption = true;
         const templateSelect = (templatesOption) ? <TemplateSelect selectedTemplates={advancement.templates} onSelect={this.handleTemplateChange}/> : '';
         return (
-            <div style={{overflowY: 'auto'}}>
             <MuiThemeProvider theme={theme}>
                 <HitDiceAdvancementSelectMaterial originalHitDice={monster.statBlock.hitDice} selectedHitDice={advancement.hd} onSelect={this.handleHitDiceSelectChange}/>
                 <SizeAdvancementSelectMaterial originalSize={monster.statBlock.size} selectedSize={advancement.size} onSelect={this.handleSizeSelectChange} />
@@ -110,7 +109,6 @@ class AdvancementOptions extends React.Component {
                 {templateSelect}
                 <ClassLevelSelect hideLabel classes={["Barbarian", "Bard", "Cleric"]} onChange={(e) => this.classLevelsChanged(e)} ref={this.classLevelSelectRef}/>
             </MuiThemeProvider>
-            </div>
         );
     }
 }

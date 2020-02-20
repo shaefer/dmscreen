@@ -17,5 +17,13 @@
   .flex-container { flex-wrap: wrap; }
   .flex-item:first-child { flex-basis: 100%; }
   .flex-item:nth-child(2) { text-align:left; }
-
+  .flexSelect {
+    border: 1px solid gray;
+    width: calc(100% - 2px);
+  }
+}
+@media screen and (max-width:640px) {
+  .mobile_hidden, .mobile_hidden input {
+    display:none;
+  }
 }

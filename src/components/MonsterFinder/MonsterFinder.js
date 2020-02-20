@@ -17,12 +17,36 @@ import MonsterDisplay from '../MonsterDisplay';
 import FloatingButton from '../FloatingButton/FloatingButton';
 import AdvancementOptions from './subcomponents/AdvancementOptions';
 
+import Modal from 'react-awesome-modal';
+
 export class MonsterFinder extends Component {
   constructor(props) {
     super(props);
     this.handleKeyPress = this.handleKeyPress.bind(this);
     this.handleMonsterSelectChange = this.handleMonsterSelectChange.bind(this);
+    this.openModal = this.openModal.bind(this);
+    this.closeModal = this.closeModal.bind(this);
+    this.toggleModal = this.toggleModal.bind(this);
     this.advancementOptionsRef = React.createRef();
+    this.state = {
+      visible : false
+    }
+  }
+
+  openModal() {
+    this.setState({
+        visible : true
+    });
+  }
+
+  closeModal() {
+    this.setState({
+        visible : false
+    });
+  }
+
+  toggleModal(visible) {
+    (this.state.visible) ? this.closeModal() : this.openModal();
   }
 
   handleKeyPress(e) {
@@ -69,16 +93,19 @@ export class MonsterFinder extends Component {
           <div className="flex-item">
             <div className="flexSelect" style={{backgroundColor: 'white'}}>
               <MonsterSelect listItems={MonsterOptions.map(op => op.props.children)} onSelect={this.handleMonsterSelectChange}/>
-              <AdvancementOptions {...this.props} ref={this.advancementOptionsRef}/>
+              <div className="mobile_hidden"><AdvancementOptions {...this.props} ref={this.advancementOptionsRef}/></div>
             </div>
           </div>
         </div>
         <div>
-          <FloatingButton/>
+          <FloatingButton onClick={this.toggleModal} visible={this.state.visible}/>
         </div>
-        <div className="advancement_overlay">
-          <AdvancementOptions {...this.props}/>
-        </div>
+        
+        <Modal visible={this.state.visible} width="100%" height="100%" effect="fadeInUp">
+          <div style={{overflowY: 'auto', height: '100%', margin: '1em'}}>
+            <AdvancementOptions {...this.props} ref={this.advancementOptionsRef}/>
+          </div>
+        </Modal>
       </React.Fragment>
     );
   }

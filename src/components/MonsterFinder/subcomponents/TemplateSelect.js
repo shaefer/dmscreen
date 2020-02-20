@@ -27,10 +27,6 @@ const theme = createMuiTheme({
             paddingBottom: 0,
             paddingRight: 0,
         },
-        popper: {
-            margin: 0,
-            //transform3d property is what is pulling that down and away from edge
-        }
       }
     }
   });
@@ -68,7 +64,6 @@ class TemplateSelect extends React.Component {
             <MuiThemeProvider theme={theme}>
             <Autocomplete
               multiple
-              id="monster_template_selection"
               value={this.state.templates}
               options={templates}
               disableCloseOnSelect

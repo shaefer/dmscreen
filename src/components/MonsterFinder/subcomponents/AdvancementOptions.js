@@ -12,6 +12,7 @@ import AbilityScoreAdvancementSelectMaterial from './AbilityScoreAdvancementSele
 
 import { MonsterSizes } from '../../PathfinderMonsterAdvancer/AdvancementTools/MonsterSizes';
 import TemplateSelect from './TemplateSelect';
+import TemplateSingleSelect from './TemplateSingleSelect';
 import ClassLevelSelect from '../../CleverSelect/ClassLevelSelect';
 
 class AdvancementOptions extends React.Component {
@@ -23,6 +24,7 @@ class AdvancementOptions extends React.Component {
         this.handleTemplateChange = this.handleTemplateChange.bind(this);
         this.classLevelsChanged = this.classLevelsChanged.bind(this);
         this.classLevelSelectRef = React.createRef();
+        this.templateSelectRef = React.createRef();
         this.reset = this.reset.bind(this);
     }
 
@@ -59,7 +61,9 @@ class AdvancementOptions extends React.Component {
     } 
 
     handleTemplateChange(selectedValues) {
-        this.props.templateAdvancementAction(selectedValues);
+        (Array.isArray(selectedValues)) 
+        ? this.props.templateAdvancementAction(selectedValues)
+        : this.props.templateAdvancementAction([selectedValues])
     }
 
     handleAbilityScoreSelectChange(e, abilityScore) {
@@ -78,6 +82,7 @@ class AdvancementOptions extends React.Component {
         this.props.templateAdvancementAction('reset');
         this.props.classLevelAdvancementAction('reset');
         this.classLevelSelectRef.current.reset();
+        this.templateSelectRef.current.reset();
     }
 
     render() {
@@ -106,7 +111,7 @@ class AdvancementOptions extends React.Component {
                 <AbilityScoreAdvancementSelectMaterial selectedValue={advancement.int} abilityScore={"Int"} onSelect={this.handleAbilityScoreSelectChange}/>
                 <AbilityScoreAdvancementSelectMaterial selectedValue={advancement.wis} abilityScore={"Wis"} onSelect={this.handleAbilityScoreSelectChange}/>
                 <AbilityScoreAdvancementSelectMaterial selectedValue={advancement.cha} abilityScore={"Cha"} onSelect={this.handleAbilityScoreSelectChange}/>
-                {templateSelect}
+                <TemplateSingleSelect onChange={this.handleTemplateChange} ref={this.templateSelectRef}/>
                 <ClassLevelSelect hideLabel classes={["Barbarian", "Bard", "Cleric"]} onChange={(e) => this.classLevelsChanged(e)} ref={this.classLevelSelectRef}/>
             </MuiThemeProvider>
         );

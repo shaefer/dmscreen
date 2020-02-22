@@ -28,6 +28,7 @@ export class MonsterFinder extends Component {
     this.closeModal = this.closeModal.bind(this);
     this.toggleModal = this.toggleModal.bind(this);
     this.advancementOptionsRef = React.createRef();
+    this.advancementOptionsModalRef = React.createRef();
     this.state = {
       visible : false
     }
@@ -57,6 +58,7 @@ export class MonsterFinder extends Component {
     this.props.monsterSelectedHandler(suggestion);
     console.log(this.advancementOptionsRef.current)
     this.advancementOptionsRef.current.getWrappedInstance().reset();
+    this.advancementOptionsModalRef.current.getWrappedInstance().reset();
   }
 
   componentDidMount() {
@@ -83,7 +85,7 @@ export class MonsterFinder extends Component {
     
     monster = (monster.success) ? monster : { success: true, statBlock: Aasimar};
     const advancedMonster = PathfinderMonsterAdvancer(monster, advancement)
-    
+    //TemplateSelect drop down not working on modal. (Not positioning correctly.)
     return (
       <React.Fragment>
         <div className="flex-container">
@@ -103,7 +105,7 @@ export class MonsterFinder extends Component {
         
         <Modal visible={this.state.visible} width="100%" height="100%" effect="fadeInUp">
           <div style={{overflowY: 'auto', height: '100%', margin: '1em'}}>
-            <AdvancementOptions {...this.props} ref={this.advancementOptionsRef}/>
+            <AdvancementOptions {...this.props} ref={this.advancementOptionsModalRef}/>
           </div>
         </Modal>
       </React.Fragment>

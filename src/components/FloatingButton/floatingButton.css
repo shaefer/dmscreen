@@ -1,0 +1,26 @@
+.floatingButton {
+    position: fixed;
+    bottom: 1em;
+    right: 1em;
+    z-index: 10001;
+}
+
+.floatingButton button {
+    height: 4em;
+    width: 4em;
+    border-radius: 50%;
+    display: inline-block;
+    box-shadow: 3px 3px 3px rgb(13, 47, 13);
+    background-color: rgb(98, 190, 98);
+    cursor: pointer;
+}
+
+.mobileOnly {
+    display:none;
+}
+
+@media only screen and (max-width: 640px) {
+    .mobileOnly {
+        display:block;
+    }
+}

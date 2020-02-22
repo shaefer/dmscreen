@@ -103,8 +103,8 @@ export class MonsterFinder extends Component {
           <FloatingButton onClick={this.toggleModal} visible={this.state.visible}/>
         </div>
         
-        <Modal visible={this.state.visible} width="100%" height="100%" effect="fadeInRight">
-          <div style={{overflowY: 'auto', height: '100%', margin: '1em'}}>
+        <Modal visible={this.state.visible} width="100%" height="97%" effect="fadeInRight">
+          <div style={{overflowY: 'auto', height: '100%', margin: '2em 1em 1em 1em'}}>
             <AdvancementOptions {...this.props} ref={this.advancementOptionsModalRef}/>
           </div>
         </Modal>

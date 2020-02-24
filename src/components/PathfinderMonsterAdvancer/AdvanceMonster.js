@@ -555,6 +555,7 @@ const getClass = (className) => {
         return bard;
     if (className === 'Cleric')
         return cleric;
+    
 }
 
 const hpEntriesDisplay = (hpEntries) => {
@@ -626,7 +627,7 @@ const buildSpellsKnownOrPreparedSection = (statblock, classInfo, classLevel, gen
     const spellCastingStatModifier = statBonusFromAbilityScore(statblock.ability_scores[classInfo.primaryAbilityScore]);
     const classLevelInfo = classInfo.levels.find(x => x.level === level);
     const spellsCountArray = classLevelInfo[spellsField];
-    const spellsByLevel = classInfo.spellsByLevel;
+    const spellsByLevel = classInfo.spellsByLevel.slice(0);
     const spellsPerLevel = [];
     spellsCountArray.filter(x => x > 0).forEach((amountOfSpells, spellLevel) => {
         if (amountOfSpells === 0) return;
@@ -646,17 +647,19 @@ const buildSpellsKnownOrPreparedSection = (statblock, classInfo, classLevel, gen
     }
 
     const spellsKnownOrPrepared = (classInfo.prepareSpells) ? 'spellsPrepared' : 'spellsKnown';
-    const spellsSection = (statblock.spellsPrepared) ? statblock.spellsPrepared.push(spellsPerDaySectionWrapper) : [spellsPerDaySectionWrapper];
+    const spellsSection = (statblock[spellsKnownOrPrepared]) ? statblock[spellsKnownOrPrepared].push(spellsPerDaySectionWrapper) : [spellsPerDaySectionWrapper];
     return {
         [spellsKnownOrPrepared]: spellsSection
     };
 }
 
 export const advanceByClassLevel = (statblock, classLevel, generator) => {
+    console.log(classLevel)
     const classDisplayName = `${classLevel.className} ${classLevel.level}`;
     const newHitDice = classLevel.level;
 
     const classInfo = getClass(classLevel.className);
+    if (!classInfo) return statblock;
 
     //hp changes are additive with classes. 
     const hpEntry = hpChanges(classDisplayName, newHitDice, classInfo.hitDieType, classLevel.className, statBonusFromAbilityScore(statblock.ability_scores.con), statBonusFromAbilityScore(statblock.ability_scores.con), statblock.size);
@@ -670,7 +673,7 @@ export const advanceByClassLevel = (statblock, classLevel, generator) => {
     const goodSavingThrows = classInfo.good_saving_throws;
     const savingThrowBonusesFromClass = getSavingThrowChangesFromClass(newHitDice, goodSavingThrows);
     //const newBaseAttack =  getBaseAttackBonusByHitDiceAndCreatureType(newHitDice, statblock.creature_type);
-    const newBaseAttack = calculateBaseAttackBonus(newHitDice, classInfo.base_attack_bonus) + statblock.base_attack;
+    const newBaseAttack = calculateBaseAttackBonus(newHitDice, classInfo.base_attack_bonus);
     const baseAttackDiff = newBaseAttack;
     const meleeAttacks = attackChanges(statblock.melee_attacks, 0, baseAttackDiff);
     const rangedAttacks = attackChanges(statblock.ranged_attacks, 0, baseAttackDiff, false);
@@ -684,9 +687,10 @@ export const advanceByClassLevel = (statblock, classLevel, generator) => {
     }
 
     const classAbilitiesWithAlterations = classAbilitiesToAdd.specialAbilities.filter(x => x.fieldToUpdate);
+    const spellsKnownOrPrepared = buildSpellsKnownOrPreparedSection(statblock, classInfo, classLevel, generator);
     let classAbilityAdvancements = {
         ...statblock,
-        ...buildSpellsKnownOrPreparedSection(statblock, classInfo, classLevel, generator),
+        ...spellsKnownOrPrepared,
     };
     const classAdvancement = classInfo.advancement;
     classAbilitiesWithAlterations.forEach(ca => {
@@ -708,7 +712,7 @@ export const advanceByClassLevel = (statblock, classLevel, generator) => {
     const classAdvancements = {
         advancements: [...classAbilityAdvancements.advancements, classDisplayName],
         ...hpFields,
-        base_attack: newBaseAttack,
+        base_attack: newBaseAttack + statblock.base_attack,
         melee_attacks: meleeAttacks,
         ranged_attacks: rangedAttacks,
         saving_throws: applyChangesToSavingThrows(classAbilityAdvancements.saving_throws, [savingThrowBonusesFromClass]),
@@ -729,7 +733,6 @@ export const advanceByClassLevel = (statblock, classLevel, generator) => {
     const statPointsPer4HitDiceAdded = Math.floor(newHitDice/4);
     const primaryAbilityScoreEntry = getStatByKey(classAdvancedCreature.ability_scores, classInfo.primaryAbilityScore);
     const abilityScoreChange = assignAbilityScoreChangeToStat(primaryAbilityScoreEntry, statPointsPer4HitDiceAdded, `${classLevel.className} ${classLevel.level}`);
-    console.log("ABILITY SCORE CHANGE", classInfo.primaryAbilityScore, abilityScoreChange);
     const statAdvancements = advanceByAbilityScores(classAdvancedCreature, [abilityScoreChange], true);
     return {
         ...classAdvancedCreature,

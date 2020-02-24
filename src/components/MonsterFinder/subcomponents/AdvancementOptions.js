@@ -49,6 +49,26 @@ class AdvancementOptions extends React.Component {
           if (templatesToParse) {
             this.props.templateAdvancementAction(templatesToParse.split(","));
           }
+
+          const classesToParse = searchParams.get('classes')
+          if (classesToParse) {
+              //allowed inputs classes=Barbarian5,Cleric2
+              const classLevels = classesToParse.split(",").map(x => {
+                  const nameAndLevelArray = x.split(/(\d+)/).filter(Boolean); //https://stackoverflow.com/a/3370293/1310765
+                  return {className: nameAndLevelArray[0], level: parseInt(nameAndLevelArray[1])};
+                }); 
+              const validatedClasses = classLevels.filter(x => x.className && x.level); //We could filter this list to valid classes but for now that is handled when classes are applied...if no class info is found it won't work...but also won't fail.
+              
+              if (validatedClasses && validatedClasses.length > 0) {
+                validatedClasses.sort((a, b) => {
+                    if (a.className < b.className) return -1;
+                    if (a.className > b.className) return 1;
+                    return 0;
+                  });
+                //expects array of objs [{className: 'Barbarian', level: 5}]
+                this.props.classLevelAdvancementAction(validatedClasses)
+              }
+          }
         }
     }
 
@@ -72,6 +92,7 @@ class AdvancementOptions extends React.Component {
     }
 
     classLevelsChanged(classLevels) {
+        console.log("classLevel entries", classLevels);
         this.props.classLevelAdvancementAction(classLevels);
     }
 

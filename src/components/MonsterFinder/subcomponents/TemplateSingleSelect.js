@@ -37,6 +37,7 @@ class TemplateSingleSelect extends React.Component {
 
     //not sure why the simple select bleeds right a few percent. Would like it just to work at 100%.
     render() {
+        //props vs state setting of initial vals...I think a props change should probably override current state. This might just be again the mistake of mixing props driven component vs. state driven.
         return (
             <SimpleSelect 
                 id={`template_select_${this.id}`}

@@ -26,9 +26,12 @@ class AdvancementOptions extends React.Component {
         this.classLevelSelectRef = React.createRef();
         this.templateSelectRef = React.createRef();
         this.reset = this.reset.bind(this);
+        this.state = {
+            defaultTemplates: []
+        };
     }
 
-    componentDidMount() {
+    componentWillMount() {
         if (this.props.location.search) {
           const searchParams = new URLSearchParams(this.props.location.search);
           this.props.abilityScoreAdvancementAction(parseInt(searchParams.get("str")), 'str');
@@ -47,7 +50,12 @@ class AdvancementOptions extends React.Component {
           this.props.hitDiceAdvancementAction(parseInt(searchParams.get("hd")));
           const templatesToParse = searchParams.get('templates');
           if (templatesToParse) {
-            this.props.templateAdvancementAction(templatesToParse.split(","));
+            const templates = templatesToParse.split(",");
+            this.setState({
+                ...this.state,
+                defaultTemplates: templates
+            });
+            this.props.templateAdvancementAction(templates);
           }
 
           const classesToParse = searchParams.get('classes')
@@ -66,6 +74,10 @@ class AdvancementOptions extends React.Component {
                     return 0;
                   });
                 //expects array of objs [{className: 'Barbarian', level: 5}]
+                this.setState({
+                    ...this.state,
+                    defaultClasses: validatedClasses
+                });
                 this.props.classLevelAdvancementAction(validatedClasses)
               }
           }
@@ -132,8 +144,8 @@ class AdvancementOptions extends React.Component {
                 <AbilityScoreAdvancementSelectMaterial selectedValue={advancement.int} abilityScore={"Int"} onSelect={this.handleAbilityScoreSelectChange}/>
                 <AbilityScoreAdvancementSelectMaterial selectedValue={advancement.wis} abilityScore={"Wis"} onSelect={this.handleAbilityScoreSelectChange}/>
                 <AbilityScoreAdvancementSelectMaterial selectedValue={advancement.cha} abilityScore={"Cha"} onSelect={this.handleAbilityScoreSelectChange}/>
-                <TemplateSingleSelect onChange={this.handleTemplateChange} ref={this.templateSelectRef}/>
-                <ClassLevelSelect hideLabel classes={["Barbarian", "Bard", "Cleric"]} onChange={(e) => this.classLevelsChanged(e)} ref={this.classLevelSelectRef}/>
+                <TemplateSingleSelect onChange={this.handleTemplateChange} ref={this.templateSelectRef} defaultTemplate={this.state.defaultTemplates[0]}/>
+                <ClassLevelSelect hideLabel classes={["Barbarian", "Bard", "Cleric"]} onChange={(e) => this.classLevelsChanged(e)} ref={this.classLevelSelectRef} defaultClasses={this.state.defaultClasses}/>
             </MuiThemeProvider>
         );
     }

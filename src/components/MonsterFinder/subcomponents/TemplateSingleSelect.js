@@ -44,7 +44,7 @@ class TemplateSingleSelect extends React.Component {
                 options={this.state.options} 
                 onChange={(e, val, fullOption) => this.selectTemplate(val)}
                 legendLabel={'Templates'}
-                defaultValue={this.state.template}
+                defaultValue={this.props.defaultTemplate}
                 width="97%"
                 ref={this.simpleSelectRef}
             />

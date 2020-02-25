@@ -5,8 +5,15 @@ import './SimpleSelectCustomStyle.css'
 class ClassLevelSelect extends Component {
     constructor(props) {
         super(props);
+        const defaultClassLevels = props.defaultClasses; //expected [{className:'name', level: 2}]
+        const classLevels = {};
+        if (defaultClassLevels) {
+            defaultClassLevels.forEach(x => {
+                classLevels[x.className] = x;
+            });
+        }   
         this.state = {
-            classLevels: {},
+            classLevels,
             undeterminedLevel:1
         }
 
@@ -16,7 +23,6 @@ class ClassLevelSelect extends Component {
         this.setClassForLevel = this.setClassForLevel.bind(this);
         this.setLevelForClass = this.setLevelForClass.bind(this);
         this.selectClass = this.selectClass.bind(this);
-        console.log("CLASSLEVELSELECT", props.classes)
         this.classes = props.classes ? props.classes : ["Barbarian", "Bard", "Cleric", "Druid", "Fighter", "Monk", "Paladin", "Rogue", "Sorcerer", "Wizard", "Adept", "Aristocrat", "Expert", "Warrior"];
     }
 

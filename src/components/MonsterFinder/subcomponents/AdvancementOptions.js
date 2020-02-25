@@ -26,9 +26,12 @@ class AdvancementOptions extends React.Component {
         this.classLevelSelectRef = React.createRef();
         this.templateSelectRef = React.createRef();
         this.reset = this.reset.bind(this);
+        this.state = {
+            defaultTemplates: []
+        };
     }
 
-    componentDidMount() {
+    componentWillMount() {
         if (this.props.location.search) {
           const searchParams = new URLSearchParams(this.props.location.search);
           this.props.abilityScoreAdvancementAction(parseInt(searchParams.get("str")), 'str');
@@ -45,9 +48,38 @@ class AdvancementOptions extends React.Component {
               this.props.sizeAdvancementAction(size.size);
           }
           this.props.hitDiceAdvancementAction(parseInt(searchParams.get("hd")));
-          const templatesToParse = searchParams.get('templates');
+          const templatesToParse = searchParams.get('templates') || searchParams.get('template'); //TODO: Should we just write a method to degrade through all the potentially "acceptable" keys for this entry so that people don't have to memorize our url params.
           if (templatesToParse) {
-            this.props.templateAdvancementAction(templatesToParse.split(","));
+            const templates = templatesToParse.split(",");
+            this.setState({
+                ...this.state,
+                defaultTemplates: templates
+            });
+            this.props.templateAdvancementAction(templates);
+          }
+
+          const classesToParse = searchParams.get('classes') || searchParams.get('class');
+          if (classesToParse) {
+                //allowed inputs classes=Barbarian5,Cleric2
+                const classLevels = classesToParse.split(",").map(x => {
+                    const nameAndLevelArray = x.split(/(\d+)/).filter(Boolean); //https://stackoverflow.com/a/3370293/1310765
+                    return {className: nameAndLevelArray[0], level: Math.min(parseInt(nameAndLevelArray[1]), 20)};
+                }); 
+                const validatedClasses = classLevels.filter(x => x.className && x.level); //We could filter this list to valid classes but for now that is handled when classes are applied...if no class info is found it won't work...but also won't fail.
+              
+                if (validatedClasses && validatedClasses.length > 0) {
+                    validatedClasses.sort((a, b) => {
+                        if (a.className < b.className) return -1;
+                        if (a.className > b.className) return 1;
+                        return 0;
+                });
+                //expects array of objs [{className: 'Barbarian', level: 5}]
+                this.setState({
+                    ...this.state,
+                    defaultClasses: validatedClasses
+                });
+                this.props.classLevelAdvancementAction(validatedClasses)
+              }
           }
         }
     }
@@ -72,6 +104,7 @@ class AdvancementOptions extends React.Component {
     }
 
     classLevelsChanged(classLevels) {
+        console.log("classLevel entries", classLevels);
         this.props.classLevelAdvancementAction(classLevels);
     }
 
@@ -111,8 +144,8 @@ class AdvancementOptions extends React.Component {
                 <AbilityScoreAdvancementSelectMaterial selectedValue={advancement.int} abilityScore={"Int"} onSelect={this.handleAbilityScoreSelectChange}/>
                 <AbilityScoreAdvancementSelectMaterial selectedValue={advancement.wis} abilityScore={"Wis"} onSelect={this.handleAbilityScoreSelectChange}/>
                 <AbilityScoreAdvancementSelectMaterial selectedValue={advancement.cha} abilityScore={"Cha"} onSelect={this.handleAbilityScoreSelectChange}/>
-                <TemplateSingleSelect onChange={this.handleTemplateChange} ref={this.templateSelectRef}/>
-                <ClassLevelSelect hideLabel classes={["Barbarian", "Bard", "Cleric"]} onChange={(e) => this.classLevelsChanged(e)} ref={this.classLevelSelectRef}/>
+                <TemplateSingleSelect onChange={this.handleTemplateChange} ref={this.templateSelectRef} defaultTemplate={this.state.defaultTemplates[0]}/>
+                <ClassLevelSelect hideLabel classes={["Barbarian", "Bard", "Cleric"]} onChange={(e) => this.classLevelsChanged(e)} ref={this.classLevelSelectRef} defaultClasses={this.state.defaultClasses}/>
             </MuiThemeProvider>
         );
     }

@@ -25,63 +25,75 @@ class AdvancementOptions extends React.Component {
         this.handleAbilityScoreSelectChange = this.handleAbilityScoreSelectChange.bind(this);
         this.handleTemplateChange = this.handleTemplateChange.bind(this);
         this.classLevelsChanged = this.classLevelsChanged.bind(this);
+        this.parseUrlParams = this.parseUrlParams.bind(this);
         this.classLevelSelectRef = React.createRef();
         this.templateSelectRef = React.createRef();
         this.reset = this.reset.bind(this);
         this.state = {
-            defaultTemplates: []
+            defaultTemplates: [],
+            urlParsed: false
         };
+    }
 
-        if (props.location.search) {
-            const searchParams = new URLSearchParams(props.location.search);
-            props.abilityScoreAdvancementAction(parseInt(searchParams.get("str")), 'str');
-            props.abilityScoreAdvancementAction(parseInt(searchParams.get("dex")), 'dex');
-            props.abilityScoreAdvancementAction(parseInt(searchParams.get("con")), 'con');
-            props.abilityScoreAdvancementAction(parseInt(searchParams.get("int")), 'int');
-            props.abilityScoreAdvancementAction(parseInt(searchParams.get("wis")), 'wis');
-            props.abilityScoreAdvancementAction(parseInt(searchParams.get("cha")), 'cha');
-      
-            const sizeToParse = searchParams.get("size");
-            if (sizeToParse) {
-              const size = MonsterSizes.find(x => x.abbr === sizeToParse.toUpperCase() || x.size.toLowerCase() === sizeToParse.toLowerCase());
-              if (size)
-                props.sizeAdvancementAction(size.size);
-            }
-            props.hitDiceAdvancementAction(parseInt(searchParams.get("hd")));
-            const templatesToParse = searchParams.get('templates') || searchParams.get('template'); //TODO: Should we just write a method to degrade through all the potentially "acceptable" keys for this entry so that people don't have to memorize our url params.
-            if (templatesToParse) {
-              const templates = templatesToParse.split(",");
-              this.state = {
-                  ...this.state,
-                  defaultTemplates: templates
-              };
-              props.templateAdvancementAction(templates);
-            }
-  
-            const classesToParse = searchParams.get('classes') || searchParams.get('class');
-            if (classesToParse) {
-                  //allowed inputs classes=Barbarian5,Cleric2
-                  const classLevels = classesToParse.split(",").map(x => {
-                      const nameAndLevelArray = x.split(/(\d+)/).filter(Boolean); //https://stackoverflow.com/a/3370293/1310765
-                      return {className: nameAndLevelArray[0], level: Math.min(parseInt(nameAndLevelArray[1]), 20)};
-                  }); 
-                  const validatedClasses = classLevels.filter(x => x.className && x.level); //We could filter this list to valid classes but for now that is handled when classes are applied...if no class info is found it won't work...but also won't fail.
-                
-                  if (validatedClasses && validatedClasses.length > 0) {
-                      validatedClasses.sort((a, b) => {
-                          if (a.className < b.className) return -1;
-                          if (a.className > b.className) return 1;
-                          return 0;
-                      });
-                      //expects array of objs [{className: 'Barbarian', level: 5}]
-                      this.state = {
-                          ...this.state,
-                          defaultClasses: validatedClasses
-                      };
-                      props.classLevelAdvancementAction(validatedClasses)
-                  }
-              }
+    parseUrlParams() {
+        if (this.props.location.search) {
+          const searchParams = new URLSearchParams(this.props.location.search);
+          this.props.abilityScoreAdvancementAction(parseInt(searchParams.get("str")), 'str');
+          this.props.abilityScoreAdvancementAction(parseInt(searchParams.get("dex")), 'dex');
+          this.props.abilityScoreAdvancementAction(parseInt(searchParams.get("con")), 'con');
+          this.props.abilityScoreAdvancementAction(parseInt(searchParams.get("int")), 'int');
+          this.props.abilityScoreAdvancementAction(parseInt(searchParams.get("wis")), 'wis');
+          this.props.abilityScoreAdvancementAction(parseInt(searchParams.get("cha")), 'cha');
+    
+          const sizeToParse = searchParams.get("size");
+          if (sizeToParse) {
+            const size = MonsterSizes.find(x => x.abbr === sizeToParse.toUpperCase() || x.size.toLowerCase() === sizeToParse.toLowerCase());
+            if (size)
+              this.props.sizeAdvancementAction(size.size);
           }
+          this.props.hitDiceAdvancementAction(parseInt(searchParams.get("hd")));
+          const templatesToParse = searchParams.get('templates') || searchParams.get('template'); //TODO: Should we just write a method to degrade through all the potentially "acceptable" keys for this entry so that people don't have to memorize our url params.
+          if (templatesToParse) {
+            const templates = templatesToParse.split(",");
+            this.setState({
+                ...this.state,
+                defaultTemplates: templates
+            });
+            this.props.templateAdvancementAction(templates);
+          }
+
+          const classesToParse = searchParams.get('classes') || searchParams.get('class');
+          if (classesToParse) {
+                //allowed inputs classes=Barbarian5,Cleric2
+                const classLevels = classesToParse.split(",").map(x => {
+                    const nameAndLevelArray = x.split(/(\d+)/).filter(Boolean); //https://stackoverflow.com/a/3370293/1310765
+                    return {className: nameAndLevelArray[0], level: Math.min(parseInt(nameAndLevelArray[1]), 20)};
+                }); 
+                const validatedClasses = classLevels.filter(x => x.className && x.level); //We could filter this list to valid classes but for now that is handled when classes are applied...if no class info is found it won't work...but also won't fail.
+              
+                if (validatedClasses && validatedClasses.length > 0) {
+                    validatedClasses.sort((a, b) => {
+                        if (a.className < b.className) return -1;
+                        if (a.className > b.className) return 1;
+                        return 0;
+                    });
+                    //expects array of objs [{className: 'Barbarian', level: 5}]
+                    this.setState({
+                        ...this.state,
+                        defaultClasses: validatedClasses
+                    });
+                    this.props.classLevelAdvancementAction(validatedClasses)
+                }
+            }
+        }
+        this.setState({
+            ...this.state,
+            urlParsed: true
+        })
+    }
+
+    componentDidMount() {
+        this.parseUrlParams();
     }
 
     handleHitDiceSelectChange(e) {
@@ -138,6 +150,7 @@ class AdvancementOptions extends React.Component {
         if (this.props.history.location.pathname + this.props.history.location.search != monsterUrl) {
             return <Redirect to={monsterUrl}/> 
         }
+        //TODO: The addition of the redirect above now causes the case where we rerender the defaults for Templates and Classes pushing us even more toward needing a method for those widgets setters or driving them more directly from props.
         return (
             <MuiThemeProvider theme={theme}>
                 <HitDiceAdvancementSelectMaterial originalHitDice={monster.statBlock.hitDice} selectedHitDice={advancement.hd} onSelect={this.handleHitDiceSelectChange}/>
@@ -151,7 +164,6 @@ class AdvancementOptions extends React.Component {
                 <TemplateSingleSelect onChange={this.handleTemplateChange} ref={this.templateSelectRef} defaultTemplate={this.state.defaultTemplates[0]}/>
                 <ClassLevelSelect hideLabel classes={["Barbarian", "Bard", "Cleric"]} onChange={(e) => this.classLevelsChanged(e)} ref={this.classLevelSelectRef} defaultClasses={this.state.defaultClasses}/>
                 <div><a href={monsterUrl}>Share Monster</a></div>
-                
             </MuiThemeProvider>
         );
     }

@@ -149,10 +149,10 @@ class AdvancementOptions extends React.Component {
           });
         const templatesOption = true;
         const templateSelect = (templatesOption) ? <TemplateSelect selectedTemplates={advancement.templates} onSelect={this.handleTemplateChange}/> : '';
-        const monsterUrl = MonsterUrlBuilder(monster.statBlock.name, advancement);
+        const monsterUrl = MonsterUrlBuilder(monster, advancement);
         if (this.props.history.location.pathname + this.props.history.location.search != monsterUrl) {
             this.props.history.push(monsterUrl); //This works but I'm not sure it should...we get a warning as this is effectively a setState in a render.
-        }
+        } 
         //TODO: The addition of the redirect above now causes the case where we rerender the defaults for Templates and Classes pushing us even more toward needing a method for those widgets setters or driving them more directly from props.
         return (
             <MuiThemeProvider theme={theme}>

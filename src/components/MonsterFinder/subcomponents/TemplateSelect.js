@@ -46,7 +46,7 @@ class TemplateSelect extends React.Component {
     //         });
     //     }
     // }
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         const initialValue =  (nextProps.selectedTemplates) ? nextProps.selectedTemplates : '';
         if  (initialValue) {
             const mappedTemplates = initialValue.map(template => templates.find(x => x.value === template));

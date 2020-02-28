@@ -13,13 +13,13 @@ const styles = theme => ({
       flexWrap: 'wrap',
     },
     formControl: {
-      marginTop: theme.spacing.unit,
+      marginTop: 8,
       minWidth: 68,
       maxWidth: 68,
       backgroundColor: 'white',
     },
     selectEmpty: {
-      marginTop: theme.spacing.unit * 2,
+      marginTop: theme.spacing(2)
     },
     overrides: {
         MuiOutlinedInput: {
@@ -52,7 +52,7 @@ class AbilityScoreAdvancementSelectMaterial extends React.Component {
         });
       }
 
-      componentWillReceiveProps(nextProps) {
+      UNSAFE_componentWillReceiveProps(nextProps) {
         const initialValue =  (nextProps.selectedValue) ? nextProps.selectedValue : 0;
           this.setState({
               labelWidth: ReactDOM.findDOMNode(this.InputLabelRef).offsetWidth,

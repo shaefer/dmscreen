@@ -9,13 +9,13 @@ import Select from '@material-ui/core/Select';
 
 const styles = theme => ({
     formControl: {
-      marginTop: theme.spacing.unit,
+      marginTop: 8,
       width: '100%',
       minWidth: 240,
       backgroundColor: 'white',
     },
     selectEmpty: {
-      marginTop: theme.spacing.unit * 2,
+      marginTop: theme.spacing(2)
     },
   });
 
@@ -35,7 +35,7 @@ class HitDiceAdvancementSelectMaterial extends React.Component {
         });
       }
 
-      componentWillReceiveProps(nextProps) {
+      UNSAFE_componentWillReceiveProps(nextProps) {
         const initialValue =  (nextProps.selectedHitDice) ? nextProps.selectedHitDice : nextProps.originalHitDice;
           this.setState({
               hd: initialValue,

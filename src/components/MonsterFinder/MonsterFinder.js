@@ -82,7 +82,6 @@ export class MonsterFinder extends Component {
   //TODO: Skills and knowledges getting updated by stats lose extras (knowledge loses subtype, any specific bonuses are also lost)
   render() {
     let { monster, advancement } = this.props; //These props can be destructured to pull out any of the reducers (config, select, monster, s3Select, etc.)
-    
     monster = (monster.success) ? monster : { success: true, statBlock: Aasimar};
     const advancedMonster = PathfinderMonsterAdvancer(monster, advancement)
     //TemplateSelect drop down not working on modal. (Not positioning correctly.)

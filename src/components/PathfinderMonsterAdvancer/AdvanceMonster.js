@@ -654,7 +654,6 @@ const buildSpellsKnownOrPreparedSection = (statblock, classInfo, classLevel, gen
 }
 
 export const advanceByClassLevel = (statblock, classLevel, generator) => {
-    console.log(classLevel)
     const classDisplayName = `${classLevel.className} ${classLevel.level}`;
     const newHitDice = classLevel.level;
 

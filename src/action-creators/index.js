@@ -80,7 +80,6 @@ export const monsterSelectChangeHandler = (e) => (dispatch, getState) => {
 }
 
 export const monsterSelectedHandler = (monsterName) => (dispatch) => {
-    console.log("MONSTER SELECTED ACTION CREATOR")
     dispatch(selectMonsterOption(monsterName));
     MonstersApi.getMonsterByName(monsterName)
         .then(data => {

@@ -148,7 +148,6 @@ const asOrdinal = (i) => {
 const spellsKnownOrPrepared = (spellsSections, spellsPrepared = true) => {
     const spellsByLevelField = (spellsPrepared) ? 'spellsPreparedPerLevel' : 'spellsKnownPerLevel';
     if (!spellsSections || spellsSections.length === 0) return '';
-    console.log("SPELLS SECTION", spellsSections)
     return spellsSections.map(spells => {
         const spellsByLevel = spells[spellsByLevelField].reverse();
         const perDay = (val) => {

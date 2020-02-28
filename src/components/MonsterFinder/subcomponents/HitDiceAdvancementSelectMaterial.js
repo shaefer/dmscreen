@@ -35,7 +35,7 @@ class HitDiceAdvancementSelectMaterial extends React.Component {
         });
       }
 
-      componentWillReceiveProps(nextProps) {
+      UNSAFE_componentWillReceiveProps(nextProps) {
         const initialValue =  (nextProps.selectedHitDice) ? nextProps.selectedHitDice : nextProps.originalHitDice;
           this.setState({
               hd: initialValue,

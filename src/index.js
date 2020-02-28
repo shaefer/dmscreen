@@ -11,7 +11,7 @@ import registerServiceWorker from './registerServiceWorker';
 
 const middleware = [ thunk ]
 if (process.env.NODE_ENV !== 'production') {
-  middleware.push(createLogger())
+  //middleware.push(createLogger())
 }
 
 //Setup Initial State or preloaded https://redux.js.org/docs/recipes/reducers/InitializingState.html

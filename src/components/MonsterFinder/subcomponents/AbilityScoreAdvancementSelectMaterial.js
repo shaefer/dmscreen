@@ -52,7 +52,7 @@ class AbilityScoreAdvancementSelectMaterial extends React.Component {
         });
       }
 
-      componentWillReceiveProps(nextProps) {
+      UNSAFE_componentWillReceiveProps(nextProps) {
         const initialValue =  (nextProps.selectedValue) ? nextProps.selectedValue : 0;
           this.setState({
               labelWidth: ReactDOM.findDOMNode(this.InputLabelRef).offsetWidth,

@@ -39,7 +39,7 @@ class SizeAdvancementSelectMaterial extends React.Component {
         });
       }
 
-      componentWillReceiveProps(nextProps) {
+      UNSAFE_componentWillReceiveProps(nextProps) {
         const initialValue =  (nextProps.selectedSize) ? nextProps.selectedSize : nextProps.originalSize;
           this.setState({
             size: initialValue,

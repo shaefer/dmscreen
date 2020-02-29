@@ -281,6 +281,12 @@ const classLevelAbilitiesSection = (m) => {
     }
 }
 
+//duplicated from ChallengeRatingCalculator.js
+const roundDecimal = (num) => {
+    //return +(Math.round(num + "e+2")  + "e-2"); //https://stackoverflow.com/questions/11832914/round-to-at-most-2-decimal-places-only-if-necessary
+    return Math.round( num * 1e2 ) / 1e2; //https://stackoverflow.com/questions/2283566/how-can-i-round-a-number-in-javascript-tofixed-returns-a-string/14978830    
+}
+
 const MonsterDisplay = ({monster}) => {
     const m = monster.statBlock;
     if (!m.name)
@@ -309,7 +315,7 @@ const MonsterDisplay = ({monster}) => {
     
     const crAdjustmentsVal = (existingAdjustments.length > 0) ? existingAdjustments.map(x => x.val).reduce((agg, x) => agg + x) : 0;
     const crAdjustmentsText = (existingAdjustments.length > 0) ? <StatBlockLine><B>CR Adjustments</B> {existingAdjustments.map(x => `${x.source} ${withPlus(x.val)}`).join(", ")}</StatBlockLine> : '';
-    const crDisplay = (opts.showCrChanges && (m.crCalculation.crDiff || crAdjustmentsVal > 0)) ? `${m.crCalculation.crAdjusted + crAdjustmentsVal} (original CR ${m.cr})` : `${m.cr}`
+    const crDisplay = (opts.showCrChanges && (m.crCalculation.crDiff || crAdjustmentsVal > 0)) ? `${roundDecimal(m.crCalculation.crAdjusted + crAdjustmentsVal)} (original CR ${m.cr})` : `${m.cr}`
     
     const origCr = m.crCalculation.originalCr;
     const originalCrDetails = `HP CR: ${origCr.hp}, AC CR: ${origCr.ac}, Attack CR: ${origCr.attack}, Damage CR: ${origCr.damage}, Saves CR: ${origCr.saves}`;

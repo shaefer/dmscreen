@@ -8,7 +8,7 @@ const FloatingButton = (props) => {
     return (
         <div className="floatingButton mobileOnly" onClick={(e) => handleClick(visible)}>
             <button>
-                <img src={`images/${symbol}`} style={{width:'2em'}}/>
+                <img src={`/images/${symbol}`} style={{width:'2em'}}/>
             </button>
         </div>
     );

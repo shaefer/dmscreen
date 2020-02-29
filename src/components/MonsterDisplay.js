@@ -340,9 +340,9 @@ const MonsterDisplay = ({monster}) => {
     //<StatBlockLine data={m.specialAttacksAcquired} required><B>Additional Special Attacks</B> {m.specialAttacksAcquired}</StatBlockLine>
     return (
         <div className="monsterDisplay">
-            <div className="sbLine sbName">
-                <B><span style={{textTransform: "uppercase"}}>{m.name}</span> </B>
-                <span style={{float: "right"}}><B>CR</B><B> {crDisplay}</B></span>
+            <div className="sbLine sbName leftAndRight">
+                <div><B><span style={{textTransform: "uppercase"}}>{m.name}</span> </B></div>
+                <div><span style={{float: "right"}}><B>CR</B><B> {crDisplay}</B></span></div>
             </div>
             <StatBlockLine><B>XP</B> {m.xp}</StatBlockLine>
             <StatBlockLine>{m.alignment} {m.size} <span style={{textTransform: "lowercase"}}>{m.creature_type}</span> {creatureSubType(m)}</StatBlockLine>

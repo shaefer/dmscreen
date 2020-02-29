@@ -10,6 +10,11 @@
     font-weight: bold;
 }
 
+.leftAndRight {
+    display: flex;
+    justify-content: space-between;
+} 
+
 div.sbName {
     color: white;
     background-color: black;

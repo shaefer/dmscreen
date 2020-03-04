@@ -14,6 +14,7 @@ import './css/LeftHamburgerNav.css'
 
 import ReactGA from 'react-ga';
 import PathfinderMonsterAdvancer from './components/PathfinderMonsterAdvancer/PathfinderMonsterAdvancer';
+import PathfinderMonsterCreator from './components/MonsterCreators/PathfinderMonsterCreator';
 
 
 class App extends Component {
@@ -81,6 +82,7 @@ class App extends Component {
                         <Route exact path="/dungeonGraph"  component={DungeonForceGraph2D} />
                         <Route       path="/dungeonGraph/:rooms"  render={(props) => <DungeonForceGraph2D {...props}/>} />
                         <Route       path="/pma" component={PathfinderMonsterAdvancer} />
+                        <Route       path="/monsterCreator" component={PathfinderMonsterCreator} />
                     </section>
                 </main>
             </BrowserRouter>

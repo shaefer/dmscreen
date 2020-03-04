@@ -287,7 +287,31 @@ const roundDecimal = (num) => {
     return Math.round( num * 1e2 ) / 1e2; //https://stackoverflow.com/questions/2283566/how-can-i-round-a-number-in-javascript-tofixed-returns-a-string/14978830    
 }
 
+const buildCrSection = (m, opts) => {
+    const existingAdjustments = (m.crAdjustments) ? m.crAdjustments : [];
+    const crAdjustmentsVal = (existingAdjustments.length > 0) ? existingAdjustments.map(x => x.val).reduce((agg, x) => agg + x) : 0;
+    const crAdjustmentsText = (existingAdjustments.length > 0) ? <StatBlockLine><B>CR Adjustments</B> {existingAdjustments.map(x => `${x.source} ${withPlus(x.val)}`).join(", ")}</StatBlockLine> : '';
+    const origCr = m.crCalculation.originalCr;
+    const originalCrDetails = `HP CR: ${origCr.hp}, AC CR: ${origCr.ac}, Attack CR: ${origCr.attack}, Damage CR: ${origCr.damage}, Saves CR: ${origCr.saves}`;
+    const newCr = m.crCalculation.advancedCr;
+    const advancedCrDetails = `HP CR: ${newCr.hp}, AC CR: ${newCr.ac}, Attack CR: ${newCr.attack}, Damage CR: ${newCr.damage}, Saves CR: ${newCr.saves}`;
+    const crSection = (
+        <section>
+        <StatSectionHeader>challenge rating details</StatSectionHeader>
+        <StatBlockLine><B>Original CR</B> {m.cr}</StatBlockLine>
+        <StatBlockLine><B>Original Calculated CR</B> {origCr.total} <B>CR Details: </B>({originalCrDetails})</StatBlockLine>
+        <StatBlockLine><B>Advanced Calculated CR</B> {newCr.total} <B>CR Details: </B>({advancedCrDetails})</StatBlockLine>
+        <StatBlockLine><B>CR Difference</B> {m.crCalculation.crDiff}</StatBlockLine>
+        <StatBlockLine><B>New Estimated CR</B> {m.crCalculation.crAdjusted}</StatBlockLine>
+        {crAdjustmentsText}
+        </section>
+    );
+    const crSectionDisplay = (opts.showCrChanges && (m.crCalculation.crDiff || crAdjustmentsVal > 0)) ? crSection : '';
+    return crSectionDisplay;
+}
+
 const MonsterDisplay = ({monster}) => {
+    console.log("RENDER MONSTERDISPLAY")
     const m = monster.statBlock;
     if (!m.name)
         return <div>No Monster Currently Selected</div>;
@@ -314,25 +338,9 @@ const MonsterDisplay = ({monster}) => {
     const existingAdjustments = (m.crAdjustments) ? m.crAdjustments : [];
     
     const crAdjustmentsVal = (existingAdjustments.length > 0) ? existingAdjustments.map(x => x.val).reduce((agg, x) => agg + x) : 0;
-    const crAdjustmentsText = (existingAdjustments.length > 0) ? <StatBlockLine><B>CR Adjustments</B> {existingAdjustments.map(x => `${x.source} ${withPlus(x.val)}`).join(", ")}</StatBlockLine> : '';
     const crDisplay = (opts.showCrChanges && (m.crCalculation.crDiff || crAdjustmentsVal > 0)) ? `${roundDecimal(m.crCalculation.crAdjusted + crAdjustmentsVal)} (original CR ${m.cr})` : `${m.cr}`
+    const crSectionDisplay = (m.crCalculation) ? buildCrSection(m, opts) : '';
     
-    const origCr = m.crCalculation.originalCr;
-    const originalCrDetails = `HP CR: ${origCr.hp}, AC CR: ${origCr.ac}, Attack CR: ${origCr.attack}, Damage CR: ${origCr.damage}, Saves CR: ${origCr.saves}`;
-    const newCr = m.crCalculation.advancedCr;
-    const advancedCrDetails = `HP CR: ${newCr.hp}, AC CR: ${newCr.ac}, Attack CR: ${newCr.attack}, Damage CR: ${newCr.damage}, Saves CR: ${newCr.saves}`;
-    const crSection = (
-        <section>
-        <StatSectionHeader>challenge rating details</StatSectionHeader>
-        <StatBlockLine><B>Original CR</B> {m.cr}</StatBlockLine>
-        <StatBlockLine><B>Original Calculated CR</B> {origCr.total} <B>CR Details: </B>({originalCrDetails})</StatBlockLine>
-        <StatBlockLine><B>Advanced Calculated CR</B> {newCr.total} <B>CR Details: </B>({advancedCrDetails})</StatBlockLine>
-        <StatBlockLine><B>CR Difference</B> {m.crCalculation.crDiff}</StatBlockLine>
-        <StatBlockLine><B>New Estimated CR</B> {m.crCalculation.crAdjusted}</StatBlockLine>
-        {crAdjustmentsText}
-        </section>
-    );
-    const crSectionDisplay = (opts.showCrChanges && (m.crCalculation.crDiff || crAdjustmentsVal > 0)) ? crSection : '';
     const featCountStr = (m.featCount && opts.showFeatCount) ? ` (${m.featCount})` : ""; 
     const meleeAttackDisplay = (m.melee) ? displayFullAttack(m.melee_attacks) : m.melee;
     const rangedAttackDisplay = (m.ranged) ? displayFullAttack(m.ranged_attacks) : m.ranged;

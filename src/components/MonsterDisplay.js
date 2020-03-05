@@ -374,7 +374,7 @@ const MonsterDisplay = ({monster}) => {
     const rangedAttackDisplay = (m.ranged) ? displayFullAttack(m.ranged_attacks) : m.ranged;
     const perceptionSkill = m.skills.find(x => x.name.trim() === 'Perception');
     const perceptionDisplay = (perceptionSkill) ? perceptionSkill.name + ' '  + withPlus(perceptionSkill.value) : '';
-    const senses = (m.senses) ? m.senses.replace(/Perception \+\d+/, perceptionDisplay) : m.senses;
+    const senses = (m.senses) ? m.senses.replace(/Perception [\+\-]\d+/, perceptionDisplay) : m.senses;
     const acquiredSpecialAttacksBySource = (acquired) => {
         if (!acquired || !acquired.length === 0) return '';
         return acquired.map(x => <StatBlockLine key={x.source} data={x} required><B>Special Attacks from {x.source}</B> {x.display}</StatBlockLine>)

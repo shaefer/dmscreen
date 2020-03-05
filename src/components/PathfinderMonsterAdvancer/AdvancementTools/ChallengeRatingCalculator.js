@@ -119,13 +119,13 @@ export const calculateDamageCr = (attacks) => {
     return calculateStatCr('avgDmgHigh', damage);
 }
 
-const diceAverage = (diceNotation) => {
+export const diceAverage = (diceNotation) => {
     if (diceNotation.indexOf("d") === -1) {
         //just a straight number...no dice to roll.
         return diceNotation;
     } else {
         //https://regex101.com/r/FD7Z9L/1
-        const diceRegex = /((\d*)d(\d*))([\+\-]?\d*)/gm;
+        const diceRegex = /((\d*)d(\d*))([+-]?\d*)/gm;
         const matches = getCaptureGroups(diceRegex, diceNotation);
         let sumOfDmg = 0;
         for(let i = 0;i<matches.length;i++) {

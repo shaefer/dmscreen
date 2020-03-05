@@ -4,6 +4,7 @@ import {calculateCr} from '../PathfinderMonsterAdvancer/AdvancementTools/Challen
 import {advanceMonster, advanceByAbilityScores} from '../PathfinderMonsterAdvancer/AdvanceMonster'
 
 import './MonsterCreator.css'
+import AbilityScores from './AbilityScores';
 
 class PathfinderMonsterCreator extends React.Component {
     constructor(props) {
@@ -140,17 +141,11 @@ class PathfinderMonsterCreator extends React.Component {
 
     updateField(field, val) {
         console.log("UPDATE FIELD", field, val)
-        const monsterWithChanges = {
-            ...this.state,
-            monster: {
-                ...this.state.monster,
-                statBlock: {
-                    ...this.state.monster.statBlock,
-                    [field]: val
-                }
-            }
+        const statBlockWithChanges = {
+            ...this.state.monster.statBlock,
+            [field]: val
         };
-        const newMonster = advanceMonster(monsterWithChanges.monster.statBlock, {});
+        const newMonster = advanceMonster(statBlockWithChanges, {});
         const finalMonster = {
             ...this.state,
             monster: {
@@ -171,7 +166,7 @@ class PathfinderMonsterCreator extends React.Component {
             [stat] : (val - currentStat)
         }
         const newMonster = advanceMonster(this.state.monster.statBlock, statChanges);
-        //TODO: Remove advancment specific things like displayName (Stats Altered) since we are building to a new base.
+        //TODO: Remove advance ment specific things like displayName (Stats Altered) since we are building to a new base.
         this.setState({
             ...this.state,
             monster: {
@@ -182,6 +177,9 @@ class PathfinderMonsterCreator extends React.Component {
     }
     
     render() {
+        const onAbilityScoreChange = (fieldName, val) => {
+            return this.statChanged(fieldName, val);
+        }
         return (
         <main>
             <div className="flex-container">
@@ -191,12 +189,9 @@ class PathfinderMonsterCreator extends React.Component {
                 <div className="flex-item">
                     <div className="flexSelect" style={{backgroundColor: 'white'}}>
                         <label>Name: </label><input name="name" onChange={this.nameChanged}/>
-                        <label>Str: </label><input onChange={(e) => this.statChanged('str', parseInt(e.target.value))}/>
-                        <label>Dex: </label><input onChange={(e) => this.statChanged('dex', parseInt(e.target.value))}/>
-                        <label>Con: </label><input onChange={(e) => this.statChanged('con', parseInt(e.target.value))}/>
-                        <label>Int: </label><input onChange={(e) => this.statChanged('int', parseInt(e.target.value))}/>
-                        <label>Wis: </label><input onChange={(e) => this.statChanged('wis', parseInt(e.target.value))}/>
-                        <label>Cha: </label><input onChange={(e) => this.statChanged('cha', parseInt(e.target.value))}/>
+                        <div>
+                            <AbilityScores abilityScores={this.state.monster.statBlock.ability_scores} onAbilityScoreChange={onAbilityScoreChange}/>
+                        </div>
                     </div>
                 </div>
                <pre className="jsonDisplayBox">{JSON.stringify(this.state.monster.statBlock, null, 4)}</pre>

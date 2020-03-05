@@ -232,12 +232,12 @@ const acChanges = (origAcMods, statBonusDiffs) => {
 
 export const combatManeuverChanges = (statblock, cmbChange, cmdChange) => {
     const newCmb = statblock.cmb + cmbChange;
-    const newCmbDetails = (statblock.cmb_details) ? statblock.cmb_details.toString().replace(/\d+/gm, (x) => {
-        return parseInt(x) + cmbChange;
+    const newCmbDetails = (statblock.cmb_details) ? statblock.cmb_details.toString().replace(/[\+\-]?\d+/gm, (x) => {
+        return withPlus(parseInt(x) + cmbChange);
     }) : withPlus(newCmb);
 
     const newCmd = statblock.cmd + cmdChange; //all touch ac mods http://www.tenebraemush.net/index.php/Understanding_CMB_and_CMD
-    const newCmdDetails = (statblock.cmd_details) ? statblock.cmd_details.toString().replace(/\d+/gm, (x) => {
+    const newCmdDetails = (statblock.cmd_details) ? statblock.cmd_details.toString().replace(/[\+\-]?\d+/gm, (x) => {
         return parseInt(x) + cmdChange;
     }) : newCmd;
 

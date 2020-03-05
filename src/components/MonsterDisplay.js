@@ -310,9 +310,30 @@ const buildCrSection = (m, opts) => {
     return crSectionDisplay;
 }
 
+const mapAndAddFieldNames = (m) => {
+    return {
+        ...m,
+        name: m.advancedName ? m.advancedName : m.name,
+        init: withPlus(m.init),
+        ac: m.armor_class.ac_details,
+        strength: m.ability_scores.str,
+        dexterity: m.ability_scores.dex,
+        constitution: m.ability_scores.con,
+        intelligence: m.ability_scores.int,
+        wisdom: m.ability_scores.wis,
+        charisma: m.ability_scores.cha,
+        fortitude: withPlus(m.saving_throws.fort),
+        reflex: withPlus(m.saving_throws.ref),
+        will: withPlus(m.saving_throws.will),
+        base_attack: withPlus(m.base_attack),
+        cmb: (m.cmb_details) ? m.cmb_details : withPlus(m.cmb),
+        cmd: (m.cmd_details) ? m.cmd_details : m.cmd,
+        featCount: m.featCount,
+    }
+}
+
 const MonsterDisplay = ({monster}) => {
-    console.log("RENDER MONSTERDISPLAY")
-    const m = monster.statBlock;
+    const m = mapAndAddFieldNames(monster.statBlock);
     if (!m.name)
         return <div>No Monster Currently Selected</div>;
     if (!monster.success) {

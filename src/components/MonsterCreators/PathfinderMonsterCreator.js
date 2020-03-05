@@ -2,7 +2,6 @@ import React from 'react'
 import MonsterDisplay from '../MonsterDisplay';
 import {calculateCr} from '../PathfinderMonsterAdvancer/AdvancementTools/ChallengeRatingCalculator';
 import {advanceMonster, advanceByAbilityScores} from '../PathfinderMonsterAdvancer/AdvanceMonster'
-import {convertToMonsterForDisplay} from '../MonsterDisplayConverter/MonsterDisplayConverter'
 
 import './MonsterCreator.css'
 
@@ -174,15 +173,11 @@ class PathfinderMonsterCreator extends React.Component {
     }
     
     render() {
-        const monster = {
-            ...this.state.monster,
-            statBlock: convertToMonsterForDisplay(this.state.monster.statBlock, 2)
-        }
         return (
         <main>
             <div className="flex-container">
                 <div className="flex-item flex3">
-                    <MonsterDisplay monster={monster}/>
+                    <MonsterDisplay monster={this.state.monster}/>
                 </div>
                 <div className="flex-item">
                     <div className="flexSelect" style={{backgroundColor: 'white'}}>
@@ -195,7 +190,7 @@ class PathfinderMonsterCreator extends React.Component {
                         <label>Cha: </label><input onChange={(e) => this.statChanged('cha', parseInt(e.target.value))}/>
                     </div>
                 </div>
-               <pre className="jsonDisplayBox">{JSON.stringify(monster.statBlock, null, 4)}</pre>
+               <pre className="jsonDisplayBox">{JSON.stringify(this.state.monster.statBlock, null, 4)}</pre>
             </div>
         </main>
         );

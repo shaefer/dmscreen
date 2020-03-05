@@ -140,7 +140,7 @@ class PathfinderMonsterCreator extends React.Component {
 
     updateField(field, val) {
         console.log("UPDATE FIELD", field, val)
-        this.setState({
+        const monsterWithChanges = {
             ...this.state,
             monster: {
                 ...this.state.monster,
@@ -149,7 +149,16 @@ class PathfinderMonsterCreator extends React.Component {
                     [field]: val
                 }
             }
-        });
+        };
+        const newMonster = advanceMonster(monsterWithChanges.monster.statBlock, {});
+        const finalMonster = {
+            ...this.state,
+            monster: {
+                ...this.state.monster,
+                statBlock: newMonster
+            }
+        }
+        this.setState(finalMonster);
     }
 
     nameChanged(e) {

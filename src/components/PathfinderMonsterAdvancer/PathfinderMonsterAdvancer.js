@@ -1,7 +1,4 @@
-import React, { Component } from 'react';
-import MonsterDisplay from '../MonsterDisplay'
 import {advanceMonster} from './AdvanceMonster'
-import { Fiendish } from './AdvancementTools/Templates';
 
 const PathfinderMonsterAdvancer = (monster, advancement, options) => {
     const opts = {
@@ -24,12 +21,4 @@ const PathfinderMonsterAdvancer = (monster, advancement, options) => {
         return monster;
     }
 };
-
-
-// export default class PathfinderMonsterAdvancer extends Component {
-//     render() {
-//         const monster = PathfinderMonsterAdvance(this.props.monster, this.props.advancement, this.props.opts);
-//         return <MonsterDisplay monster={monster}/>
-//     }
-// }
 export default PathfinderMonsterAdvancer;

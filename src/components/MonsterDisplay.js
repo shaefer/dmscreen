@@ -288,6 +288,7 @@ const roundDecimal = (num) => {
 }
 
 const buildCrSection = (m, opts) => {
+    console.log("BUILDING CR SECTION", m, opts)
     const existingAdjustments = (m.crAdjustments) ? m.crAdjustments : [];
     const crAdjustmentsVal = (existingAdjustments.length > 0) ? existingAdjustments.map(x => x.val).reduce((agg, x) => agg + x) : 0;
     const crAdjustmentsText = (existingAdjustments.length > 0) ? <StatBlockLine><B>CR Adjustments</B> {existingAdjustments.map(x => `${x.source} ${withPlus(x.val)}`).join(", ")}</StatBlockLine> : '';
@@ -310,8 +311,9 @@ const buildCrSection = (m, opts) => {
     return crSectionDisplay;
 }
 
-const mapAndAddFieldNames = (m) => {
-    return {
+const mapAndAddFieldNames = (monster) => {
+    const m = monster.statBlock;
+    const newStatBlock = {
         ...m,
         name: m.advancedName ? m.advancedName : m.name,
         init: withPlus(m.init),
@@ -329,14 +331,19 @@ const mapAndAddFieldNames = (m) => {
         cmb: (m.cmb_details) ? m.cmb_details : withPlus(m.cmb),
         cmd: (m.cmd_details) ? m.cmd_details : m.cmd,
         featCount: m.featCount,
+    };
+    return {
+        success: monster.success,
+        ...newStatBlock,
+        displayOptions: monster.displayOptions,
     }
 }
 
 const MonsterDisplay = ({monster}) => {
-    const m = mapAndAddFieldNames(monster.statBlock);
+    const m = mapAndAddFieldNames(monster);
     if (!m.name)
         return <div>No Monster Currently Selected</div>;
-    if (!monster.success) {
+    if (!m.success) {
         return <div>A Monster named [{m.name}] was not found</div>;
     }
 

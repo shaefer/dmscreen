@@ -1,33 +1,26 @@
 import React from 'react'
 
-const AbilityScores = ({abilityScores, onAbilityScoreChange}) => {
-    const numOptions = [...Array(100).keys()];
+const numOptions = [...Array(100).keys()];
+const AbilityScoreSelect = ({field, value, onChange}) => {
     return (
         <React.Fragment>
-            <label>Str: </label>
-            <select onChange={(e) => onAbilityScoreChange('str', parseInt(e.target.value))}>
-                {numOptions.map(x => <option value={x} selected={(x === abilityScores.str ? 'true': '')}>{x}</option>)}
+            <label style={{textTransform:'capitalize'}}>{field}: </label>
+            <select value={value} onChange={(e) => onChange(field, parseInt(e.target.value))}>
+                {numOptions.map(x => <option value={x} key={`${field}${x}`}>{x}</option>)}
             </select>
-            <label>Dex: </label>
-            <select onChange={(e) => onAbilityScoreChange('dex', parseInt(e.target.value))}>
-                {numOptions.map(x => <option value={x} selected={(x === abilityScores.dex ? 'true': '')}>{x}</option>)}
-            </select>
-            <label>Con: </label>
-            <select onChange={(e) => onAbilityScoreChange('con', parseInt(e.target.value))}>
-                {numOptions.map(x => <option value={x} selected={(x === abilityScores.con ? 'true': '')}>{x}</option>)}
-            </select>
-            <label>Int: </label>
-            <select onChange={(e) => onAbilityScoreChange('int', parseInt(e.target.value))}>
-                {numOptions.map(x => <option value={x} selected={(x === abilityScores.int ? 'true': '')}>{x}</option>)}
-            </select>
-            <label>Wis: </label>
-            <select onChange={(e) => onAbilityScoreChange('wis', parseInt(e.target.value))}>
-                {numOptions.map(x => <option value={x} selected={(x === abilityScores.wis ? 'true': '')}>{x}</option>)}
-            </select>
-            <label>Cha: </label>
-            <select onChange={(e) => onAbilityScoreChange('cha', parseInt(e.target.value))}>
-                {numOptions.map(x => <option value={x} selected={(x === abilityScores.cha ? 'true': '')}>{x}</option>)}
-            </select>
+        </React.Fragment>
+    );
+}
+
+const AbilityScores = ({abilityScores, onAbilityScoreChange}) => {
+    return (
+        <React.Fragment>
+            <AbilityScoreSelect field="str" value={abilityScores.str} onChange={onAbilityScoreChange}/>
+            <AbilityScoreSelect field="dex" value={abilityScores.dex} onChange={onAbilityScoreChange}/>
+            <AbilityScoreSelect field="con" value={abilityScores.con} onChange={onAbilityScoreChange}/>
+            <AbilityScoreSelect field="int" value={abilityScores.int} onChange={onAbilityScoreChange}/>
+            <AbilityScoreSelect field="wis" value={abilityScores.wis} onChange={onAbilityScoreChange}/>
+            <AbilityScoreSelect field="cha" value={abilityScores.cha} onChange={onAbilityScoreChange}/>
         </React.Fragment>
     );
 }

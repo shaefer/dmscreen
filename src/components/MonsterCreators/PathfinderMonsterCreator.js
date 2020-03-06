@@ -1,7 +1,7 @@
 import React from 'react'
 import MonsterDisplay from '../MonsterDisplay';
 import {calculateCr} from '../PathfinderMonsterAdvancer/AdvancementTools/ChallengeRatingCalculator';
-import {advanceMonster, advanceByAbilityScores} from '../PathfinderMonsterAdvancer/AdvanceMonster'
+import {advanceMonster, advanceByAbilityScores, recalculateMonster} from '../PathfinderMonsterAdvancer/AdvanceMonster'
 
 import './MonsterCreator.css'
 import AbilityScores from './AbilityScores';
@@ -140,12 +140,11 @@ class PathfinderMonsterCreator extends React.Component {
     }
 
     updateField(field, val) {
-        console.log("UPDATE FIELD", field, val)
         const statBlockWithChanges = {
             ...this.state.monster.statBlock,
             [field]: val
         };
-        const newMonster = advanceMonster(statBlockWithChanges, {});
+        const newMonster = recalculateMonster(statBlockWithChanges);
         const finalMonster = {
             ...this.state,
             monster: {
@@ -177,9 +176,13 @@ class PathfinderMonsterCreator extends React.Component {
     }
     
     render() {
+        const hdTypeOptions = () => {
+            const hdTypes = [4,6,8,10,12];
+            return hdTypes.map(x => <option value={x} key={`hdType${x}`}>{x}</option>)
+        };
         const onAbilityScoreChange = (fieldName, val) => {
             return this.statChanged(fieldName, val);
-        }
+        };
         return (
         <main>
             <div className="flex-container">
@@ -191,6 +194,12 @@ class PathfinderMonsterCreator extends React.Component {
                         <label>Name: </label><input name="name" onChange={this.nameChanged}/>
                         <div>
                             <AbilityScores abilityScores={this.state.monster.statBlock.ability_scores} onAbilityScoreChange={onAbilityScoreChange}/>
+                        </div>
+                        <div>
+                            <label>Hit Die Type</label>
+                            <select value={this.state.monster.statBlock.hdType} onChange={(e) => this.updateField('hdType', parseInt(e.target.value))}>
+                                {hdTypeOptions(this.state.monster.statBlock.hdType)}
+                            </select>
                         </div>
                     </div>
                 </div>

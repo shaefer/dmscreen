@@ -1,4 +1,5 @@
 export const Human = {
+    "name": "Human",
     "ability_scores": {
         "str": 15,
         "dex": 14,
@@ -69,7 +70,6 @@ export const Human = {
             }
         ]
     ],
-    "name": "Human",
     "organization": "solitary, pair, or team (3-6)",
     "racial_modifiers": "+2 to any ability score, +1 skill rank per level, +1 feat at 1st level",
     "ranged": "light crossbow +0 (1d8/19-20)",
@@ -143,50 +143,3 @@ export const Human = {
     "type": "creature",
     "xp": "200",
 }
-
-// "totalHitDice": 0,
-//     "hpEntries": [
-//         {
-//             "source": "racial",
-//             "hdDisplay": "0d6+0[racial]",
-//             "hitDice": 0,
-//             "hdType": 6,
-//             "creatureType": "Humanoid",
-//             "hitPointAdjustment": 0,
-//             "avgHitPoints": 0
-//         }
-//     ],
-//     "featCount": 0,
-//     "cmb_details": "+2",
-//     "cmd_details": "4",
-//     "ac": "12, touch 12, flat-footed 10 (+2 Dex)",
-//     "advancedName": "Human",
-//     "crCalculation": {
-//         "originalCr": {
-//             "total": 0.87,
-//             "original": 0,
-//             "hp": 0,
-//             "ac": 1,
-//             "attack": 1,
-//             "damage": 0.5,
-//             "saves": 1.83,
-//             "fort": 2,
-//             "ref": 3,
-//             "will": 0.5
-//         },
-//         "advancedCr": {
-//             "total": 0.87,
-//             "original": 0,
-//             "hp": 0,
-//             "ac": 1,
-//             "attack": 1,
-//             "damage": 0.5,
-//             "saves": 1.83,
-//             "fort": 2,
-//             "ref": 3,
-//             "will": 0.5
-//         },
-//         "crDiff": 0,
-//         "crAdjusted": 0
-//     },
-//     "specialAttacksAcquired": ""

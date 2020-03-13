@@ -659,6 +659,7 @@ const MonsterOptions = [
     <option>Howler</option>,
     <option>Huecuva</option>,
     <option>Huldra</option>,
+    <option>Human</option>,
     <option>Human Skeleton</option>,
     <option>Human Zombie</option>,
     <option>Humbaba</option>,

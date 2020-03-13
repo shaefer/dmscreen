@@ -8,7 +8,7 @@ import MonsterDisplay from '../MonsterDisplay';
 
 it('renders without crashing', () => {
   const div = document.createElement('div');
-  const monster = {statBlock:Aasimar}
+  const monster = {statBlock:Aasimar, success: true}
   const advancedMonster = PathfinderMonsterAdvancer(monster, {});
   ReactDOM.render(<MonsterDisplay monster={advancedMonster}/>, div);
   ReactDOM.unmountComponentAtNode(div);

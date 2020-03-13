@@ -209,30 +209,39 @@ export const applyChangesToSavingThrows = (savingThrows, changes) => {
     });
 }
 
-export const calcTouchAc = (acMods) => {
+export const calcTouchAc = (acMods, maxDex) => {
     const touchTypes = ["Dex", "size", "dodge"];
     const getTouchMods = acMods.filter(x => touchTypes.indexOf(x.type) !== -1);
-    const touchTotal = 10 + getTouchMods.map(x => x.mod).reduce((acc, v) => acc + v, 0);
+    const touchTotal = 10 + getTouchMods
+                            .map(x => (x.type === 'Dex' && maxDex < x.mod) ? maxDex : x.mod)
+                            .reduce((acc, v) => acc + v, 0);
     return touchTotal;
 }
 
-export const calcTotalAc = (acMods) => {
-    const total = 10 + acMods.map(x => x.mod).reduce((acc, v) => acc + v, 0);
+export const calcTotalAc = (acMods, maxDex) => {
+    const total = 10 + acMods
+                        .map(x => (x.type === 'Dex' && maxDex < x.mod) ? maxDex : x.mod)
+                        .reduce((acc, v) => acc + v, 0);
     return total;
 }
 
 export const calcFlatFootedAc = (acMods) => {
-    const flatFootedTypes = ["natural", "size"];
+    const flatFootedTypes = ["natural", "size", "armor"];
     const getFlatFootedMods = acMods.filter(x => flatFootedTypes.indexOf(x.type) !== -1);
     const ffTotal = 10 + getFlatFootedMods.map(x => x.mod).reduce((acc, v) => acc + v, 0);
     return ffTotal;
 }
 
 export const displayArmorClass = (acMods) => {
-    const total = calcTotalAc(acMods);
-    const touchTotal = calcTouchAc(acMods);
+    const maxDex = Math.min(...acMods.filter(x => x.hasOwnProperty('maxDex')).map(x => x.maxDex))
+    const total = calcTotalAc(acMods, maxDex);
+    const touchTotal = calcTouchAc(acMods, maxDex);
     const ffTotal = calcFlatFootedAc(acMods);
-    const modStr = acMods.map(x => `${withPlus(x.mod)} ${x.type}`).join(', ');
+    const modStr = acMods.map(x => {
+        return (x.type === 'Dex' && maxDex < x.mod) 
+            ? `${withPlus(x.mod)} ${x.type} maxDex ${withPlus(maxDex)})`
+            : `${withPlus(x.mod)} ${x.type}`;
+    }).join(', ');
 
     return `${total}, touch ${touchTotal}, flat-footed ${ffTotal} (${modStr})`;
 }

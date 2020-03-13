@@ -133,13 +133,13 @@ const spells = (m) => {
 const asOrdinal = (i) => {
     var j = i % 10,
         k = i % 100;
-    if (j == 1 && k != 11) {
+    if (j === 1 && k !== 11) {
         return i + "st";
     }
-    if (j == 2 && k != 12) {
+    if (j === 2 && k !== 12) {
         return i + "nd";
     }
-    if (j == 3 && k != 13) {
+    if (j === 3 && k !== 13) {
         return i + "rd";
     }
     return i + "th";
@@ -287,11 +287,62 @@ const roundDecimal = (num) => {
     return Math.round( num * 1e2 ) / 1e2; //https://stackoverflow.com/questions/2283566/how-can-i-round-a-number-in-javascript-tofixed-returns-a-string/14978830    
 }
 
-const MonsterDisplay = ({monster}) => {
+const buildCrSection = (m, opts) => {
+    const existingAdjustments = (m.crAdjustments) ? m.crAdjustments : [];
+    const crAdjustmentsVal = (existingAdjustments.length > 0) ? existingAdjustments.map(x => x.val).reduce((agg, x) => agg + x) : 0;
+    const crAdjustmentsText = (existingAdjustments.length > 0) ? <StatBlockLine><B>CR Adjustments</B> {existingAdjustments.map(x => `${x.source} ${withPlus(x.val)}`).join(", ")}</StatBlockLine> : '';
+    const origCr = m.crCalculation.originalCr;
+    const originalCrDetails = `HP CR: ${origCr.hp}, AC CR: ${origCr.ac}, Attack CR: ${origCr.attack}, Damage CR: ${origCr.damage}, Saves CR: ${origCr.saves}`;
+    const newCr = m.crCalculation.advancedCr;
+    const advancedCrDetails = `HP CR: ${newCr.hp}, AC CR: ${newCr.ac}, Attack CR: ${newCr.attack}, Damage CR: ${newCr.damage}, Saves CR: ${newCr.saves}`;
+    const crSection = (
+        <section>
+        <StatSectionHeader>challenge rating details</StatSectionHeader>
+        <StatBlockLine><B>Original CR</B> {m.cr}</StatBlockLine>
+        <StatBlockLine><B>Original Calculated CR</B> {origCr.total} <B>CR Details: </B>({originalCrDetails})</StatBlockLine>
+        <StatBlockLine><B>Advanced Calculated CR</B> {newCr.total} <B>CR Details: </B>({advancedCrDetails})</StatBlockLine>
+        <StatBlockLine><B>CR Difference</B> {m.crCalculation.crDiff}</StatBlockLine>
+        <StatBlockLine><B>New Estimated CR</B> {m.crCalculation.crAdjusted}</StatBlockLine>
+        {crAdjustmentsText}
+        </section>
+    );
+    const crSectionDisplay = (opts.showCrChanges && (m.crCalculation.crDiff || crAdjustmentsVal > 0)) ? crSection : '';
+    return crSectionDisplay;
+}
+
+const mapAndAddFieldNames = (monster) => {
     const m = monster.statBlock;
+    const newStatBlock = {
+        ...m,
+        name: m.advancedName ? m.advancedName : m.name,
+        init: withPlus(m.init),
+        ac: m.armor_class.ac_details,
+        strength: m.ability_scores.str,
+        dexterity: m.ability_scores.dex,
+        constitution: m.ability_scores.con,
+        intelligence: m.ability_scores.int,
+        wisdom: m.ability_scores.wis,
+        charisma: m.ability_scores.cha,
+        fortitude: withPlus(m.saving_throws.fort),
+        reflex: withPlus(m.saving_throws.ref),
+        will: withPlus(m.saving_throws.will),
+        base_attack: withPlus(m.base_attack),
+        cmb: (m.cmb_details) ? m.cmb_details : withPlus(m.cmb),
+        cmd: (m.cmd_details) ? m.cmd_details : m.cmd,
+        featCount: m.featCount,
+    };
+    return {
+        success: monster.success,
+        ...newStatBlock,
+        displayOptions: monster.displayOptions,
+    }
+}
+
+const MonsterDisplay = ({monster}) => {
+    const m = mapAndAddFieldNames(monster);
     if (!m.name)
         return <div>No Monster Currently Selected</div>;
-    if (!monster.success) {
+    if (!m.success) {
         return <div>A Monster named [{m.name}] was not found</div>;
     }
 
@@ -314,31 +365,15 @@ const MonsterDisplay = ({monster}) => {
     const existingAdjustments = (m.crAdjustments) ? m.crAdjustments : [];
     
     const crAdjustmentsVal = (existingAdjustments.length > 0) ? existingAdjustments.map(x => x.val).reduce((agg, x) => agg + x) : 0;
-    const crAdjustmentsText = (existingAdjustments.length > 0) ? <StatBlockLine><B>CR Adjustments</B> {existingAdjustments.map(x => `${x.source} ${withPlus(x.val)}`).join(", ")}</StatBlockLine> : '';
     const crDisplay = (opts.showCrChanges && (m.crCalculation.crDiff || crAdjustmentsVal > 0)) ? `${roundDecimal(m.crCalculation.crAdjusted + crAdjustmentsVal)} (original CR ${m.cr})` : `${m.cr}`
+    const crSectionDisplay = (m.crCalculation) ? buildCrSection(m, opts) : '';
     
-    const origCr = m.crCalculation.originalCr;
-    const originalCrDetails = `HP CR: ${origCr.hp}, AC CR: ${origCr.ac}, Attack CR: ${origCr.attack}, Damage CR: ${origCr.damage}, Saves CR: ${origCr.saves}`;
-    const newCr = m.crCalculation.advancedCr;
-    const advancedCrDetails = `HP CR: ${newCr.hp}, AC CR: ${newCr.ac}, Attack CR: ${newCr.attack}, Damage CR: ${newCr.damage}, Saves CR: ${newCr.saves}`;
-    const crSection = (
-        <section>
-        <StatSectionHeader>challenge rating details</StatSectionHeader>
-        <StatBlockLine><B>Original CR</B> {m.cr}</StatBlockLine>
-        <StatBlockLine><B>Original Calculated CR</B> {origCr.total} <B>CR Details: </B>({originalCrDetails})</StatBlockLine>
-        <StatBlockLine><B>Advanced Calculated CR</B> {newCr.total} <B>CR Details: </B>({advancedCrDetails})</StatBlockLine>
-        <StatBlockLine><B>CR Difference</B> {m.crCalculation.crDiff}</StatBlockLine>
-        <StatBlockLine><B>New Estimated CR</B> {m.crCalculation.crAdjusted}</StatBlockLine>
-        {crAdjustmentsText}
-        </section>
-    );
-    const crSectionDisplay = (opts.showCrChanges && (m.crCalculation.crDiff || crAdjustmentsVal > 0)) ? crSection : '';
     const featCountStr = (m.featCount && opts.showFeatCount) ? ` (${m.featCount})` : ""; 
     const meleeAttackDisplay = (m.melee) ? displayFullAttack(m.melee_attacks) : m.melee;
     const rangedAttackDisplay = (m.ranged) ? displayFullAttack(m.ranged_attacks) : m.ranged;
     const perceptionSkill = m.skills.find(x => x.name.trim() === 'Perception');
     const perceptionDisplay = (perceptionSkill) ? perceptionSkill.name + ' '  + withPlus(perceptionSkill.value) : '';
-    const senses = (m.senses) ? m.senses.replace(/Perception \+\d+/, perceptionDisplay) : m.senses;
+    const senses = (m.senses) ? m.senses.replace(/Perception [+-]\d+/, perceptionDisplay) : m.senses;
     const acquiredSpecialAttacksBySource = (acquired) => {
         if (!acquired || !acquired.length === 0) return '';
         return acquired.map(x => <StatBlockLine key={x.source} data={x} required><B>Special Attacks from {x.source}</B> {x.display}</StatBlockLine>)

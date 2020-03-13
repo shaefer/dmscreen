@@ -16,6 +16,35 @@ import {rollDice} from '../../utils/DiceBag'
 
 import seedrandom from 'seedrandom';
 
+export const recalculateMonster = (monster) => {
+    const newMonster = {
+        ...monster,
+        totalHitDice: monster.hitDice,
+        hpEntries: [hpChanges("racial", monster.hitDice, monster.hdType, monster.creature_type, 
+                    statBonusFromAbilityScore(monster.ability_scores.con), 
+                    statBonusFromAbilityScore(monster.ability_scores.cha), 
+                    monster.size)],
+    };
+    const recalcHdMonster = {
+        ...newMonster,
+        ...advanceByHitDice(newMonster, 0)
+    };
+    const recalcAbilityScoresMonster = {
+        ...recalcHdMonster,
+        ...advanceByAbilityScores(recalcHdMonster, [{str:0,dex:0,con:0,int:0,wis:0,cha:0,reason:'recalc'}])
+    }
+    const recalcSizeMonster = {
+        ...recalcAbilityScoresMonster,
+        ...advanceBySize(recalcAbilityScoresMonster, recalcAbilityScoresMonster.size)
+    }
+    const advancedNamePrefixes = (recalcSizeMonster.advancedNamePrefixes) ? recalcSizeMonster.advancedNamePrefixes : [];
+    const namePrefix = (advancedNamePrefixes.length > 0) ? (advancedNamePrefixes.sort().join(", ") + " ") : '';
+    const finalMonster = {
+        ...recalcSizeMonster,
+        advancedName: `${namePrefix}${recalcSizeMonster.name}`,
+    }
+    return finalMonster;
+}
 
 //There are a few fields we add as we go such as advancements that each stage might add to. If we could start with the assupmtion that that field is initialized properly the spread operator could be used with less coersion. 
 //We probably should just do an initial spread that initializes fields that aren't always present that we would like to count on for advancement.
@@ -232,12 +261,12 @@ const acChanges = (origAcMods, statBonusDiffs) => {
 
 export const combatManeuverChanges = (statblock, cmbChange, cmdChange) => {
     const newCmb = statblock.cmb + cmbChange;
-    const newCmbDetails = (statblock.cmb_details) ? statblock.cmb_details.toString().replace(/\d+/gm, (x) => {
-        return parseInt(x) + cmbChange;
+    const newCmbDetails = (statblock.cmb_details) ? statblock.cmb_details.toString().replace(/[+-]?\d+/gm, (x) => {
+        return withPlus(parseInt(x) + cmbChange);
     }) : withPlus(newCmb);
 
     const newCmd = statblock.cmd + cmdChange; //all touch ac mods http://www.tenebraemush.net/index.php/Understanding_CMB_and_CMD
-    const newCmdDetails = (statblock.cmd_details) ? statblock.cmd_details.toString().replace(/\d+/gm, (x) => {
+    const newCmdDetails = (statblock.cmd_details) ? statblock.cmd_details.toString().replace(/[+-]?\d+/gm, (x) => {
         return parseInt(x) + cmdChange;
     }) : newCmd;
 
@@ -423,7 +452,6 @@ const abilityScoreChangesToString = (abilityScoreChanges) => {
 }
 
 export const advanceByAbilityScores = (statblock, abilityScoreChanges, chainedAdvancement = false) => {
-    const newHitDice = statblock.hitDice;
     const newAbilityScores = applyAbilityScoreChanges(statblock.ability_scores, abilityScoreChanges);
     const savingThrowChangeStat = getSavingThrowChangesFromStatChanges(statblock.ability_scores, newAbilityScores, statblock.creature_type);
     //eventually figure out how to not even include change sets that are basically blank - zeroes for all 3 saving throws
@@ -438,6 +466,7 @@ export const advanceByAbilityScores = (statblock, abilityScoreChanges, chainedAd
     const hpEntries = currentHpEntries.map(hpe => {
         return hpChanges(hpe.source, hpe.hitDice, hpe.hdType, hpe.creatureType, statBonusFromAbilityScore(newAbilityScores.con), statBonusFromAbilityScore(newAbilityScores.cha), statblock.size);
     });
+
     const hpFields = {
         hp: hpEntriesDisplay(hpEntries) || statblock.hp,
         hpEntries: hpEntries,

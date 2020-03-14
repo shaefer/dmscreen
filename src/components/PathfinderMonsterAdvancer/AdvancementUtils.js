@@ -239,7 +239,7 @@ export const displayArmorClass = (acMods) => {
     const ffTotal = calcFlatFootedAc(acMods);
     const modStr = acMods.map(x => {
         return (x.type === 'Dex' && maxDex < x.mod) 
-            ? `${withPlus(x.mod)} ${x.type} maxDex ${withPlus(maxDex)})`
+            ? `${withPlus(x.mod)} ${x.type} [max ${withPlus(maxDex)}]`
             : `${withPlus(x.mod)} ${x.type}`;
     }).join(', ');
 

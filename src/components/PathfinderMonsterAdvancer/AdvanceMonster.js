@@ -208,6 +208,7 @@ const changeAcMod = (origAcMods, acModChange) => {
 
 const acFieldsFromMods = (acMods) => {
     const acDisplay = displayArmorClass(acMods);
+    const maxDex = Math.min(...acMods.filter(x => x.hasOwnProperty('maxDex')).map(x => x.maxDex))
     return {
         ac: acDisplay,
         armor_class : {
@@ -215,9 +216,9 @@ const acFieldsFromMods = (acMods) => {
             ac_modifiers: acMods,
             ac_modifiers_details: acMods.map(x => `${withPlus(x.mod)} ${x.type}`).join(', '),
             ac : {
-                standard: calcTotalAc(acMods),
+                standard: calcTotalAc(acMods, maxDex),
                 flat_footed: calcFlatFootedAc(acMods),
-                touch: calcTouchAc(acMods)
+                touch: calcTouchAc(acMods, maxDex)
             }
         }
     }

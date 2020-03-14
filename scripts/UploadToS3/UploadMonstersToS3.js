@@ -9,6 +9,7 @@ import AWS from 'aws-sdk'
 import fs from 'fs'
 import Monsters from './MonstersToUpload' //This needs to refer to a local file to work with babel-node 6. This file should match what we are testing in src/models/Monsters (We can't upgrade to babel-node 7 because of non-support of import/export)
 import {Human} from './Human'
+import {Dwarf} from './Dwarf'
 
 console.log("Starting AWS Script");
 const s3 = new AWS.S3();
@@ -52,10 +53,10 @@ const getMonsterFromS3 = (monsterName, bucket='cleverorc', path='pathfinder/v2/m
 }
 
 //writeS3JsonFileForMonster(Monsters.find(x => x.name === 'Aasimar'))
-console.log("Trying to upload Human", Human.name)
-writeS3JsonFileForMonster(Human)
+console.log("Trying to upload Dwarf", Dwarf.name)
+writeS3JsonFileForMonster(Dwarf)
 //writeAllMonstersToS3();
-getMonsterFromS3('Human')
+getMonsterFromS3('Dwarf')
 
 const writeS3DataToFile = (err, data, fileName) => {
     if (err) { console.log(err, err.stack); return; }

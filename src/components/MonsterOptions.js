@@ -631,6 +631,7 @@ const MonsterOptions = [
     <option>Guecubu</option>,
     <option>Gug</option>,
     <option>Half-Celestial</option>,
+    <option>Half-elf</option>,
     <option>Half-Fiend</option>,
     <option>Hamadryad</option>,
     <option>Hangman Tree</option>,

@@ -253,7 +253,7 @@ const displayDamage = (damageDetails => {
 const renderClassLevelAbility = (ca) => {
     const saType = (ca.specialAbilityType) ? <span> (<span style={{textTransform: 'capitalize'}}>{ca.specialAbilityType}</span>)</span> : '';
     return (
-        <StatBlockLine key={ca.name}>
+        <StatBlockLine key={`${ca.name}`+Math.random()}>
             <B>{ca.name}{saType}: </B>
             {ca.description}
         </StatBlockLine>
@@ -312,7 +312,6 @@ const buildCrSection = (m, opts) => {
 
 const mapAndAddFieldNames = (monster) => {
     const m = monster.statBlock;
-    console.log(m, m.skills)
     const newStatBlock = {
         ...m,
         name: m.advancedName ? m.advancedName : m.name,

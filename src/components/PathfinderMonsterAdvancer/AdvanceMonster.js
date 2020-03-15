@@ -606,7 +606,7 @@ const selectItems = (itemList, amount, generator, allowDuplicates = false) => {
     return selectedItems;
 }
 
-const buildClassAbilitiesForLevel = (classInfo, level) => {
+const buildClassAbilitiesForLevel = (classInfo, level, generator) => {
     const classLevelsToApply = classInfo.levels.filter(x => x.level <= level);
     const selectedAbilities = [];
     const classAbilities = classLevelsToApply.map(classLevel => {
@@ -620,7 +620,8 @@ const buildClassAbilitiesForLevel = (classInfo, level) => {
                 const validForLevelAbilities = (fullAbility.selectionLevelRestrictions) ? classInfo[fullAbility.selection].filter(x => classLevel.level >= x.minLevel) : classInfo[fullAbility.selection];
                 const validAbilities = validForLevelAbilities.filter(x => !selectedAbilities.map(x => x.name).includes(x.name) || (x.multipleSelection))
                 const preferredAbilities = (fullAbility.selectionLevelRestrictions && classLevel.level >= 8) ? validAbilities.filter(x => x.minLevel >= 8) : validAbilities; //basic preference for high level powers at 8th or above
-                let selectedAbility = preferredAbilities[Math.floor(Math.random() * preferredAbilities.length)];
+                const index = rollDice(1, preferredAbilities.length, generator).total - 1;
+                let selectedAbility = preferredAbilities[index];
                 
                 //The prereq for Night Vision is LowLight vision rage power or racial low light...this is not checking for racial as well...
                 if (selectedAbility.prerequisite && (!selectedAbilities.map(x => x.name).includes(selectedAbility.prerequisite))) {
@@ -632,7 +633,7 @@ const buildClassAbilitiesForLevel = (classInfo, level) => {
                     ...fullAbility,
                     ...selectedAbility,
                     level: classLevel.level,
-                    name: `${fullAbility.name} - ${selectedAbility.name}`
+                    name: `${selectedAbility.name}` //we depend on this name to trigger special class functions like Increased Damage Reduction
                 }
             } else {
                 return {
@@ -742,7 +743,7 @@ export const advanceByClassLevel = (statblock, classLevel, generator) => {
     //pick strategy - use all skills and just assign each point randomly.
     const skillsAssignedPoints = selectSkills([...classInfo.classSkills], skillRanksEarned, classLevel.level, generator);
     const pointsSpent = skillsAssignedPoints.map(x => x.value).reduce((acc, i) => acc + i);
-    console.log("Earned", skillRanksEarned, "Spent", pointsSpent, "assignments", skillsAssignedPoints)
+    //console.log("Earned", skillRanksEarned, "Spent", pointsSpent, "assignments", skillsAssignedPoints)
     //update the current skills with the new values.  Then calculate the new ones.
     const updatedSkills = statblock.skills.map(x => {
         const skillName = x.name.trim();
@@ -796,7 +797,7 @@ export const advanceByClassLevel = (statblock, classLevel, generator) => {
         })
     }
 
-    const classAbilities = buildClassAbilitiesForLevel(classInfo, classLevel.level);
+    const classAbilities = buildClassAbilitiesForLevel(classInfo, classLevel.level, generator);
     const classAbilitiesToAdd = {
         source: classLevel.className,
         specialAbilities: classAbilities
@@ -812,7 +813,7 @@ export const advanceByClassLevel = (statblock, classLevel, generator) => {
     classAbilitiesWithAlterations.forEach(ca => {
         const classAdvancementFn = classAdvancement[ca.name];
         if (classAdvancementFn) {
-            const field = classAdvancementFn(classAbilityAdvancements, classLevel.level, classAbilitiesWithAlterations);
+            const field = classAdvancementFn(classAbilityAdvancements, classLevel.level, [...classAbilitiesWithAlterations]);
             if (ca.fieldToUpdate === 'acquiredSpecialAttacks') {
                 //Currently class abilities that add special attacks add them to a new property acquiredSpecialAttacks (like a template) instead of trying to alter special_attacks field. This is due to special attacks being a string rather than an array of special attack objects. Using this approach we expect the output of the classAbilityFunction to be a display Function that will be resolved near the end of advancement
                 const newSpecialAttack = [{sourceName: classLevel.className + " Class", displayFn: field}];

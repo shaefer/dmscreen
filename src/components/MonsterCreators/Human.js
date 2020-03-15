@@ -90,7 +90,7 @@ export const Human = {
                                 "adjustment": 0
                             }
                         ],
-                        "critRangeAndMultiplier": "19-20"
+                        "critRange": "19-20"
                     }
                 ]
             }

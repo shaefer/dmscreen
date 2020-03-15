@@ -64,7 +64,7 @@ export const Elf = {
                                 "adjustment": -1
                             }
                         ],
-                        "critRangeAndMultiplier": "19-20"
+                        "critRange": "19-20"
                     }
                 ]
             }
@@ -97,7 +97,7 @@ export const Elf = {
                                 "adjustment": 0
                             }
                         ],
-                        "critRangeAndMultiplier": "x3"
+                        "critMultiplier": "x3"
                     }
                 ]
             }

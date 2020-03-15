@@ -580,6 +580,7 @@ const MonsterOptions = [
     <option>Globster</option>,
     <option>Gloomwing</option>,
     <option>Gnoll</option>,
+    <option>Gnome</option>,
     <option>Goblin</option>,
     <option>Goblin Dog</option>,
     <option>Goblin Snake</option>,

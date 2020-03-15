@@ -60,7 +60,7 @@ export const Dwarf = {
                                 "adjustment": 2
                             }
                         ],
-                        "critRangeAndMultiplier": "x3"
+                        "critMultiplier": "x3"
                     }
                 ]
             }
@@ -93,7 +93,7 @@ export const Dwarf = {
                                 "adjustment": 0
                             }
                         ],
-                        "critRangeAndMultiplier": "19-20"
+                        "critRange": "19-20"
                     }
                 ]
             }

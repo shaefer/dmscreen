@@ -487,6 +487,7 @@ const MonsterOptions = [
     <option>Elemental, Water, Small</option>,
     <option>Elephant</option>,
     <option>Elephant, Mastodon</option>,
+    <option>Elf</option>,
     <option>Elohim</option>,
     <option>Erlking</option>,
     <option>Ettercap</option>,

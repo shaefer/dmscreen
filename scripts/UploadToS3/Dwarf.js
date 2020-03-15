@@ -8,7 +8,7 @@ export const Dwarf = {
         "cha": 10
     },
     "acAsInt": 17,
-    "alignment": "N",
+    "alignment": "LG",
     "armor_class": {
         "ac_details": "17, touch 10, flat-footed 17 (+7 armor)",
         "ac_modifiers": [

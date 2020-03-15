@@ -403,7 +403,7 @@ export const advanceBySize = (statblock, sizeChange) => {
         const skillName = x.name.trim();
         if (skillName === 'Stealth') return {name: skillName, value: x.value + totalChanges.stealth};
         if (skillName === 'Fly') return {name: skillName, value: x.value + totalChanges.fly};
-        return {name: skillName, value: x.value};
+        return {name: skillName, subName: x.subName, value: x.value};
     });
 
     const combatManeuverFields = combatManeuverChanges(statblock, totalChanges.cmb, totalChanges.cmd);
@@ -412,7 +412,6 @@ export const advanceBySize = (statblock, sizeChange) => {
     const advancements = (statblock.advancements) ? statblock.advancements : [];
     const advancementsFromSize = {
         skills: newSkills,
-        skills_details: newSkills.map(x => x.name + ' ' + withPlus(x.value)).join(', '),
         ...combatManeuverFields,
         size: sizeChange,
         ...acFieldsFromMods(acMods),
@@ -482,16 +481,17 @@ export const advanceByAbilityScores = (statblock, abilityScoreChanges, chainedAd
 
     const newSkills = statblock.skills.map(x => {
         const skillName = x.name.trim();
-        const skillInfo = Skills.find(x => x.name === skillName);
+        const skillInfo = Skills.find(y => y.name === skillName);
         if (!skillInfo) throw new Error(`Did not find skill named: ${skillName} on creature ${statblock.name}`)
-        const skillStat = skillInfo.abilityScore;
-        if (skillStat === 'Str') return {name: skillName, value: x.value + statBonusDiffs.str}
-        if (skillStat === 'Dex') return {name: skillName, value: x.value + statBonusDiffs.dex}
-        if (skillStat === 'Con') return {name: skillName, value: x.value + statBonusDiffs.con}
-        if (skillStat === 'Int') return {name: skillName, value: x.value + statBonusDiffs.int}
-        if (skillStat === 'Wis') return {name: skillName, value: x.value + statBonusDiffs.wis}
-        if (skillStat === 'Cha') return {name: skillName, value: x.value + statBonusDiffs.cha}
-        return {name: skillName, value: x.value};
+        const skillStat = skillInfo.abilityScore.toLowerCase();
+        return {name: skillName, subName: x.subName, value: x.value + statBonusDiffs[skillStat]};
+        // if (skillStat === 'Str') return {name: skillName, value: x.value + statBonusDiffs.str}
+        // if (skillStat === 'Dex') return {name: skillName, value: x.value + statBonusDiffs.dex}
+        // if (skillStat === 'Con') return {name: skillName, value: x.value + statBonusDiffs.con}
+        // if (skillStat === 'Int') return {name: skillName, value: x.value + statBonusDiffs.int}
+        // if (skillStat === 'Wis') return {name: skillName, value: x.value + statBonusDiffs.wis}
+        // if (skillStat === 'Cha') return {name: skillName, value: x.value + statBonusDiffs.cha}
+        // return {name: skillName, subName: x.subName, value: x.value};
     });
 
     const cmbChange = statBonusDiffs.str;
@@ -505,7 +505,6 @@ export const advanceByAbilityScores = (statblock, abilityScoreChanges, chainedAd
         melee_attacks: meleeAttacks,
         ranged_attacks: rangedAttacks,
         skills: newSkills,
-        skill_details: newSkills.map(x => x.name + ' ' + withPlus(x.value)).join(', '),
         init: statblock.init + statBonusDiffs.dex,
         saving_throws: applyChangesToSavingThrows(statblock.saving_throws, [savingThrowChangeStat]),
         ability_scores: newAbilityScores,
@@ -683,6 +682,27 @@ const buildSpellsKnownOrPreparedSection = (statblock, classInfo, classLevel, gen
     };
 }
 
+//this assumes a simple max...eventually each skill might have a different max depending on it being a base class skill vs. racial hd as well as class.
+const selectSkills = (itemList, amount, maxPoints, generator) => {
+    const selectableItems = itemList.slice(0);
+    const selectedItems = [];
+    for(let i = 1; i <= amount; i++) {
+        if (selectableItems.length === 0) break;
+        const index = rollDice(1, selectableItems.length, generator).total - 1;
+        const item = selectableItems[index];
+        const currentSelected = selectedItems.find(x => x.skill.name === item.name && x.skill.subName === item.subName);
+        const newVal = (currentSelected) ? currentSelected.value + 1 : 1
+        if (currentSelected) {
+            currentSelected.value++
+        } else {
+            selectedItems.push({skill: item, value: 1});
+        }
+        if (newVal === maxPoints)
+            selectableItems.splice(index, 1);
+    }
+    return selectedItems;
+}
+
 export const advanceByClassLevel = (statblock, classLevel, generator) => {
     const classDisplayName = `${classLevel.className} ${classLevel.level}`;
     const newHitDice = classLevel.level;
@@ -708,6 +728,73 @@ export const advanceByClassLevel = (statblock, classLevel, generator) => {
     const rangedAttacks = attackChanges(statblock.ranged_attacks, 0, baseAttackDiff, false);
     const newCombatFields = combatManeuverChanges(statblock, baseAttackDiff, baseAttackDiff);
 
+    const skillRanksEarned = (classInfo.skillRanksPerLevel + statBonusFromAbilityScore(statblock.ability_scores.int)) * classLevel.level;
+    const currentSkills = statblock.skills.map(x => {
+        return {
+            ...x,
+            name: x.name.trim(),
+        }
+    }).slice(0);
+    const newClassSkillsFromClass = classInfo.classSkills.filter(x => {
+
+        return !currentSkills.find(y => y.name === x.name && y.subName === x.subName);
+    });
+    //pick strategy - use all skills and just assign each point randomly.
+    const skillsAssignedPoints = selectSkills([...classInfo.classSkills], skillRanksEarned, classLevel.level, generator);
+    const pointsSpent = skillsAssignedPoints.map(x => x.value).reduce((acc, i) => acc + i);
+    console.log("Earned", skillRanksEarned, "Spent", pointsSpent, "assignments", skillsAssignedPoints)
+    //update the current skills with the new values.  Then calculate the new ones.
+    const updatedSkills = statblock.skills.map(x => {
+        const skillName = x.name.trim();
+        const matchingSkill = skillsAssignedPoints.find(y => y.skill.name === skillName && y.skill.subName === x.subName);
+        const ranks = (matchingSkill) ? matchingSkill.value : 0;
+        return {
+            ...x,
+            value: x.value + ranks
+        };
+    });
+
+    const newSkills = newClassSkillsFromClass.filter(x => {
+        const skillInfo = Skills.find(y => y.name === x.name);
+        if (!skillInfo) throw new Error(`Did not find skill named: ${x} on creature ${statblock.name}`)
+        const matchingSkill = skillsAssignedPoints.find(y => y.skill.name === x.name && y.skill.subName === x.subName);
+        return matchingSkill;
+    }).map(x => {
+        const skillInfo = Skills.find(y => y.name === x.name);
+        if (!skillInfo) throw new Error(`Did not find skill named: ${x} on creature ${statblock.name}`)
+        const skillStat = skillInfo.abilityScore.toLowerCase();
+        const abilityScoreBonus = statBonusFromAbilityScore(statblock.ability_scores[skillStat]) || 0;
+        const matchingSkill = skillsAssignedPoints.find(y => y.skill.name === x.name && y.skill.subName === x.subName);
+        if (matchingSkill) {
+            return {
+                name: x.name,
+                subName: x.subName,
+                value: matchingSkill.value + 3 + abilityScoreBonus
+            };
+        }
+    });
+
+    const allSkills = [...updatedSkills, ...newSkills];
+
+    statblock = {
+        ...statblock,
+        skills: allSkills.sort((x, y) => {
+            if (x.name < y.name) {
+                return -1;
+            }
+            if (x.name > y.name) {
+                return 1;
+            }
+            if (x.subName < y.subName) {
+                return -1;
+            }
+            if (x.subName > y.subName) {
+                return 1;
+            }
+            // names must be equal
+            return 0;
+        })
+    }
 
     const classAbilities = buildClassAbilitiesForLevel(classInfo, classLevel.level);
     const classAbilitiesToAdd = {

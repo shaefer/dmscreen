@@ -312,6 +312,7 @@ const buildCrSection = (m, opts) => {
 
 const mapAndAddFieldNames = (monster) => {
     const m = monster.statBlock;
+    console.log(m, m.skills)
     const newStatBlock = {
         ...m,
         name: m.advancedName ? m.advancedName : m.name,
@@ -330,6 +331,7 @@ const mapAndAddFieldNames = (monster) => {
         cmb: (m.cmb_details) ? m.cmb_details : withPlus(m.cmb),
         cmd: (m.cmd_details) ? m.cmd_details : m.cmd,
         featCount: m.featCount,
+        skill_details: m.skills.map(x => x.name + ((x.subName) ? ` (${x.subName})` : '') + ' ' + withPlus(x.value)).join(', '),
     };
     return {
         success: monster.success,

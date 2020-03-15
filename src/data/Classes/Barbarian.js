@@ -280,7 +280,7 @@ const barbarian = {
     abbreviation: 'bbn',
     alignment: 'non-lawful',
     hitDieType: 12,
-    classSkills: [ "Acrobatics", "Climb", "Craft", "Handle Animal", "Intimidate", "Knowledge (nature)", "Perception", "Ride", "Survival", "Swim"],
+    classSkills: [ {name:"Acrobatics"}, {name: "Climb"}, {name: "Craft"}, {name: "Handle Animal"}, {name: "Intimidate"}, {name: "Knowledge", subName: 'nature'}, {name: "Perception"}, {name: "Ride"}, {name: "Survival"}, {name: "Swim"}],
     skillRanksPerLevel: 4,
     "base_attack_bonus": "fast",  //might like a different format  for the key but this matches creatureStatsByType
     "good_saving_throws": ["Fort"], //might like a different format  for the key but this matches creatureStatsByType

@@ -4,6 +4,7 @@ import {calculateCr} from '../PathfinderMonsterAdvancer/AdvancementTools/Challen
 import {advanceMonster, advanceByAbilityScores, recalculateMonster} from '../PathfinderMonsterAdvancer/AdvanceMonster'
 import {genericMonster} from './BaseMonsters'
 import {Human} from './Human'
+import {Dwarf} from './Dwarf'
 import './MonsterCreator.css'
 import AbilityScores from './AbilityScores';
 
@@ -19,7 +20,7 @@ class PathfinderMonsterCreator extends React.Component {
         this.state = {
             monster: {
                 success: true,
-                statBlock: Human
+                statBlock: Dwarf
             }
         }
     }

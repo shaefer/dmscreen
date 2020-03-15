@@ -253,7 +253,7 @@ const displayDamage = (damageDetails => {
 const renderClassLevelAbility = (ca) => {
     const saType = (ca.specialAbilityType) ? <span> (<span style={{textTransform: 'capitalize'}}>{ca.specialAbilityType}</span>)</span> : '';
     return (
-        <StatBlockLine key={ca.name}>
+        <StatBlockLine key={`${ca.name}`+Math.random()}>
             <B>{ca.name}{saType}: </B>
             {ca.description}
         </StatBlockLine>
@@ -330,6 +330,7 @@ const mapAndAddFieldNames = (monster) => {
         cmb: (m.cmb_details) ? m.cmb_details : withPlus(m.cmb),
         cmd: (m.cmd_details) ? m.cmd_details : m.cmd,
         featCount: m.featCount,
+        skill_details: m.skills.map(x => x.name + ((x.subName) ? ` (${x.subName})` : '') + ' ' + withPlus(x.value)).join(', '),
     };
     return {
         success: monster.success,

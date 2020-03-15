@@ -418,6 +418,7 @@ const MonsterOptions = [
     <option>Duergar</option>,
     <option>Dullahan</option>,
     <option>Dust Digger</option>,
+    <option>Dwarf</option>,
     <option>Dybbuk</option>,
     <option>Eagle</option>,
     <option>Eagle, Giant</option>,

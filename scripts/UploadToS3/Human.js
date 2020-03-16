@@ -40,11 +40,11 @@ export const Human = {
     "description": "This is a creature.",
     "environment": "any",
     "feats": "",
-    "hdType": 6,
+    "hdType": 8,
     "hitDice": 0,
     "hitPointAdjustment": 0,
     "hitPoints": 5,
-    "hp": "0 (0d6+0[racial])",
+    "hp": "0 (0d8+0[racial])",
     "init": 2,
     "languages": "Common",
     "melee": "heavy mace +0 (1d8)",
@@ -90,7 +90,7 @@ export const Human = {
                                 "adjustment": 0
                             }
                         ],
-                        "critRangeAndMultiplier": "19-20"
+                        "critRange": "19-20"
                     }
                 ]
             }

@@ -8,8 +8,13 @@
 import AWS from 'aws-sdk'
 import fs from 'fs'
 import Monsters from './MonstersToUpload' //This needs to refer to a local file to work with babel-node 6. This file should match what we are testing in src/models/Monsters (We can't upgrade to babel-node 7 because of non-support of import/export)
+import {Elf} from './Elf'
 import {Human} from './Human'
 import {Dwarf} from './Dwarf'
+import {Gnome} from './Gnome'
+import {HalfElf} from './Half-elf'
+import {HalfOrc} from './Half-orc'
+import {Halfling} from './Halfling'
 
 console.log("Starting AWS Script");
 const s3 = new AWS.S3();
@@ -48,15 +53,18 @@ const getMonsterFromS3 = (monsterName, bucket='cleverorc', path='pathfinder/v2/m
     }
     s3.getObject(getParams, (err, data) => {
         if (err) console.log(err, err.stack); // an error occurred
-        else     console.log(JSON.parse(data.Body.toString()).ability_scores.str);           // successful response
+        else {
+            const monster = JSON.parse(data.Body.toString());
+            console.log(`Found monster ${monster.name} with str: ${monster.ability_scores.str}`);           // successful response
+        }
     });
 }
 
 //writeS3JsonFileForMonster(Monsters.find(x => x.name === 'Aasimar'))
-console.log("Trying to upload Dwarf", Dwarf.name)
-writeS3JsonFileForMonster(Dwarf)
+console.log("Trying to upload Npcs", Gnome)
+writeS3JsonFileForMonster(Gnome)
 //writeAllMonstersToS3();
-getMonsterFromS3('Dwarf')
+//getMonsterFromS3('Elf')
 
 const writeS3DataToFile = (err, data, fileName) => {
     if (err) { console.log(err, err.stack); return; }

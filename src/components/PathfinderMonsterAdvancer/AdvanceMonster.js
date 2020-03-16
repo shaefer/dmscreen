@@ -766,11 +766,13 @@ export const advanceByClassLevel = (statblock, classLevel, generator) => {
         const skillStat = skillInfo.abilityScore.toLowerCase();
         const abilityScoreBonus = statBonusFromAbilityScore(statblock.ability_scores[skillStat]) || 0;
         const matchingSkill = skillsAssignedPoints.find(y => y.skill.name === x.name && y.skill.subName === x.subName);
+        //TODO: Probably not a ton of work to match skill focus for any skill...
+        const skillFocusBonus = (x.name === 'Perception' && statblock.feats.includes('Skill Focus (Perception)')) ? 3 : 0;
         if (matchingSkill) {
             return {
                 name: x.name,
                 subName: x.subName,
-                value: matchingSkill.value + 3 + abilityScoreBonus
+                value: matchingSkill.value + 3 + abilityScoreBonus + skillFocusBonus
             };
         }
     });

@@ -50,14 +50,14 @@ export const Halfling = {
     "hp": "0 (0d8+0[racial])",
     "init": 1,
     "languages": "Common, Halfling",
-    "melee": "small heavy mace +0 (1d6-1)",
+    "melee": "small heavy mace -1 (1d6-2)",
     "melee_attacks": [
         [
             {
                 "attackText": "small heavy mace ",
-                "attackBonus": "0",
-                "damage": "(1d6)",
-                "toHit": 0,
+                "attackBonus": "-1",
+                "damage": "(1d6-2)",
+                "toHit": -1,
                 "attackCount": 1,
                 "damage_details": [
                     {
@@ -65,7 +65,7 @@ export const Halfling = {
                             {
                                 "numOfDice": 1,
                                 "numOfSides": 6,
-                                "adjustment": -1
+                                "adjustment": -2
                             }
                         ]
                     }
@@ -82,14 +82,14 @@ export const Halfling = {
         "cha": 2,
         "str": -2
     },
-    "ranged": "small light crossbow +1 (1d6/19-20)",
+    "ranged": "small light crossbow +4 (1d6/19-20)",
     "ranged_attacks": [
         [
             {
                 "attackText": "small light crossbow ",
-                "attackBonus": "+2",
+                "attackBonus": "+4",
                 "damage": "(1d6/19-20)",
-                "toHit": 2,
+                "toHit": 4,
                 "attackCount": 1,
                 "damage_details": [
                     {

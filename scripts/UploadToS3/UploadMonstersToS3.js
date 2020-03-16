@@ -14,6 +14,7 @@ import {Dwarf} from './Dwarf'
 import {Gnome} from './Gnome'
 import {HalfElf} from './Half-elf'
 import {HalfOrc} from './Half-orc'
+import {Halfling} from './Halfling'
 
 console.log("Starting AWS Script");
 const s3 = new AWS.S3();
@@ -60,8 +61,8 @@ const getMonsterFromS3 = (monsterName, bucket='cleverorc', path='pathfinder/v2/m
 }
 
 //writeS3JsonFileForMonster(Monsters.find(x => x.name === 'Aasimar'))
-console.log("Trying to upload Npcs", HalfOrc)
-writeS3JsonFileForMonster(HalfOrc)
+console.log("Trying to upload Npcs", Halfling)
+writeS3JsonFileForMonster(Halfling)
 //writeAllMonstersToS3();
 //getMonsterFromS3('Elf')
 

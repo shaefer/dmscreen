@@ -633,6 +633,7 @@ const MonsterOptions = [
     <option>Half-Celestial</option>,
     <option>Half-elf</option>,
     <option>Half-Fiend</option>,
+    <option>Half-orc</option>,
     <option>Hamadryad</option>,
     <option>Hangman Tree</option>,
     <option>Harionago</option>,

@@ -3,7 +3,7 @@ import MonsterDisplay from '../MonsterDisplay';
 import {calculateCr} from '../PathfinderMonsterAdvancer/AdvancementTools/ChallengeRatingCalculator';
 import {advanceMonster, advanceByAbilityScores, recalculateMonster} from '../PathfinderMonsterAdvancer/AdvanceMonster'
 import {genericMonster} from './BaseMonsters'
-import {Gnome} from './Gnome'
+import {HalfOrc} from './Half-orc'
 import './MonsterCreator.css'
 import AbilityScores from './AbilityScores';
 
@@ -19,7 +19,7 @@ class PathfinderMonsterCreator extends React.Component {
         this.state = {
             monster: {
                 success: true,
-                statBlock: Gnome
+                statBlock: HalfOrc
             }
         }
     }

@@ -587,9 +587,13 @@ const getClass = (className) => {
     
 }
 
-const hpEntriesDisplay = (hpEntries) => {
+const hpEntriesDisplay = (hpEntriesAll) => {
+    let hpEntries = hpEntriesAll.slice(0);
     if (hpEntries.length === 0) return "";
     // array of hpDisplay, hitDice, hitPointAdjustment, avgHitPoints
+    if (hpEntries.length > 1) {
+        hpEntries = hpEntries.filter(x => x.hitDice > 0); //if we have other sources of hitDice we hide the 0hd entries
+    }
     const totalAvgHp = hpEntries.map(x => x.avgHitPoints).reduce((agg, cur) => agg + cur);
     return `${totalAvgHp} (${hpEntries.map(x => x.hdDisplay).join(", ")})`;
 }

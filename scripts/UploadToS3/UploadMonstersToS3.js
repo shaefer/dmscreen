@@ -61,8 +61,8 @@ const getMonsterFromS3 = (monsterName, bucket='cleverorc', path='pathfinder/v2/m
 }
 
 //writeS3JsonFileForMonster(Monsters.find(x => x.name === 'Aasimar'))
-console.log("Trying to upload Npcs", Halfling)
-writeS3JsonFileForMonster(Halfling)
+console.log("Trying to upload Npcs", Gnome)
+writeS3JsonFileForMonster(Gnome)
 //writeAllMonstersToS3();
 //getMonsterFromS3('Elf')
 

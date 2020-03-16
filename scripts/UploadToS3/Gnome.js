@@ -56,7 +56,7 @@ export const Gnome = {
             {
                 "attackText": "small heavy mace ",
                 "attackBonus": "0",
-                "damage": "(1d6)",
+                "damage": "(1d6-1)",
                 "toHit": 0,
                 "attackCount": 1,
                 "damage_details": [
@@ -82,7 +82,7 @@ export const Gnome = {
         "cha": 2,
         "str": -2
     },
-    "ranged": "small light crossbow +1 (1d6/19-20)",
+    "ranged": "small light crossbow +2 (1d6/19-20)",
     "ranged_attacks": [
         [
             {

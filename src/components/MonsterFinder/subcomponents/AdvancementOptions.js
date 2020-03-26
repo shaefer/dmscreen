@@ -165,7 +165,7 @@ class AdvancementOptions extends React.Component {
                 <AbilityScoreAdvancementSelectMaterial selectedValue={advancement.wis} abilityScore={"Wis"} onSelect={this.handleAbilityScoreSelectChange}/>
                 <AbilityScoreAdvancementSelectMaterial selectedValue={advancement.cha} abilityScore={"Cha"} onSelect={this.handleAbilityScoreSelectChange}/>
                 <TemplateSingleSelect onChange={this.handleTemplateChange} ref={this.templateSelectRef} defaultTemplate={this.state.defaultTemplates[0]} key={this.state.defaultTemplates[0]}/>
-                <ClassLevelSelect hideLabel classes={["Barbarian", "Bard", "Cleric"]} onChange={(e) => this.classLevelsChanged(e)} ref={this.classLevelSelectRef} defaultClasses={this.state.defaultClasses} key={this.state.defaultClasses}/>
+                <ClassLevelSelect hideLabel classes={["Barbarian", "Bard", "Cleric", "Druid"]} onChange={(e) => this.classLevelsChanged(e)} ref={this.classLevelSelectRef} defaultClasses={this.state.defaultClasses} key={this.state.defaultClasses}/>
             </MuiThemeProvider>
         );
     }

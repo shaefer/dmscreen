@@ -12,6 +12,7 @@ import { TemplatesMap } from './AdvancementTools/Templates'
 import barbarian from '../../data/Classes/Barbarian'
 import bard from '../../data/Classes/Bard'
 import cleric from '../../data/Classes/Cleric'
+import druid from '../../data/Classes/Druid'
 import {rollDice} from '../../utils/DiceBag'
 
 import seedrandom from 'seedrandom';
@@ -584,6 +585,8 @@ const getClass = (className) => {
         return bard;
     if (className === 'Cleric')
         return cleric;
+    if (className === 'Druid')
+        return druid;
     
 }
 

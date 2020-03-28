@@ -3,3 +3,6 @@ export const SKILLS = "SKILLS";
 export const SPEED = "SPEED";
 export const WILLSAVE = "WILLSAVE";
 export const SPECIAL_ATTACKS = "SPECIAL_ATTACKS";
+export const ARMOR_CLASS = "ARMOR_CLASS"
+export const ATTACKS = "ATTACKS"; 
+export const FEATS = "FEATS";

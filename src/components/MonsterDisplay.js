@@ -250,18 +250,22 @@ const displayDamage = (damageDetails => {
     }).join(" plus ");
 });
 
-const renderClassLevelAbility = (ca) => {
+const renderClassLevelAbility = (ca, opts) => {
+    if (ca.isParent && opts.hideParentClassAbilities) return '';
     const saType = (ca.specialAbilityType) ? <span> (<span style={{textTransform: 'capitalize'}}>{ca.specialAbilityType}</span>)</span> : '';
+    const parentName = (ca.parentName) ? `${ca.parentName} - ` : '';
     return (
-        <StatBlockLine key={`${ca.name}`+Math.random()}>
-            <B>{ca.name}{saType}: </B>
-            {ca.description}
-        </StatBlockLine>
+        <React.Fragment key={`${ca.name}`+Math.random()}>
+            <StatBlockLine>
+                <B>{parentName}{ca.name}{saType}: </B>
+                <span dangerouslySetInnerHTML={{__html: ca.description}} />
+            </StatBlockLine>
+        </React.Fragment>
     );
 }
 
-const renderClassLevelAbilities = (cas) => {
-    const sas = cas.specialAbilities.map(x => renderClassLevelAbility(x));
+const renderClassLevelAbilities = (cas, opts) => {
+    const sas = cas.specialAbilities.map(x => renderClassLevelAbility(x, opts));
     return (
         <React.Fragment key={cas.source}>
             <StatSectionHeader>{cas.source} ABILITIES</StatSectionHeader>
@@ -270,12 +274,12 @@ const renderClassLevelAbilities = (cas) => {
     )
 }
 
-const classLevelAbilitiesSection = (m) => {
+const classLevelAbilitiesSection = (m, opts) => {
     if (m.classLevelAbilities && m.classLevelAbilities.length > 0) { 
         return (
             <React.Fragment>
                 
-                {m.classLevelAbilities.map(ca => renderClassLevelAbilities(ca))}
+                {m.classLevelAbilities.map(ca => renderClassLevelAbilities(ca, opts))}
             </React.Fragment>
         );
     }
@@ -352,6 +356,7 @@ const MonsterDisplay = ({monster}) => {
         showStatBonuses: false,
         showDetailedCR: false,
         showStatChanges: false,
+        hideParentClassAbilities: false,
     }
     const opts = {
         ...defaultDisplayOptions,
@@ -424,7 +429,7 @@ const MonsterDisplay = ({monster}) => {
 
             <StatSectionHeader>special abilities</StatSectionHeader>
             {specialAbilitiesAndDescription(m)}
-            {classLevelAbilitiesSection(m)}
+            {classLevelAbilitiesSection(m, opts)}
             {crSectionDisplay}
         </div>
     );

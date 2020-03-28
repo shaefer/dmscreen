@@ -13,6 +13,7 @@ import barbarian from '../../data/Classes/Barbarian'
 import bard from '../../data/Classes/Bard'
 import cleric from '../../data/Classes/Cleric'
 import druid from '../../data/Classes/Druid'
+import fighter from '../../data/Classes/Fighter'
 import {rollDice} from '../../utils/DiceBag'
 
 import seedrandom from 'seedrandom';
@@ -587,6 +588,8 @@ const getClass = (className) => {
         return cleric;
     if (className === 'Druid')
         return druid;
+    if (className === 'Fighter')
+        return fighter;
     
 }
 
@@ -640,6 +643,7 @@ const buildClassAbilitiesForLevel = (classInfo, level, generator) => {
                     ...fullAbility,
                     ...selectedAbility,
                     level: classLevel.level,
+                    parentName: fullAbility.parentName,
                     name: `${selectedAbility.name}` //we depend on this name to trigger special class functions like Increased Damage Reduction
                 }
             } else {

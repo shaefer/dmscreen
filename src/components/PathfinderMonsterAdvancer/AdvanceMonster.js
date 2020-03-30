@@ -839,6 +839,8 @@ export const advanceByClassLevel = (statblock, classLevel, generator) => {
     });
     const existingAdjustments = (classAbilityAdvancements.crAdjustments) ? classAbilityAdvancements.crAdjustments : [];
 
+    //For Feats and featCount there is also a field additionalFeats that we started using with fighters to keep track of special additional feats with restrictions.
+
     const classAdvancements = {
         advancements: [...classAbilityAdvancements.advancements, classDisplayName],
         ...hpFields,

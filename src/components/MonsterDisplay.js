@@ -350,7 +350,6 @@ const MonsterDisplay = ({monster}) => {
     if (!m.success) {
         return <div>A Monster named [{m.name}] was not found</div>;
     }
-
     const defaultDisplayOptions = {
         showFeatCount: true,
         showStatBonuses: false,
@@ -384,6 +383,13 @@ const MonsterDisplay = ({monster}) => {
         if (!acquired || !acquired.length === 0) return '';
         return acquired.map(x => <StatBlockLine key={x.source} data={x} required><B>Special Attacks from {x.source}</B> {x.display}</StatBlockLine>)
     }
+    const willDetails = (savingThrows) => {
+        if (!savingThrows.willDetails) return '';
+        const willDetails = savingThrows.willDetails.map(x => {
+            return `${withPlus(savingThrows.will + x.bonus)} vs. ${x.details}`
+        })
+        return `(${willDetails.join(", ")})`;
+    }
     //<StatBlockLine data={m.specialAttacksAcquired} required><B>Additional Special Attacks</B> {m.specialAttacksAcquired}</StatBlockLine>
     return (
         <div className="monsterDisplay">
@@ -399,7 +405,7 @@ const MonsterDisplay = ({monster}) => {
             <StatSectionHeader>defense</StatSectionHeader>
             <StatBlockLine><B>AC</B> {m.ac}</StatBlockLine>
             <StatBlockLine><B>hp</B> {m.hp}</StatBlockLine>
-            <StatBlockLine><B>Fort</B> {m.fortitude}, <B>Ref</B> {m.reflex}, <B>Will</B> {m.will}</StatBlockLine>
+            <StatBlockLine><B>Fort</B> {m.fortitude}, <B>Ref</B> {m.reflex}, <B>Will</B> {m.will} {willDetails(m.saving_throws)}</StatBlockLine>
             <StatBlockLine>{specialDefenses(m)}</StatBlockLine>
 
             <StatSectionHeader>offense</StatSectionHeader>

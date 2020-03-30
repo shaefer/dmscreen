@@ -197,13 +197,15 @@ export const getUpdatedSavingThrows = (statblock, newHitDice) => {
 }
 
 export const applyChangesToSavingThrows = (savingThrows, changes) => {
+    const mergedChanges = (savingThrows.changes) ? [...savingThrows.changes, ...changes] : changes;
     const allScores = [savingThrows, ...changes];
     return allScores.reduce((total, current) => {
         const newSavingThrows = {
+            ...savingThrows,
             fort: total.fort + current.fort,
             ref: total.ref + current.ref,
             will: total.will + current.will,
-            changes: changes
+            changes: mergedChanges
         };
         return newSavingThrows;
     });

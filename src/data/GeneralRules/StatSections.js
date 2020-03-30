@@ -1,7 +1,8 @@
 export const DEFENSIVE_ABILITIES = "DEFENSIVE_ABILITIES";
 export const SKILLS = "SKILLS";
 export const SPEED = "SPEED";
-export const WILLSAVE = "WILLSAVE";
+export const WILLSAVE = "WILL_SAVE";
+export const SAVING_THROWS = "SAVING_THROWS";
 export const SPECIAL_ATTACKS = "SPECIAL_ATTACKS";
 export const ARMOR_CLASS = "ARMOR_CLASS"
 export const ATTACKS = "ATTACKS"; 

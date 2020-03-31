@@ -250,18 +250,22 @@ const displayDamage = (damageDetails => {
     }).join(" plus ");
 });
 
-const renderClassLevelAbility = (ca) => {
+const renderClassLevelAbility = (ca, opts) => {
+    if (ca.isParent && opts.hideParentClassAbilities) return '';
     const saType = (ca.specialAbilityType) ? <span> (<span style={{textTransform: 'capitalize'}}>{ca.specialAbilityType}</span>)</span> : '';
+    const parentName = (ca.parentName) ? `${ca.parentName} - ` : '';
     return (
-        <StatBlockLine key={`${ca.name}`+Math.random()}>
-            <B>{ca.name}{saType}: </B>
-            {ca.description}
-        </StatBlockLine>
+        <React.Fragment key={`${ca.name}`+Math.random()}>
+            <StatBlockLine>
+                <B>{parentName}{ca.name}{saType}: </B>
+                <span dangerouslySetInnerHTML={{__html: ca.description}} />
+            </StatBlockLine>
+        </React.Fragment>
     );
 }
 
-const renderClassLevelAbilities = (cas) => {
-    const sas = cas.specialAbilities.map(x => renderClassLevelAbility(x));
+const renderClassLevelAbilities = (cas, opts) => {
+    const sas = cas.specialAbilities.map(x => renderClassLevelAbility(x, opts));
     return (
         <React.Fragment key={cas.source}>
             <StatSectionHeader>{cas.source} ABILITIES</StatSectionHeader>
@@ -270,12 +274,12 @@ const renderClassLevelAbilities = (cas) => {
     )
 }
 
-const classLevelAbilitiesSection = (m) => {
+const classLevelAbilitiesSection = (m, opts) => {
     if (m.classLevelAbilities && m.classLevelAbilities.length > 0) { 
         return (
             <React.Fragment>
                 
-                {m.classLevelAbilities.map(ca => renderClassLevelAbilities(ca))}
+                {m.classLevelAbilities.map(ca => renderClassLevelAbilities(ca, opts))}
             </React.Fragment>
         );
     }
@@ -346,12 +350,12 @@ const MonsterDisplay = ({monster}) => {
     if (!m.success) {
         return <div>A Monster named [{m.name}] was not found</div>;
     }
-
     const defaultDisplayOptions = {
         showFeatCount: true,
         showStatBonuses: false,
         showDetailedCR: false,
         showStatChanges: false,
+        hideParentClassAbilities: false,
     }
     const opts = {
         ...defaultDisplayOptions,
@@ -379,6 +383,13 @@ const MonsterDisplay = ({monster}) => {
         if (!acquired || !acquired.length === 0) return '';
         return acquired.map(x => <StatBlockLine key={x.source} data={x} required><B>Special Attacks from {x.source}</B> {x.display}</StatBlockLine>)
     }
+    const willDetails = (savingThrows) => {
+        if (!savingThrows.willDetails) return '';
+        const willDetails = savingThrows.willDetails.map(x => {
+            return `${withPlus(savingThrows.will + x.bonus)} vs. ${x.details}`
+        })
+        return `(${willDetails.join(", ")})`;
+    }
     //<StatBlockLine data={m.specialAttacksAcquired} required><B>Additional Special Attacks</B> {m.specialAttacksAcquired}</StatBlockLine>
     return (
         <div className="monsterDisplay">
@@ -394,7 +405,7 @@ const MonsterDisplay = ({monster}) => {
             <StatSectionHeader>defense</StatSectionHeader>
             <StatBlockLine><B>AC</B> {m.ac}</StatBlockLine>
             <StatBlockLine><B>hp</B> {m.hp}</StatBlockLine>
-            <StatBlockLine><B>Fort</B> {m.fortitude}, <B>Ref</B> {m.reflex}, <B>Will</B> {m.will}</StatBlockLine>
+            <StatBlockLine><B>Fort</B> {m.fortitude}, <B>Ref</B> {m.reflex}, <B>Will</B> {m.will} {willDetails(m.saving_throws)}</StatBlockLine>
             <StatBlockLine>{specialDefenses(m)}</StatBlockLine>
 
             <StatSectionHeader>offense</StatSectionHeader>
@@ -424,7 +435,7 @@ const MonsterDisplay = ({monster}) => {
 
             <StatSectionHeader>special abilities</StatSectionHeader>
             {specialAbilitiesAndDescription(m)}
-            {classLevelAbilitiesSection(m)}
+            {classLevelAbilitiesSection(m, opts)}
             {crSectionDisplay}
         </div>
     );

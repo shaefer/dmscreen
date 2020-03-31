@@ -85,7 +85,5 @@ const FighterAdvancement = {
     'Bonus Feat': bonusFeat,
     bravery,
     'Bravery': bravery,
-    // damageReduction,
-    // 'Damage Reduction': damageReduction,
 }
 export default FighterAdvancement;

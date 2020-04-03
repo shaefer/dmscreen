@@ -14,6 +14,7 @@ import bard from '../../data/Classes/Bard'
 import cleric from '../../data/Classes/Cleric'
 import druid from '../../data/Classes/Druid'
 import fighter from '../../data/Classes/Fighter'
+import paladin from '../../data/Classes/Paladin'
 import {rollDice} from '../../utils/DiceBag'
 
 import seedrandom from 'seedrandom';
@@ -590,6 +591,8 @@ const getClass = (className) => {
         return druid;
     if (className === 'Fighter')
         return fighter;
+    if (className === 'Paladin')
+        return paladin;
     
 }
 
@@ -668,22 +671,28 @@ const buildSpellsKnownOrPreparedSection = (statblock, classInfo, classLevel, gen
     const spellCastingStatModifier = statBonusFromAbilityScore(statblock.ability_scores[classInfo.primaryAbilityScore]);
     const classLevelInfo = classInfo.levels.find(x => x.level === level);
     const spellsCountArray = classLevelInfo[spellsField];
+    //TODO add in bonus spells to array. Better way to know what level classes start getting spells at all...?
+    const zeroLevelSpells = (classInfo.hasOwnProperty('zeroLevelSpells')) ? classInfo.zeroLevelSpells : true;
+    const spellLevelAdjust = (zeroLevelSpells) ? 0 : 1;
     const spellsByLevel = classInfo.spellsByLevel.slice(0);
     const spellsPerLevel = [];
-    spellsCountArray.filter(x => x > 0).forEach((amountOfSpells, spellLevel) => {
+    spellsCountArray.filter(x => x > 0).forEach((amountOfSpells, spellIndex) => {
+        const spellLevel = spellIndex + spellLevelAdjust;
         if (amountOfSpells === 0) return;
         const spellsPerDayPerLevelSection = {
             level: spellLevel,
             spellsPerDay: (spellLevel === 0) ? 'infinite' : classLevelInfo[spellsField][spellLevel - 1],
             saveDc: 10 + spellLevel + spellCastingStatModifier,
-            spells: selectItems(spellsByLevel[spellLevel], amountOfSpells, generator)
+            spells: selectItems(spellsByLevel[spellIndex], amountOfSpells, generator)
         }
         spellsPerLevel.push(spellsPerDayPerLevelSection);
     });
+    const casterLevelAdjustment =  (classInfo.casterLevelAdjustment) ? classInfo.casterLevelAdjustment : 0;
+    const casterLevel = level + casterLevelAdjustment;
     const spellsPerDaySectionWrapper = {
         source: className,
-        casterLevel: level,
-        concentration: level + spellCastingStatModifier,
+        casterLevel: casterLevel,
+        concentration: casterLevel + spellCastingStatModifier,
         [spellsFieldName]: spellsPerLevel
     }
 

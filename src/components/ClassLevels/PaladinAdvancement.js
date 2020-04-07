@@ -1,21 +1,18 @@
-//TODO: Also make feat selectioms and add them to the additional feats object.
-const bonusFeat = (monster, level) => {
-    const bonusFeats = Math.floor(level/2) + 1;
-    const newAdditionalFeats = [{featRestrictions: 'combat', featCount: bonusFeats, source: 'fighter', name: 'Fighter Bonus Feats'}];
-    //create new
-    if (!monster.additionalFeats) return newAdditionalFeats;
-    const existingFighterIndex = monster.additionalFeats.findIndex(x => x.source === 'fighter');
-    //replace the entry
-    if (monster.additionalFeats && existingFighterIndex !== -1) {
-        monster.additionalFeats[existingFighterIndex] = newAdditionalFeats;
-        return monster.additionalFeats;
+import {statBonusFromAbilityScore} from '../../components/PathfinderMonsterAdvancer/AdvancementUtils'
+
+const divineGrace = (monster) => {
+    const chaBonus = statBonusFromAbilityScore(monster.ability_scores.cha);
+    const newSavingThrows = {
+        ...monster.saving_throws,
+        fort: monster.saving_throws.fort + chaBonus,
+        ref: monster.saving_throws.ref + chaBonus,
+        will: monster.saving_throws.will + chaBonus
     }
-    //add to existing list
-    return [...monster.additionalFeats, ...newAdditionalFeats]
+    return newSavingThrows;
 }
 
 const PaladinAdvancement = {
-    bonusFeat,
-    'Bonus Feat': bonusFeat,
+    divineGrace,
+    'Divine Grace': divineGrace,
 }
 export default PaladinAdvancement;

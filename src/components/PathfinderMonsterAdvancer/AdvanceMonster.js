@@ -15,6 +15,7 @@ import cleric from '../../data/Classes/Cleric'
 import druid from '../../data/Classes/Druid'
 import fighter from '../../data/Classes/Fighter'
 import paladin from '../../data/Classes/Paladin'
+import {calcBonusSpells} from '../../data/Classes/BonusSpells'
 import {rollDice} from '../../utils/DiceBag'
 
 import seedrandom from 'seedrandom';
@@ -676,12 +677,18 @@ const buildSpellsKnownOrPreparedSection = (statblock, classInfo, classLevel, gen
     const spellLevelAdjust = (zeroLevelSpells) ? 0 : 1;
     const spellsByLevel = classInfo.spellsByLevel.slice(0);
     const spellsPerLevel = [];
+    const spellsPerDayCalc = (spellLevel) => {
+        if (spellLevel === 0) return 'infinite'; //at will for all classes
+        const classSpellsPerDay = classLevelInfo['spellsPerDay'][spellLevel];
+        const bonusSpellsPerDay = calcBonusSpells(spellCastingStatModifier)[spellLevel];
+        return classSpellsPerDay + bonusSpellsPerDay;
+    }
     spellsCountArray.filter(x => x > 0).forEach((amountOfSpells, spellIndex) => {
         const spellLevel = spellIndex + spellLevelAdjust;
         if (amountOfSpells === 0) return;
         const spellsPerDayPerLevelSection = {
             level: spellLevel,
-            spellsPerDay: (spellLevel === 0) ? 'infinite' : classLevelInfo[spellsField][spellLevel - 1],
+            spellsPerDay: spellsPerDayCalc(spellLevel),
             saveDc: 10 + spellLevel + spellCastingStatModifier,
             spells: selectItems(spellsByLevel[spellIndex], amountOfSpells, generator)
         }

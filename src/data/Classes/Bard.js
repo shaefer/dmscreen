@@ -242,121 +242,121 @@ const bard = {
         {
           level: 1, 
           classAbilities: ['Bardic Knowledge', 'Bardic Performance', 'Cantrips', 'Countersong', 'Distraction', 'Fascinate', 'Inspire Courage'],
-          spellsPerDay: [1, 0, 0, 0, 0, 0], //1-6
+          spellsPerDay: [0, 1, 0, 0, 0, 0, 0], //0-6
           spellsKnown:  [4, 2, 0, 0, 0, 0, 0], //0-6
         },
         {
           level: 2,
           classAbilities: ['Versatile Performance', 'Well-Versed'],
-          spellsPerDay: [2, 0, 0, 0, 0, 0],
+          spellsPerDay: [0, 2, 0, 0, 0, 0, 0],
           spellsKnown:  [5, 3, 0, 0, 0, 0, 0],
         },
         {
           level: 3,
           classAbilities: ['Inspire Competence'],
-          spellsPerDay: [3, 0, 0, 0, 0, 0],
+          spellsPerDay: [0, 3, 0, 0, 0, 0, 0],
           spellsKnown:  [6, 4, 0, 0, 0, 0, 0],
         },
         {
           level: 4,
           classAbilities: [],
-          spellsPerDay: [3, 1, 0, 0, 0, 0],
+          spellsPerDay: [0, 3, 1, 0, 0, 0, 0],
           spellsKnown:  [6, 4, 2, 0, 0, 0, 0],
         },
         {
           level: 5,
           classAbilities: ['Lore Master'], //inspire courage +2,
-          spellsPerDay: [4, 2, 0, 0, 0, 0],
+          spellsPerDay: [0, 4, 2, 0, 0, 0, 0],
           spellsKnown:  [6, 4, 3, 0, 0, 0, 0],
         },
         {
           level: 6,
           classAbilities: ['Suggestion', 'Versatile Performance'],
-          spellsPerDay: [4, 3, 0, 0, 0, 0],
+          spellsPerDay: [0, 4, 3, 0, 0, 0, 0],
           spellsKnown:  [6, 4, 4, 0, 0, 0, 0],
         },
         {
           level: 7,
           classAbilities: [], //inpsire competence +3
-          spellsPerDay: [4, 3, 1, 0, 0, 0],
+          spellsPerDay: [0, 4, 3, 1, 0, 0, 0],
           spellsKnown:  [6, 5, 4, 2, 0, 0, 0],
         },
         {
           level: 8,
           classAbilities: ["Dirge of Doom"],
-          spellsPerDay: [4, 4, 2, 0, 0, 0],
+          spellsPerDay: [0, 4, 4, 2, 0, 0, 0],
           spellsKnown:  [6, 5, 4, 3, 0, 0, 0],
         },
         {
           level: 9,
           classAbilities: ['Inspire Greatness'],
-          spellsPerDay: [5, 4, 3, 0, 0, 0],
+          spellsPerDay: [0, 5, 4, 3, 0, 0, 0],
           spellsKnown:  [6, 5, 4, 4, 0, 0, 0],
         },
         {
           level: 10,
           classAbilities: ['Jack-of-All-Trades', 'Versatile Performance'],
-          spellsPerDay: [5, 4, 3, 1, 0, 0],
+          spellsPerDay: [0, 5, 4, 3, 1, 0, 0],
           spellsKnown:  [6, 5, 5, 4, 2, 0, 0],
         },
         {
           level: 11,
           classAbilities: [], //'Inspire competence +4, inspire courage +3, lore master 2/day'
-          spellsPerDay: [5, 4, 4, 2, 0, 0],
+          spellsPerDay: [0, 5, 4, 4, 2, 0, 0],
           spellsKnown:  [6, 6, 5, 4, 3, 0, 0],
         },
         {
           level: 12,
           classAbilities: ['Soothing Performance'],
-          spellsPerDay: [5, 5, 4, 3, 0, 0],
+          spellsPerDay: [0, 5, 5, 4, 3, 0, 0],
           spellsKnown:  [6, 6, 5, 4, 4, 0, 0],
         },
         {
           level: 13,
           classAbilities: [],
-          spellsPerDay: [5, 5, 4, 3, 1, 0],
+          spellsPerDay: [0, 5, 5, 4, 3, 1, 0],
           spellsKnown:  [6, 6, 5, 5, 4, 2, 0],
         },
         {
           level: 14,
           classAbilities: ['Frightening Tune', 'Versatile Performance'],
-          spellsPerDay: [5, 5, 4, 4, 2, 0],
+          spellsPerDay: [0, 5, 5, 4, 4, 2, 0],
           spellsKnown:  [6, 6, 6, 5, 4, 3, 0],
         },
         {
           level: 15,
           classAbilities: ['Inspire Heroics'], //Inspire competence +5, 
-          spellsPerDay: [5, 5, 5, 4, 3, 0],
+          spellsPerDay: [0, 5, 5, 5, 4, 3, 0],
           spellsKnown:  [6, 6, 6, 5, 4, 4, 0],
         },
         {
           level: 16,
           classAbilities: [],
-          spellsPerDay: [5, 5, 5, 4, 3, 1],
+          spellsPerDay: [0, 5, 5, 5, 4, 3, 1],
           spellsKnown:  [6, 6, 6, 5, 5, 4, 2],
         },
         {
           level: 17,
           classAbilities: [], //inspire courage +4, lore master 3/day
-          spellsPerDay: [5, 5, 5, 4, 4, 2],
+          spellsPerDay: [0, 5, 5, 5, 4, 4, 2],
           spellsKnown:  [6, 6, 6, 6, 5, 4, 3],
         },
         {
           level: 18,
           classAbilities: ['Mass Suggestion', 'Versatile Performance'],
-          spellsPerDay: [5, 5, 5, 5, 4, 3],
+          spellsPerDay: [0, 5, 5, 5, 5, 4, 3],
           spellsKnown:  [6, 6, 6, 6, 5, 4, 4],
         },
         {
           level: 19,
           classAbilities: [], //Inspire competence +6
-          spellsPerDay: [5, 5, 5, 5, 5, 4],
+          spellsPerDay: [0, 5, 5, 5, 5, 5, 4],
           spellsKnown:  [6, 6, 6, 6, 5, 5, 4],
         },
         {
           level: 20,
           classAbilities: ['Deadly Performance'],
-          spellsPerDay: [5, 5, 5, 5, 5, 5],
+          spellsPerDay: [0, 5, 5, 5, 5, 5, 5],
           spellsKnown:  [6, 6, 6, 6, 6, 5, 5],
         }
     ]

@@ -391,7 +391,6 @@ const MonsterDisplay = ({monster}) => {
         return `(${willDetails.join(", ")})`;
     }
     //<StatBlockLine data={m.specialAttacksAcquired} required><B>Additional Special Attacks</B> {m.specialAttacksAcquired}</StatBlockLine>
-    console.log(m)
     return (
         <div className="monsterDisplay">
             <div className="sbLine sbName leftAndRight">

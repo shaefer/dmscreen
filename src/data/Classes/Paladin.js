@@ -153,7 +153,7 @@ const specialAbilities = [
     fieldToUpdate: 'saving_throws'
   },
   {
-    "description":"Beginning at 2nd level, a paladin can heal wounds (her own or those of others) by touch. Each day she can use this ability a number of times equal to 1/2 her paladin level plus her Charisma modifier. With one use of this ability, a paladin can heal 1d6 hit points of damage for every two paladin levels she possesses. Using this ability is a standard action, unless the paladin targets herself, in which case it is a swift action. Despite the name of this ability, a paladin only needs one free hand to use this ability.Alternatively, a paladin can use this healing power to deal damage to undead creatures, dealing 1d6 points of damage for every two levels the paladin possesses. Using lay on hands in this way requires a successful melee touch attack and doesn't provoke an attack of opportunity. Undead do not receive a saving throw against this damage.",
+    "description":"Beginning at 2nd level, a paladin can heal wounds (her own or those of others) by touch. Each day she can use this ability a number of times equal to 1/2 her paladin level plus her Charisma modifier. With one use of this ability, a paladin can heal 1d6 hit points of damage for every two paladin levels she possesses. Using this ability is a standard action, unless the paladin targets herself, in which case it is a swift action. Despite the name of this ability, a paladin only needs one free hand to use this ability. Alternatively, a paladin can use this healing power to deal damage to undead creatures, dealing 1d6 points of damage for every two levels the paladin possesses. Using lay on hands in this way requires a successful melee touch attack and doesn't provoke an attack of opportunity. Undead do not receive a saving throw against this damage.",
     "name":"Lay On Hands",
     "specialAbilityType":"su",
   },
@@ -168,7 +168,7 @@ const specialAbilities = [
     "specialAbilityType":"ex",
   },
   {
-    "description":"At 3rd level, and every three levels thereafter, a paladin can select one mercy. Each mercy adds an effect to the paladin's lay on hands ability. Whenever the paladin uses lay on hands to heal damage to one target, the target also receives the additional effects from all of the mercies possessed by the paladin. A mercy can remove a condition caused by a curse, disease, or poison without curing the affliction. Such conditions return after 1 hour unless the mercy actually removes the affliction that causes the condition.At 3rd level, the paladin can select from the following initial mercies. ",
+    "description":"At 3rd level, and every three levels thereafter, a paladin can select one mercy. Each mercy adds an effect to the paladin's lay on hands ability. Whenever the paladin uses lay on hands to heal damage to one target, the target also receives the additional effects from all of the mercies possessed by the paladin. A mercy can remove a condition caused by a curse, disease, or poison without curing the affliction. Such conditions return after 1 hour unless the mercy actually removes the affliction that causes the condition.",
     "name":"Mercy",
     "specialAbilityType":"su",
     isParent: true,
@@ -215,12 +215,16 @@ const specialAbilities = [
   {
     "description":"At 17th level, a paladin gains DR 5/evil and immunity to compulsion spells and spell-like abilities. Each ally within 10 feet of her gains a +4 morale bonus on saving throws against compulsion effects. This ability functions only while the paladin is conscious, not if she is unconscious or dead.",
     "name":"Aura of Righteousness",
-    "specialAbilityType":"su"
+    "specialAbilityType":"su",
+    statSection: StatSections.DEFENSIVE_ABILITIES,
+    fieldToUpdate: 'dr',
   },
   {
     "description":"At 20th level, a paladin becomes a conduit for the power of her god. Her DR increases to 10/evil. Whenever she uses smite evil and successfully strikes an evil outsider, the outsider is also subject to a <i>banishment</i>, using her paladin level as the caster level (her weapon and holy symbol automatically count as objects that the subject hates). After the <i>banishment</i> effect and the damage from the attack is resolved, the smite immediately ends. In addition, whenever she channels positive energy or uses lay on hands to heal a creature, she heals the maximum possible amount.",
     "name":"Holy Champion",
-    "specialAbilityType":"su"
+    "specialAbilityType":"su",
+    statSection: StatSections.DEFENSIVE_ABILITIES,
+    fieldToUpdate: 'dr'
   },
   {
     "description":"A paladin must be of lawful good alignment and loses all class features except proficiencies if she ever willingly commits an evil act.Additionally, a paladin's code requires that she respect legitimate authority, act with honor (not lying, not cheating, not using poison, and so forth), help those in need (provided they do not use the help for evil or chaotic ends), and punish those who harm or threaten innocents.",

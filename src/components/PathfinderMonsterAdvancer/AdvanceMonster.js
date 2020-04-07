@@ -842,14 +842,20 @@ export const advanceByClassLevel = (statblock, classLevel, generator) => {
     classAbilitiesWithAlterations.forEach(ca => {
         const classAdvancementFn = classAdvancement[ca.name];
         if (classAdvancementFn) {
-            const field = classAdvancementFn(classAbilityAdvancements, classLevel.level, [...classAbilitiesWithAlterations]);
+            const fnResult = classAdvancementFn(classAbilityAdvancements, classLevel.level, [...classAbilitiesWithAlterations]);
             if (ca.fieldToUpdate === 'acquiredSpecialAttacks') {
                 //Currently class abilities that add special attacks add them to a new property acquiredSpecialAttacks (like a template) instead of trying to alter special_attacks field. This is due to special attacks being a string rather than an array of special attack objects. Using this approach we expect the output of the classAbilityFunction to be a display Function that will be resolved near the end of advancement
-                const newSpecialAttack = [{sourceName: classLevel.className + " Class", displayFn: field}];
+                const newSpecialAttack = [{sourceName: classLevel.className + " Class", displayFn: fnResult}];
                 const specialAttacksAcquired = (classAbilityAdvancements.specialAttacksAcquired) ? classAbilityAdvancements.specialAttacksAcquired.concat(newSpecialAttack) : newSpecialAttack;
                 classAbilityAdvancements.specialAttacksAcquired = specialAttacksAcquired;
             } else {
-                classAbilityAdvancements[ca.fieldToUpdate] = field;
+                if (Array.isArray(ca.fieldToUpdate)) {
+                    ca.fieldToUpdate.forEach(x => {
+                        classAbilityAdvancements[x] = fnResult[x];
+                    }); 
+                } else {
+                    classAbilityAdvancements[ca.fieldToUpdate] = fnResult;
+                }
             }
         }
     });

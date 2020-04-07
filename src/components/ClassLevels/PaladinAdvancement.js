@@ -37,8 +37,36 @@ const addNewDr = (dr, drToApply, drType) => {
     return newDr;
 }
 
+const caseInsensitiveAlphaSort = (a,b) => {
+    a = a.toLowerCase();
+    b = b.toLowerCase();
+    if (a > b) {
+        return 1;
+    } else if (a < b) {
+        return -1;
+    } else if (a === b) {
+        return 0;
+    }
+}
+
+const addAura = (monster, newAura) => {
+    const auras = (monster.aura) ? monster.aura.split(",").map(x => x.trim()) : [];
+    auras.push(newAura);
+    auras.sort(caseInsensitiveAlphaSort);
+    return auras.join(', ')
+}
+
+const auraOfFaith = (monster) => {
+    return {
+        aura: addAura(monster, 'faith (10 ft.)')
+    }
+}
+
 const auraOfRighteousness = (monster) => {
-    return addNewDr(monster.dr, 5, 'evil');
+    return {
+        dr: addNewDr(monster.dr, 5, 'evil'),
+        aura: addAura(monster, "righteousness (10 ft.)")
+    };
 }
 
 const holyChampion = (monster) => {
@@ -48,6 +76,8 @@ const holyChampion = (monster) => {
 const PaladinAdvancement = {
     divineGrace,
     'Divine Grace': divineGrace,
+    auraOfFaith, 
+    'Aura of Faith': auraOfFaith,
     auraOfRighteousness,
     'Aura of Righteousness': auraOfRighteousness,
     holyChampion,

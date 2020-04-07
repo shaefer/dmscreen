@@ -208,16 +208,16 @@ const specialAbilities = [
     "specialAbilityType":"su"
   },
   {
-    "description":"At 14th level, a paladin's weapons are treated as good-aligned for the purposes of overcoming damage reduction. Any attack made against an enemy within 10 feet of her is treated as good-aligned for the purposes of overcoming damage reduction.This ability functions only while the paladin is conscious, not if she is unconscious or dead.",
+    "description":"At 14th level, a paladin's weapons are treated as good-aligned for the purposes of overcoming damage reduction. Any attack made against an enemy within 10 feet of her is treated as good-aligned for the purposes of overcoming damage reduction. This ability functions only while the paladin is conscious, not if she is unconscious or dead.",
     "name":"Aura of Faith",
-    "specialAbilityType":"su"
+    "specialAbilityType":"su",
+    fieldToUpdate: ['aura'],
   },
   {
     "description":"At 17th level, a paladin gains DR 5/evil and immunity to compulsion spells and spell-like abilities. Each ally within 10 feet of her gains a +4 morale bonus on saving throws against compulsion effects. This ability functions only while the paladin is conscious, not if she is unconscious or dead.",
     "name":"Aura of Righteousness",
     "specialAbilityType":"su",
-    statSection: StatSections.DEFENSIVE_ABILITIES,
-    fieldToUpdate: 'dr',
+    fieldToUpdate: ['dr', 'aura'],
   },
   {
     "description":"At 20th level, a paladin becomes a conduit for the power of her god. Her DR increases to 10/evil. Whenever she uses smite evil and successfully strikes an evil outsider, the outsider is also subject to a <i>banishment</i>, using her paladin level as the caster level (her weapon and holy symbol automatically count as objects that the subject hates). After the <i>banishment</i> effect and the damage from the attack is resolved, the smite immediately ends. In addition, whenever she channels positive energy or uses lay on hands to heal a creature, she heals the maximum possible amount.",

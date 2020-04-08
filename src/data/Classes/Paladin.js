@@ -161,11 +161,13 @@ const specialAbilities = [
     "description":"At 3rd level, a paladin is immune to fear (magical or otherwise). Each ally within 10 feet of her gains a +4 morale bonus on saving throws against fear effects. This ability functions only while the paladin is conscious, not if she is unconscious or dead.",
     "name":"Aura of Courage",
     "specialAbilityType":"su",
+    fieldToUpdate: ['aura', 'immune'],
   },
   {
     "description":"At 3rd level, a paladin is immune to all diseases, including supernatural and magical diseases, including mummy rot.",
     "name":"Divine Health",
     "specialAbilityType":"ex",
+    fieldToUpdate: ['immune'],
   },
   {
     "description":"At 3rd level, and every three levels thereafter, a paladin can select one mercy. Each mercy adds an effect to the paladin's lay on hands ability. Whenever the paladin uses lay on hands to heal damage to one target, the target also receives the additional effects from all of the mercies possessed by the paladin. A mercy can remove a condition caused by a curse, disease, or poison without curing the affliction. Such conditions return after 1 hour unless the mercy actually removes the affliction that causes the condition.",
@@ -200,12 +202,14 @@ const specialAbilities = [
   {
     "description":"At 8th level, a paladin is immune to charm spells and spell-like abilities. Each ally within 10 feet of her gains a +4 morale bonus on saving throws against charm effects.This ability functions only while the paladin is conscious, not if she is unconscious or dead.",
     "name":"Aura of Resolve",
-    "specialAbilityType":"su"
+    "specialAbilityType":"su",
+    fieldToUpdate: ['aura'],
   },
   {
     "description":"At 11th level, a paladin can expend two uses of her smite evil ability to grant the ability to smite evil to all allies within 10 feet, using her bonuses. Allies must use this smite evil ability by the start of the paladin's next turn and the bonuses last for 1 minute. Using this ability is a free action. Evil creatures gain no benefit from this ability. ",
     "name":"Aura of Justice",
-    "specialAbilityType":"su"
+    "specialAbilityType":"su",
+    fieldToUpdate: ['aura'],
   },
   {
     "description":"At 14th level, a paladin's weapons are treated as good-aligned for the purposes of overcoming damage reduction. Any attack made against an enemy within 10 feet of her is treated as good-aligned for the purposes of overcoming damage reduction. This ability functions only while the paladin is conscious, not if she is unconscious or dead.",

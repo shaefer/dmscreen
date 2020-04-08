@@ -49,11 +49,31 @@ const caseInsensitiveAlphaSort = (a,b) => {
     }
 }
 
+const addToTextList = (field, newItem) => {
+    const items = (field) ? field.split(",").map(x => x.trim()) : [];
+    items.push(newItem);
+    items.sort(caseInsensitiveAlphaSort);
+    return items.join(', ')
+}
+
 const addAura = (monster, newAura) => {
-    const auras = (monster.aura) ? monster.aura.split(",").map(x => x.trim()) : [];
-    auras.push(newAura);
-    auras.sort(caseInsensitiveAlphaSort);
-    return auras.join(', ')
+    return addToTextList(monster.aura, newAura);
+}
+
+const addImmunity = (monster, newImmunity) => {
+    return addToTextList(monster.immune, newImmunity);
+}
+
+const auraOfResolve = (monster) => {
+    return {
+        aura: addAura(monster, 'resolve (10 ft.)')
+    }
+}
+
+const auraOfJustice = (monster) => {
+    return {
+        aura: addAura(monster, 'justice (10 ft.)')
+    }
 }
 
 const auraOfFaith = (monster) => {
@@ -73,11 +93,32 @@ const holyChampion = (monster) => {
     return addNewDr(monster.dr, 10, 'evil');
 }
 
+const divineHealth = (monster) => {
+    return {
+        immune: addImmunity(monster, 'disease')
+    }
+}
+
+const auraOfCourage = (monster) => {
+    return {
+        immune: addImmunity(monster, 'fear'),
+        aura: addAura(monster, 'courage (10 ft.)')
+    }
+}
+
 const PaladinAdvancement = {
     divineGrace,
     'Divine Grace': divineGrace,
+    divineHealth,
+    'Divine Health': divineHealth,
+    auraOfCourage,
+    'Aura of Courage': auraOfCourage,
     auraOfFaith, 
     'Aura of Faith': auraOfFaith,
+    auraOfJustice,
+    'Aura of Justice': auraOfJustice,
+    auraOfResolve,
+    'Aura of Resolve': auraOfResolve,
     auraOfRighteousness,
     'Aura of Righteousness': auraOfRighteousness,
     holyChampion,

@@ -134,6 +134,7 @@ const specialAbilities = [
     "description":"The power of a paladin's aura of good (see the <i>detect good</i> spell) is equal to her paladin level.",
     "name":"Aura of Good",
     "specialAbilityType":"ex",
+    fieldToUpdate: ['aura'],
   },
   {
     "description":" <b></b>At will, a paladin can use <i>detect evil</i>, as the spell. A paladin can, as a move action, concentrate on a single item or individual within 60 feet and determine if it is evil, learning the strength of its aura as if having studied it for 3 rounds. While focusing on one individual or object, the paladin does not detect evil in any other object or individual within range.",

@@ -106,6 +106,18 @@ const auraOfCourage = (monster) => {
     }
 }
 
+const auraOfGood = (monster, paladinLevel) => {
+    let auraPower = 'none';
+    if (paladinLevel === 1) auraPower = 'faint'
+    if (paladinLevel >= 2 && paladinLevel <= 4) auraPower = 'moderate'
+    if (paladinLevel >= 5 && paladinLevel <= 10) auraPower = 'strong'
+    if (paladinLevel >= 11) auraPower = 'overwhelming'
+
+    return {
+        aura: addAura(monster, `good (${auraPower})`)
+    }
+}
+
 const PaladinAdvancement = {
     divineGrace,
     'Divine Grace': divineGrace,
@@ -115,6 +127,8 @@ const PaladinAdvancement = {
     'Aura of Courage': auraOfCourage,
     auraOfFaith, 
     'Aura of Faith': auraOfFaith,
+    auraOfGood,
+    'Aura of Good': auraOfGood,
     auraOfJustice,
     'Aura of Justice': auraOfJustice,
     auraOfResolve,

@@ -1,4 +1,4 @@
-import {statBonusFromAbilityScore} from '../../components/PathfinderMonsterAdvancer/AdvancementUtils'
+import {statBonusFromAbilityScore, withPlus} from '../../components/PathfinderMonsterAdvancer/AdvancementUtils'
 
 const divineGrace = (monster) => {
     const chaBonus = statBonusFromAbilityScore(monster.ability_scores.cha);
@@ -50,7 +50,7 @@ const caseInsensitiveAlphaSort = (a,b) => {
 }
 
 const addToTextList = (field, newItem) => {
-    const items = (field) ? field.split(",").map(x => x.trim()) : [];
+    const items = (field) ? field.split(/\,\s?(?![^\(]*\))/g).map(x => x.trim()) : [];
     items.push(newItem);
     items.sort(caseInsensitiveAlphaSort);
     return items.join(', ')
@@ -118,6 +118,30 @@ const auraOfGood = (monster, paladinLevel) => {
     }
 }
 
+const layOnHands = (monster, paladinLevel) => {
+    //times: 1/2 paladin level + cha
+    //1d6 per 2 levels
+    const chaBonus = statBonusFromAbilityScore(monster.ability_scores.cha);
+    const times = Math.floor(paladinLevel / 2) + chaBonus;
+    const damage = Math.floor(paladinLevel / 2);
+    const desc = `lay on hands (${damage}d6, ${times}/day)`
+    return {
+        special_qualities: addToTextList(monster.special_qualities, desc)
+    }
+}
+
+const smiteEvil = (monster, paladinLevel) => {
+    //cha to attack, paladinLevel to damage
+    //1/4/7/10/13/16/19
+    const times = Math.floor((paladinLevel + 2) / 3);
+    const fn = (monster) => {
+        const chaBonus = statBonusFromAbilityScore(monster.ability_scores.cha);
+        const desc = `smite evil (${withPlus(chaBonus)} attack, ${withPlus(paladinLevel)} damage, ${times}/per day)`
+        return desc;
+    };
+    return fn;
+}
+
 const PaladinAdvancement = {
     divineGrace,
     'Divine Grace': divineGrace,
@@ -137,5 +161,9 @@ const PaladinAdvancement = {
     'Aura of Righteousness': auraOfRighteousness,
     holyChampion,
     'Holy Champion': holyChampion,
+    layOnHands,
+    'Lay On Hands': layOnHands,
+    smiteEvil,
+    'Smite Evil': smiteEvil,
 }
 export default PaladinAdvancement;

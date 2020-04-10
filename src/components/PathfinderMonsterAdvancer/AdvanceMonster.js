@@ -843,6 +843,7 @@ export const advanceByClassLevel = (statblock, classLevel, generator) => {
         const classAdvancementFn = classAdvancement[ca.name];
         if (classAdvancementFn) {
             const fnResult = classAdvancementFn(classAbilityAdvancements, classLevel.level, [...classAbilitiesWithAlterations]);
+            //This section is to handle abilities that need to see the full monster before they could be properly displayed. The advancementFuntion should return a function that takes the monster as input.
             if (ca.fieldToUpdate === 'acquiredSpecialAttacks') {
                 //Currently class abilities that add special attacks add them to a new property acquiredSpecialAttacks (like a template) instead of trying to alter special_attacks field. This is due to special attacks being a string rather than an array of special attack objects. Using this approach we expect the output of the classAbilityFunction to be a display Function that will be resolved near the end of advancement
                 const newSpecialAttack = [{sourceName: classLevel.className + " Class", displayFn: fnResult}];

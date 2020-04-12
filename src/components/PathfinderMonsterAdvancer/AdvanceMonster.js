@@ -14,6 +14,8 @@ import bard from '../../data/Classes/Bard'
 import cleric from '../../data/Classes/Cleric'
 import druid from '../../data/Classes/Druid'
 import fighter from '../../data/Classes/Fighter'
+import paladin from '../../data/Classes/Paladin'
+import {calcBonusSpells} from '../../data/Classes/BonusSpells'
 import {rollDice} from '../../utils/DiceBag'
 
 import seedrandom from 'seedrandom';
@@ -590,6 +592,8 @@ const getClass = (className) => {
         return druid;
     if (className === 'Fighter')
         return fighter;
+    if (className === 'Paladin')
+        return paladin;
     
 }
 
@@ -668,22 +672,34 @@ const buildSpellsKnownOrPreparedSection = (statblock, classInfo, classLevel, gen
     const spellCastingStatModifier = statBonusFromAbilityScore(statblock.ability_scores[classInfo.primaryAbilityScore]);
     const classLevelInfo = classInfo.levels.find(x => x.level === level);
     const spellsCountArray = classLevelInfo[spellsField];
+    //TODO add in bonus spells to array. Better way to know what level classes start getting spells at all...?
+    const zeroLevelSpells = (classInfo.hasOwnProperty('zeroLevelSpells')) ? classInfo.zeroLevelSpells : true;
+    const spellLevelAdjust = (zeroLevelSpells) ? 0 : 1;
     const spellsByLevel = classInfo.spellsByLevel.slice(0);
     const spellsPerLevel = [];
-    spellsCountArray.filter(x => x > 0).forEach((amountOfSpells, spellLevel) => {
+    const spellsPerDayCalc = (spellLevel) => {
+        if (spellLevel === 0) return 'infinite'; //at will for all classes
+        const classSpellsPerDay = classLevelInfo['spellsPerDay'][spellLevel];
+        const bonusSpellsPerDay = calcBonusSpells(spellCastingStatModifier)[spellLevel];
+        return classSpellsPerDay + bonusSpellsPerDay;
+    }
+    spellsCountArray.filter(x => x > 0).forEach((amountOfSpells, spellIndex) => {
+        const spellLevel = spellIndex + spellLevelAdjust;
         if (amountOfSpells === 0) return;
         const spellsPerDayPerLevelSection = {
             level: spellLevel,
-            spellsPerDay: (spellLevel === 0) ? 'infinite' : classLevelInfo[spellsField][spellLevel - 1],
+            spellsPerDay: spellsPerDayCalc(spellLevel),
             saveDc: 10 + spellLevel + spellCastingStatModifier,
-            spells: selectItems(spellsByLevel[spellLevel], amountOfSpells, generator)
+            spells: selectItems(spellsByLevel[spellIndex], amountOfSpells, generator)
         }
         spellsPerLevel.push(spellsPerDayPerLevelSection);
     });
+    const casterLevelAdjustment =  (classInfo.casterLevelAdjustment) ? classInfo.casterLevelAdjustment : 0;
+    const casterLevel = level + casterLevelAdjustment;
     const spellsPerDaySectionWrapper = {
         source: className,
-        casterLevel: level,
-        concentration: level + spellCastingStatModifier,
+        casterLevel: casterLevel,
+        concentration: casterLevel + spellCastingStatModifier,
         [spellsFieldName]: spellsPerLevel
     }
 
@@ -753,7 +769,8 @@ export const advanceByClassLevel = (statblock, classLevel, generator) => {
     });
     //pick strategy - use all skills and just assign each point randomly.
     const skillsAssignedPoints = selectSkills([...classInfo.classSkills], skillRanksEarned, classLevel.level, generator);
-    const pointsSpent = skillsAssignedPoints.map(x => x.value).reduce((acc, i) => acc + i);
+    //TODO: this pointsSpent line throws an error when 1 paladin level applied to adherer...probably due to effects of really low int.
+    //const pointsSpent = skillsAssignedPoints.map(x => x.value).reduce((acc, i) => acc + i);
     //console.log("Earned", skillRanksEarned, "Spent", pointsSpent, "assignments", skillsAssignedPoints)
     //update the current skills with the new values.  Then calculate the new ones.
     const updatedSkills = statblock.skills.map(x => {
@@ -826,14 +843,21 @@ export const advanceByClassLevel = (statblock, classLevel, generator) => {
     classAbilitiesWithAlterations.forEach(ca => {
         const classAdvancementFn = classAdvancement[ca.name];
         if (classAdvancementFn) {
-            const field = classAdvancementFn(classAbilityAdvancements, classLevel.level, [...classAbilitiesWithAlterations]);
+            const fnResult = classAdvancementFn(classAbilityAdvancements, classLevel.level, [...classAbilitiesWithAlterations]);
+            //This section is to handle abilities that need to see the full monster before they could be properly displayed. The advancementFuntion should return a function that takes the monster as input.
             if (ca.fieldToUpdate === 'acquiredSpecialAttacks') {
                 //Currently class abilities that add special attacks add them to a new property acquiredSpecialAttacks (like a template) instead of trying to alter special_attacks field. This is due to special attacks being a string rather than an array of special attack objects. Using this approach we expect the output of the classAbilityFunction to be a display Function that will be resolved near the end of advancement
-                const newSpecialAttack = [{sourceName: classLevel.className + " Class", displayFn: field}];
+                const newSpecialAttack = [{sourceName: classLevel.className + " Class", displayFn: fnResult}];
                 const specialAttacksAcquired = (classAbilityAdvancements.specialAttacksAcquired) ? classAbilityAdvancements.specialAttacksAcquired.concat(newSpecialAttack) : newSpecialAttack;
                 classAbilityAdvancements.specialAttacksAcquired = specialAttacksAcquired;
             } else {
-                classAbilityAdvancements[ca.fieldToUpdate] = field;
+                if (Array.isArray(ca.fieldToUpdate)) {
+                    ca.fieldToUpdate.forEach(x => {
+                        classAbilityAdvancements[x] = fnResult[x];
+                    }); 
+                } else {
+                    classAbilityAdvancements[ca.fieldToUpdate] = fnResult;
+                }
             }
         }
     });

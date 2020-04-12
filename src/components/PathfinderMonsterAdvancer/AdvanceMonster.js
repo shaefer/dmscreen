@@ -828,6 +828,15 @@ export const advanceByClassLevel = (statblock, classLevel, generator) => {
         })
     }
 
+    const statPointsPer4HitDiceAdded = Math.floor(newHitDice/4);
+    const primaryAbilityScoreEntry = getStatByKey(statblock.ability_scores, classInfo.primaryAbilityScore);
+    const abilityScoreChange = assignAbilityScoreChangeToStat(primaryAbilityScoreEntry, statPointsPer4HitDiceAdded, `${classLevel.className} ${classLevel.level}`);
+    const statAdvancements = advanceByAbilityScores(statblock, [abilityScoreChange], true);
+    statblock = {
+        ...statblock,
+        ...statAdvancements
+    }
+
     const classAbilities = buildClassAbilitiesForLevel(classInfo, classLevel.level, generator);
     const classAbilitiesToAdd = {
         source: classLevel.className,
@@ -887,13 +896,6 @@ export const advanceByClassLevel = (statblock, classLevel, generator) => {
         ...classAdvancements,
     }
 
-    const statPointsPer4HitDiceAdded = Math.floor(newHitDice/4);
-    const primaryAbilityScoreEntry = getStatByKey(classAdvancedCreature.ability_scores, classInfo.primaryAbilityScore);
-    const abilityScoreChange = assignAbilityScoreChangeToStat(primaryAbilityScoreEntry, statPointsPer4HitDiceAdded, `${classLevel.className} ${classLevel.level}`);
-    const statAdvancements = advanceByAbilityScores(classAdvancedCreature, [abilityScoreChange], true);
-    return {
-        ...classAdvancedCreature,
-        ...statAdvancements
-    }
+    return classAdvancedCreature;
 }
 

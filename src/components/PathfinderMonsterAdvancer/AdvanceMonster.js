@@ -678,8 +678,9 @@ const buildSpellsKnownOrPreparedSection = (statblock, classInfo, classLevel, gen
     const spellsByLevel = classInfo.spellsByLevel.slice(0);
     const spellsPerLevel = [];
     const spellsPerDayCalc = (spellLevel) => {
+        const spdIndex = spellLevel - spellLevelAdjust;
         if (spellLevel === 0) return 'infinite'; //at will for all classes
-        const classSpellsPerDay = classLevelInfo['spellsPerDay'][spellLevel];
+        const classSpellsPerDay = classLevelInfo['spellsPerDay'][spdIndex];
         const bonusSpellsPerDay = calcBonusSpells(spellCastingStatModifier)[spellLevel];
         return classSpellsPerDay + bonusSpellsPerDay;
     }

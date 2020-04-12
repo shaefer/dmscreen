@@ -314,6 +314,14 @@ const buildCrSection = (m, opts) => {
     return crSectionDisplay;
 }
 
+//https://gist.github.com/robmathers/1830ce09695f759bf2c4df15c29dd22d
+const groupBy = (xs, key) => {
+    return xs.reduce((rv, x) => {
+        (rv[x[key]] = rv[x[key]] || []).push(x);
+        return rv;
+    }, {});
+};
+
 const mapAndAddFieldNames = (monster) => {
     const m = monster.statBlock;
     const newStatBlock = {
@@ -361,7 +369,6 @@ const MonsterDisplay = ({monster}) => {
         ...defaultDisplayOptions,
         ...m.displayOptions
     }
-
     const statChanges = displayStatChanges(m.abilityScoreChanges);
     const abilityScoreChanges = (statChanges.length > 0 && opts.showStatChanges) ? statChanges.filter(x => x).map(x => <StatBlockLine key={x}><span><B>Ability Score Adjustments: </B>{x}</span></StatBlockLine>) : '';
     const abilityScores = <span><B>Str</B> {m.strength}, <B>Dex</B> {m.dexterity}, <B>Con</B> {displayConstitution(m.constitution, opts.showStatBonuses)}, <B>Int</B> {m.intelligence}, <B>Wis</B> {m.wisdom}, <B>Cha</B> {m.charisma}</span>
@@ -379,6 +386,32 @@ const MonsterDisplay = ({monster}) => {
     const perceptionSkill = m.skills.find(x => x.name.trim() === 'Perception');
     const perceptionDisplay = (perceptionSkill) ? perceptionSkill.name + ' '  + withPlus(perceptionSkill.value) : '';
     const senses = (m.senses) ? m.senses.replace(/Perception [+-]\d+/, perceptionDisplay) : m.senses;
+    const spellLikeAbilities = (m) => {
+        if (!m.spellLikeAbilities) return;
+
+        const groupedBySource = groupBy(m.spellLikeAbilities, 'source');
+        const sourceKeys = Object.keys(groupedBySource);
+
+        const slaSections = sourceKeys.sort().map(key => {
+            const sourceItems = groupedBySource[key];
+            const firstItem = sourceItems[0];
+            const casterLevel = firstItem.casterLevel;
+            const concentration = (firstItem.concentration) ? `; concentration ${withPlus(firstItem.concentration)}` : '';
+            const header = `${key} Spell-Like Abilities`;
+            const postHeader = ` (CL ${asOrdinal(casterLevel)}${concentration})`
+            const items = sourceItems.map(x => {
+                const times = (x.times === 'at will') ? x.times : `${x.times}/day`;
+                return <p>{times}-<i>{x.name}</i></p>
+            });
+            return (
+                <section>
+                    <StatBlockLine><B>{header}</B> {postHeader}</StatBlockLine>
+                    {items.map(x => <span className="sbLine sbSpells">{x}</span>)}
+                </section>
+            );
+        });
+        return slaSections;
+    }
     const acquiredSpecialAttacksBySource = (acquired) => {
         if (!acquired || !acquired.length === 0) return '';
         return acquired.map(x => <StatBlockLine key={x.source} data={x} required><B>Special Attacks from {x.source}</B> {x.display}</StatBlockLine>)
@@ -415,6 +448,7 @@ const MonsterDisplay = ({monster}) => {
             {spaceAndReach(m)}
             <StatBlockLine data={m.special_attacks} required><B>Special Attacks</B> {m.special_attacks}</StatBlockLine>
             {acquiredSpecialAttacksBySource(m.specialAttacksAcquired)}
+            {spellLikeAbilities(m)}
             {spells(m)}
             {spellsKnownOrPrepared(m.spellsKnown, false)}
             {spellsKnownOrPrepared(m.spellsPrepared, true)}

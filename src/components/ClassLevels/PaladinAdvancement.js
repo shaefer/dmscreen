@@ -142,7 +142,27 @@ const smiteEvil = (monster, paladinLevel) => {
     return fn;
 }
 
+const detectEvil = (monster, paladinLevel) => {
+    const sla = monster.spellLikeAbilities ? monster.spellLikeAbilities : [];
+    //TODO: It would be nice if the classInfo was passed in but we'll need to do some refactoring for that.
+    const casterLevel = paladinLevel;
+    const chaBonus = statBonusFromAbilityScore(monster.ability_scores.cha);
+    const newAbility = {
+        source: 'Paladin',
+        name: 'detect evil',
+        casterLevel: casterLevel,
+        concentration: casterLevel + chaBonus,
+        times: 'at will' //some places use 'infinite'
+    };
+    sla.push(newAbility);
+    return {
+        spellLikeAbilities: sla
+    };
+}
+
 const PaladinAdvancement = {
+    detectEvil,
+    'Detect Evil': detectEvil,
     divineGrace,
     'Divine Grace': divineGrace,
     divineHealth,

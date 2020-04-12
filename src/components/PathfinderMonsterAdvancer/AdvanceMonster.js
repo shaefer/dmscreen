@@ -769,7 +769,8 @@ export const advanceByClassLevel = (statblock, classLevel, generator) => {
     });
     //pick strategy - use all skills and just assign each point randomly.
     const skillsAssignedPoints = selectSkills([...classInfo.classSkills], skillRanksEarned, classLevel.level, generator);
-    const pointsSpent = skillsAssignedPoints.map(x => x.value).reduce((acc, i) => acc + i);
+    //TODO: this pointsSpent line throws an error when 1 paladin level applied to adherer...probably due to effects of really low int.
+    //const pointsSpent = skillsAssignedPoints.map(x => x.value).reduce((acc, i) => acc + i);
     //console.log("Earned", skillRanksEarned, "Spent", pointsSpent, "assignments", skillsAssignedPoints)
     //update the current skills with the new values.  Then calculate the new ones.
     const updatedSkills = statblock.skills.map(x => {

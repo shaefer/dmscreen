@@ -15,6 +15,7 @@ import cleric from '../../data/Classes/Cleric'
 import druid from '../../data/Classes/Druid'
 import fighter from '../../data/Classes/Fighter'
 import paladin from '../../data/Classes/Paladin'
+import ranger from '../../data/Classes/Ranger'
 import {calcBonusSpells} from '../../data/Classes/BonusSpells'
 import {rollDice} from '../../utils/DiceBag'
 
@@ -594,6 +595,8 @@ const getClass = (className) => {
         return fighter;
     if (className === 'Paladin')
         return paladin;
+    if (className === 'Ranger')
+        return ranger;
     
 }
 
@@ -620,6 +623,21 @@ const selectItems = (itemList, amount, generator, allowDuplicates = false) => {
     return selectedItems;
 }
 
+const makeASelectionForClassAbility = (classInfo, classLevel, ability, selectedAbilities, generator) => {
+    const validForLevelAbilities = (ability.selectionLevelRestrictions) ? classInfo[ability.selection].filter(x => classLevel.level >= x.minLevel) : classInfo[ability.selection];
+    const validAbilities = validForLevelAbilities.filter(x => !selectedAbilities.map(x => x.name).includes(x.name) || (x.multipleSelection))
+    const preferredAbilities = (ability.selectionLevelRestrictions && classLevel.level >= 8) ? validAbilities.filter(x => x.minLevel >= 8) : validAbilities; //basic preference for high level powers at 8th or above
+    const index = rollDice(1, preferredAbilities.length, generator).total - 1;
+    let selectedAbility = preferredAbilities[index];
+    
+    //The prereq for Night Vision is LowLight vision rage power or racial low light...this is not checking for racial as well...
+    if (selectedAbility.prerequisite && (!selectedAbilities.map(x => x.name).includes(selectedAbility.prerequisite))) {
+        //has a prereq and we don't have it yet....so instead of this selection assign the prereq.
+        selectedAbility = validAbilities.find(x => x.name === selectedAbility.prerequisite);
+    }
+    return selectedAbility;
+}
+
 const buildClassAbilitiesForLevel = (classInfo, level, generator) => {
     const classLevelsToApply = classInfo.levels.filter(x => x.level <= level);
     const selectedAbilities = [];
@@ -631,18 +649,14 @@ const buildClassAbilitiesForLevel = (classInfo, level, generator) => {
             if (!fullAbility)
                 console.error("FULL ABILITY MISSING", x)
             if (fullAbility.selection) {
-                const validForLevelAbilities = (fullAbility.selectionLevelRestrictions) ? classInfo[fullAbility.selection].filter(x => classLevel.level >= x.minLevel) : classInfo[fullAbility.selection];
-                const validAbilities = validForLevelAbilities.filter(x => !selectedAbilities.map(x => x.name).includes(x.name) || (x.multipleSelection))
-                const preferredAbilities = (fullAbility.selectionLevelRestrictions && classLevel.level >= 8) ? validAbilities.filter(x => x.minLevel >= 8) : validAbilities; //basic preference for high level powers at 8th or above
-                const index = rollDice(1, preferredAbilities.length, generator).total - 1;
-                let selectedAbility = preferredAbilities[index];
-                
-                //The prereq for Night Vision is LowLight vision rage power or racial low light...this is not checking for racial as well...
-                if (selectedAbility.prerequisite && (!selectedAbilities.map(x => x.name).includes(selectedAbility.prerequisite))) {
-                    //has a prereq and we don't have it yet....so instead of this selection assign the prereq.
-                    selectedAbility = validAbilities.find(x => x.name === selectedAbility.prerequisite);
-                }
+                const selectedAbility = makeASelectionForClassAbility(classInfo, classLevel, fullAbility, selectedAbilities, generator);
+                if (fullAbility.subSelection) {
+                    //the the class level info subselection to the subselectionCategory dictated by the selectedAbility
+                    //for instance Ranger Combat Style chooses Two Weapon fighting. This should cause the classInfo.selectedCombatStyle = 'two-weapon fighting' which in turn will change which list to lookup when prompting for an actual feat selection.
+                    classInfo[fullAbility.subSelection] = selectedAbility.subSelectionCategory;
+                } 
                 selectedAbilities.push(selectedAbility);
+
                 return {
                     ...fullAbility,
                     ...selectedAbility,
@@ -657,6 +671,7 @@ const buildClassAbilitiesForLevel = (classInfo, level, generator) => {
                 }
             }
         });
+        //do another pass on all abilities to handle subselections?
         return abilitiesForThisLevel;
     });
     return classAbilities.flat();

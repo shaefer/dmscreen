@@ -1,4 +1,4 @@
-import {statBonusFromAbilityScore, withPlus} from '../../components/PathfinderMonsterAdvancer/AdvancementUtils'
+import {statBonusFromAbilityScore, withPlus, addToTextList} from '../../components/PathfinderMonsterAdvancer/AdvancementUtils'
 
 const divineGrace = (monster) => {
     const chaBonus = statBonusFromAbilityScore(monster.ability_scores.cha);
@@ -35,25 +35,6 @@ const addNewDr = (dr, drToApply, drType) => {
     });
     const newDr = sortedDetails.join(', '); 
     return newDr;
-}
-
-const caseInsensitiveAlphaSort = (a,b) => {
-    a = a.toLowerCase();
-    b = b.toLowerCase();
-    if (a > b) {
-        return 1;
-    } else if (a < b) {
-        return -1;
-    } else if (a === b) {
-        return 0;
-    }
-}
-
-const addToTextList = (field, newItem) => {
-    const items = (field) ? field.split(/\,\s?(?![^\(]*\))/g).map(x => x.trim()) : [];
-    items.push(newItem);
-    items.sort(caseInsensitiveAlphaSort);
-    return items.join(', ')
 }
 
 const addAura = (monster, newAura) => {

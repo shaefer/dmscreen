@@ -662,6 +662,7 @@ const buildClassAbilitiesForLevel = (classInfo, level, generator) => {
                     ...selectedAbility,
                     level: classLevel.level,
                     parentName: fullAbility.parentName,
+                    originalName: fullAbility.name,
                     name: `${selectedAbility.name}` //we depend on this name to trigger special class functions like Increased Damage Reduction
                 }
             } else {
@@ -866,7 +867,8 @@ export const advanceByClassLevel = (statblock, classLevel, generator) => {
     };
     const classAdvancement = classInfo.advancement;
     classAbilitiesWithAlterations.forEach(ca => {
-        const classAdvancementFn = classAdvancement[ca.name];
+        console.log(ca)
+        const classAdvancementFn = classAdvancement[(ca.originalName || ca.name)]; //with selected abilities we are overwriting the name field (i know bad idea) so now we check for the original first.
         if (classAdvancementFn) {
             const fnResult = classAdvancementFn(classAbilityAdvancements, classLevel.level, [...classAbilitiesWithAlterations]);
             //This section is to handle abilities that need to see the full monster before they could be properly displayed. The advancementFuntion should return a function that takes the monster as input.

@@ -869,7 +869,6 @@ export const advanceByClassLevel = (statblock, classLevel, generator) => {
     };
     const classAdvancement = classInfo.advancement;
     classAbilitiesWithAlterations.forEach(ca => {
-        console.log(ca)
         const classAdvancementFn = classAdvancement[(ca.originalName || ca.name)]; //with selected abilities we are overwriting the name field (i know bad idea) so now we check for the original first.
         if (classAdvancementFn) {
             const advancementOpts = {

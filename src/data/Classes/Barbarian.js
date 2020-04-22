@@ -287,6 +287,7 @@ const barbarian = {
     primaryAbilityScore: 'str',
     ragePowers: barbarianRagePowers,
     specialAbilities: barbarianSpecialAbilities,
+    preferredLevelForClassAbilities: 8,
     advancement: barbarianAdvancement,
     levels: [
         {

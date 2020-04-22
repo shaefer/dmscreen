@@ -148,6 +148,7 @@ const asOrdinal = (i) => {
 const spellsKnownOrPrepared = (spellsSections, spellsPrepared = true) => {
     const spellsByLevelField = (spellsPrepared) ? 'spellsPreparedPerLevel' : 'spellsKnownPerLevel';
     if (!spellsSections || spellsSections.length === 0) return '';
+    console.log(spellsSections)
     return spellsSections.map(spells => {
         const spellsByLevel = spells[spellsByLevelField].reverse();
         const perDay = (val) => {
@@ -418,12 +419,14 @@ const MonsterDisplay = ({monster}) => {
     }
     const willDetails = (savingThrows) => {
         if (!savingThrows.willDetails) return '';
+        
         const willDetails = savingThrows.willDetails.map(x => {
             return `${withPlus(savingThrows.will + x.bonus)} vs. ${x.details}`
         })
         return `(${willDetails.join(", ")})`;
     }
     //<StatBlockLine data={m.specialAttacksAcquired} required><B>Additional Special Attacks</B> {m.specialAttacksAcquired}</StatBlockLine>
+    console.log(m);
     return (
         <div className="monsterDisplay">
             <div className="sbLine sbName leftAndRight">

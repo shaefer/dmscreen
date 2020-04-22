@@ -626,7 +626,8 @@ const selectItems = (itemList, amount, generator, allowDuplicates = false) => {
 const makeASelectionForClassAbility = (classInfo, classLevel, ability, selectedAbilities, generator) => {
     const validForLevelAbilities = (ability.selectionLevelRestrictions) ? classInfo[ability.selection].filter(x => classLevel.level >= x.minLevel) : classInfo[ability.selection];
     const validAbilities = validForLevelAbilities.filter(x => !selectedAbilities.map(x => x.name).includes(x.name) || (x.multipleSelection))
-    const preferredAbilities = (ability.selectionLevelRestrictions && classLevel.level >= 8) ? validAbilities.filter(x => x.minLevel >= 8) : validAbilities; //basic preference for high level powers at 8th or above
+    const preferredLevel = classInfo.preferredLevelForClassAbilities; //This allows us to create a preference for higher level abilities over lower level abilities once a certain level is reached.
+    const preferredAbilities = (ability.selectionLevelRestrictions && classLevel.level >= preferredLevel) ? validAbilities.filter(x => x.minLevel >= preferredLevel) : validAbilities; 
     const index = rollDice(1, preferredAbilities.length, generator).total - 1;
     let selectedAbility = preferredAbilities[index];
     
@@ -721,7 +722,8 @@ const buildSpellsKnownOrPreparedSection = (statblock, classInfo, classLevel, gen
     }
 
     const spellsKnownOrPrepared = (classInfo.prepareSpells) ? 'spellsPrepared' : 'spellsKnown';
-    const spellsSection = (statblock[spellsKnownOrPrepared]) ? statblock[spellsKnownOrPrepared].push(spellsPerDaySectionWrapper) : [spellsPerDaySectionWrapper];
+    const currentSection = statblock[spellsKnownOrPrepared];
+    const spellsSection = (currentSection) ? currentSection.concat(spellsPerDaySectionWrapper) : [spellsPerDaySectionWrapper];
     return {
         [spellsKnownOrPrepared]: spellsSection
     };
@@ -870,7 +872,14 @@ export const advanceByClassLevel = (statblock, classLevel, generator) => {
         console.log(ca)
         const classAdvancementFn = classAdvancement[(ca.originalName || ca.name)]; //with selected abilities we are overwriting the name field (i know bad idea) so now we check for the original first.
         if (classAdvancementFn) {
-            const fnResult = classAdvancementFn(classAbilityAdvancements, classLevel.level, [...classAbilitiesWithAlterations]);
+            const advancementOpts = {
+                monster: classAbilityAdvancements,
+                level: classLevel.level,
+                classAbilities: [...classAbilitiesWithAlterations], //can we just pass in all and filter inside advancement func? this seems dangerous.
+                classInfo,
+                generator
+            }
+            const fnResult = classAdvancementFn(advancementOpts);
             //This section is to handle abilities that need to see the full monster before they could be properly displayed. The advancementFuntion should return a function that takes the monster as input.
             if (ca.fieldToUpdate === 'acquiredSpecialAttacks') {
                 //Currently class abilities that add special attacks add them to a new property acquiredSpecialAttacks (like a template) instead of trying to alter special_attacks field. This is due to special attacks being a string rather than an array of special attack objects. Using this approach we expect the output of the classAbilityFunction to be a display Function that will be resolved near the end of advancement

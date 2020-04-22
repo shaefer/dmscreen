@@ -1,6 +1,6 @@
 import {statBonusFromAbilityScore, withPlus, addToTextList} from '../../components/PathfinderMonsterAdvancer/AdvancementUtils'
 
-const divineGrace = (monster) => {
+const divineGrace = ({monster}) => {
     const chaBonus = statBonusFromAbilityScore(monster.ability_scores.cha);
     const newSavingThrows = {
         ...monster.saving_throws,
@@ -45,49 +45,49 @@ const addImmunity = (monster, newImmunity) => {
     return addToTextList(monster.immune, newImmunity);
 }
 
-const auraOfResolve = (monster) => {
+const auraOfResolve = ({monster}) => {
     return {
         aura: addAura(monster, 'resolve (10 ft.)')
     }
 }
 
-const auraOfJustice = (monster) => {
+const auraOfJustice = ({monster}) => {
     return {
         aura: addAura(monster, 'justice (10 ft.)')
     }
 }
 
-const auraOfFaith = (monster) => {
+const auraOfFaith = ({monster}) => {
     return {
         aura: addAura(monster, 'faith (10 ft.)')
     }
 }
 
-const auraOfRighteousness = (monster) => {
+const auraOfRighteousness = ({monster}) => {
     return {
         dr: addNewDr(monster.dr, 5, 'evil'),
         aura: addAura(monster, "righteousness (10 ft.)")
     };
 }
 
-const holyChampion = (monster) => {
+const holyChampion = ({monster}) => {
     return addNewDr(monster.dr, 10, 'evil');
 }
 
-const divineHealth = (monster) => {
+const divineHealth = ({monster}) => {
     return {
         immune: addImmunity(monster, 'disease')
     }
 }
 
-const auraOfCourage = (monster) => {
+const auraOfCourage = ({monster}) => {
     return {
         immune: addImmunity(monster, 'fear'),
         aura: addAura(monster, 'courage (10 ft.)')
     }
 }
 
-const auraOfGood = (monster, paladinLevel) => {
+const auraOfGood = ({monster, level: paladinLevel}) => {
     let auraPower = 'none';
     if (paladinLevel === 1) auraPower = 'faint'
     if (paladinLevel >= 2 && paladinLevel <= 4) auraPower = 'moderate'
@@ -99,7 +99,7 @@ const auraOfGood = (monster, paladinLevel) => {
     }
 }
 
-const layOnHands = (monster, paladinLevel) => {
+const layOnHands = ({monster, level: paladinLevel}) => {
     //times: 1/2 paladin level + cha
     //1d6 per 2 levels
     const chaBonus = statBonusFromAbilityScore(monster.ability_scores.cha);
@@ -111,7 +111,7 @@ const layOnHands = (monster, paladinLevel) => {
     }
 }
 
-const smiteEvil = (monster, paladinLevel) => {
+const smiteEvil = ({monster, level: paladinLevel}) => {
     //cha to attack, paladinLevel to damage
     //1/4/7/10/13/16/19
     const times = Math.floor((paladinLevel + 2) / 3);
@@ -123,7 +123,7 @@ const smiteEvil = (monster, paladinLevel) => {
     return fn;
 }
 
-const detectEvil = (monster, paladinLevel) => {
+const detectEvil = ({monster, level: paladinLevel}) => {
     const sla = monster.spellLikeAbilities ? monster.spellLikeAbilities : [];
     //TODO: It would be nice if the classInfo was passed in but we'll need to do some refactoring for that.
     const casterLevel = paladinLevel;

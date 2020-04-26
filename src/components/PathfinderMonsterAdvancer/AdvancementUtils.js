@@ -248,7 +248,7 @@ export const displayArmorClass = (acMods) => {
     return `${total}, touch ${touchTotal}, flat-footed ${ffTotal} (${modStr})`;
 }
 
-const caseInsensitiveAlphaSort = (a,b) => {
+export const caseInsensitiveAlphaSort = (a,b) => {
     a = a.toLowerCase();
     b = b.toLowerCase();
     if (a > b) {
@@ -258,6 +258,21 @@ const caseInsensitiveAlphaSort = (a,b) => {
     } else if (a === b) {
         return 0;
     }
+}
+
+export const sortByNameFn = (fieldName) => {
+    const sortFn = (a,b) => {
+        a = a[fieldName].toLowerCase();
+        b = b[fieldName].toLowerCase();
+        if (a > b) {
+            return 1;
+        } else if (a < b) {
+            return -1;
+        } else if (a === b) {
+            return 0;
+        }
+    }
+    return sortFn;
 }
 
 export const addToTextList = (field, newItem, sortFunc = caseInsensitiveAlphaSort) => {

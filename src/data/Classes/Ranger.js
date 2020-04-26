@@ -128,6 +128,7 @@ const specialAbilities = [
     selection: 'selectedCombatStyle',
     selectionLevelRestrictions: true,
     parentName: 'Combat Style',
+    fieldToUpdate: ['classFeats']
 },
   {
       "description": "A ranger gains Endurance as a bonus feat at 3rd level.", 

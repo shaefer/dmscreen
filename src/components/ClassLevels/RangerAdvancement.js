@@ -48,14 +48,13 @@ const combatStyle = ({monster, classAbilities}) => {
     const selectedFeats = classAbilities.filter(x => {
         return x.parentName === 'Combat Style'
     });
-    const feats = selectedFeats.map(x => {
+    const rangerFeats = selectedFeats.map(x => {
         return {
             name: x.name
         }
     });
     const currentClassFeats = (monster.classFeats) ? monster.classFeats : [];
-    const currentRangerFeats = (currentClassFeats['Ranger']) ? currentClassFeats['Ranger'] : [];
-    const rangerFeats = currentRangerFeats.concat(feats);
+    //we just replace any current ranger feats with the new full list.
     rangerFeats.sort(sortByNameFn('name'));
 
     currentClassFeats['Ranger'] = rangerFeats;

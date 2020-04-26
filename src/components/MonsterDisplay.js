@@ -416,6 +416,16 @@ const MonsterDisplay = ({monster}) => {
         if (!acquired || !acquired.length === 0) return '';
         return acquired.map(x => <StatBlockLine key={x.source} data={x} required><B>Special Attacks from {x.source}</B> {x.display}</StatBlockLine>)
     }
+    const classFeats = (classFeats) => {
+        if (!classFeats) return '';
+        const classes = Object.keys(classFeats);
+        const featNamesByClass = classes.map(cls => {
+            const listOfFeats = classFeats[cls];
+            const featNames = listOfFeats.map(x => x.name);
+            return <StatBlockLine><B>{cls} Feats</B> {featNames.join(", ")}</StatBlockLine>
+        });
+        return <React.Fragment>{featNamesByClass}</React.Fragment>;
+    }
     const willDetails = (savingThrows) => {
         if (!savingThrows.willDetails) return '';
         
@@ -459,6 +469,7 @@ const MonsterDisplay = ({monster}) => {
             {abilityScoreChanges}
             <StatBlockLine><B>Base Atk</B> {m.base_attack}; <B>CMB</B> {m.cmb}; <B>CMD</B> {m.cmd}</StatBlockLine>
             <StatBlockLine><B>Feats</B>{featCountStr} {m.feats}</StatBlockLine>
+            {classFeats(m.classFeats)}
             <StatBlockLine><B>Skills</B> {m.skill_details}</StatBlockLine>
             <StatBlockLine><B>Languages</B> {m.languages}</StatBlockLine>
             <StatBlockLine data={m.special_qualities} required><B>SQ</B> {m.special_qualities}</StatBlockLine>

@@ -247,3 +247,49 @@ export const displayArmorClass = (acMods) => {
 
     return `${total}, touch ${touchTotal}, flat-footed ${ffTotal} (${modStr})`;
 }
+
+export const caseInsensitiveAlphaSort = (a,b) => {
+    a = a.toLowerCase();
+    b = b.toLowerCase();
+    if (a > b) {
+        return 1;
+    } else if (a < b) {
+        return -1;
+    } else if (a === b) {
+        return 0;
+    }
+}
+
+export const sortByNameFn = (fieldName) => {
+    const sortFn = (a,b) => {
+        a = a[fieldName].toLowerCase();
+        b = b[fieldName].toLowerCase();
+        if (a > b) {
+            return 1;
+        } else if (a < b) {
+            return -1;
+        } else if (a === b) {
+            return 0;
+        }
+    }
+    return sortFn;
+}
+
+export const addToTextList = (field, newItem, sortFunc = caseInsensitiveAlphaSort) => {
+    const items = (field) ? field.split(/\,\s?(?![^\(]*\))/g).map(x => x.trim()) : [];
+    items.push(newItem);
+    items.sort(sortFunc);
+    return items.join(', ')
+}
+
+export const addOrReplaceInTextList = (field, newItem, findIndexFunc, sortFunc = caseInsensitiveAlphaSort) => {
+    const items = (field) ? field.split(/\,\s?(?![^\(]*\))/g).map(x => x.trim()) : [];
+    const existingIndex = items.findIndex(x => findIndexFunc(x));
+    if (existingIndex !== -1) {
+        items[existingIndex] = newItem
+    } else {
+        items.push(newItem);
+    }
+    items.sort(sortFunc);
+    return items.join(', ')
+}

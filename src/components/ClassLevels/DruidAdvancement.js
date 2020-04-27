@@ -1,13 +1,13 @@
-const natureSense = (monster, level) => {
-    const newSkills = monster.skills.map(x => {
-        if ((x.name === 'Knowledge' && x.subName === 'nature') || x.name === 'Survival') {
+const natureSense = ({monster}) => {
+    const newSkills = monster.skills.slice(0).map(x => {
+        if ((x.name.trim() === 'Knowledge' && x.subName && x.subName.trim() === 'nature') || x.name.trim() === 'Survival') {
             return {
                 ...x,
                 value: x.value + 2
             }
         }
         return x;
-    }).slice(0);
+    });
     return newSkills;
 }
 

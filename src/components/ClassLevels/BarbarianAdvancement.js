@@ -4,7 +4,7 @@ import barbarian from "../../data/Classes/Barbarian";
 //40 ft., climb 20 ft.
 
 //TODO: Parse monster.speed into speed_details
-const fastMovement = (monster) => {
+const fastMovement = ({monster}) => {
     const speeds = monster.speed.split(",").map(x => x.trim()).slice(0);
     //swim, fly, climb, burrow
     const landSpeedIndex = speeds.findIndex(x => x.match(/^\d/)); //special speeds list the type of speed first...thus land speed starts with digit.
@@ -42,7 +42,7 @@ const addDrDetails = (detailsOrig, type, newAmount, suffix) => {
     }
     return details
 }
-const damageReduction = (monster, barbarianLevel) => {
+const damageReduction = ({monster, level: barbarianLevel}) => {
     const drFromBarbarianLevels = Math.min(5, Math.floor((barbarianLevel - 4) / 3)); //bbnLevel - 4 / 3
     const dr = monster.dr;
     const drDetails = (dr) ? dr.split(', ') : [];
@@ -56,7 +56,7 @@ const damageReduction = (monster, barbarianLevel) => {
     return newDr;
 }
 
-const increasedDamageReduction = (monster, barbarianLevel, classAbilities) => {
+const increasedDamageReduction = ({monster, classAbilities}) => {
     const increasedDrCount = classAbilities.filter(x => x.name === 'Increased Damage Reduction').length
     const dr = monster.dr;
     const drDetails = (dr) ? dr.split(', ') : [];

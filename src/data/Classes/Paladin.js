@@ -271,6 +271,7 @@ const paladin = {
     casterLevelAdjustment: -3,
     zeroLevelSpells: false,
     primaryAbilityScore: 'cha',
+    preferredLevelForClassAbilities: 9,
     //TODO: Handle Bonus Spells, Starting spell level of 1 vs 0. 
     spellsByLevel: [
       paladinSpells.filter(x => x.paladin === 1), 

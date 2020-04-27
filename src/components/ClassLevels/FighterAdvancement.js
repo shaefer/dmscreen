@@ -15,7 +15,7 @@ const replaceDr = (details, type, newAmount, suffix) => {
 
 //weaponTraining
 //weaponMastery
-export const armorMastery = (monster, level) => {
+export const armorMastery = ({monster, level}) => {
     const dr = monster.dr;
     const drDetails = (dr) ? dr.split(', ') : [];
     replaceDr(drDetails, "-", 5, 'while wearing armor or using a shield'); //might be nice to make this return the change rather than mutate.
@@ -28,7 +28,7 @@ export const armorMastery = (monster, level) => {
     return newDr;
 }
 
-const armorTraining = (monster, level) => {
+const armorTraining = ({monster, level}) => {
     const ac = monster.armor_class;
     const acMods = monster.armor_class.ac_modifiers.slice(0);
     const maxDexBoost = Math.min(4, Math.floor((level + 1)/4));
@@ -48,7 +48,7 @@ const armorTraining = (monster, level) => {
     };
 }
 
-const bravery = (monster, level) => {
+const bravery = ({monster, level}) => {
     const willBonusVsFear = Math.floor((level + 2)/4);
     const willDetails = [{bonus: willBonusVsFear, details: 'fear', source: 'bravery'}];
     //TODO: Find existing fear will changes and merge. or this will need to be done on display via grouping by details
@@ -61,7 +61,7 @@ const bravery = (monster, level) => {
 }
 
 //TODO: Also make feat selectioms and add them to the additional feats object.
-const bonusFeat = (monster, level) => {
+const bonusFeat = ({monster, level}) => {
     const bonusFeats = Math.floor(level/2) + 1;
     const newAdditionalFeats = [{featRestrictions: 'combat', featCount: bonusFeats, source: 'fighter', name: 'Fighter Bonus Feats'}];
     //create new

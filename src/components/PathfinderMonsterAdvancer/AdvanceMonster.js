@@ -15,6 +15,7 @@ import cleric from '../../data/Classes/Cleric'
 import druid from '../../data/Classes/Druid'
 import fighter from '../../data/Classes/Fighter'
 import paladin from '../../data/Classes/Paladin'
+import ranger from '../../data/Classes/Ranger'
 import {calcBonusSpells} from '../../data/Classes/BonusSpells'
 import {rollDice} from '../../utils/DiceBag'
 
@@ -594,6 +595,8 @@ const getClass = (className) => {
         return fighter;
     if (className === 'Paladin')
         return paladin;
+    if (className === 'Ranger')
+        return ranger;
     
 }
 
@@ -620,6 +623,22 @@ const selectItems = (itemList, amount, generator, allowDuplicates = false) => {
     return selectedItems;
 }
 
+const makeASelectionForClassAbility = (classInfo, classLevel, ability, selectedAbilities, generator) => {
+    const validForLevelAbilities = (ability.selectionLevelRestrictions) ? classInfo[ability.selection].filter(x => classLevel.level >= x.minLevel) : classInfo[ability.selection];
+    const validAbilities = validForLevelAbilities.filter(x => !selectedAbilities.map(x => x.name).includes(x.name) || (x.multipleSelection))
+    const preferredLevel = classInfo.preferredLevelForClassAbilities; //This allows us to create a preference for higher level abilities over lower level abilities once a certain level is reached.
+    const preferredAbilities = (ability.selectionLevelRestrictions && classLevel.level >= preferredLevel) ? validAbilities.filter(x => x.minLevel >= preferredLevel) : validAbilities; 
+    const index = rollDice(1, preferredAbilities.length, generator).total - 1;
+    let selectedAbility = preferredAbilities[index];
+    
+    //The prereq for Night Vision is LowLight vision rage power or racial low light...this is not checking for racial as well...
+    if (selectedAbility.prerequisite && (!selectedAbilities.map(x => x.name).includes(selectedAbility.prerequisite))) {
+        //has a prereq and we don't have it yet....so instead of this selection assign the prereq.
+        selectedAbility = validAbilities.find(x => x.name === selectedAbility.prerequisite);
+    }
+    return selectedAbility;
+}
+
 const buildClassAbilitiesForLevel = (classInfo, level, generator) => {
     const classLevelsToApply = classInfo.levels.filter(x => x.level <= level);
     const selectedAbilities = [];
@@ -631,23 +650,20 @@ const buildClassAbilitiesForLevel = (classInfo, level, generator) => {
             if (!fullAbility)
                 console.error("FULL ABILITY MISSING", x)
             if (fullAbility.selection) {
-                const validForLevelAbilities = (fullAbility.selectionLevelRestrictions) ? classInfo[fullAbility.selection].filter(x => classLevel.level >= x.minLevel) : classInfo[fullAbility.selection];
-                const validAbilities = validForLevelAbilities.filter(x => !selectedAbilities.map(x => x.name).includes(x.name) || (x.multipleSelection))
-                const preferredAbilities = (fullAbility.selectionLevelRestrictions && classLevel.level >= 8) ? validAbilities.filter(x => x.minLevel >= 8) : validAbilities; //basic preference for high level powers at 8th or above
-                const index = rollDice(1, preferredAbilities.length, generator).total - 1;
-                let selectedAbility = preferredAbilities[index];
-                
-                //The prereq for Night Vision is LowLight vision rage power or racial low light...this is not checking for racial as well...
-                if (selectedAbility.prerequisite && (!selectedAbilities.map(x => x.name).includes(selectedAbility.prerequisite))) {
-                    //has a prereq and we don't have it yet....so instead of this selection assign the prereq.
-                    selectedAbility = validAbilities.find(x => x.name === selectedAbility.prerequisite);
-                }
+                const selectedAbility = makeASelectionForClassAbility(classInfo, classLevel, fullAbility, selectedAbilities, generator);
+                if (fullAbility.subSelection) {
+                    //the the class level info subselection to the subselectionCategory dictated by the selectedAbility
+                    //for instance Ranger Combat Style chooses Two Weapon fighting. This should cause the classInfo.selectedCombatStyle = 'two-weapon fighting' which in turn will change which list to lookup when prompting for an actual feat selection.
+                    classInfo[fullAbility.subSelection] = selectedAbility.subSelectionCategory;
+                } 
                 selectedAbilities.push(selectedAbility);
+
                 return {
                     ...fullAbility,
                     ...selectedAbility,
                     level: classLevel.level,
                     parentName: fullAbility.parentName,
+                    originalName: fullAbility.name,
                     name: `${selectedAbility.name}` //we depend on this name to trigger special class functions like Increased Damage Reduction
                 }
             } else {
@@ -657,6 +673,7 @@ const buildClassAbilitiesForLevel = (classInfo, level, generator) => {
                 }
             }
         });
+        //do another pass on all abilities to handle subselections?
         return abilitiesForThisLevel;
     });
     return classAbilities.flat();
@@ -705,7 +722,8 @@ const buildSpellsKnownOrPreparedSection = (statblock, classInfo, classLevel, gen
     }
 
     const spellsKnownOrPrepared = (classInfo.prepareSpells) ? 'spellsPrepared' : 'spellsKnown';
-    const spellsSection = (statblock[spellsKnownOrPrepared]) ? statblock[spellsKnownOrPrepared].push(spellsPerDaySectionWrapper) : [spellsPerDaySectionWrapper];
+    const currentSection = statblock[spellsKnownOrPrepared];
+    const spellsSection = (currentSection) ? currentSection.concat(spellsPerDaySectionWrapper) : [spellsPerDaySectionWrapper];
     return {
         [spellsKnownOrPrepared]: spellsSection
     };
@@ -851,9 +869,16 @@ export const advanceByClassLevel = (statblock, classLevel, generator) => {
     };
     const classAdvancement = classInfo.advancement;
     classAbilitiesWithAlterations.forEach(ca => {
-        const classAdvancementFn = classAdvancement[ca.name];
+        const classAdvancementFn = classAdvancement[(ca.originalName || ca.name)]; //with selected abilities we are overwriting the name field (i know bad idea) so now we check for the original first.
         if (classAdvancementFn) {
-            const fnResult = classAdvancementFn(classAbilityAdvancements, classLevel.level, [...classAbilitiesWithAlterations]);
+            const advancementOpts = {
+                monster: classAbilityAdvancements,
+                level: classLevel.level,
+                classAbilities: [...classAbilitiesWithAlterations], //can we just pass in all and filter inside advancement func? this seems dangerous.
+                classInfo,
+                generator
+            }
+            const fnResult = classAdvancementFn(advancementOpts);
             //This section is to handle abilities that need to see the full monster before they could be properly displayed. The advancementFuntion should return a function that takes the monster as input.
             if (ca.fieldToUpdate === 'acquiredSpecialAttacks') {
                 //Currently class abilities that add special attacks add them to a new property acquiredSpecialAttacks (like a template) instead of trying to alter special_attacks field. This is due to special attacks being a string rather than an array of special attack objects. Using this approach we expect the output of the classAbilityFunction to be a display Function that will be resolved near the end of advancement

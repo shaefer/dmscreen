@@ -260,6 +260,21 @@ export const caseInsensitiveAlphaSort = (a,b) => {
     }
 }
 
+export const asOrdinal = (i) => {
+    var j = i % 10,
+        k = i % 100;
+    if (j === 1 && k !== 11) {
+        return i + "st";
+    }
+    if (j === 2 && k !== 12) {
+        return i + "nd";
+    }
+    if (j === 3 && k !== 13) {
+        return i + "rd";
+    }
+    return i + "th";
+}
+
 export const sortByNameFn = (fieldName) => {
     const sortFn = (a,b) => {
         a = a[fieldName].toLowerCase();

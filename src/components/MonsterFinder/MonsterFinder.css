@@ -27,3 +27,18 @@
     display:none;
   }
 }
+
+@media print {
+  .advancementControls {
+    display:none;
+  }
+  .flex-item:nth-child(2) {
+    flex: 0;
+  }
+  header.cleverorc {
+    display:none;
+  }
+  .menuControls {
+    display:none;
+  }
+}

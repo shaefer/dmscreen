@@ -93,8 +93,10 @@ export class MonsterFinder extends Component {
           </div>
           <div className="flex-item">
             <div className="flexSelect" style={{backgroundColor: 'white'}}>
-              <MonsterSelect listItems={MonsterOptions.map(op => op.props.children)} onSelect={this.handleMonsterSelectChange}/>
-              <div className="mobile_hidden"><AdvancementOptions {...this.props} ref={this.advancementOptionsRef}/></div>
+              <section className="advancementControls">
+                <MonsterSelect listItems={MonsterOptions.map(op => op.props.children)} onSelect={this.handleMonsterSelectChange}/>
+                <div className="mobile_hidden"><AdvancementOptions {...this.props} ref={this.advancementOptionsRef}/></div>
+              </section>
             </div>
           </div>
         </div>

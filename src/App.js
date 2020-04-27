@@ -49,8 +49,10 @@ class App extends Component {
         return (
             <BrowserRouter>
                 <main onClick={(e) => { this.handleClickOutsideOfNavBarAndNotPartOfMenuButton(e) }}>
-                    <input className="nav" type="checkbox" id="navigation" ref="navBarControl" />
-                    <label className="nav" id="navigationLabel" htmlFor="navigation"><img id="navImg" src="/images/circleMenuIcon.png" alt="menuIcon1"/><img src="/images/circleMenuIconWhite.png" alt="menuIcon2"/></label>
+                    <section className="menuControls">
+                        <input className="nav" type="checkbox" id="navigation" ref="navBarControl" />
+                        <label className="nav" id="navigationLabel" htmlFor="navigation"><img id="navImg" src="/images/circleMenuIcon.png" alt="menuIcon1"/><img src="/images/circleMenuIconWhite.png" alt="menuIcon2"/></label>
+                    </section>
                     <nav className="mainNav" ref="navBar">
                         <ul>
                             <li><a href="https://www.cleverorc.com">Clever Orc Home</a></li>

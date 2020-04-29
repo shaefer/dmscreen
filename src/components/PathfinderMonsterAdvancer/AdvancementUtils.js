@@ -297,8 +297,14 @@ export const addToTextList = (field, newItem, sortFunc = caseInsensitiveAlphaSor
     return items.join(', ')
 }
 
+/***
+ * A lot of our fields are still raw data crammed into a single field. However, the data isn't super complex.
+ * The hack for now is to just split it on commas not in parens (We can double check all data pretty easily to make sure this always will work)
+ * This method to mean to just do the joining and sorting for you so you don't have to pull any of the rejoining logic into your code.
+ */
 export const addOrReplaceInTextList = (field, newItem, findIndexFunc, sortFunc = caseInsensitiveAlphaSort) => {
-    const items = (field) ? field.split(/\,\s?(?![^\(]*\))/g).map(x => x.trim()) : [];
+    const commasNotInParensRegex = /\,\s?(?![^\(]*\))/g;
+    const items = (field) ? field.split(commasNotInParensRegex).map(x => x.trim()) : [];
     const existingIndex = items.findIndex(x => findIndexFunc(x));
     if (existingIndex !== -1) {
         items[existingIndex] = newItem
@@ -307,4 +313,14 @@ export const addOrReplaceInTextList = (field, newItem, findIndexFunc, sortFunc =
     }
     items.sort(sortFunc);
     return items.join(', ')
+}
+
+/***
+ * See the addOrReplaceInTextList...this is similar and possibly unecessary. This one would do the middle work of replacing items but no rejoin.
+ * It also have a different, faster, but more naive regex for commas not in parens.
+ */
+export const splitOnCommasNotInParens = (str) => {
+    if (!str) return [];
+    const re = /, (?![\w\d +-]*\))/
+    return str.split(re);
 }

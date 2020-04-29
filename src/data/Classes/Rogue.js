@@ -98,6 +98,7 @@ const rogueTalents = [
       "specialAbilityType":"ex",
       "advancedTalent": true,
       "minLevel": 10,
+      fieldToUpdate: 'acquiredSpecialAttacks'
   }, 
   {
       "description": "With this advanced talent, the rogue can roll with a potentially lethal blow to take less damage from it than she otherwise would. Once per day, when she would be reduced to 0 or fewer hit points by damage in combat (from a weapon or other blow, not a spell or special ability), the rogue can attempt to roll with the damage. To use this ability, the rogue must attempt a Reflex saving throw (DC = damage dealt). If the save succeeds, she takes only half damage from the blow; if it fails, she takes full damage. She must be aware of the attack and able to react to it in order to execute her defensive roll&mdash;if she is denied her Dexterity bonus to AC, she can't use this ability. Since this effect would not normally allow a character to make a Reflex save for half damage, the rogue's evasion ability does not apply to the defensive roll.", 
@@ -122,6 +123,7 @@ const rogueTalents = [
       "specialAbilityType":"ex",
       "advancedTalent": true,
       "minLevel": 10,
+      fieldToUpdate: ['defensive_abilities']
   }, 
   {
       "description": "Once per round, the rogue can make an attack of opportunity against an opponent who has just been struck for damage in melee by another character. This attack counts as an attack of opportunity for that round. Even a rogue with the Combat Reflexes feat can't use the opportunist ability more than once per round.", 
@@ -167,6 +169,7 @@ const specialAbilities = [
       "name": "Sneak Attack", 
       "source": "Core Rulebook",
       "specialAbilityType":"ex",
+      fieldToUpdate: 'acquiredSpecialAttacks'
   }, 
   {
       "description": "A rogue adds 1/2 her level to Perception skill checks made to locate traps and to Disable Device skill checks (minimum +1). A rogue can use Disable Device to disarm magic traps.", 
@@ -178,32 +181,45 @@ const specialAbilities = [
       "description": "At 2nd level and higher, a rogue can avoid even magical and unusual attacks with great agility. If she makes a successful Reflex saving throw against an attack that normally deals half damage on a successful save, she instead takes no damage. Evasion can be used only if the rogue is wearing light armor or no armor. A helpless rogue does not gain the benefit of evasion.", 
       "name": "Evasion", 
       "specialAbilityType":"ex",
+      fieldToUpdate: ['defensive_abilities']
   }, 
   {
       "description": "As a rogue gains experience, she learns a number of talents that aid her and confound her foes. Starting at 2nd level, a rogue gains one rogue talent. She gains an additional rogue talent for every 2 levels of rogue attained after 2nd level. A rogue cannot select an individual talent more than once.Talents marked with an asterisk add effects to a rogue's sneak attack. Only one of these talents can be applied to an individual attack and the decision must be made before the attack roll is made. ", 
       "name": "Rogue Talents", 
       "specialAbilityType":"ex",
+      isParent: true,
   }, 
   {
       "description": "",
       "name": "Rogue Talent Selection",
       "selection": 'rogueTalents',
       "selectionLevelRestrictions": true,
+      parentName: "Rogue Talents"
   },
+  {
+    "description": "",
+    "name": "Advanced Rogue Talent Selection",
+    "selection": 'rogueTalents',
+    "selectionLevelRestrictions": true,
+    parentName: "Advanced Rogue Talents"
+},
   {
       "description": "At 3rd level, a rogue gains an intuitive sense that alerts her to danger from traps, giving her a +1 bonus on Reflex saves made to avoid traps and a +1 dodge bonus to AC against attacks made by traps. These bonuses rise to +2 when the rogue reaches 6th level, to +3 when she reaches 9th level, to +4 when she reaches 12th level, to +5 at 15th, and to +6 at 18th level.Trap sense bonuses gained from multiple classes stack.", 
       "name": "Trap Sense", 
       "specialAbilityType":"ex",
+      fieldToUpdate: ['defensive_abilities']
   }, 
   {
       "description": "Starting at 4th level, a rogue can react to danger before her senses would normally allow her to do so. She cannot be caught flat-footed, nor does she lose her Dex bonus to AC if the attacker is invisible. She still loses her Dexterity bonus to AC if immobilized. A rogue with this ability can still lose her Dexterity bonus to AC if an opponent successfully uses the feint action (see Combat) against her.If a rogue already has uncanny dodge from a different class, she automatically gains improved uncanny dodge (see below) instead.", 
       "name": "Uncanny Dodge", 
       "specialAbilityType":"ex",
+      fieldToUpdate: ['defensive_abilities']
   }, 
   {
       "description": "A rogue of 8th level or higher can no longer be flanked.This defense denies another rogue the ability to sneak attack the character by flanking her, unless the attacker has at least four more rogue levels than the target does.If a character already has uncanny dodge (see above) from another class, the levels from the classes that grant uncanny dodge stack to determine the minimum rogue level required to flank the character.", 
       "name": "Improved Uncanny Dodge", 
       "specialAbilityType":"ex",
+      fieldToUpdate: ['defensive_abilities']
   }, 
   {
       "description": "At 10th level, and every two levels thereafter, a rogue can choose one of the following advanced talents in place of a rogue talent.", 
@@ -213,6 +229,7 @@ const specialAbilities = [
       "description": "Upon reaching 20th level, a rogue becomes incredibly deadly when dealing sneak attack damage. Each time the rogue deals sneak attack damage, she can choose one of the following three effects: the target can be put to sleep for 1d4 hours, paralyzed for 2d6 rounds, or slain. Regardless of the effect chosen, the target receives a Fortitude save to negate the additional effect. The DC of this save is equal to 10 + 1/2 the rogue's level + the rogue's Intelligence modifier. Once a creature has been the target of a master strike, regardless of whether or not the save is made, that creature is immune to that rogue's master strike for 24 hours. Creatures that are immune to sneak attack damage are also immune to this ability.", 
       "name": "Master Strike", 
       "specialAbilityType":"ex",
+      fieldToUpdate: 'acquiredSpecialAttacks'
   }
 ];
 
@@ -259,7 +276,7 @@ const rogue = {
         },
         {
           level: 2,
-          classAbilities: ['Evasion', 'Rogue Talent', 'Rogue Talent Selection']
+          classAbilities: ['Evasion', 'Rogue Talents', 'Rogue Talent Selection']
         },
         {
           level: 3,
@@ -291,7 +308,7 @@ const rogue = {
         },
         {
           level: 10,
-          classAbilities: ['Advanced Talents', 'Rogue Talent Selection']
+          classAbilities: ['Advanced Talents', 'Advanced Rogue Talent Selection']
         },
         {
           level: 11,
@@ -299,7 +316,7 @@ const rogue = {
         },
         {
           level: 12,
-          classAbilities: ['Rogue Talent Selection']
+          classAbilities: ['Advanced Rogue Talent Selection']
         },
         {
           level: 13,
@@ -307,7 +324,7 @@ const rogue = {
         },
         {
           level: 14,
-          classAbilities: ['Rogue Talent Selection']
+          classAbilities: ['Advanced Rogue Talent Selection']
         },
         {
           level: 15,
@@ -315,7 +332,7 @@ const rogue = {
         },
         {
           level: 16,
-          classAbilities: ['Rogue Talent Selection']
+          classAbilities: ['Advanced Rogue Talent Selection']
         },
         {
           level: 17,
@@ -323,7 +340,7 @@ const rogue = {
         },
         {
           level: 18,
-          classAbilities: ['Rogue Talent Selection'] 
+          classAbilities: ['Advanced Rogue Talent Selection'] 
         },
         {
           level: 19,
@@ -331,7 +348,7 @@ const rogue = {
         },
         {
           level: 20,
-          classAbilities: ['Master Strike', 'Rogue Talent Selection']
+          classAbilities: ['Master Strike', 'Advanced Rogue Talent Selection']
         }
     ]
 };

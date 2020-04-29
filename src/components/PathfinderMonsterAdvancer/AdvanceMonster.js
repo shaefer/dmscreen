@@ -16,6 +16,7 @@ import druid from '../../data/Classes/Druid'
 import fighter from '../../data/Classes/Fighter'
 import paladin from '../../data/Classes/Paladin'
 import ranger from '../../data/Classes/Ranger'
+import rogue from '../../data/Classes/Rogue'
 import {calcBonusSpells} from '../../data/Classes/BonusSpells'
 import {rollDice} from '../../utils/DiceBag'
 
@@ -597,6 +598,8 @@ const getClass = (className) => {
         return paladin;
     if (className === 'Ranger')
         return ranger;
+    if (className === 'Rogue')
+        return rogue;
     
 }
 
@@ -624,10 +627,10 @@ const selectItems = (itemList, amount, generator, allowDuplicates = false) => {
 }
 
 const makeASelectionForClassAbility = (classInfo, classLevel, ability, selectedAbilities, generator) => {
-    const validForLevelAbilities = (ability.selectionLevelRestrictions) ? classInfo[ability.selection].filter(x => classLevel.level >= x.minLevel) : classInfo[ability.selection];
+    const validForLevelAbilities = (ability.selectionLevelRestrictions) ? classInfo[ability.selection].filter(x => classLevel.level >= (x.minLevel||1)) : classInfo[ability.selection];
     const validAbilities = validForLevelAbilities.filter(x => !selectedAbilities.map(x => x.name).includes(x.name) || (x.multipleSelection))
     const preferredLevel = classInfo.preferredLevelForClassAbilities; //This allows us to create a preference for higher level abilities over lower level abilities once a certain level is reached.
-    const preferredAbilities = (ability.selectionLevelRestrictions && classLevel.level >= preferredLevel) ? validAbilities.filter(x => x.minLevel >= preferredLevel) : validAbilities; 
+    const preferredAbilities = (ability.selectionLevelRestrictions && classLevel.level >= preferredLevel) ? validAbilities.filter(x => (x.minLevel||1) >= preferredLevel) : validAbilities; 
     const index = rollDice(1, preferredAbilities.length, generator).total - 1;
     let selectedAbility = preferredAbilities[index];
     
@@ -869,7 +872,7 @@ export const advanceByClassLevel = (statblock, classLevel, generator) => {
     };
     const classAdvancement = classInfo.advancement;
     classAbilitiesWithAlterations.forEach(ca => {
-        const classAdvancementFn = classAdvancement[(ca.originalName || ca.name)]; //with selected abilities we are overwriting the name field (i know bad idea) so now we check for the original first.
+        const classAdvancementFn = classAdvancement[(ca.originalName || ca.name)] || classAdvancement[ca.name]; //with selected abilities we are overwriting the name field (i know bad idea) so now we check for the original first.
         if (classAdvancementFn) {
             const advancementOpts = {
                 monster: classAbilityAdvancements,
@@ -882,7 +885,7 @@ export const advanceByClassLevel = (statblock, classLevel, generator) => {
             //This section is to handle abilities that need to see the full monster before they could be properly displayed. The advancementFuntion should return a function that takes the monster as input.
             if (ca.fieldToUpdate === 'acquiredSpecialAttacks') {
                 //Currently class abilities that add special attacks add them to a new property acquiredSpecialAttacks (like a template) instead of trying to alter special_attacks field. This is due to special attacks being a string rather than an array of special attack objects. Using this approach we expect the output of the classAbilityFunction to be a display Function that will be resolved near the end of advancement
-                const newSpecialAttack = [{sourceName: classLevel.className + " Class", displayFn: fnResult}];
+                const newSpecialAttack = [{sourceName: classLevel.className + " Class", abilitySource: ca.name, displayFn: fnResult}];
                 const specialAttacksAcquired = (classAbilityAdvancements.specialAttacksAcquired) ? classAbilityAdvancements.specialAttacksAcquired.concat(newSpecialAttack) : newSpecialAttack;
                 classAbilityAdvancements.specialAttacksAcquired = specialAttacksAcquired;
             } else {

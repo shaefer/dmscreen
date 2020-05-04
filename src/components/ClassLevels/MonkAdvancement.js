@@ -4,10 +4,15 @@ const acBonus = ({monster, level}) => {
     const levelBonus = Math.floor(level / 4);
     const acMods = monster.armor_class.ac_modifiers.slice(0);
     const monkMod = {
-        mod: (monster) => statBonusFromAbilityScore(monster.ability_scores.wis) + levelBonus, //by calculating later we guarantee we have the fully altered stat.
+        mod: levelBonus, //by calculating later we guarantee we have the fully altered stat.
         type: "Monk"
     }
-    return acFieldsFromMods(monster, acMods.concat(monkMod)); //while this is designed to be calculated solely from the acMods this allows us to keep the full object to to date as we go. Long run...we should delete most of this so no one is using the calculated fields unless they calculate it.
+    const wisMod = {
+        mod: (monster) => statBonusFromAbilityScore(monster.ability_scores.wis),
+        type: "Wis"
+    }
+    const mods = [monkMod, wisMod]
+    return acFieldsFromMods(monster, acMods.concat(mods)); //while this is designed to be calculated solely from the acMods this allows us to keep the full object to to date as we go. Long run...we should delete most of this so no one is using the calculated fields unless they calculate it.
 }
 
 const flurryOfBlows = ({monster, level}) => {
@@ -23,6 +28,16 @@ const stunningFist = ({level}) => {
     return (monster) => `stunning fist (${level + Math.floor((monster.totalHitDice - level) / 4)}/day, DC ${10 + Math.floor(monster.totalHitDice/2) + statBonusFromAbilityScore(monster.ability_scores.wis)})`
 }
 
+const evasion = ({monster}) => {
+    const newItem = `evasion`;
+    const evasion = (x => x === 'evasion');
+    const defensiveAbilities = addOrReplaceInTextList(monster.defensive_abilities, newItem, evasion);
+
+    return {
+        defensive_abilities: defensiveAbilities
+    }
+}
+
 const Advancement = {
     acBonus,
     'AC Bonus': acBonus,
@@ -30,5 +45,7 @@ const Advancement = {
     'Flurry of Blows': flurryOfBlows,
     stunningFist,
     'Stunning Fist': stunningFist,
+    evasion,
+    'Evasion': evasion,
 }
 export default Advancement;

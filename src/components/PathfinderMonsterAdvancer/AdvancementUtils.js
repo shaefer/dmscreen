@@ -14,6 +14,24 @@ export const avgHitPoints = (hdType) => {
     return hdType / 2 + 0.5;
 }
 
+const calculateBonusHp = (hitDice, hdType, creatureType, conBonus, chaBonus, size) => {
+    const statBonus = (creatureType === 'Undead') ? chaBonus : conBonus;
+    return (creatureType !== 'Construct') ? statBonus * hitDice : getConstructBonusHitPoints(size);
+}
+
+export const hpChanges = (source, hitDice, hdType, creatureType, conBonus, chaBonus, size) => {
+    const hpBonus = calculateBonusHp(hitDice, hdType, creatureType, conBonus, chaBonus, size);
+    return {
+        source, source,
+        hdDisplay: hdDisplay(hitDice, hdType, hpBonus, source),
+        hitDice: hitDice,
+        hdType: hdType,
+        creatureType: creatureType,
+        hitPointAdjustment: hpBonus,
+        avgHitPoints: calcAvgHitPoints(hitDice, hdType) + hpBonus
+    }
+}
+
 export const statBonusFromAbilityScore = (abilityScore) => {
     return Math.floor((abilityScore - 10) / 2);
 }
@@ -212,7 +230,7 @@ export const applyChangesToSavingThrows = (savingThrows, changes) => {
 }
 
 export const calcTouchAc = (acMods, maxDex) => {
-    const touchTypes = ["Dex", "size", "dodge"];
+    const touchTypes = ["Dex", "size", "dodge", "Monk"];
     const getTouchMods = acMods.filter(x => touchTypes.indexOf(x.type) !== -1);
     const touchTotal = 10 + getTouchMods
                             .map(x => (x.type === 'Dex' && maxDex < x.mod) ? maxDex : x.mod)
@@ -228,13 +246,23 @@ export const calcTotalAc = (acMods, maxDex) => {
 }
 
 export const calcFlatFootedAc = (acMods) => {
-    const flatFootedTypes = ["natural", "size", "armor"];
+    const flatFootedTypes = ["natural", "size", "armor", "Monk"];
     const getFlatFootedMods = acMods.filter(x => flatFootedTypes.indexOf(x.type) !== -1);
     const ffTotal = 10 + getFlatFootedMods.map(x => x.mod).reduce((acc, v) => acc + v, 0);
     return ffTotal;
 }
 
-export const displayArmorClass = (acMods) => {
+export const displayArmorClass = (monster, origAcMods) => {
+    const mods = origAcMods || [];
+    const acMods = mods.slice(0).map(x => {
+        if (typeof x.mod === "function") {
+            return {
+                ...x,
+                mod: x.mod(monster)
+            };
+        }
+        return x;
+    });
     const maxDex = Math.min(...acMods.filter(x => x.hasOwnProperty('maxDex')).map(x => x.maxDex))
     const total = calcTotalAc(acMods, maxDex);
     const touchTotal = calcTouchAc(acMods, maxDex);
@@ -246,6 +274,25 @@ export const displayArmorClass = (acMods) => {
     }).join(', ');
 
     return `${total}, touch ${touchTotal}, flat-footed ${ffTotal} (${modStr})`;
+}
+
+export const acFieldsFromMods = (monster, mods) => {
+    const acMods = mods || [];
+    const acDisplay = displayArmorClass(monster, acMods);
+    const maxDex = Math.min(...acMods.filter(x => x.hasOwnProperty('maxDex')).map(x => x.maxDex))
+    return {
+        ac: acDisplay,
+        armor_class : {
+            ac_details: acDisplay,
+            ac_modifiers: acMods,
+            ac_modifiers_details: acMods.map(x => `${withPlus(x.mod)} ${x.type}`).join(', '),
+            ac : {
+                standard: calcTotalAc(acMods, maxDex),
+                flat_footed: calcFlatFootedAc(acMods),
+                touch: calcTouchAc(acMods, maxDex)
+            }
+        }
+    }
 }
 
 export const caseInsensitiveAlphaSort = (a,b) => {

@@ -107,5 +107,5 @@ it('armor class function builds ac display line', () => {
         "mod": -2,
         "type": "size"
     }];
-    expect(displayArmorClass(acMods)).toBe('21, touch 9, flat-footed 20 (+1 Dex, +12 natural, -2 size)')
+    expect(displayArmorClass({}, acMods)).toBe('21, touch 9, flat-footed 20 (+1 Dex, +12 natural, -2 size)')
 });

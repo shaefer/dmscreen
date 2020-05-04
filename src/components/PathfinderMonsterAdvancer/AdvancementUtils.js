@@ -230,7 +230,7 @@ export const applyChangesToSavingThrows = (savingThrows, changes) => {
 }
 
 export const calcTouchAc = (acMods, maxDex) => {
-    const touchTypes = ["Dex", "size", "dodge", "Monk"];
+    const touchTypes = ["Dex", "size", "dodge", "Monk", "Wis"];
     const getTouchMods = acMods.filter(x => touchTypes.indexOf(x.type) !== -1);
     const touchTotal = 10 + getTouchMods
                             .map(x => (x.type === 'Dex' && maxDex < x.mod) ? maxDex : x.mod)
@@ -246,7 +246,7 @@ export const calcTotalAc = (acMods, maxDex) => {
 }
 
 export const calcFlatFootedAc = (acMods) => {
-    const flatFootedTypes = ["natural", "size", "armor", "Monk"];
+    const flatFootedTypes = ["natural", "size", "armor", "Monk", "Wis"];
     const getFlatFootedMods = acMods.filter(x => flatFootedTypes.indexOf(x.type) !== -1);
     const ffTotal = 10 + getFlatFootedMods.map(x => x.mod).reduce((acc, v) => acc + v, 0);
     return ffTotal;
@@ -263,6 +263,7 @@ export const displayArmorClass = (monster, origAcMods) => {
         }
         return x;
     });
+    acMods.sort(sortByNameFn('type'))
     const maxDex = Math.min(...acMods.filter(x => x.hasOwnProperty('maxDex')).map(x => x.maxDex))
     const total = calcTotalAc(acMods, maxDex);
     const touchTotal = calcTouchAc(acMods, maxDex);

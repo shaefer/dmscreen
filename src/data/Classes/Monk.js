@@ -39,7 +39,7 @@ const specialAbilities = [
       "description": "At 2nd level or higher, a monk can avoid damage from many area-effect attacks. If a monk makes a successful Reflex saving throw against an attack that normally deals half damage on a successful save, he instead takes no damage. Evasion can be used only if a monk is wearing light armor or no armor. A helpless monk does not gain the benefit of evasion.", 
       "name": "Evasion", 
       "specialAbilityType":"ex",
-      fieldToUpdate: 'defensive_abilities'
+      fieldToUpdate: ['defensive_abilities']
   }, 
   {
       "description": "At 3rd level, a monk gains an enhancement bonus to his land speed, as shown on Table: Monk. A monk in armor or carrying a medium or heavy load loses this extra speed.", 

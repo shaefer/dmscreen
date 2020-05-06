@@ -38,9 +38,33 @@ const evasion = ({monster}) => {
     }
 }
 
+const bonusFeat = ({monster, level, classAbilities}) => {
+    const bonusFeats = Math.floor((level + 2)/4) + 1;
+    const selectedFeats = classAbilities.filter(x => x.originalName === 'Bonus Feat Selection').map(x => x.name);
+    const newAdditionalFeats = {featRestrictions: 'monk', featCount: bonusFeats, source: 'monk', name: 'Monk Bonus Feats', feats: selectedFeats};
+    //create new
+    if (!monster.additionalFeats) return {
+        additionalFeats: [newAdditionalFeats]
+    }
+    const existingIndex = monster.additionalFeats.findIndex(x => x.source === 'monk');
+    //replace the entry
+    if (monster.additionalFeats && existingIndex !== -1) {
+        monster.additionalFeats[existingIndex] = newAdditionalFeats;
+        return {
+            additionalFeats: monster.additionalFeats
+        }
+    }
+    //add to existing list
+    return {
+        additionalFeats: [...monster.additionalFeats, ...[newAdditionalFeats]]
+    };
+}
+
 const Advancement = {
     acBonus,
     'AC Bonus': acBonus,
+    bonusFeat,
+    'Bonus Feat': bonusFeat,
     flurryOfBlows,
     'Flurry of Blows': flurryOfBlows,
     stunningFist,

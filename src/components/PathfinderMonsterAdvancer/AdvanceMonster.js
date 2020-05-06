@@ -2,7 +2,7 @@ import { statBonusFromAbilityScore, racialFeatCount, withPlus,
     assignAbilityScoreChangeToHighestStat, applyAbilityScoreChanges,
     getSavingThrowChangesFromHitDice, applyChangesToSavingThrows,
     getSavingThrowChangesFromStatChanges, getStatBonusDifference, acFieldsFromMods, hpChanges, getSavingThrowChangesFromClass,
-    assignAbilityScoreChangeToStat, getStatByKey } from './AdvancementUtils'
+    assignAbilityScoreChangeToStat, getStatByKey, selectItems } from './AdvancementUtils'
 import { calculateCR, roundDecimal } from './AdvancementTools/ChallengeRatingCalculator'
 import {MonsterSizes, MonsterSizeChanges, sumSizeChanges} from './AdvancementTools/MonsterSizes'
 import Skills from './AdvancementTools/Skills'
@@ -584,22 +584,12 @@ const hpEntriesDisplay = (hpEntriesAll) => {
     return `${totalAvgHp} (${hpEntries.map(x => x.hdDisplay).join(", ")})`;
 }
 
-const selectItems = (itemList, amount, generator, allowDuplicates = false) => {
-    const selectableItems = itemList.slice(0);
-    const selectedItems = [];
-    for(let i = 1; i <= amount; i++) {
-        const index = rollDice(1, selectableItems.length, generator).total - 1;
-        const item = selectableItems[index];
-        selectedItems.push(item);
-        selectableItems.splice(index, 1);
-    }
-    return selectedItems;
-}
-
 const makeASelectionForClassAbility = (classInfo, classLevel, ability, selectedAbilities, generator) => {
     const validForLevelAbilities = (ability.selectionLevelRestrictions) ? classInfo[ability.selection].filter(x => classLevel.level >= (x.minLevel||1)) : classInfo[ability.selection];
     const validAbilities = validForLevelAbilities.filter(x => !selectedAbilities.map(x => x.name).includes(x.name) || (x.multipleSelection))
-    const preferredLevel = classInfo.preferredLevelForClassAbilities; //This allows us to create a preference for higher level abilities over lower level abilities once a certain level is reached.
+    const preferredLevels = classInfo.preferredLevelForClassAbilities; //This allows us to create a preference for higher level abilities over lower level abilities once a certain level is reached.
+    //find highest matching preferred levels.
+    const preferredLevel = Array.isArray(preferredLevels) ? Math.max(...preferredLevels.filter(x => x <= classLevel.level)) : preferredLevels;
     const preferredAbilities = (ability.selectionLevelRestrictions && classLevel.level >= preferredLevel) ? validAbilities.filter(x => (x.minLevel||1) >= preferredLevel) : validAbilities; 
     const index = rollDice(1, preferredAbilities.length, generator).total - 1;
     let selectedAbility = preferredAbilities[index];
@@ -847,7 +837,7 @@ export const advanceByClassLevel = (statblock, classLevel, generator) => {
             const advancementOpts = {
                 monster: classAbilityAdvancements,
                 level: classLevel.level,
-                classAbilities: [...classAbilitiesWithAlterations], //can we just pass in all and filter inside advancement func? this seems dangerous.
+                classAbilities: [...classAbilities], //can we just pass in all and filter inside advancement func? this seems dangerous.
                 classInfo,
                 generator
             }

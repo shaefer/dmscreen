@@ -1,5 +1,76 @@
 import advancement from '../../components/ClassLevels/MonkAdvancement';
 
+const monkFeats = [
+  {
+    "name": 'Catch Off-Guard',
+    "minLevel": 1,
+  },
+  {
+    "name": 'Combat Reflexes',
+    "minLevel": 1,
+  },
+  {
+    "name": 'Deflect Arrows',
+    "minLevel": 1,
+  },
+  {
+    "name": 'Dodge',
+    "minLevel": 1,
+  },
+  {
+    "name": 'Improved Grapple',
+    "minLevel": 1,
+  },
+  {
+    "name": 'Scorpion Style',
+    "minLevel": 1,
+  },
+  {
+    "name": 'Throw Anything',
+    "minLevel": 1,
+  },
+  {
+    "name": 'Gorgon\'s Fist',
+    "minLevel": 6,
+  },
+  {
+    "name": 'Improved Bull Rush',
+    "minLevel": 6,
+  },
+  {
+    "name": 'Improved Disarm',
+    "minLevel": 6,
+  },
+  {
+    "name": 'Improved Feint',
+    "minLevel": 6,
+  },
+  {
+    "name": 'Improved Trip',
+    "minLevel": 6,
+  },
+  {
+    "name": 'Improved Mobility',
+    "minLevel": 6,
+  },
+  {
+    "name": 'Improved Critical',
+    "minLevel": 10,
+  },
+  {
+    "name": 'Medusa\'s Wrath',
+    "minLevel": 10,
+  },
+  {
+    "name": 'Snatch Arrows',
+    "minLevel": 10,
+  },
+  {
+    "name": 'Spring Attack',
+    "minLevel": 10,
+  },
+]
+
 const specialAbilities = [
   {
       "description": "Monks are proficient with the club, crossbow (light or heavy), dagger, handaxe, javelin, kama, nunchaku, quarterstaff, sai, shortspear, short sword, shuriken, siangham, sling, and spear.Monks are not proficient with any armor or shields.When wearing armor, using a shield, or carrying a medium or heavy load, a monk loses his AC bonus, as well as his fast movement and flurry of blows abilities.", 
@@ -27,8 +98,16 @@ const specialAbilities = [
   {
       "description": " At 1st level, 2nd level, and every 4 levels thereafter, a monk may select a bonus feat. These feats must be taken from the following list: Catch Off-Guard, Combat Reflexes, Deflect Arrows, Dodge, Improved Grapple, Scorpion Style, and Throw Anything. At 6th level, the following feats are added to the list: Gorgon's Fist, Improved Bull Rush, Improved Disarm, Improved Feint, Improved Trip, and Mobility. At 10th level, the following feats are added to the list: Improved Critical, Medusa's Wrath, Snatch Arrows, and Spring Attack. A monk need not have any of the prerequisites normally required for these feats to select them.", 
       "name": "Bonus Feat", 
-      "source": "Core Rulebook"
+      "source": "Core Rulebook",
+      isParent: true,
+      fieldToUpdate: ['additionalFeats']
   }, 
+  {
+      "description": "",
+      "name": "Bonus Feat Selection", 
+      selection: 'monkFeats',
+      parentName: 'Bonus Feat',
+  },
   {
       "description": "At 1st level, the monk gains Stunning Fist as a bonus feat, even if he does not meet the prerequisites. At 4th level, and every 4 levels thereafter, the monk gains the ability to apply a new condition to the target of his Stunning Fist. This condition replaces stunning the target for 1 round, and a successful saving throw still negates the effect. At 4th level, he can choose to make the target fatigued. At 8th level, he can make the target sickened for 1 minute. At 12th level, he can make the target staggered for 1d6+1 rounds. At 16th level, he can permanently blind or deafen the target. At 20th level, he can paralyze the target for 1d6+1 rounds. The monk must choose which condition will apply before the attack roll is made. These effects do not stack with themselves (a creature sickened by Stunning Fist cannot become nauseated if hit by Stunning Fist again), but additional hits do increase the duration.", 
       "name": "Stunning Fist", 
@@ -155,16 +234,17 @@ const monk = {
     "good_saving_throws": ["Fort", "Ref", "Will"], //might like a different format  for the key but this matches creatureStatsByType
     primaryAbilityScore: 'wis',
     specialAbilities,
-    preferredLevelForClassAbilities: 10, //6 and 10
+    monkFeats,
+    preferredLevelForClassAbilities: [6,10], //6 and 10
     advancement: advancement,
     levels: [
         {
           level: 1, 
-          classAbilities: ['AC Bonus', 'Bonus Feat', 'Flurry of Blows', 'Stunning Fist', 'Unarmed Strike', 'Weapon and Armor Proficiency'],
+          classAbilities: ['AC Bonus', 'Bonus Feat', 'Bonus Feat Selection', 'Flurry of Blows', 'Stunning Fist', 'Unarmed Strike', 'Weapon and Armor Proficiency'],
         },
         {
           level: 2,
-          classAbilities: ['Bonus Feat', 'Evasion']
+          classAbilities: ['Bonus Feat Selection', 'Evasion']
         },
         {
           level: 3,
@@ -180,7 +260,7 @@ const monk = {
         },
         {
           level: 6,
-          classAbilities: ['Bonus Feat', 'Slow Fall']
+          classAbilities: ['Bonus Feat Selection', 'Slow Fall']
         },
         {
           level: 7,
@@ -196,7 +276,7 @@ const monk = {
         },
         {
           level: 10,
-          classAbilities: ['Bonus Feat']
+          classAbilities: ['Bonus Feat Selection']
         },
         {
           level: 11,
@@ -212,7 +292,7 @@ const monk = {
         },
         {
           level: 14,
-          classAbilities: []
+          classAbilities: ['Bonus Feat Selection']
         },
         {
           level: 15,
@@ -228,7 +308,7 @@ const monk = {
         },
         {
           level: 18,
-          classAbilities: [] 
+          classAbilities: ['Bonus Feat Selection'] 
         },
         {
           level: 19,

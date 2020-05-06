@@ -70,3 +70,21 @@ it('add evasion to defensive abilities does not duplicate', () => {
     expect(changes.defensive_abilities).toEqual("defensive awesomeness, evasion")
 });
 
+it('bonus feat selects a monk feat', () => {
+    //selections of feats will be done at each level and we jsut aggregate them here...
+    const selectedFeats = [
+        {name: 'Feat1', originalName: 'Bonus Feat Selection', parentName: 'BonusFeat'},
+        {name: 'Feat2', originalName: 'Bonus Feat Selection', parentName: 'BonusFeat'},
+        {name: 'Feat3', originalName: 'Bonus Feat Selection', parentName: 'BonusFeat'},
+        {name: 'Feat4', originalName: 'Bonus Feat Selection', parentName: 'BonusFeat'},
+    ];
+    const classAbilities = [
+        ...selectedFeats,
+        {name: 'Other Class Ability'},
+    ];
+    const opts = {monster: Behir, level: 12, classAbilities: classAbilities};
+    const result = Advancement.bonusFeat(opts);
+    //, feats: ['featA1', 'featA2', 'featA3', 'featA4', 'featB1', 'featB2', 'featC1']
+    expect(result.additionalFeats).toEqual([{featRestrictions: 'monk', featCount: 4, source: 'monk', name: 'Monk Bonus Feats', feats:selectedFeats.map(x => x.name)}])
+});
+

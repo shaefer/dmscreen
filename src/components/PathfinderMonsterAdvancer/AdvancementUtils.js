@@ -1,5 +1,6 @@
 import creatureStatsByType from './AdvancementTools/creatureStatsByType';
 import {calculateGoodSaveChange, calculateBadSaveChange, calculateGoodSave, calculateBadSave} from './AdvancementTools/BaseSaveCalculator';
+import {rollDice} from '../../utils/DiceBag'
 
 export const calcAvgHitPoints = (hd, hdType) => {
     return Math.floor(hd * avgHitPoints(hdType));
@@ -371,4 +372,16 @@ export const splitOnCommasNotInParens = (str) => {
     if (!str) return [];
     const re = /, (?![\w\d +-]*\))/
     return str.split(re);
+}
+
+export const selectItems = (itemList, amount, generator, allowDuplicates = false) => {
+    const selectableItems = itemList.slice(0);
+    const selectedItems = [];
+    for(let i = 1; i <= amount; i++) {
+        const index = rollDice(1, selectableItems.length, generator).total - 1;
+        const item = selectableItems[index];
+        selectedItems.push(item);
+        selectableItems.splice(index, 1);
+    }
+    return selectedItems;
 }

@@ -124,6 +124,7 @@ const specialAbilities = [
       "description": "At 3rd level, a monk gains an enhancement bonus to his land speed, as shown on Table: Monk. A monk in armor or carrying a medium or heavy load loses this extra speed.", 
       "name": "Fast Movement", 
       "specialAbilityType":"ex",
+      fieldToUpdate: ['speed', 'special_qualities']
   }, 
   {
       "description": "At 3rd level, a monk uses his monk level in place of his base attack bonus when calculating his Combat Maneuver Bonus. Base attack bonuses granted from other classes are unaffected and are added normally.", 

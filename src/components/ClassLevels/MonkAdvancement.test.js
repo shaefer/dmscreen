@@ -88,3 +88,10 @@ it('bonus feat selects a monk feat', () => {
     expect(result.additionalFeats).toEqual([{featRestrictions: 'monk', featCount: 4, source: 'monk', name: 'Monk Bonus Feats', feats:selectedFeats.map(x => x.name)}])
 });
 
+it('fast movement alters land speed and adds special_qualities entry', () => {
+    const opts = {monster: Behir, level: 9};
+    const result = Advancement.fastMovement(opts);
+    expect(result.special_qualities).toBe("monk fast movement +30 ft.");
+    expect(result.speed).toBe("70 ft., climb 20 ft.")
+});
+

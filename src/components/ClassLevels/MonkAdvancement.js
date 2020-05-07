@@ -60,6 +60,31 @@ const bonusFeat = ({monster, level, classAbilities}) => {
     };
 }
 
+//TODO: Parse monster.speed into speed_details
+const fastMovement = ({monster, level}) => {
+    const speedBonus = Math.floor(level / 3) * 10;
+    const fastMovementEntry = `monk fast movement +${speedBonus} ft.`
+    const speeds = monster.speed.split(",").map(x => x.trim()).slice(0);
+    //swim, fly, climb, burrow
+    const landSpeedIndex = speeds.findIndex(x => x.match(/^\d/)); //special speeds list the type of speed first...thus land speed starts with digit.
+    const newSQ = addOrReplaceInTextList(monster.special_qualities, fastMovementEntry, x => x.startsWith('monk fast movement'));
+    if (landSpeedIndex === -1) {
+        return {
+            speed: monster.speed,
+            special_qualities: newSQ
+        }
+    }
+
+    const landSpeed = speeds[landSpeedIndex]
+    const landSpeedInt = parseInt(landSpeed);
+    const newSpeed = landSpeedInt + speedBonus;
+
+    return {
+        speed: addOrReplaceInTextList(monster.speed, `${newSpeed} ft.`, x => x.match(/^\d/)),
+        special_qualities: newSQ
+    }
+}
+
 const Advancement = {
     acBonus,
     'AC Bonus': acBonus,
@@ -71,5 +96,7 @@ const Advancement = {
     'Stunning Fist': stunningFist,
     evasion,
     'Evasion': evasion,
+    fastMovement,
+    'Fast Movement': fastMovement,
 }
 export default Advancement;

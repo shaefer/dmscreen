@@ -11,4 +11,5 @@ it('advance by monk level calculates stunning fist correctly', () => {
     expect(result.additionalFeats).toBeTruthy();
     expect(result.additionalFeats.find(x => x.source === 'monk')).toBeTruthy();
     expect(result.additionalFeats.find(x => x.source === 'monk').featCount).toBe(4);
+    expect(result.special_qualities).toBe("flurry of blows, monk fast movement +30 ft.")
 });

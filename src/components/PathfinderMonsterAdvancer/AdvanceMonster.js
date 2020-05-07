@@ -21,6 +21,7 @@ import {calcBonusSpells} from '../../data/Classes/BonusSpells'
 import {rollDice} from '../../utils/DiceBag'
 
 import seedrandom from 'seedrandom';
+import 'array-flat-polyfill';
 
 export const recalculateMonster = (monster) => {
     const newMonster = {

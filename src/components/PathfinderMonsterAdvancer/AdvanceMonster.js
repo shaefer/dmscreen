@@ -2,7 +2,7 @@ import { statBonusFromAbilityScore, racialFeatCount, withPlus,
     assignAbilityScoreChangeToHighestStat, applyAbilityScoreChanges,
     getSavingThrowChangesFromHitDice, applyChangesToSavingThrows,
     getSavingThrowChangesFromStatChanges, getStatBonusDifference, acFieldsFromMods, hpChanges, getSavingThrowChangesFromClass,
-    assignAbilityScoreChangeToStat, getStatByKey, selectItems } from './AdvancementUtils'
+    assignAbilityScoreChangeToStat, getStatByKey, selectItems, combatManeuverChanges } from './AdvancementUtils'
 import { calculateCR, roundDecimal } from './AdvancementTools/ChallengeRatingCalculator'
 import {MonsterSizes, MonsterSizeChanges, sumSizeChanges} from './AdvancementTools/MonsterSizes'
 import Skills from './AdvancementTools/Skills'
@@ -21,7 +21,7 @@ import {calcBonusSpells} from '../../data/Classes/BonusSpells'
 import {rollDice} from '../../utils/DiceBag'
 
 import seedrandom from 'seedrandom';
-import 'array-flat-polyfill';
+import 'array-flat-polyfill'; //flat not supported in IE11 or node <12
 
 export const recalculateMonster = (monster) => {
     const newMonster = {
@@ -234,26 +234,6 @@ const acChanges = (monster, origAcMods, statBonusDiffs) => {
     const dexChange = {mod: statBonusDiffs.dex, type: 'Dex'};
     const acMods = changeAcMod(origAcMods, dexChange);
     return acFieldsFromMods(monster, acMods);
-}
-
-export const combatManeuverChanges = (statblock, cmbChange, cmdChange) => {
-    const newCmb = statblock.cmb + cmbChange;
-    const newCmbDetails = (statblock.cmb_details) ? statblock.cmb_details.toString().replace(/[+-]?\d+/gm, (x) => {
-        return withPlus(parseInt(x) + cmbChange);
-    }) : withPlus(newCmb);
-
-    const newCmd = statblock.cmd + cmdChange; //all touch ac mods http://www.tenebraemush.net/index.php/Understanding_CMB_and_CMD
-    const newCmdDetails = (statblock.cmd_details) ? statblock.cmd_details.toString().replace(/[+-]?\d+/gm, (x) => {
-        return parseInt(x) + cmdChange;
-    }) : newCmd;
-
-    const result = {
-        cmb: newCmb,
-        cmb_details: newCmbDetails,
-        cmd: newCmd,
-        cmd_details: newCmdDetails,
-    };
-    return result;
 }
 
 export const advanceAttacksBySize = (origAttacks, startSizeIndex, endSizeIndex) => {
@@ -738,6 +718,10 @@ export const advanceByClassLevel = (statblock, classLevel, generator) => {
     const meleeAttacks = attackChanges(statblock.melee_attacks, 0, baseAttackDiff);
     const rangedAttacks = attackChanges(statblock.ranged_attacks, 0, baseAttackDiff, false);
     const newCombatFields = combatManeuverChanges(statblock, baseAttackDiff, baseAttackDiff);
+    statblock = {
+        ...statblock,
+        ...newCombatFields
+    }
 
     const skillRanksEarned = (classInfo.skillRanksPerLevel + statBonusFromAbilityScore(statblock.ability_scores.int)) * classLevel.level;
     const currentSkills = statblock.skills.map(x => {
@@ -872,7 +856,7 @@ export const advanceByClassLevel = (statblock, classLevel, generator) => {
         ranged_attacks: rangedAttacks,
         saving_throws: applyChangesToSavingThrows(classAbilityAdvancements.saving_throws, [savingThrowBonusesFromClass]),
         featCount: racialFeatCount(classAbilityAdvancements.hd + newHitDice), //this calculation is basically an aggregate of other advancements...we can recalculate each time however without a lot of cost.
-        ...newCombatFields,
+        //...newCombatFields,
         classLevelAbilities: [...(classAbilityAdvancements.classLevelAbilities||[]), classAbilitiesToAdd],
         crAdjustments : [
             ...existingAdjustments,

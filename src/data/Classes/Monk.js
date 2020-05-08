@@ -130,6 +130,7 @@ const specialAbilities = [
       "description": "At 3rd level, a monk uses his monk level in place of his base attack bonus when calculating his Combat Maneuver Bonus. Base attack bonuses granted from other classes are unaffected and are added normally.", 
       "name": "Maneuver Training", 
       "specialAbilityType":"ex",
+      fieldToUpdate: ['cmb', 'cmb_details']
   }, 
   {
       "description": "A monk of 3rd level or higher gains a +2 bonus on saving throws against enchantment spells and effects.", 

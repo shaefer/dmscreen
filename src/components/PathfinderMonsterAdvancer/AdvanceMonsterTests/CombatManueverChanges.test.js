@@ -1,4 +1,4 @@
-import { combatManeuverChanges } from '../AdvanceMonster'
+import { combatManeuverChanges } from '../AdvancementUtils'
 import Aasimar from '../../../models/AasimarV2'
 import Behir from '../../../models/Behir_v9'
 

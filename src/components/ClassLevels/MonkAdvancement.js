@@ -1,5 +1,5 @@
-import {statBonusFromAbilityScore, acFieldsFromMods, addOrReplaceInTextList} from '../../components/PathfinderMonsterAdvancer/AdvancementUtils'
-
+import {statBonusFromAbilityScore, acFieldsFromMods, addOrReplaceInTextList, combatManeuverChanges} from '../../components/PathfinderMonsterAdvancer/AdvancementUtils'
+import {calculateBaseAttackBonus } from '../../monsteradvancer/BaseAttackBonusCalculator'
 const acBonus = ({monster, level}) => {
     const levelBonus = Math.floor(level / 4);
     const acMods = monster.armor_class.ac_modifiers.slice(0);
@@ -85,6 +85,11 @@ const fastMovement = ({monster, level}) => {
     }
 }
 
+const maneuverTraining = ({monster, level, classInfo}) => {
+    const monkBab = calculateBaseAttackBonus(level, classInfo.base_attack_bonus);
+    return combatManeuverChanges(monster,level - monkBab,0)
+}
+
 const Advancement = {
     acBonus,
     'AC Bonus': acBonus,
@@ -98,5 +103,7 @@ const Advancement = {
     'Evasion': evasion,
     fastMovement,
     'Fast Movement': fastMovement,
+    maneuverTraining,
+    'Maneuver Training': maneuverTraining,
 }
 export default Advancement;

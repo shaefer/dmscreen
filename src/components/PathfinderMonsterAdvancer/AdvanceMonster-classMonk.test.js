@@ -12,4 +12,8 @@ it('advance by monk level calculates stunning fist correctly', () => {
     expect(result.additionalFeats.find(x => x.source === 'monk')).toBeTruthy();
     expect(result.additionalFeats.find(x => x.source === 'monk').featCount).toBe(4);
     expect(result.special_qualities).toBe("flurry of blows, monk fast movement +30 ft.")
+
+    expect(behir.cmb).toBe(18);
+    //25 was with monk bab...actual should be 3 higher
+    expect(result.cmb).toBe(28) //maneuver training uses monk level instead of bab when calculating cmb. In this case it is the diff between 7 and 10.
 });

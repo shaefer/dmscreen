@@ -1,5 +1,4 @@
-import {statBonusFromAbilityScore, withPlus, addOrReplaceInTextList, sortByNameFn} from '../../components/PathfinderMonsterAdvancer/AdvancementUtils'
-import MonsterStatsByCR from '../PathfinderMonsterAdvancer/AdvancementTools/MonsterStatsByCR';
+import {withPlus, addOrReplaceInTextList, sortByNameFn} from '../../components/PathfinderMonsterAdvancer/AdvancementUtils'
 import { rollDice } from '../../utils/DiceBag';
 
 const favoredEnemy = ({monster, classAbilities, generator}) => {

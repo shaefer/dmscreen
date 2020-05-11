@@ -1,5 +1,6 @@
 import creatureStatsByType from './AdvancementTools/creatureStatsByType';
 import {calculateGoodSaveChange, calculateBadSaveChange, calculateGoodSave, calculateBadSave} from './AdvancementTools/BaseSaveCalculator';
+import {rollDice} from '../../utils/DiceBag'
 
 export const calcAvgHitPoints = (hd, hdType) => {
     return Math.floor(hd * avgHitPoints(hdType));
@@ -12,6 +13,24 @@ export const hdDisplay = (hd, hdType, bonusHp, source) => {
 
 export const avgHitPoints = (hdType) => {
     return hdType / 2 + 0.5;
+}
+
+const calculateBonusHp = (hitDice, hdType, creatureType, conBonus, chaBonus, size) => {
+    const statBonus = (creatureType === 'Undead') ? chaBonus : conBonus;
+    return (creatureType !== 'Construct') ? statBonus * hitDice : getConstructBonusHitPoints(size);
+}
+
+export const hpChanges = (source, hitDice, hdType, creatureType, conBonus, chaBonus, size) => {
+    const hpBonus = calculateBonusHp(hitDice, hdType, creatureType, conBonus, chaBonus, size);
+    return {
+        source, source,
+        hdDisplay: hdDisplay(hitDice, hdType, hpBonus, source),
+        hitDice: hitDice,
+        hdType: hdType,
+        creatureType: creatureType,
+        hitPointAdjustment: hpBonus,
+        avgHitPoints: calcAvgHitPoints(hitDice, hdType) + hpBonus
+    }
 }
 
 export const statBonusFromAbilityScore = (abilityScore) => {
@@ -212,7 +231,7 @@ export const applyChangesToSavingThrows = (savingThrows, changes) => {
 }
 
 export const calcTouchAc = (acMods, maxDex) => {
-    const touchTypes = ["Dex", "size", "dodge"];
+    const touchTypes = ["Dex", "size", "dodge", "Monk", "Wis"];
     const getTouchMods = acMods.filter(x => touchTypes.indexOf(x.type) !== -1);
     const touchTotal = 10 + getTouchMods
                             .map(x => (x.type === 'Dex' && maxDex < x.mod) ? maxDex : x.mod)
@@ -228,13 +247,24 @@ export const calcTotalAc = (acMods, maxDex) => {
 }
 
 export const calcFlatFootedAc = (acMods) => {
-    const flatFootedTypes = ["natural", "size", "armor"];
+    const flatFootedTypes = ["natural", "size", "armor", "Monk", "Wis"];
     const getFlatFootedMods = acMods.filter(x => flatFootedTypes.indexOf(x.type) !== -1);
     const ffTotal = 10 + getFlatFootedMods.map(x => x.mod).reduce((acc, v) => acc + v, 0);
     return ffTotal;
 }
 
-export const displayArmorClass = (acMods) => {
+export const displayArmorClass = (monster, origAcMods) => {
+    const mods = origAcMods || [];
+    const acMods = mods.slice(0).map(x => {
+        if (typeof x.mod === "function") {
+            return {
+                ...x,
+                mod: x.mod(monster)
+            };
+        }
+        return x;
+    });
+    acMods.sort(sortByNameFn('type'))
     const maxDex = Math.min(...acMods.filter(x => x.hasOwnProperty('maxDex')).map(x => x.maxDex))
     const total = calcTotalAc(acMods, maxDex);
     const touchTotal = calcTouchAc(acMods, maxDex);
@@ -246,6 +276,25 @@ export const displayArmorClass = (acMods) => {
     }).join(', ');
 
     return `${total}, touch ${touchTotal}, flat-footed ${ffTotal} (${modStr})`;
+}
+
+export const acFieldsFromMods = (monster, mods) => {
+    const acMods = mods || [];
+    const acDisplay = displayArmorClass(monster, acMods);
+    const maxDex = Math.min(...acMods.filter(x => x.hasOwnProperty('maxDex')).map(x => x.maxDex))
+    return {
+        ac: acDisplay,
+        armor_class : {
+            ac_details: acDisplay,
+            ac_modifiers: acMods,
+            ac_modifiers_details: acMods.map(x => `${withPlus(x.mod)} ${x.type}`).join(', '),
+            ac : {
+                standard: calcTotalAc(acMods, maxDex),
+                flat_footed: calcFlatFootedAc(acMods),
+                touch: calcTouchAc(acMods, maxDex)
+            }
+        }
+    }
 }
 
 export const caseInsensitiveAlphaSort = (a,b) => {
@@ -323,4 +372,57 @@ export const splitOnCommasNotInParens = (str) => {
     if (!str) return [];
     const re = /, (?![\w\d +-]*\))/
     return str.split(re);
+}
+
+export const selectItems = (itemList, amount, generator, allowDuplicates = false) => {
+    const selectableItems = itemList.slice(0);
+    const selectedItems = [];
+    for(let i = 1; i <= amount; i++) {
+        const index = rollDice(1, selectableItems.length, generator).total - 1;
+        const item = selectableItems[index];
+        selectedItems.push(item);
+        selectableItems.splice(index, 1);
+    }
+    return selectedItems;
+}
+
+export const combatManeuverChanges = (statblock, cmbChange, cmdChange) => {
+    const newCmb = statblock.cmb + cmbChange;
+    const newCmbDetails = (statblock.cmb_details) ? statblock.cmb_details.toString().replace(/[+-]?\d+/gm, (x) => {
+        return withPlus(parseInt(x) + cmbChange);
+    }) : withPlus(newCmb);
+
+    const newCmd = statblock.cmd + cmdChange; //all touch ac mods http://www.tenebraemush.net/index.php/Understanding_CMB_and_CMD
+    const newCmdDetails = (statblock.cmd_details) ? statblock.cmd_details.toString().replace(/[+-]?\d+/gm, (x) => {
+        return parseInt(x) + cmdChange;
+    }) : newCmd;
+
+    const result = {
+        cmb: newCmb,
+        cmb_details: newCmbDetails,
+        cmd: newCmd,
+        cmd_details: newCmdDetails,
+    };
+    return result;
+}
+
+export const replaceDrByType = (origDetails, type, newAmount) => {  
+    const details = origDetails.slice(0);
+    const idx = details.findIndex(x => x.endsWith(type));
+    if (idx !== -1) {
+        const detailStr = details[idx];
+        const amount = parseInt(detailStr.match(/\d+/));
+        if (newAmount > amount) {
+            const regex = new RegExp(`\\d+\/${type}`);
+            details[idx] = detailStr.replace(regex, `${newAmount}/${type}`);
+        }
+    } else {
+        details.push(`${newAmount}/${type}`);
+    }
+    const sortedDetails = details.sort((a, b) => {
+        if (a.indexOf("-") !== -1) return -1;
+        if (b.indexOf("-") !== -1) return 1;
+        return caseInsensitiveAlphaSort(a, b);
+    });
+    return sortedDetails;
 }

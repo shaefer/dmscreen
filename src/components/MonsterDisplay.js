@@ -1,7 +1,7 @@
 import React from 'react'
 import './MonsterDisplay.css';
 
-import {statBonusFromAbilityScore, withPlus, asOrdinal} from '../components/PathfinderMonsterAdvancer/AdvancementUtils'
+import {statBonusFromAbilityScore, withPlus, asOrdinal, acFieldsFromMods} from '../components/PathfinderMonsterAdvancer/AdvancementUtils'
 
 const StatBlockLine = (props) => {
     if (props.inline) return ((props.data && props.required) || !props.required) ? <span className="sbLine">{props.children}</span> : "";
@@ -313,7 +313,7 @@ const mapAndAddFieldNames = (monster) => {
         ...m,
         name: m.advancedName ? m.advancedName : m.name,
         init: withPlus(m.init),
-        ac: m.armor_class.ac_details,
+        ac: acFieldsFromMods(m, m.armor_class.ac_modifiers).ac,
         strength: m.ability_scores.str,
         dexterity: m.ability_scores.dex,
         constitution: m.ability_scores.con,

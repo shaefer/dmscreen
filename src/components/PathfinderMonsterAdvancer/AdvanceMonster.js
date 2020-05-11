@@ -1,9 +1,8 @@
 import { statBonusFromAbilityScore, racialFeatCount, withPlus, 
     assignAbilityScoreChangeToHighestStat, applyAbilityScoreChanges,
-    getSavingThrowChangesFromHitDice, applyChangesToSavingThrows, hdDisplay,
-    getSavingThrowChangesFromStatChanges, getStatBonusDifference, displayArmorClass,
-    calcTotalAc, calcFlatFootedAc, calcTouchAc, calcAvgHitPoints, getConstructBonusHitPoints, getSavingThrowChangesFromClass,
-    assignAbilityScoreChangeToStat, getStatByKey } from './AdvancementUtils'
+    getSavingThrowChangesFromHitDice, applyChangesToSavingThrows,
+    getSavingThrowChangesFromStatChanges, getStatBonusDifference, acFieldsFromMods, hpChanges, getSavingThrowChangesFromClass,
+    assignAbilityScoreChangeToStat, getStatByKey, selectItems, combatManeuverChanges } from './AdvancementUtils'
 import { calculateCR, roundDecimal } from './AdvancementTools/ChallengeRatingCalculator'
 import {MonsterSizes, MonsterSizeChanges, sumSizeChanges} from './AdvancementTools/MonsterSizes'
 import Skills from './AdvancementTools/Skills'
@@ -14,6 +13,7 @@ import bard from '../../data/Classes/Bard'
 import cleric from '../../data/Classes/Cleric'
 import druid from '../../data/Classes/Druid'
 import fighter from '../../data/Classes/Fighter'
+import monk from '../../data/Classes/Monk'
 import paladin from '../../data/Classes/Paladin'
 import ranger from '../../data/Classes/Ranger'
 import rogue from '../../data/Classes/Rogue'
@@ -21,6 +21,7 @@ import {calcBonusSpells} from '../../data/Classes/BonusSpells'
 import {rollDice} from '../../utils/DiceBag'
 
 import seedrandom from 'seedrandom';
+import 'array-flat-polyfill'; //flat not supported in IE11 or node <12
 
 export const recalculateMonster = (monster) => {
     const newMonster = {
@@ -52,17 +53,20 @@ export const recalculateMonster = (monster) => {
     return finalMonster;
 }
 
-//There are a few fields we add as we go such as advancements that each stage might add to. If we could start with the assupmtion that that field is initialized properly the spread operator could be used with less coersion. 
-//We probably should just do an initial spread that initializes fields that aren't always present that we would like to count on for advancement.
-//TOOD: Decide if we want to have a single generator for everything for a set of generators for each section to make it easier to randomly generate but customize without saving.
-export const advanceMonster = (statblock, advancement, generator = new seedrandom("baseSeed")) => {
-    let advancedCreature = statblock;
-    advancedCreature = {
-        ...advancedCreature,
+export const prepareMonster = (statblock) => {
+    return {
+        ...statblock,
         advancements: [],
         totalHitDice: statblock.hitDice,
         hpEntries: [hpChanges("racial", statblock.hitDice, statblock.hdType, statblock.creature_type, statBonusFromAbilityScore(statblock.ability_scores.con), statBonusFromAbilityScore(statblock.ability_scores.con), statblock.size)],
     }
+}
+
+//There are a few fields we add as we go such as advancements that each stage might add to. If we could start with the assupmtion that that field is initialized properly the spread operator could be used with less coersion. 
+//We probably should just do an initial spread that initializes fields that aren't always present that we would like to count on for advancement.
+//TOOD: Decide if we want to have a single generator for everything for a set of generators for each section to make it easier to randomly generate but customize without saving.
+export const advanceMonster = (statblock, advancement, generator = new seedrandom("baseSeed")) => {
+    let advancedCreature = prepareMonster(statblock);
     if (advancement.hd) {
         const advancesFromHitDice = advanceByHitDice(advancedCreature, advancement.hd - advancedCreature.hitDice);
         advancedCreature = {
@@ -170,24 +174,6 @@ const displayName = (advancements) => {
     return (advancements && advancements.length > 0) ? ` (${advancements.join(", ")})` : '';
 }
 
-const calculateBonusHp = (hitDice, hdType, creatureType, conBonus, chaBonus, size) => {
-    const statBonus = (creatureType === 'Undead') ? chaBonus : conBonus;
-    return (creatureType !== 'Construct') ? statBonus * hitDice : getConstructBonusHitPoints(size);
-}
-
-const hpChanges = (source, hitDice, hdType, creatureType, conBonus, chaBonus, size) => {
-    const hpBonus = calculateBonusHp(hitDice, hdType, creatureType, conBonus, chaBonus, size);
-    return {
-        source, source,
-        hdDisplay: hdDisplay(hitDice, hdType, hpBonus, source),
-        hitDice: hitDice,
-        hdType: hdType,
-        creatureType: creatureType,
-        hitPointAdjustment: hpBonus,
-        avgHitPoints: calcAvgHitPoints(hitDice, hdType) + hpBonus
-    }
-}
-
 const changeAcMods = (acMods, acModChanges) => {
     let changedMods = [...acMods];
     acModChanges.forEach(x => {
@@ -212,23 +198,7 @@ const changeAcMod = (origAcMods, acModChange) => {
     }
 }
 
-const acFieldsFromMods = (acMods) => {
-    const acDisplay = displayArmorClass(acMods);
-    const maxDex = Math.min(...acMods.filter(x => x.hasOwnProperty('maxDex')).map(x => x.maxDex))
-    return {
-        ac: acDisplay,
-        armor_class : {
-            ac_details: acDisplay,
-            ac_modifiers: acMods,
-            ac_modifiers_details: acMods.map(x => `${withPlus(x.mod)} ${x.type}`).join(', '),
-            ac : {
-                standard: calcTotalAc(acMods, maxDex),
-                flat_footed: calcFlatFootedAc(acMods),
-                touch: calcTouchAc(acMods, maxDex)
-            }
-        }
-    }
-}
+
 
 //currently this is really melee attack changes
 const attackChanges = (origAttacks, statBonusChange, baseAttackBonusChange, applyStatToDamage = true) => {
@@ -260,30 +230,10 @@ const attackChanges = (origAttacks, statBonusChange, baseAttackBonusChange, appl
     });
 }
 
-const acChanges = (origAcMods, statBonusDiffs) => {
+const acChanges = (monster, origAcMods, statBonusDiffs) => {
     const dexChange = {mod: statBonusDiffs.dex, type: 'Dex'};
     const acMods = changeAcMod(origAcMods, dexChange);
-    return acFieldsFromMods(acMods);
-}
-
-export const combatManeuverChanges = (statblock, cmbChange, cmdChange) => {
-    const newCmb = statblock.cmb + cmbChange;
-    const newCmbDetails = (statblock.cmb_details) ? statblock.cmb_details.toString().replace(/[+-]?\d+/gm, (x) => {
-        return withPlus(parseInt(x) + cmbChange);
-    }) : withPlus(newCmb);
-
-    const newCmd = statblock.cmd + cmdChange; //all touch ac mods http://www.tenebraemush.net/index.php/Understanding_CMB_and_CMD
-    const newCmdDetails = (statblock.cmd_details) ? statblock.cmd_details.toString().replace(/[+-]?\d+/gm, (x) => {
-        return parseInt(x) + cmdChange;
-    }) : newCmd;
-
-    const result = {
-        cmb: newCmb,
-        cmb_details: newCmbDetails,
-        cmd: newCmd,
-        cmd_details: newCmdDetails,
-    };
-    return result;
+    return acFieldsFromMods(monster, acMods);
 }
 
 export const advanceAttacksBySize = (origAttacks, startSizeIndex, endSizeIndex) => {
@@ -420,7 +370,7 @@ export const advanceBySize = (statblock, sizeChange) => {
         skills: newSkills,
         ...combatManeuverFields,
         size: sizeChange,
-        ...acFieldsFromMods(acMods),
+        ...acFieldsFromMods(statblock, acMods),
         melee_attacks: newMeleeAttacks,
         ranged_attacks: newRangedAttacks,
         advancements: [...advancements, `${endSize}`]
@@ -466,8 +416,7 @@ export const advanceByAbilityScores = (statblock, abilityScoreChanges, chainedAd
     //console.debug("Advancing ability scores", statblock.name)
     const meleeAttacks = attackChanges(statblock.melee_attacks, statBonusDiffs.str, 0);
     const rangedAttacks = attackChanges(statblock.ranged_attacks, statBonusDiffs.dex, 0, false);
-    const acFields = acChanges(statblock.armor_class.ac_modifiers.slice(0), statBonusDiffs);
-
+    const acFields = acChanges(statblock, statblock.armor_class.ac_modifiers.slice(0), statBonusDiffs);
     const currentHpEntries = statblock.hpEntries||[[hpChanges("racial", statblock.hitDice, statblock.hdType, statblock.creature_type, statBonusFromAbilityScore(statblock.ability_scores.con), statBonusFromAbilityScore(statblock.ability_scores.con), statblock.size)]];
     const hpEntries = currentHpEntries.map(hpe => {
         return hpChanges(hpe.source, hpe.hitDice, hpe.hdType, hpe.creatureType, statBonusFromAbilityScore(newAbilityScores.con), statBonusFromAbilityScore(newAbilityScores.cha), statblock.size);
@@ -594,6 +543,8 @@ const getClass = (className) => {
         return druid;
     if (className === 'Fighter')
         return fighter;
+    if (className === 'Monk')
+        return monk;
     if (className === 'Paladin')
         return paladin;
     if (className === 'Ranger')
@@ -614,22 +565,12 @@ const hpEntriesDisplay = (hpEntriesAll) => {
     return `${totalAvgHp} (${hpEntries.map(x => x.hdDisplay).join(", ")})`;
 }
 
-const selectItems = (itemList, amount, generator, allowDuplicates = false) => {
-    const selectableItems = itemList.slice(0);
-    const selectedItems = [];
-    for(let i = 1; i <= amount; i++) {
-        const index = rollDice(1, selectableItems.length, generator).total - 1;
-        const item = selectableItems[index];
-        selectedItems.push(item);
-        selectableItems.splice(index, 1);
-    }
-    return selectedItems;
-}
-
 const makeASelectionForClassAbility = (classInfo, classLevel, ability, selectedAbilities, generator) => {
     const validForLevelAbilities = (ability.selectionLevelRestrictions) ? classInfo[ability.selection].filter(x => classLevel.level >= (x.minLevel||1)) : classInfo[ability.selection];
     const validAbilities = validForLevelAbilities.filter(x => !selectedAbilities.map(x => x.name).includes(x.name) || (x.multipleSelection))
-    const preferredLevel = classInfo.preferredLevelForClassAbilities; //This allows us to create a preference for higher level abilities over lower level abilities once a certain level is reached.
+    const preferredLevels = classInfo.preferredLevelForClassAbilities; //This allows us to create a preference for higher level abilities over lower level abilities once a certain level is reached.
+    //find highest matching preferred levels.
+    const preferredLevel = Array.isArray(preferredLevels) ? Math.max(...preferredLevels.filter(x => x <= classLevel.level)) : preferredLevels;
     const preferredAbilities = (ability.selectionLevelRestrictions && classLevel.level >= preferredLevel) ? validAbilities.filter(x => (x.minLevel||1) >= preferredLevel) : validAbilities; 
     const index = rollDice(1, preferredAbilities.length, generator).total - 1;
     let selectedAbility = preferredAbilities[index];
@@ -766,7 +707,7 @@ export const advanceByClassLevel = (statblock, classLevel, generator) => {
     const hpFields = {
         hp: hpEntriesDisplay(hpEntries),
         hpEntries: hpEntries,
-        totalHitDice: calculateTotalHitDice(statblock.hpEntries)
+        totalHitDice: calculateTotalHitDice(hpEntries)
     }
 
     const goodSavingThrows = classInfo.good_saving_throws;
@@ -777,6 +718,10 @@ export const advanceByClassLevel = (statblock, classLevel, generator) => {
     const meleeAttacks = attackChanges(statblock.melee_attacks, 0, baseAttackDiff);
     const rangedAttacks = attackChanges(statblock.ranged_attacks, 0, baseAttackDiff, false);
     const newCombatFields = combatManeuverChanges(statblock, baseAttackDiff, baseAttackDiff);
+    statblock = {
+        ...statblock,
+        ...newCombatFields
+    }
 
     const skillRanksEarned = (classInfo.skillRanksPerLevel + statBonusFromAbilityScore(statblock.ability_scores.int)) * classLevel.level;
     const currentSkills = statblock.skills.map(x => {
@@ -877,7 +822,7 @@ export const advanceByClassLevel = (statblock, classLevel, generator) => {
             const advancementOpts = {
                 monster: classAbilityAdvancements,
                 level: classLevel.level,
-                classAbilities: [...classAbilitiesWithAlterations], //can we just pass in all and filter inside advancement func? this seems dangerous.
+                classAbilities: [...classAbilities], //can we just pass in all and filter inside advancement func? this seems dangerous.
                 classInfo,
                 generator
             }
@@ -902,8 +847,8 @@ export const advanceByClassLevel = (statblock, classLevel, generator) => {
     const existingAdjustments = (classAbilityAdvancements.crAdjustments) ? classAbilityAdvancements.crAdjustments : [];
 
     //For Feats and featCount there is also a field additionalFeats that we started using with fighters to keep track of special additional feats with restrictions.
-
     const classAdvancements = {
+        ...classAbilityAdvancements,
         advancements: [...classAbilityAdvancements.advancements, classDisplayName],
         ...hpFields,
         base_attack: newBaseAttack + statblock.base_attack,
@@ -911,7 +856,7 @@ export const advanceByClassLevel = (statblock, classLevel, generator) => {
         ranged_attacks: rangedAttacks,
         saving_throws: applyChangesToSavingThrows(classAbilityAdvancements.saving_throws, [savingThrowBonusesFromClass]),
         featCount: racialFeatCount(classAbilityAdvancements.hd + newHitDice), //this calculation is basically an aggregate of other advancements...we can recalculate each time however without a lot of cost.
-        ...newCombatFields,
+        //...newCombatFields,
         classLevelAbilities: [...(classAbilityAdvancements.classLevelAbilities||[]), classAbilitiesToAdd],
         crAdjustments : [
             ...existingAdjustments,
@@ -923,7 +868,6 @@ export const advanceByClassLevel = (statblock, classLevel, generator) => {
         ...classAbilityAdvancements,
         ...classAdvancements,
     }
-
     return classAdvancedCreature;
 }
 

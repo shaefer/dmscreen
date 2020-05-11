@@ -1,4 +1,5 @@
-import {statBonusFromAbilityScore, acFieldsFromMods, addOrReplaceInTextList, combatManeuverChanges} from '../../components/PathfinderMonsterAdvancer/AdvancementUtils'
+import {statBonusFromAbilityScore, acFieldsFromMods, addOrReplaceInTextList, 
+        combatManeuverChanges, replaceDrByType} from '../../components/PathfinderMonsterAdvancer/AdvancementUtils'
 import {calculateBaseAttackBonus } from '../../monsteradvancer/BaseAttackBonusCalculator'
 const acBonus = ({monster, level}) => {
     const levelBonus = Math.floor(level / 4);
@@ -32,6 +33,16 @@ const evasion = ({monster}) => {
     const newItem = `evasion`;
     const evasion = (x => x === 'evasion');
     const defensiveAbilities = addOrReplaceInTextList(monster.defensive_abilities, newItem, evasion);
+
+    return {
+        defensive_abilities: defensiveAbilities
+    }
+}
+
+const improvedEvasion = ({monster}) => {
+    const newItem = `improved evasion`;
+    const findEvasion = (x => x === 'improved evasion' || x === 'evasion');
+    const defensiveAbilities = addOrReplaceInTextList(monster.defensive_abilities, newItem, findEvasion);
 
     return {
         defensive_abilities: defensiveAbilities
@@ -90,6 +101,74 @@ const maneuverTraining = ({monster, level, classInfo}) => {
     return combatManeuverChanges(monster,level - monkBab,0)
 }
 
+const stillMind = ({monster, level}) => {
+    const willBonus = 2;
+    const willDetails = [{bonus: willBonus, details: 'enchantment', source: 'Still Mind'}];
+    //TODO: Find existing fear will changes and merge. or this will need to be done on display via grouping by details
+    const newWillDetails = (monster.saving_throws.willDetails) ? [...monster.saving_throws.willDetails, ...willDetails] : willDetails;
+    const newSavingThrows = {
+        ...monster.saving_throws,
+        willDetails: newWillDetails,
+    }
+    return {
+        saving_throws: newSavingThrows
+    }
+}
+
+const kiPool = ({monster, level}) => {
+    //makes the assumption that level 4 is the earliest you get this power. Just need some more code if we don't want that assumption.
+    const kiPoints = Math.floor(level / 2) + statBonusFromAbilityScore(monster.ability_scores.wis);
+    const kiPowers = [`${kiPoints} points`, 'magic'];
+    if (level >= 7) kiPowers.push("cold iron and silver");
+    if (level >= 10) kiPowers.push("lawful");
+    if (level >= 16) kiPowers.push("adamantine");
+    kiPowers.sort();
+    return {
+        special_qualities: addOrReplaceInTextList(monster.special_qualities, `ki pool (${kiPowers.join(", ")})`, x => x.startsWith('ki pool'))
+    };
+}
+
+const slowFall = ({monster, level}) => {
+    const distance = Math.floor(level / 2) * 10;
+    const distStr = (level === 20) ? 'any distance' : `${distance} ft.`;
+    const slowFallStr = `slow fall (${distStr})`
+    return {
+        special_qualities: addOrReplaceInTextList(monster.special_qualities, slowFallStr, x => x.startsWith('slow fall'))
+    }
+}
+
+const purityOfBody = ({monster}) => {
+    return {
+        immune: addOrReplaceInTextList(monster.immune, 'disease', x => x === 'disease')
+    }
+}
+
+const diamondBody = ({monster}) => {
+    return {
+        immune: addOrReplaceInTextList(monster.immune, 'poison', x => x === 'poison')
+    }
+}
+
+const diamondSoul = ({monster, level}) => {
+    const monkSr = level + 10;
+    return {
+        sr: (monster.sr) ? Math.max(monster.sr, monkSr) : monkSr 
+    }
+}
+
+const quiveringPalm = ({level}) => {
+    const dc = Math.floor(level / 2) + 10 ;
+    return (m) => `quivering palm (DC ${dc + statBonusFromAbilityScore(m.ability_scores.wis)})`;
+}
+
+const perfectSelf = ({monster}) => {
+    const dr = monster.dr;
+    const drDetails = (dr) ? dr.split(', ') : [];
+    return {
+        dr: replaceDrByType(drDetails, 'chaotic', 10).join(", ")
+    }
+}
+
 const Advancement = {
     acBonus,
     'AC Bonus': acBonus,
@@ -101,9 +180,27 @@ const Advancement = {
     'Stunning Fist': stunningFist,
     evasion,
     'Evasion': evasion,
+    improvedEvasion,
+    'Improved Evasion': improvedEvasion,
     fastMovement,
     'Fast Movement': fastMovement,
     maneuverTraining,
     'Maneuver Training': maneuverTraining,
+    stillMind,
+    'Still Mind': stillMind,
+    kiPool,
+    'Ki Pool': kiPool,
+    slowFall,
+    'Slow Fall': slowFall,
+    purityOfBody,
+    'Purity of Body': purityOfBody,
+    diamondBody,
+    'Diamond Body': diamondBody,
+    diamondSoul,
+    'Diamond Soul': diamondSoul,
+    quiveringPalm,
+    'Quivering Palm': quiveringPalm,
+    perfectSelf,
+    'Perfect Self': perfectSelf,
 }
 export default Advancement;

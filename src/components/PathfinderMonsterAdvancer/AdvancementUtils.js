@@ -405,3 +405,24 @@ export const combatManeuverChanges = (statblock, cmbChange, cmdChange) => {
     };
     return result;
 }
+
+export const replaceDrByType = (origDetails, type, newAmount) => {  
+    const details = origDetails.slice(0);
+    const idx = details.findIndex(x => x.endsWith(type));
+    if (idx !== -1) {
+        const detailStr = details[idx];
+        const amount = parseInt(detailStr.match(/\d+/));
+        if (newAmount > amount) {
+            const regex = new RegExp(`\\d+\/${type}`);
+            details[idx] = detailStr.replace(regex, `${newAmount}/${type}`);
+        }
+    } else {
+        details.push(`${newAmount}/${type}`);
+    }
+    const sortedDetails = details.sort((a, b) => {
+        if (a.indexOf("-") !== -1) return -1;
+        if (b.indexOf("-") !== -1) return 1;
+        return caseInsensitiveAlphaSort(a, b);
+    });
+    return sortedDetails;
+}

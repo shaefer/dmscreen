@@ -21,7 +21,6 @@ import {calcBonusSpells} from '../../data/Classes/BonusSpells'
 import {rollDice} from '../../utils/DiceBag'
 
 import seedrandom from 'seedrandom';
-import 'array-flat-polyfill'; //flat not supported in IE11 or node <12
 
 export const recalculateMonster = (monster) => {
     const newMonster = {

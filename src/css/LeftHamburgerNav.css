@@ -26,6 +26,7 @@ nav.mainNav{
     -webkit-transition:all 200ms ease-in;
     -o-transition:all 200ms ease-in;
     transition:all 200ms ease-in;
+    z-index:499;
 }
 nav.mainNav ul{
     width:220px;

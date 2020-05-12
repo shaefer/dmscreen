@@ -52,19 +52,20 @@ class App extends Component {
                     <section className="menuControls">
                         <input className="nav" type="checkbox" id="navigation" ref="navBarControl" />
                         <label className="nav" id="navigationLabel" htmlFor="navigation"><img id="navImg" src="/images/circleMenuIcon.png" alt="menuIcon1"/><img src="/images/circleMenuIconWhite.png" alt="menuIcon2"/></label>
+                        <nav className="mainNav" ref="navBar">
+                            <ul>
+                                <li><a href="https://www.cleverorc.com">Clever Orc Home</a></li>
+                                <li><Link to="/">Monster Finder</Link></li>
+                                <li><Link to="/search">Monster Search</Link></li>
+                                <li><Link to="/dmscreen">DM Screen</Link></li>
+                                <li><Link to="/monsteradvancer">Monster Advancer v2 (3.5)</Link></li>
+                                <li><Link to="/dungeonGraph/5">Dungeon Grapher</Link></li>
+                                <li><Link to="/license">OGL</Link></li>
+                                <li><Link to="/copyright">Copyright &amp; Trademark</Link></li>
+                            </ul>
+                        </nav>
                     </section>
-                    <nav className="mainNav" ref="navBar">
-                        <ul>
-                            <li><a href="https://www.cleverorc.com">Clever Orc Home</a></li>
-                            <li><Link to="/">Monster Finder</Link></li>
-                            <li><Link to="/search">Monster Search</Link></li>
-                            <li><Link to="/dmscreen">DM Screen</Link></li>
-                            <li><Link to="/monsteradvancer">Monster Advancer v2 (3.5)</Link></li>
-                            <li><Link to="/dungeonGraph/5">Dungeon Grapher</Link></li>
-                            <li><Link to="/license">OGL</Link></li>
-                            <li><Link to="/copyright">Copyright &amp; Trademark</Link></li>
-                        </ul>
-                    </nav>
+                    
                     <section className="nav">
                         <header className="cleverorc">
                             <div>

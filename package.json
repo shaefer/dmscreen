@@ -7,7 +7,6 @@
     "@material-ui/icons": "^4.5.1",
     "@material-ui/lab": "^4.0.0-alpha.34",
     "@material-ui/styles": "^4.7.1",
-    "array-flat-polyfill": "^1.0.1",
     "fsevents": "^2.0.7",
     "prop-types": "^15.6.2",
     "react": "^16.12.0",
@@ -35,6 +34,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
+    "cov": "CI=true react-scripts test --env=jsdom --coverage",
     "aws": "cd src/script & npm run aws",
     "setup": "cd src/script & npm i",
     "notes": "react-select ^1.2.1 was what we had before upgrade"
@@ -43,6 +43,16 @@
     "@babel/cli": "^7.2.3",
     "@babel/preset-env": "^7.3.1",
     "@babel/preset-react": "^7.0.0"
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx,ts,tsx}",
+      "!<rootDir>/node_modules/",
+      "!<rootDir>/path/to/dir/"
+    ],
+    "coverageReporters": [
+      "text"
+    ]
   },
   "browserslist": [
     ">0.2%",

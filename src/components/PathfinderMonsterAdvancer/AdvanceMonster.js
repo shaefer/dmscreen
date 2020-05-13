@@ -21,6 +21,7 @@ import {calcBonusSpells} from '../../data/Classes/BonusSpells'
 import {rollDice} from '../../utils/DiceBag'
 
 import seedrandom from 'seedrandom';
+import 'array-flat-polyfill'; //node 8 doesn't have .flat all other polyfills seem unnecessary on the back versus what is being tested.
 
 export const recalculateMonster = (monster) => {
     const newMonster = {

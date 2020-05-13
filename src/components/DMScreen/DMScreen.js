@@ -12,9 +12,6 @@ import TavernNameButton from './connectedComponents/TavernNameButtonContainer'
 
 import './DmScreen.css'
 
-import '../Polyfills/StartsWith'
-import '../Polyfills/PadStart'
-
 import PageViewRecorder from '../../components/PageViewRecorder';
 import StatsButton from './StatsButton';
 

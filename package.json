@@ -35,6 +35,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
+    "cov": "CI=true react-scripts test --env=jsdom --coverage",
     "aws": "cd src/script & npm run aws",
     "setup": "cd src/script & npm i",
     "notes": "react-select ^1.2.1 was what we had before upgrade"
@@ -43,6 +44,16 @@
     "@babel/cli": "^7.2.3",
     "@babel/preset-env": "^7.3.1",
     "@babel/preset-react": "^7.0.0"
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx,ts,tsx}",
+      "!<rootDir>/node_modules/",
+      "!<rootDir>/path/to/dir/"
+    ],
+    "coverageReporters": [
+      "text"
+    ]
   },
   "browserslist": [
     ">0.2%",

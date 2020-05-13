@@ -5,10 +5,6 @@ import {monsterS3SelectChangeHandler} from '../../action-creators'
 import MonsterSearchForm from './MonsterSearchForm'
 import MonsterTable from './MonsterTable'
 
-import '../Polyfills/Find'
-import '../Polyfills/FindIndex'
-import '../Polyfills/IsNaN'
-
 import "./MonsterSearch.css"
 
 import PageViewRecorder from '../../components/PageViewRecorder';

@@ -17,6 +17,7 @@ import monk from '../../data/Classes/Monk'
 import paladin from '../../data/Classes/Paladin'
 import ranger from '../../data/Classes/Ranger'
 import rogue from '../../data/Classes/Rogue'
+import sorcerer from '../../data/Classes/Sorcerer'
 import {calcBonusSpells} from '../../data/Classes/BonusSpells'
 import {rollDice} from '../../utils/DiceBag'
 
@@ -551,6 +552,8 @@ const getClass = (className) => {
         return ranger;
     if (className === 'Rogue')
         return rogue;
+    if (className === 'Sorcerer')
+        return sorcerer;
     
 }
 

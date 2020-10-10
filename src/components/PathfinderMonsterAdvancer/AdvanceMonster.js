@@ -601,7 +601,13 @@ const buildClassAbilitiesForLevel = (classInfo, level, generator) => {
                 if (fullAbility.subSelection) {
                     //the the class level info subselection to the subselectionCategory dictated by the selectedAbility
                     //for instance Ranger Combat Style chooses Two Weapon fighting. This should cause the classInfo.selectedCombatStyle = 'two-weapon fighting' which in turn will change which list to lookup when prompting for an actual feat selection.
-                    classInfo[fullAbility.subSelection] = selectedAbility.subSelectionCategory;
+                    if (Array.isArray(fullAbility.subSelection)) {
+                        fullAbility.subSelection.forEach((x, i) => {
+                            classInfo[x] = selectedAbility.subSelectionCategory[i]; //assign the same indexed item from each list.
+                        });
+                    } else {
+                        classInfo[fullAbility.subSelection] = selectedAbility.subSelectionCategory;
+                    }
                 } 
                 selectedAbilities.push(selectedAbility);
 
@@ -697,35 +703,7 @@ const selectSkills = (itemList, amount, maxPoints, generator) => {
     return selectedItems;
 }
 
-export const advanceByClassLevel = (statblock, classLevel, generator) => {
-    const classDisplayName = `${classLevel.className} ${classLevel.level}`;
-    const newHitDice = classLevel.level;
-
-    const classInfo = getClass(classLevel.className);
-    if (!classInfo) return statblock;
-
-    //hp changes are additive with classes. 
-    const hpEntry = hpChanges(classDisplayName, newHitDice, classInfo.hitDieType, classLevel.className, statBonusFromAbilityScore(statblock.ability_scores.con), statBonusFromAbilityScore(statblock.ability_scores.con), statblock.size);
-    const hpEntries = [...statblock.hpEntries, hpEntry];
-    const hpFields = {
-        hp: hpEntriesDisplay(hpEntries),
-        hpEntries: hpEntries,
-        totalHitDice: calculateTotalHitDice(hpEntries)
-    }
-
-    const goodSavingThrows = classInfo.good_saving_throws;
-    const savingThrowBonusesFromClass = getSavingThrowChangesFromClass(newHitDice, goodSavingThrows);
-    //const newBaseAttack =  getBaseAttackBonusByHitDiceAndCreatureType(newHitDice, statblock.creature_type);
-    const newBaseAttack = calculateBaseAttackBonus(newHitDice, classInfo.base_attack_bonus);
-    const baseAttackDiff = newBaseAttack;
-    const meleeAttacks = attackChanges(statblock.melee_attacks, 0, baseAttackDiff);
-    const rangedAttacks = attackChanges(statblock.ranged_attacks, 0, baseAttackDiff, false);
-    const newCombatFields = combatManeuverChanges(statblock, baseAttackDiff, baseAttackDiff);
-    statblock = {
-        ...statblock,
-        ...newCombatFields
-    }
-
+const advanceSkillsForClassLevel = (statblock, classInfo, classLevel, generator) => {
     const skillRanksEarned = (classInfo.skillRanksPerLevel + statBonusFromAbilityScore(statblock.ability_scores.int)) * classLevel.level;
     const currentSkills = statblock.skills.map(x => {
         return {
@@ -777,24 +755,52 @@ export const advanceByClassLevel = (statblock, classLevel, generator) => {
 
     const allSkills = [...updatedSkills, ...newSkills];
 
+    const sortedSkills = allSkills.sort((x, y) => {
+        if (x.name < y.name) {
+            return -1;
+        }
+        if (x.name > y.name) {
+            return 1;
+        }
+        if (x.subName < y.subName) {
+            return -1;
+        }
+        if (x.subName > y.subName) {
+            return 1;
+        }
+        // names must be equal
+        return 0;
+    });
+    return sortedSkills;
+}
+
+export const advanceByClassLevel = (statblock, classLevel, generator) => {
+    const classDisplayName = `${classLevel.className} ${classLevel.level}`;
+    const newHitDice = classLevel.level;
+
+    const classInfo = getClass(classLevel.className);
+    if (!classInfo) return statblock;
+
+    //hp changes are additive with classes. 
+    const hpEntry = hpChanges(classDisplayName, newHitDice, classInfo.hitDieType, classLevel.className, statBonusFromAbilityScore(statblock.ability_scores.con), statBonusFromAbilityScore(statblock.ability_scores.con), statblock.size);
+    const hpEntries = [...statblock.hpEntries, hpEntry];
+    const hpFields = {
+        hp: hpEntriesDisplay(hpEntries),
+        hpEntries: hpEntries,
+        totalHitDice: calculateTotalHitDice(hpEntries)
+    }
+
+    const goodSavingThrows = classInfo.good_saving_throws;
+    const savingThrowBonusesFromClass = getSavingThrowChangesFromClass(newHitDice, goodSavingThrows);
+    //const newBaseAttack =  getBaseAttackBonusByHitDiceAndCreatureType(newHitDice, statblock.creature_type);
+    const newBaseAttack = calculateBaseAttackBonus(newHitDice, classInfo.base_attack_bonus);
+    const baseAttackDiff = newBaseAttack;
+    const meleeAttacks = attackChanges(statblock.melee_attacks, 0, baseAttackDiff);
+    const rangedAttacks = attackChanges(statblock.ranged_attacks, 0, baseAttackDiff, false);
+    const newCombatFields = combatManeuverChanges(statblock, baseAttackDiff, baseAttackDiff);
     statblock = {
         ...statblock,
-        skills: allSkills.sort((x, y) => {
-            if (x.name < y.name) {
-                return -1;
-            }
-            if (x.name > y.name) {
-                return 1;
-            }
-            if (x.subName < y.subName) {
-                return -1;
-            }
-            if (x.subName > y.subName) {
-                return 1;
-            }
-            // names must be equal
-            return 0;
-        })
+        ...newCombatFields
     }
 
     const statPointsPer4HitDiceAdded = Math.floor(newHitDice/4);
@@ -810,6 +816,12 @@ export const advanceByClassLevel = (statblock, classLevel, generator) => {
     const classAbilitiesToAdd = {
         source: classLevel.className,
         specialAbilities: classAbilities
+    }
+
+    const updatedSkills = advanceSkillsForClassLevel(statblock, classInfo, classLevel, generator);
+    statblock = {
+        ...statblock,
+        skills: updatedSkills
     }
 
     const classAbilitiesWithAlterations = classAbilitiesToAdd.specialAbilities.filter(x => x.fieldToUpdate);

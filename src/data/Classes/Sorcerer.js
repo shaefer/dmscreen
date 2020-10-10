@@ -1,185 +1,22 @@
 import advancement from '../../components/ClassLevels/SorcererAdvancement';
 import spells from './SorcererSpells';
+import {aberrant, abyssal} from './SorcererBloodlines'
 
-const bloodlinePowers = [
+const bloodlines = [
   {
     "description":"There is a taint in your blood, one that is alien and bizarre. You tend to think in odd ways, approaching problems from an angle that most would not expect. Over time, this taint manifests itself in your physical form.",
     "name":"Aberrant",
-    "source":"Core Rulebook",
-    "sections":[
-      {
-        "description":"Knowledge (dungeoneering).",
-        "source":"Core Rulebook",
-        "type":"section",
-        "name":"Class Skill"
-      },
-      {
-        "description":"<i>enlarge person</i> (3rd), <i>see invisibility</i> (5th), <i>tongues</i> (7th), <i>black tentacles</i> (9th), <i>feeblemind</i> (11th), <i>veil</i> (13th), <i>plane shift</i> (15th), <i>mind blank</i> (17th), <i>shapechange</i> (19th).",
-        "source":"Core Rulebook",
-        "type":"section",
-        "name":"Bonus Spells"
-      },
-      {
-        "description":"Combat Casting, Improved Disarm, Improved Grapple, Improved Initiative, Improved Unarmed Strike, Iron Will, Silent Spell, Skill Focus (Knowledge [dungeoneering]).",
-        "source":"Core Rulebook",
-        "type":"section",
-        "name":"Bonus Feats"
-      },
-      {
-        "description":"Whenever you cast a spell of the polymorph subschool, increase the duration of the spell by 50% (minimum 1 round). This bonus does not stack with the increase granted by the Extend Spell feat.",
-        "source":"Core Rulebook",
-        "type":"section",
-        "name":"Bloodline Arcana"
-      },
-      {
-        "description":"Aberrant sorcerers show increasing signs of their tainted heritage as they increase in level, although they are only visible when used.",
-        "type":"section",
-        "sections":[
-          {
-            "description":"Starting at 1st level, you can fire an acidic ray as a standard action, targeting any foe within 30 feet as a ranged touch attack. The acidic ray deals 1d6 points of acid damage + 1 for every two sorcerer levels you possess. You can use this ability a number of times per day equal to 3 + your Charisma modifier.",
-            "name":"Acidic Ray",
-            "url":"pfsrd://Core Rulebook/Classes/Sorcerer/Sorcerer Bloodlines/Aberrant/Bloodline Powers/Acidic Ray",
-            "ability_types":{
-              "ability_type":"Spell-Like"
-            },
-            "source":"Core Rulebook",
-            "type":"ability"
-          },
-          {
-            "description":"At 3rd level, your reach increases by 5 feet whenever you are making a melee touch attack. This ability does not otherwise increase your threatened area. At 11th level, this bonus to your reach increases to 10 feet. At 17th level, this bonus to your reach increases to 15 feet.",
-            "name":"Long Limbs",
-            "url":"pfsrd://Core Rulebook/Classes/Sorcerer/Sorcerer Bloodlines/Aberrant/Bloodline Powers/Long Limbs",
-            "ability_types":{
-              "ability_type":"Extraordinary"
-            },
-            "source":"Core Rulebook",
-            "type":"ability"
-          },
-          {
-            "description":"At 9th level, your anatomy changes, giving you a 25% chance to ignore any critical hit or sneak attack scored against you. This chance increases to 50% at 13th level.",
-            "name":"Unusual Anatomy",
-            "url":"pfsrd://Core Rulebook/Classes/Sorcerer/Sorcerer Bloodlines/Aberrant/Bloodline Powers/Unusual Anatomy",
-            "ability_types":{
-              "ability_type":"Extraordinary"
-            },
-            "source":"Core Rulebook",
-            "type":"ability"
-          },
-          {
-            "description":"At 15th level, you gain spell resistance equal to your sorcerer level + 10.",
-            "name":"Alien Resistance",
-            "url":"pfsrd://Core Rulebook/Classes/Sorcerer/Sorcerer Bloodlines/Aberrant/Bloodline Powers/Alien Resistance",
-            "ability_types":{
-              "ability_type":"Supernatural"
-            },
-            "source":"Core Rulebook",
-            "type":"ability"
-          },
-          {
-            "description":"At 20th level, your body becomes truly unnatural. You are immune to critical hits and sneak attacks. In addition, you gain blindsight with a range of 60 feet and damage reduction 5/&mdash;.",
-            "name":"Aberrant Form",
-            "url":"pfsrd://Core Rulebook/Classes/Sorcerer/Sorcerer Bloodlines/Aberrant/Bloodline Powers/Aberrant Form",
-            "ability_types":{
-              "ability_type":"Extraordinary"
-            },
-            "source":"Core Rulebook",
-            "type":"ability"
-          }
-        ],
-        "name":"Bloodline Powers",
-        "source":"Core Rulebook"
-      }
-    ]
+    "subSelectionCategory": [aberrant.feats, aberrant.spells, aberrant.powers],
   },
   {
     "description":"Generations ago, a demon spread its filth into your heritage. While it does not manifest in all of your kin, for you it is particularly strong. You might sometimes have urges to chaos or evil, but your destiny (and alignment) is up to you.",
     "name":"Abyssal",
     "source":"Core Rulebook",
-    "sections":[
-      {
-        "description":"Knowledge (planes).",
-        "source":"Core Rulebook",
-        "type":"section",
-        "name":"Class Skill"
-      },
-      {
-        "description":"<i>cause fear</i> (3rd), <i>bull's strength</i> (5th), <i>rage</i> (7th), <i>stoneskin</i> (9th), <i>dismissal</i> (11th), <i>transformation</i> (13th), <i>greater teleport</i> (15th), <i>unholy aura</i> (17th), <i>summon monster IX</i> (19th).",
-        "source":"Core Rulebook",
-        "type":"section",
-        "name":"Bonus Spells"
-      },
-      {
-        "description":"Augment Summoning, Cleave, Empower Spell, Great Fortitude, Improved Bull Rush, Improved Sunder, Power Attack, Skill Focus (Knowledge [planes]).",
-        "source":"Core Rulebook",
-        "type":"section",
-        "name":"Bonus Feats"
-      },
-      {
-        "description":"Whenever you cast a spell of the summoning subschool, the creatures summoned gain DR/good equal to 1/2 your sorcerer level (minimum 1). This does not stack with any DR the creature might have.",
-        "source":"Core Rulebook",
-        "type":"section",
-        "name":"Bloodline Arcana"
-      },
-      {
-        "description":"While some would say that you are possessed, you know better. The demonic influence in your blood grows as you gain power.",
-        "type":"section",
-        "sections":[
-          {
-            "description":"At 1st level, you can grow claws as a free action. These claws are treated as natural weapons, allowing you to make two claw attacks as a full attack action using your full base attack bonus. These attacks deal 1d4 points of damage each (1d3 if you are Small) plus your Strength modifier. At 5th level, these claws are considered magic weapons for the purpose of overcoming DR. At 7th level, the damage increases by one step to 1d6 points of damage (1d4 if you are Small). At 11th level, these claws become <i>flaming</i> <i>weapons</i>, each dealing an additional 1d6 points of fire damage on a successful hit. You can use your claws for a number of rounds per day equal to 3 + your Charisma modifier. These rounds do not need to be consecutive.",
-            "name":"Claws",
-            "url":"pfsrd://Core Rulebook/Classes/Sorcerer/Sorcerer Bloodlines/Abyssal/Bloodline Powers/Claws",
-            "ability_types":{
-              "ability_type":"Supernatural"
-            },
-            "source":"Core Rulebook",
-            "type":"ability"
-          },
-          {
-            "description":"At 3rd level, you gain resist electricity 5 and a +2 bonus on saving throws made against poison. At 9th level, your resistance to electricity increases to 10 and your bonus on poison saving throws increases to +4.",
-            "name":"Demon Resistances",
-            "url":"pfsrd://Core Rulebook/Classes/Sorcerer/Sorcerer Bloodlines/Abyssal/Bloodline Powers/Demon Resistances",
-            "ability_types":{
-              "ability_type":"Extraordinary"
-            },
-            "source":"Core Rulebook",
-            "type":"ability"
-          },
-          {
-            "description":"At 9th level, you gain a +2 inherent bonus to your Strength. This bonus increases to +4 at 13th level, and to +6 at 17th level.",
-            "name":"Strength of the Abyss",
-            "url":"pfsrd://Core Rulebook/Classes/Sorcerer/Sorcerer Bloodlines/Abyssal/Bloodline Powers/Strength of the Abyss",
-            "ability_types":{
-              "ability_type":"Extraordinary"
-            },
-            "source":"Core Rulebook",
-            "type":"ability"
-          },
-          {
-            "description":"At 15th level, whenever you summon a creature with the demon subtype or the fiendish template using a <i>summon monster</i> spell, you summon one additional creature of the same kind.",
-            "name":"Added Summonings",
-            "url":"pfsrd://Core Rulebook/Classes/Sorcerer/Sorcerer Bloodlines/Abyssal/Bloodline Powers/Added Summonings",
-            "ability_types":{
-              "ability_type":"Supernatural"
-            },
-            "source":"Core Rulebook",
-            "type":"ability"
-          },
-          {
-            "description":" <i></i>At 20th level, the power of the Abyss flows through you. You gain immunity to electricity and poison. You also gain resistance to acid 10, cold 10, and fire 10, and gain telepathy with a range of 60 feet (allowing you to communicate with any creature that can speak a language).",
-            "name":"Demonic Might",
-            "url":"pfsrd://Core Rulebook/Classes/Sorcerer/Sorcerer Bloodlines/Abyssal/Bloodline Powers/Demonic Might",
-            "ability_types":{
-              "ability_type":"Supernatural"
-            },
-            "source":"Core Rulebook",
-            "type":"ability"
-          }
-        ],
-        "name":"Bloodline Powers",
-        "source":"Core Rulebook"
-      }
-    ]
-  },
+    "subSelectionCategory": [abyssal.feats, abyssal.spells, abyssal.powers]
+  }
+];
+
+const bloodlinePowersOrig = [
   {
     "description":"Your family has always been skilled in the eldritch art of magic. While many of your relatives were accomplished wizards, your powers developed without the need for study and practice.",
     "name":"Arcane",
@@ -192,80 +29,10 @@ const bloodlinePowers = [
         "name":"Class Skill"
       },
       {
-        "description":"<i>identify</i> (3rd), <i>invisibility</i> (5th), <i>dispel magic</i> (7th), <i>dimension door</i> (9th), <i>overland flight</i> (11th), <i>true seeing</i> (13th), <i>greater teleport</i> (15th), <i>power word stun</i> (17th), <i>wish</i> (19th).",
-        "source":"Core Rulebook",
-        "type":"section",
-        "name":"Bonus Spells"
-      },
-      {
-        "description":"Combat Casting, Improved Counterspell, Improved Initiative, Iron Will, Scribe Scroll, Skill Focus (Knowledge [arcana]), Spell Focus, Still Spell.",
-        "source":"Core Rulebook",
-        "type":"section",
-        "name":"Bonus Feats"
-      },
-      {
         "description":"Whenever you apply a metamagic feat to a spell that increases the slot used by at least one level, increase the spell's DC by +1. This bonus does not stack with itself and does not apply to spells modified by the Heighten Spell feat.",
         "source":"Core Rulebook",
         "type":"section",
         "name":"Bloodline Arcana"
-      },
-      {
-        "description":"Magic comes naturally to you, but as you gain levels you must take care to prevent the power from overwhelming you. ",
-        "type":"section",
-        "sections":[
-          {
-            "description":" <i></i>At 1st level, you gain an arcane bond, as a wizard equal to your sorcerer level. Your sorcerer levels stack with any wizard levels you possess when determining the powers of your familiar or bonded object. This ability does not allow you to have both a familiar and a bonded item. Once per day, your bond item allows you to cast any one of your spells known (unlike a wizard's bonded item, which allows him to cast any one spell in his spellbook).",
-            "name":"Arcane Bond",
-            "url":"pfsrd://Core Rulebook/Classes/Sorcerer/Sorcerer Bloodlines/Arcane/Bloodline Powers/Arcane Bond",
-            "ability_types":{
-              "ability_type":"Supernatural"
-            },
-            "source":"Core Rulebook",
-            "type":"ability"
-          },
-          {
-            "description":"At 3rd level, you can apply any one metamagic feat you know to a spell you are about to cast without increasing the casting time. You must still expend a higher-level spell slot to cast this spell. You can use this ability once per day at 3rd level and one additional time per day for every four sorcerer levels you possess beyond 3rd, up to five times per day at 19th level. At 20th level, this ability is replaced by arcane apotheosis.",
-            "name":"Metamagic Adept",
-            "url":"pfsrd://Core Rulebook/Classes/Sorcerer/Sorcerer Bloodlines/Arcane/Bloodline Powers/Metamagic Adept",
-            "ability_types":{
-              "ability_type":"Extraordinary"
-            },
-            "source":"Core Rulebook",
-            "type":"ability"
-          },
-          {
-            "description":"At 9th level, you can add any one spell from the sorcerer/wizard spell list to your list of spells known. This spell must be of a level that you are capable of casting. You can also add one additional spell at 13th level and 17th level.",
-            "name":"New Arcana",
-            "url":"pfsrd://Core Rulebook/Classes/Sorcerer/Sorcerer Bloodlines/Arcane/Bloodline Powers/New Arcana",
-            "ability_types":{
-              "ability_type":"Extraordinary"
-            },
-            "source":"Core Rulebook",
-            "type":"ability"
-          },
-          {
-            "description":"At 15th level, pick one school of magic. The DC for any spells you cast from that school increases by +2. This bonus stacks with the bonus granted by Spell Focus.",
-            "name":"School Power",
-            "url":"pfsrd://Core Rulebook/Classes/Sorcerer/Sorcerer Bloodlines/Arcane/Bloodline Powers/School Power",
-            "ability_types":{
-              "ability_type":"Extraordinary"
-            },
-            "source":"Core Rulebook",
-            "type":"ability"
-          },
-          {
-            "description":"At 20th level, your body surges with arcane power. You can add any metamagic feats that you know to your spells without increasing their casting time, although you must still expend higher-level spell slots. Whenever you use magic items that require charges, you can instead expend spell slots to power the item. For every three levels of spell slots that you expend, you consume one less charge when using a magic item that expends charges.",
-            "name":"Arcane Apotheosis",
-            "url":"pfsrd://Core Rulebook/Classes/Sorcerer/Sorcerer Bloodlines/Arcane/Bloodline Powers/Arcane Apotheosis",
-            "ability_types":{
-              "ability_type":"Extraordinary"
-            },
-            "source":"Core Rulebook",
-            "type":"ability"
-          }
-        ],
-        "name":"Bloodline Powers",
-        "source":"Core Rulebook"
       }
     ]
   },
@@ -927,8 +694,30 @@ const specialAbilities = [
   },
   {
     "name": "Bloodline Selection",
-    "selection": "bloodlinePowers",
+    selection: "bloodlines",
+    subSelection: ["bloodlineFeats", "bloodlineSpells", "bloodlinePowers"],
     "parentName": 'Bloodline'
+  },
+  {
+    "description": "",
+    "name": "Bloodline Feat Selection",
+    selection: 'bloodlineFeats',
+    selectionLevelRestrictions: true,
+    parentName: 'Bloodline Feat',
+  },
+  {
+    "description": "",
+    "name": "Bloodline Spell Selection",
+    selection: 'bloodlineSpells',
+    selectionLevelRestrictions: true,
+    parentName: 'Bloodline Spell',
+  },
+  {
+    "description": "",
+    "name": "Bloodline Power Selection",
+    selection: 'bloodlinePowers',
+    selectionLevelRestrictions: true,
+    parentName: 'Bloodline Power',
   },
   {
     "description":"Sorcerers learn a number of cantrips, or 0-level spells. These spells are cast like any other spell, but they do not consume any slots and may be used again.",
@@ -961,7 +750,10 @@ const sorcerer = {
     "base_attack_bonus": "slow",  //might like a different format  for the key but this matches creatureStatsByType
     "good_saving_throws": ["Will"], //might like a different format  for the key but this matches creatureStatsByType
     specialAbilities: specialAbilities,
-    bloodlinePowers,
+    bloodlines,
+    bloodlineFeats: [],
+    bloodlineSpells: [],
+    bloodlinePowers: [],
     advancement,
     isCaster: true,
     prepareSpells: false,
@@ -971,7 +763,7 @@ const sorcerer = {
     levels: [
         {
           level: 1, 
-          classAbilities: ['Bloodline', 'Bloodline Selection', 'Cantrips', 'Eschew Materials', 'Weapon and Armor Proficiency'],
+          classAbilities: ['Bloodline', 'Bloodline Selection', 'Bloodline Power Selection', 'Cantrips', 'Eschew Materials', 'Weapon and Armor Proficiency'],
           spellsPerDay: [0, 3, 0, 0, 0, 0, 0, 0, 0, 0], //0-9
           spellsKnown:  [4, 2, 0, 0, 0, 0, 0, 0, 0, 0], //0-9
         },
@@ -983,7 +775,7 @@ const sorcerer = {
         },
         {
           level: 3,
-          classAbilities: [],
+          classAbilities: ['Bloodline Power Selection', 'Bloodline Spell Selection'],
           spellsPerDay: [0, 5, 0, 0, 0, 0, 0, 0, 0, 0],
           spellsKnown:  [5, 3, 0, 0, 0, 0, 0, 0, 0, 0],
         },
@@ -995,7 +787,7 @@ const sorcerer = {
         },
         {
           level: 5,
-          classAbilities: [], 
+          classAbilities: ['Bloodline Spell Selection'], 
           spellsPerDay: [0, 6, 4, 0, 0, 0, 0, 0, 0, 0],
           spellsKnown:  [6, 4, 2, 0, 0, 0, 0, 0, 0, 0],
         },
@@ -1007,7 +799,7 @@ const sorcerer = {
         },
         {
           level: 7,
-          classAbilities: [], 
+          classAbilities: ['Bloodline Feat Selection', 'Bloodline Spell Selection'], 
           spellsPerDay: [0, 6, 6, 4, 0, 0, 0, 0, 0, 0],
           spellsKnown:  [7, 5, 3, 2, 0, 0, 0, 0, 0, 0],
         },
@@ -1019,7 +811,7 @@ const sorcerer = {
         },
         {
           level: 9,
-          classAbilities: [],
+          classAbilities: ['Bloodline Power Selection', 'Bloodline Spell Selection'],
           spellsPerDay: [0, 6, 6, 6, 4, 0, 0, 0, 0, 0],
           spellsKnown:  [8, 5, 4, 3, 2, 0, 0, 0, 0, 0],
         },
@@ -1031,7 +823,7 @@ const sorcerer = {
         },
         {
           level: 11,
-          classAbilities: [],
+          classAbilities: ['Bloodline Spell Selection'],
           spellsPerDay: [0, 6, 6, 6, 6, 4, 0, 0, 0, 0],
           spellsKnown:  [9, 5, 5, 4, 3, 2, 0, 0, 0, 0],
         },
@@ -1043,7 +835,7 @@ const sorcerer = {
         },
         {
           level: 13,
-          classAbilities: [],
+          classAbilities: ['Bloodline Feat Selection', 'Bloodline Spell Selection'],
           spellsPerDay: [0, 6, 6, 6, 6, 6, 4, 0, 0, 0],
           spellsKnown:  [9, 5, 5, 4, 4, 3, 2, 0, 0, 0],
         },
@@ -1055,7 +847,7 @@ const sorcerer = {
         },
         {
           level: 15,
-          classAbilities: [], 
+          classAbilities: ['Bloodline Power Selection', 'Bloodline Spell Selection'], 
           spellsPerDay: [0, 6, 6, 6, 6, 6, 6, 4, 0, 0],
           spellsKnown:  [9, 5, 5, 4, 4, 4, 3, 2, 0, 0],
         },
@@ -1067,7 +859,7 @@ const sorcerer = {
         },
         {
           level: 17,
-          classAbilities: [],
+          classAbilities: ['Bloodline Spell Selection'],
           spellsPerDay: [0, 6, 6, 6, 6, 6, 6, 6, 4, 0],
           spellsKnown:  [9, 5, 5, 4, 4, 4, 3, 3, 2, 0],
         },
@@ -1079,13 +871,13 @@ const sorcerer = {
         },
         {
           level: 19,
-          classAbilities: [],
+          classAbilities: ['Bloodline Feat Selection', 'Bloodline Spell Selection'],
           spellsPerDay: [0, 6, 6, 6, 6, 6, 6, 6, 6, 4],
           spellsKnown:  [9, 5, 5, 4, 4, 4, 3, 3, 3, 2],
         },
         {
           level: 20,
-          classAbilities: [],
+          classAbilities: ['Bloodline Power Selection'],
           spellsPerDay: [0, 6, 6, 6, 6, 6, 6, 6, 6, 6],
           spellsKnown:  [9, 5, 5, 4, 4, 4, 3, 3, 3, 3],
         }

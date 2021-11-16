@@ -3,7 +3,7 @@
   "version": "0.0.2",
   "private": true,
   "dependencies": {
-    "aws-sdk": "^2.413.0",
+    "aws-sdk": "^2.814.0",
     "fs": "0.0.1-security"
   },
   "scripts": {
